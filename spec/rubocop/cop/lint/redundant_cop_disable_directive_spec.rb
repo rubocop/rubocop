@@ -444,6 +444,18 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
               RUBY
             end
 
+            it 'returns an offense with an enabling message for a detached `enable-next`' do
+              expect_offense(<<~RUBY)
+                puts 1
+                # rubocop:enable-next Metrics/MethodLength
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary enabling of `Metrics/MethodLength`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                puts 1
+              RUBY
+            end
+
             it 'does not analyze attached `next` arguments for redundancy, aligned with `push`' do
               expect_no_offenses(<<~RUBY)
                 # rubocop:next -Metrics/MethodLength

@@ -6,6 +6,7 @@ module RuboCop
   class CommentConfig
     extend SimpleForwardable
     include DisableNext
+    include PushPop
 
     CONFIG_DISABLED_LINE_RANGE_MIN = -Float::INFINITY
 
@@ -100,9 +101,7 @@ module RuboCop
     def extra_enabled_comments_with_names(extras:, names:)
       each_directive do |directive|
         next unless comment_only_line?(directive.line_number)
-        # Push/pop and next-statement directives close themselves, so they
-        # play no part in the disable/enable pairing.
-        next if directive.push? || directive.pop? || directive.disable_next? || directive.next?
+        next if self_closing_directive?(directive)
 
         if directive.enabled_all?
           handle_enable_all(directive, names, extras)
@@ -132,6 +131,8 @@ module RuboCop
           apply_disable_next(analyses, directive)
         elsif directive.next?
           apply_next_directive(analyses, resolve_push_cops(directive), directive)
+        elsif directive.enable_next?
+          apply_enable_next(analyses, directive)
         else
           directive.cop_names.each do |cop_name|
             cop_name = qualified_cop_name(cop_name)
@@ -146,48 +147,6 @@ module RuboCop
 
         hash[cop_name] = cop_line_ranges(analysis)
       end
-    end
-
-    def resolve_push_cops(directive)
-      directive.push_args.transform_values do |names|
-        names.flat_map { |name| expand_cop_name(name) }
-      end
-    end
-
-    def expand_cop_name(name)
-      registry = Cop::Registry.global
-      cops = registry.department?(name) ? registry.names_for_department(name) : [name]
-      cops.map { |c| qualified_cop_name(c) }
-    end
-
-    def apply_push(analyses, resolved_cops, directive)
-      resolved_cops.each do |op, cops|
-        cops.each { |cop| apply_cop_op(analyses, op, cop, directive) }
-      end
-    end
-
-    def apply_cop_op(analyses, operation, cop, directive)
-      analysis = analyses[cop]
-      line = directive.line_number
-      if operation == '-' && !analysis.start_line_number
-        analyses[cop] = CopAnalysis.new(analysis.line_ranges, line, directive)
-      elsif operation == '+' && analysis.start_line_number
-        analyses[cop] = CopAnalysis.new(analysis.close(line), nil)
-      end
-    end
-
-    def pop_state(analyses, line)
-      restore_point = @stack.pop
-      (restore_point.keys | analyses.keys).each do |cop|
-        analyses[cop] = popped_analysis(analyses[cop], restore_point[cop], line)
-      end
-    end
-
-    def popped_analysis(current, restored, line)
-      ranges = current.close(line - 1)
-      return CopAnalysis.new(ranges, nil) unless restored&.start_line_number
-
-      CopAnalysis.new(ranges, line, restored.start_directive)
     end
 
     def inject_disabled_cops_directives(analyses)
@@ -238,6 +197,13 @@ module RuboCop
         directive = DirectiveComment.new(comment)
         yield directive if directive.cop_names
       end
+    end
+
+    # Push/pop and next-statement directives close themselves, so they
+    # play no part in the disable/enable pairing.
+    def self_closing_directive?(directive)
+      directive.push? || directive.pop? || directive.disable_next? ||
+        directive.next? || directive.enable_next?
     end
 
     def qualified_cop_name(cop_name)

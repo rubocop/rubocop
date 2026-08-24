@@ -26,7 +26,8 @@ module RuboCop
     # @api private
     PUSH_POP_ARGS_PATTERN = "([+\\-]#{COP_NAME_PATTERN_NC}(?:\\s+[+\\-]#{COP_NAME_PATTERN_NC})*)"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo push pop disable-next todo-next next].freeze
+    AVAILABLE_MODES = %w[disable enable todo push pop disable-next todo-next enable-next
+                         next].freeze
     # @api private
     # Longest first, so a `-next` mode is not matched as its prefix
     # (`-` is a word boundary).
@@ -42,6 +43,8 @@ module RuboCop
       "#{DIRECTIVE_HEADER_PATTERN}(?:\\s+#{COPS_PATTERN}|\\s+#{PUSH_POP_ARGS_PATTERN})?"
         .gsub(' ', '\s*')
     )
+    # @api private
+    SIGNED_OPERATIONS = %w[+ -].freeze
     # @api private
     TRAILING_COMMENT_MARKER = '--'
     # @api private
@@ -160,7 +163,12 @@ module RuboCop
 
     # Checks if this directive enables cops
     def enabled?
-      mode == 'enable'
+      mode == 'enable' || enable_next?
+    end
+
+    # Checks if this directive enables cops for the next statement only
+    def enable_next?
+      mode == 'enable-next'
     end
 
     # Checks if this directive is a push
@@ -270,7 +278,7 @@ module RuboCop
       cops.split.each do |cop_spec|
         op = cop_spec[0]
         cop_name = cop_spec[1..]
-        next unless %w[+ -].include?(op)
+        next unless SIGNED_OPERATIONS.include?(op)
 
         args[op] ||= []
         args[op] << cop_name

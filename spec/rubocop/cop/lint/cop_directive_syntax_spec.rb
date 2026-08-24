@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
   it 'registers an offense for incorrect mode' do
     expect_offense(<<~RUBY)
       # rubocop:disabled Layout/LineLength
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `disable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `disable-next`, `enable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.
     RUBY
   end
 
@@ -171,6 +171,41 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
       expect_offense(<<~RUBY)
         # rubocop:next -Layout/LineLenght
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Layout/LineLenght` (did you mean `Layout/LineLength`?).
+        foo
+      RUBY
+    end
+  end
+
+  context 'with `enable-next` directives' do
+    it 'does not register an offense for an `enable-next` on its own line' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Layout/LineLength
+        # rubocop:enable-next Layout/LineLength
+        foo
+        # rubocop:enable Layout/LineLength
+      RUBY
+    end
+
+    it 'registers an offense for an `enable-next` at the end of a code line' do
+      expect_offense(<<~RUBY)
+        foo # rubocop:enable-next Layout/LineLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ A `-next` directive must be on its own line, above the statement it applies to.
+        bar
+      RUBY
+    end
+
+    it 'registers an offense for a bare `enable-next`' do
+      expect_offense(<<~RUBY)
+        # rubocop:enable-next
+        ^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The cop name is missing.
+        foo
+      RUBY
+    end
+
+    it 'registers an offense for an unknown cop name' do
+      expect_offense(<<~RUBY)
+        # rubocop:enable-next Layout/LineLenght
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Layout/LineLenght` (did you mean `Layout/LineLength`?).
         foo
       RUBY
     end

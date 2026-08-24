@@ -496,6 +496,72 @@ RSpec.describe RuboCop::CommentConfig do
     end
   end
 
+  describe 'enable-next directives' do
+    def disabled_lines_of_cop(cop)
+      (1..source.lines.size).reject { |line| comment_config.cop_enabled_at_line?(cop, line) }
+    end
+
+    context 'inside a disabled region' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/For
+          for x in [1, 2] do x end
+          # rubocop:enable-next Style/For -- reviewed
+          for y in [3, 4] do y end
+          for z in [5, 6] do z end
+          # rubocop:enable Style/For
+        RUBY
+      end
+
+      it 'enables the cop for the statement only' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).to include(2, 5)
+        expect(disabled).not_to include(4)
+      end
+    end
+
+    context 'with a config-disabled cop' do
+      let(:source) do
+        <<~RUBY
+          for x in [1, 2] do x end
+          # rubocop:enable-next Style/For
+          for y in [3, 4] do y end
+          for z in [5, 6] do z end
+        RUBY
+      end
+
+      it 'opts the cop in' do
+        expect(comment_config.opt_in_cops).to contain_exactly('Style/For')
+      end
+    end
+
+    context 'with `all`' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/For, Style/Not
+          for x in [1, 2] do not x.nil? end
+          # rubocop:enable-next all
+          for y in [3, 4] do not y.nil? end
+          # rubocop:enable Style/For, Style/Not
+        RUBY
+      end
+
+      it 'suspends every open disable for the statement' do
+        expect(disabled_lines_of_cop('Style/For')).not_to include(4)
+        expect(disabled_lines_of_cop('Style/Not')).not_to include(4)
+        expect(disabled_lines_of_cop('Style/For')).to include(2)
+      end
+    end
+
+    context 'when nothing follows the directive' do
+      let(:source) { "puts 1\n# rubocop:enable-next Style/For\n" }
+
+      it 'is collected as detached' do
+        expect(comment_config.detached_next_directives.map(&:mode)).to eq(['enable-next'])
+      end
+    end
+  end
+
   describe 'a directive with a wrongly-namespaced cop name' do
     let(:source) do
       <<~RUBY

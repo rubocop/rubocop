@@ -286,18 +286,20 @@ module RuboCop
         end
 
         def add_offense_for_entire_comment(comment, cops)
-          location = DirectiveComment.new(comment).range
+          directive = DirectiveComment.new(comment)
+          location = directive.range
           cop_names = cops.sort.map { |c| describe(c) }.join(', ')
 
           # An unknown cop may just not be loaded in this run (e.g. a custom
           # cop whose configuration failed to load) - removing its directive
           # would destroy something that cannot be restored, so only report.
           # A misplaced EOL `disable-next` should be moved, not deleted.
+          message = message(cop_names, enabling: directive.enable_next?)
           if any_unknown_cop?(cops) || misplaced_next_directive?(comment)
-            return add_offense(location, message: message(cop_names))
+            return add_offense(location, message: message)
           end
 
-          add_offense(location, message: message(cop_names)) do |corrector|
+          add_offense(location, message: message) do |corrector|
             remove_entire_comment(corrector, comment)
           end
         end
@@ -339,7 +341,7 @@ module RuboCop
 
         def misplaced_next_directive?(comment)
           directive = DirectiveComment.new(comment)
-          (directive.disable_next? || directive.next?) &&
+          (directive.disable_next? || directive.next? || directive.enable_next?) &&
             !processed_source.comment_config.comment_only_line?(directive.line_number)
         end
 
@@ -402,8 +404,8 @@ module RuboCop
           similar ? "`#{cop}` (did you mean `#{similar}`?)" : "`#{cop}` (unknown cop)"
         end
 
-        def message(cop_names)
-          "Unnecessary disabling of #{cop_names}."
+        def message(cop_names, enabling: false)
+          "Unnecessary #{enabling ? 'enabling' : 'disabling'} of #{cop_names}."
         end
 
         def all_cop_names

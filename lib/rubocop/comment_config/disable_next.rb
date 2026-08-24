@@ -60,8 +60,24 @@ module RuboCop
         range = DirectiveRange.new(bounds.begin, bounds.end, directive)
         resolved_cops.each do |op, cops|
           cops.each do |cop|
-            op == '-' ? add_next_range(analyses, cop, range) : suspend_disable(analyses, cop, bounds)
+            if op == '-'
+              add_next_range(analyses, cop, range)
+            else
+              suspend_disable(analyses, cop, bounds)
+            end
           end
+        end
+      end
+
+      # Applies an `enable-next` directive: every listed cop (departments
+      # and `all` included) has any open disable suspended for the attached
+      # statement.
+      def apply_enable_next(analyses, directive)
+        bounds = statement_scope_after(directive.line_number)
+        return @detached_next_directives << directive unless bounds
+
+        directive.cop_names.each do |cop_name|
+          suspend_disable(analyses, qualified_cop_name(cop_name), bounds)
         end
       end
 
