@@ -410,6 +410,48 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
 
               expect_no_corrections
             end
+
+            it 'returns an offense for a detached `next` directive' do
+              expect_offense(<<~RUBY)
+                puts 1
+                # rubocop:next -Metrics/MethodLength
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                puts 1
+              RUBY
+            end
+
+            it 'returns an offense without correcting a misplaced EOL `next` directive' do
+              expect_offense(<<~RUBY)
+                puts 1 # rubocop:next -Metrics/MethodLength
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+
+              expect_no_corrections
+            end
+
+            it 'removes a detached `next` directive with several signed arguments entirely' do
+              expect_offense(<<~RUBY)
+                puts 1
+                # rubocop:next -Metrics/MethodLength +Metrics/AbcSize
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/AbcSize`, `Metrics/MethodLength`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                puts 1
+              RUBY
+            end
+
+            it 'does not analyze attached `next` arguments for redundancy, aligned with `push`' do
+              expect_no_offenses(<<~RUBY)
+                # rubocop:next -Metrics/MethodLength
+                def foo
+                  puts 1
+                end
+              RUBY
+            end
           end
 
           context 'a cop qualified with the wrong department' do

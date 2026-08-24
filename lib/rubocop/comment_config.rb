@@ -76,8 +76,8 @@ module RuboCop
     end
 
     # The names of the cops that are opted in by an `enable` comment directive
-    # or a `+` argument of a `push` directive, used to mobilize cops disabled
-    # in the config on demand.
+    # or a `+` argument of a `push`/`next` directive, used to mobilize cops
+    # disabled in the config on demand.
     #
     # @api private
     # @return [Set<String>]
@@ -87,8 +87,8 @@ module RuboCop
         each_directive do |directive|
           if directive.enabled?
             cops.merge(directive.raw_cop_names) unless directive.all_cops?
-          elsif directive.push?
-            cops.merge(directive.push_args.fetch('+', []))
+          elsif directive.push? || directive.next?
+            cops.merge(directive.signed_args.fetch('+', []))
           end
         end
         cops
@@ -102,7 +102,7 @@ module RuboCop
         next unless comment_only_line?(directive.line_number)
         # Push/pop and next-statement directives close themselves, so they
         # play no part in the disable/enable pairing.
-        next if directive.push? || directive.pop? || directive.disable_next?
+        next if directive.push? || directive.pop? || directive.disable_next? || directive.next?
 
         if directive.enabled_all?
           handle_enable_all(directive, names, extras)
@@ -130,6 +130,8 @@ module RuboCop
           pop_state(analyses, directive.line_number) if @stack.any?
         elsif directive.disable_next?
           apply_disable_next(analyses, directive)
+        elsif directive.next?
+          apply_next_directive(analyses, resolve_push_cops(directive), directive)
         else
           directive.cop_names.each do |cop_name|
             cop_name = qualified_cop_name(cop_name)

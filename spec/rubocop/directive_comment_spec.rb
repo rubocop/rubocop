@@ -147,6 +147,87 @@ RSpec.describe RuboCop::DirectiveComment do
     end
   end
 
+  describe '#next?' do
+    subject { directive_comment.next? }
+
+    context 'when a `next` directive with signed arguments' do
+      let(:text) { '# rubocop:next +Metrics/AbcSize -Style/For' }
+
+      it { is_expected.to be(true) }
+
+      it 'is neither disabling nor enabling as a whole and parses the signed arguments' do
+        expect(directive_comment).not_to be_disabled
+        expect(directive_comment).not_to be_enabled
+        expect(directive_comment).not_to be_malformed
+        expect(directive_comment.signed_args).to eq('+' => %w[Metrics/AbcSize],
+                                                    '-' => %w[Style/For])
+      end
+    end
+
+    context 'when a `next` directive with a reason' do
+      let(:text) { '# rubocop:next -Style/For -- clearer here' }
+
+      it 'keeps the reason' do
+        expect(directive_comment.reason).to eq('clearer here')
+        expect(directive_comment).not_to be_malformed
+      end
+    end
+
+    context 'when a `disable-next` directive' do
+      let(:text) { '# rubocop:disable-next Metrics/AbcSize' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#invalid_signed_args?' do
+    subject { directive_comment.invalid_signed_args? }
+
+    context 'when a `next` directive has unsigned cop names' do
+      let(:text) { '# rubocop:next Metrics/AbcSize' }
+
+      it 'is invalid and malformed' do
+        expect(directive_comment).to be_invalid_signed_args
+        expect(directive_comment).to be_malformed
+      end
+    end
+
+    context 'when a `next` directive has no arguments' do
+      let(:text) { '# rubocop:next' }
+
+      it 'is malformed' do
+        expect(directive_comment).to be_malformed
+      end
+    end
+
+    context 'when a `push` directive has unsigned cop names' do
+      let(:text) { '# rubocop:push Metrics/AbcSize' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when a `push` directive is bare' do
+      let(:text) { '# rubocop:push' }
+
+      it 'is neither invalid nor malformed' do
+        expect(directive_comment).not_to be_invalid_signed_args
+        expect(directive_comment).not_to be_malformed
+      end
+    end
+
+    context 'when a `pop` directive has arguments' do
+      let(:text) { '# rubocop:pop Metrics/AbcSize' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when a `pop` directive has a reason' do
+      let(:text) { '# rubocop:pop -- restore checks' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#reason' do
     subject { directive_comment.reason }
 

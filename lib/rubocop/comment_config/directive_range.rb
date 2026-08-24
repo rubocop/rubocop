@@ -22,8 +22,10 @@ module RuboCop
     CopAnalysis = Struct.new(:line_ranges, :start_line_number, :start_directive) do
       # The open range (if any) closed at the given line, appended to the
       # accumulated ranges, each remembering the directive that opened it.
+      # Closing above the opening line (e.g. a `pop` directly below a
+      # statement whose disable a `next +Cop` suspended) yields no range.
       def close(line)
-        return line_ranges unless start_line_number
+        return line_ranges if !start_line_number || line < start_line_number
 
         line_ranges + [DirectiveRange.new(start_line_number, line, start_directive)]
       end

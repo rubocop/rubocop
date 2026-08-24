@@ -58,10 +58,12 @@ module RuboCop
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
-        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `todo`, `todo-next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
+        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MALFORMED_COP_NAMES_MSG = 'Cop names must be separated by commas. ' \
                                   'Comment in the directive must start with `--`.'
+        INVALID_SIGNED_ARGS_MSG = '`push` and `next` arguments must be `+`- or `-`-prefixed ' \
+                                  'cop names, and `pop` takes no arguments.'
         NEXT_DIRECTIVE_AT_EOL_MSG = 'A `-next` directive must be on its own line, above the ' \
                                     'statement it applies to.'
         INVALID_KEYWORD_MSG = 'The directive keyword must be `rubocop`, not `%<keyword>s`.'
@@ -98,10 +100,10 @@ module RuboCop
           end
         end
 
-        # An EOL `disable-next` is not honored - it must fail loudly instead
-        # of silently doing nothing.
+        # An EOL next-statement directive is not honored - it must fail
+        # loudly instead of silently doing nothing.
         def misplaced_next_directive?(directive_comment)
-          directive_comment.disable_next? &&
+          (directive_comment.disable_next? || directive_comment.next?) &&
             !processed_source.comment_config.comment_only_line?(directive_comment.line_number)
         end
 
@@ -116,6 +118,8 @@ module RuboCop
                              INVALID_MODE_NAME_MSG
                            elsif directive_comment.missing_cop_name?
                              MISSING_COP_NAME_MSG
+                           elsif directive_comment.invalid_signed_args?
+                             INVALID_SIGNED_ARGS_MSG
                            else
                              MALFORMED_COP_NAMES_MSG
                            end
@@ -142,14 +146,22 @@ module RuboCop
         end
 
         def unknown_cop_name(directive_comment)
-          return if directive_comment.push? || directive_comment.pop? || directive_comment.all_cops?
+          return if directive_comment.pop? || directive_comment.all_cops?
 
           registry = directive_comment.cop_registry
-          directive_comment.raw_cop_names.find do |name|
+          directive_names(directive_comment).find do |name|
             next false if registry.department?(name)
 
             qualified = registry.qualified_cop_name(name, nil, warn: false)
             !registry.contains_cop_matching?([qualified])
+          end
+        end
+
+        def directive_names(directive_comment)
+          if directive_comment.push? || directive_comment.next?
+            directive_comment.signed_args.values.flatten
+          else
+            directive_comment.raw_cop_names
           end
         end
 
