@@ -180,6 +180,27 @@ RSpec.describe RuboCop::DirectiveComment do
     end
   end
 
+  describe '#enable_next?' do
+    subject { directive_comment.enable_next? }
+
+    context 'when an `enable-next` directive' do
+      let(:text) { '# rubocop:enable-next Metrics/AbcSize -- settled' }
+
+      it { is_expected.to be(true) }
+
+      it 'is an enabling directive and keeps the reason' do
+        expect(directive_comment).to be_enabled
+        expect(directive_comment.reason).to eq('settled')
+      end
+    end
+
+    context 'when a plain `enable`' do
+      let(:text) { '# rubocop:enable Metrics/AbcSize' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#invalid_signed_args?' do
     subject { directive_comment.invalid_signed_args? }
 

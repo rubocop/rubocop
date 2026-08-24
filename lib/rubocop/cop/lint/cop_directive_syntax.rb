@@ -58,7 +58,7 @@ module RuboCop
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
-        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
+        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `enable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MALFORMED_COP_NAMES_MSG = 'Cop names must be separated by commas. ' \
                                   'Comment in the directive must start with `--`.'
@@ -103,8 +103,13 @@ module RuboCop
         # An EOL next-statement directive is not honored - it must fail
         # loudly instead of silently doing nothing.
         def misplaced_next_directive?(directive_comment)
-          (directive_comment.disable_next? || directive_comment.next?) &&
+          next_statement_directive?(directive_comment) &&
             !processed_source.comment_config.comment_only_line?(directive_comment.line_number)
+        end
+
+        def next_statement_directive?(directive_comment)
+          directive_comment.disable_next? || directive_comment.enable_next? ||
+            directive_comment.next?
         end
 
         # rubocop:disable-next Metrics/MethodLength

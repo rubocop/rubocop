@@ -154,6 +154,24 @@ configuration - for exactly one statement, with no `enable`/`disable` or
 directive must sit on its own comment line, chains past other comment
 lines, and a blank line detaches it.
 
+When you only enable, `enable-next` says the same thing without the sign
+soup - it is to `next +Cop` what `disable-next` is to `next -Cop`, and it
+also accepts `all`:
+
+[source,ruby]
+----
+# rubocop:disable Metrics/AbcSize
+# ...
+
+# rubocop:enable-next Metrics/AbcSize -- this method is settled
+def finished_method
+  # checked again from here on
+end
+
+# ...
+# rubocop:enable Metrics/AbcSize
+----
+
 == Temporarily Enabling Cops in Source Code
 
 In a similar way to disabling cops within source code, you can also temporarily enable specific
@@ -321,10 +339,12 @@ as the code around it changes:
   spans: a method definition, a class body, a loop. The scope is derived
   from the code itself, so it never needs re-adjusting when the statement
   grows or shrinks.
+* *`enable-next`* - the mirror image of `disable-next`: re-enables a cop
+  for one statement inside a disabled region.
 * *`next`* - the same statement scope, with `push`-style `+`/`-` arguments,
   for the rare statement that needs settings toggled in both directions at
-  once. `next -Cop` is `disable-next Cop`; `next +Cop` suspends an
-  enclosing disable for the statement.
+  once. `next -Cop` is `disable-next Cop`; `next +Cop` is
+  `enable-next Cop`.
 * *`disable` / `enable` pair* - an explicit region spanning several
   statements. The boundaries are yours to maintain:
   `Lint/MissingCopEnableDirective` guards against forgetting the closing
