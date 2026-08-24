@@ -1,1 +1,0 @@
-* [#15550](https://github.com/rubocop/rubocop/pull/15550): Add `--display-suppressed` option to also report offenses suppressed by directive comments, including their `--` justification in the JSON formatter. ([@bbatsov][])

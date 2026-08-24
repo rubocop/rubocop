@@ -1,1 +1,0 @@
-* [#13941](https://github.com/rubocop/rubocop/issues/13941): Fix false positives for `Lint/UselessConstantScoping` when assigning with `Class.new`, `Module.new`, `Struct.new`, or `Data.define` after `private`. ([@pdobb][])

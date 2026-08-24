@@ -1,1 +1,0 @@
-* [#15574](https://github.com/rubocop/rubocop/pull/15574): Fix an incorrect warning such as `AllCops does not support TargetRailsVersion parameter` when a plugin declares a custom `AllCops` key with a nil value and another plugin is loaded after it. ([@koic][])

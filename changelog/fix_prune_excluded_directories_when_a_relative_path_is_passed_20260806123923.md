@@ -1,1 +1,0 @@
-* [#13022](https://github.com/rubocop/rubocop/issues/13022): Fix `rubocop .` (and other relative directory arguments) needlessly traversing directories excluded by the configuration, which made it much slower than `rubocop` in projects with large ignored trees. ([@bbatsov][])

@@ -11,6 +11,70 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#15073](https://github.com/rubocop/rubocop/issues/15073): Add `AllowTrailingComment` option to `Style/DisableCopsWithinSourceCodeDirective`. ([@bbatsov][])
+* [#9505](https://github.com/rubocop/rubocop/issues/9505): Add `disable-next` directives scoped to the following statement. ([@bbatsov][])
+* [#15550](https://github.com/rubocop/rubocop/pull/15550): Add `--display-suppressed` option to also report offenses suppressed by directive comments, including their `--` justification in the JSON formatter. ([@bbatsov][])
+* [#15523](https://github.com/rubocop/rubocop/pull/15523): Add new `Lint/ArgumentMismatch` cop. ([@bbatsov][])
+* [#15594](https://github.com/rubocop/rubocop/pull/15594): Add new `Lint/SuperArgumentMismatch` cop. ([@bbatsov][])
+* [#15581](https://github.com/rubocop/rubocop/pull/15581): Add new `Style/TimeNow` cop. ([@Starlexxx][])
+* [#15111](https://github.com/rubocop/rubocop/issues/15111): Add `NumberOfEmptyLines` option to `Layout/EmptyLineAfterMagicComment` to configure the minimum number of empty lines required after magic comments. ([@alejofraga][])
+* [#13037](https://github.com/rubocop/rubocop/issues/13037): Add `--report-unused-todo-entries` to catch rotting todo files. ([@bbatsov][])
+* [#15559](https://github.com/rubocop/rubocop/pull/15559): Add new `Style/DirectiveScope` cop to flag `disable`/`enable` pairs and disable-only `push`/`pop` scopes that wrap a single statement and can use `disable-next` instead. ([@bbatsov][])
+* [#15547](https://github.com/rubocop/rubocop/pull/15547): Make `Lint/RedundantCopEnableDirective` flag `# rubocop:pop` directives without a matching `# rubocop:push`. ([@bbatsov][])
+
+### Bug fixes
+
+* [#15584](https://github.com/rubocop/rubocop/pull/15584): Fix a crash in `Lint/NameTypo` and `Lint/UnusedPrivateMethod` on string literals with invalid encoding. ([@bbatsov][])
+* [#15541](https://github.com/rubocop/rubocop/issues/15541): Fix a false negative for `Lint/OutOfRangeRegexpRef` when a preceding element access with a non-string literal argument (e.g. `hash[:key]`) discarded the tracked capture count. ([@koic][])
+* [#7958](https://github.com/rubocop/rubocop/issues/7958): Add todo comments for skipped unsafe corrections with `--disable-uncorrectable`. ([@bbatsov][])
+* [#15569](https://github.com/rubocop/rubocop/pull/15569): Fix an error for the built-in language server when a `workspace/executeCommand` request has no document URI in its arguments. ([@koic][])
+* [#15410](https://github.com/rubocop/rubocop/pull/15410): Fix an incorrect autocorrect for `Naming/BinaryOperatorParameterName`. ([@bbatsov][])
+* [#15576](https://github.com/rubocop/rubocop/issues/15576): Fix an incorrect autocorrect for `Style/Sample` when `shuffle` is given a `random:` argument; the offense is still reported but no longer autocorrected, since `shuffle` and `sample` consume a seeded generator differently and would select different elements. ([@koic][])
+* [#15590](https://github.com/rubocop/rubocop/issues/15590): Fix an infinite loop error for `Layout/FirstArgumentIndentation` when `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArgumentAlignment` and `Layout/FirstMethodArgumentLineBreak` is enabled with `AllowMultilineFinalElement: true`. ([@Starlexxx][])
+* [#15588](https://github.com/rubocop/rubocop/pull/15588): Fix `RuboCop::Cop::IgnoredMethods` and `RuboCop::Cop::IgnoredPattern` being unreachable after `require 'rubocop'`. ([@SeanLF][])
+* [#8349](https://github.com/rubocop/rubocop/issues/8349): Don't autocorrect away directives for unknown cops. ([@bbatsov][])
+* [#7894](https://github.com/rubocop/rubocop/issues/7894): Don't flag disables of pending cops as redundant. ([@bbatsov][])
+* [#9963](https://github.com/rubocop/rubocop/issues/9963): Fix false negatives for `Layout/ExtraSpacing`. ([@Starlexxx][])
+* [#15525](https://github.com/rubocop/rubocop/issues/15525): Fix false negatives in `Layout/LineLength` when a constant path like `Http::UploadedFile` matches `URISchemes` case-insensitively. ([@koic][])
+* [#13941](https://github.com/rubocop/rubocop/issues/13941): Fix false positives for `Lint/UselessConstantScoping` when assigning with `Class.new`, `Module.new`, `Struct.new`, or `Data.define` after `private`. ([@pdobb][])
+* [#15526](https://github.com/rubocop/rubocop/issues/15526): Fix false positives in `Layout/MultilineMethodCallIndentation` when a line has multiple single-line blocks before a multiline block. ([@koic][])
+* [#15538](https://github.com/rubocop/rubocop/pull/15538): Fix false positives in `Lint/ConstantReassignment` when a constant is assigned in compact-style namespaces (e.g. `module A::B`). ([@alex-tan][])
+* [#15517](https://github.com/rubocop/rubocop/issues/15517): Fix false positives in `Lint/RedundantSafeNavigation` when `InferNonNilReceiver` is enabled and the receiver name is rebound by a nested block (`it` or a shadowed block parameter). ([@koic][])
+* [#15572](https://github.com/rubocop/rubocop/pull/15572): Fix `RuboCop::Cop::Registry#freeze` to freeze its internal collections, so that registering a lazily loaded cop after the freeze fails fast at the registration site instead of corrupting the registry. ([@koic][])
+* [#15585](https://github.com/rubocop/rubocop/pull/15585): Make `Lint/DuplicateMethods` honor `silence_redefinition_of_method` and `redefine_method` as intentional redefinitions. ([@bbatsov][])
+* [#15558](https://github.com/rubocop/rubocop/pull/15558): Fix `--display-suppressed` reporting a `nil` `justification` when the offense is loaded from the result cache. ([@corsonknowles][])
+* [#10449](https://github.com/rubocop/rubocop/issues/10449): Fix `Layout/ClassStructure` autocorrection producing a wrong order when an element cannot be moved, and make offenses report the category that actually blocks the expected order. ([@koic][])
+* [#15568](https://github.com/rubocop/rubocop/pull/15568): Fix `Lint/NameTypo` registering false positives for names provided by a gem whose namespace the project reopens, and for constants read from a namespace with an unresolved ancestor. ([@HoneyryderChuck][])
+* [#15556](https://github.com/rubocop/rubocop/pull/15556): Fix `Lint/UnusedPrivateMethod` retaining every past `project_index` object it has seen (and the index graph reachable from each), rather than only the most recent one. This caused unbounded memory growth in long-lived processes such as `rubocop --server`. ([@bquorning][])
+* [#10046](https://github.com/rubocop/rubocop/issues/10046): Fix `Lint/UselessMethodDefinition` false positive for methods with `**kwargs`. ([@bbatsov][])
+* [#15589](https://github.com/rubocop/rubocop/issues/15589): Fix `--lsp` and `--mcp` being silently ignored when the RuboCop server is running: they now start the protocol server in the current process instead of being forwarded to the server as a lint request. ([@koic][])
+* [#11148](https://github.com/rubocop/rubocop/issues/11148): Merge department and cop-level `Exclude` settings. ([@bbatsov][])
+* [#15531](https://github.com/rubocop/rubocop/issues/15531): Fix a regression in RuboCop 1.89 where the modifier cops could produce lines longer than `Layout/LineLength` `Max` when exemptions like `AllowedPatterns` matched the result. ([@bbatsov][])
+* [#15574](https://github.com/rubocop/rubocop/pull/15574): Fix an incorrect warning such as `AllCops does not support TargetRailsVersion parameter` when a plugin declares a custom `AllCops` key with a nil value and another plugin is loaded after it. ([@koic][])
+* [#9543](https://github.com/rubocop/rubocop/issues/9543): Preserve escape notation in `Style/StringConcatenation` autocorrect. ([@bbatsov][])
+* [#11119](https://github.com/rubocop/rubocop/issues/11119): Preserve persistent cop instances across files. ([@Eljees][])
+* [#13022](https://github.com/rubocop/rubocop/issues/13022): Fix `rubocop .` (and other relative directory arguments) needlessly traversing directories excluded by the configuration, which made it much slower than `rubocop` in projects with large ignored trees. ([@bbatsov][])
+* [#15561](https://github.com/rubocop/rubocop/pull/15561): Fix `Lint/RedundantCopDisableDirective` and `Lint/RedundantCopEnableDirective` leaving a directive's `--` reason behind when removing the directive. ([@corsonknowles][])
+* [#15593](https://github.com/rubocop/rubocop/pull/15593): Fix false positives for `Lint/UnusedPrivateMethod` for private definitions of Ruby runtime hooks like `inherited` and `const_missing`. ([@bbatsov][])
+* [#15547](https://github.com/rubocop/rubocop/pull/15547): Make `Lint/MissingCopEnableDirective` suggest `# rubocop:pop` instead of `# rubocop:enable` for an unclosed `# rubocop:push`. ([@bbatsov][])
+* [#14379](https://github.com/rubocop/rubocop/issues/14379): Suppress multi-line offenses with a directive on any of their lines. ([@bbatsov][])
+* [#15593](https://github.com/rubocop/rubocop/pull/15593): Fix false positives for `Lint/UnusedPrivateMethod` when a method name is composed with an interpolated symbol or string prefix. ([@bbatsov][])
+
+### Changes
+
+* [#15585](https://github.com/rubocop/rubocop/pull/15585): Add `AllowedCrossFilePaths` option to `Lint/DuplicateMethods` to skip cross-file duplicates in configured paths. ([@bbatsov][])
+* [#15593](https://github.com/rubocop/rubocop/pull/15593): Add `AllowedNames` and `AllowedPatterns` options to `Lint/UnusedPrivateMethod`. ([@bbatsov][])
+* [#15587](https://github.com/rubocop/rubocop/pull/15587): Backfill missing `StyleGuide` metadata for 21 cops and fix four broken style guide links. ([@bbatsov][])
+* [#15530](https://github.com/rubocop/rubocop/pull/15530): Improve `Lint/DeprecatedReference` performance by short-circuiting `deprecated?`. ([@connorshea][])
+* [#15529](https://github.com/rubocop/rubocop/pull/15529): Improve `Lint/NameTypo` performance by deferring the literal-name scan. ([@connorshea][])
+* [#15554](https://github.com/rubocop/rubocop/issues/15554): Change `AllowForAlignment` to no longer treat a same-indentation line beyond the enclosing block as an alignment anchor for `Layout/ExtraSpacing`, `Layout/SpaceAroundOperators`, and `Layout/SpaceBeforeFirstArg`. ([@koic][])
+* [#15582](https://github.com/rubocop/rubocop/pull/15582): Make JUnit formatter output `<testcase>` elements only for cops enabled for each inspected file, instead of all cops. ([@koic][])
+* [#15562](https://github.com/rubocop/rubocop/issues/15562): Make `Layout/SpaceAroundOperators` aware of endless method definitions. ([@koic][])
+* [#14673](https://github.com/rubocop/rubocop/issues/14673): Make `Lint/CopDirectiveSyntax` catch keyword typos and unknown cop names. ([@bbatsov][])
+* [#12219](https://github.com/rubocop/rubocop/issues/12219): Stop honoring wrongly-namespaced disable directives. ([@bbatsov][])
+
 ## 1.89.0 (2026-08-04)
 
 ### New features
@@ -5102,3 +5166,10 @@
 [@hervetatche]: https://github.com/hervetatche
 [@joklek-vinted]: https://github.com/joklek-vinted
 [@ioquatix]: https://github.com/ioquatix
+[@connorshea]: https://github.com/connorshea
+[@Starlexxx]: https://github.com/Starlexxx
+[@SeanLF]: https://github.com/SeanLF
+[@alex-tan]: https://github.com/alex-tan
+[@HoneyryderChuck]: https://github.com/HoneyryderChuck
+[@Eljees]: https://github.com/Eljees
+[@alejofraga]: https://github.com/alejofraga

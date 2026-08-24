@@ -1,1 +1,0 @@
-* [#15538](https://github.com/rubocop/rubocop/pull/15538): Fix false positives in `Lint/ConstantReassignment` when a constant is assigned in compact-style namespaces (e.g. `module A::B`). ([@alex-tan][])

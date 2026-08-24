@@ -1,1 +1,0 @@
-* [#15531](https://github.com/rubocop/rubocop/issues/15531): Fix a regression in RuboCop 1.89 where the modifier cops could produce lines longer than `Layout/LineLength` `Max` when exemptions like `AllowedPatterns` matched the result. ([@bbatsov][])

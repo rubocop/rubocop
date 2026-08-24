@@ -1,1 +1,0 @@
-* [#15593](https://github.com/rubocop/rubocop/pull/15593): Fix false positives for `Lint/UnusedPrivateMethod` when a method name is composed with an interpolated symbol or string prefix. ([@bbatsov][])

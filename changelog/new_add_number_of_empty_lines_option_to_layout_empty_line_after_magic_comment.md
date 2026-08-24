@@ -1,1 +1,0 @@
-* [#15111](https://github.com/rubocop/rubocop/issues/15111): Add `NumberOfEmptyLines` option to `Layout/EmptyLineAfterMagicComment` to configure the minimum number of empty lines required after magic comments. ([@alejofraga][])

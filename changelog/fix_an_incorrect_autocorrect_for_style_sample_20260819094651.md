@@ -1,1 +1,0 @@
-* [#15576](https://github.com/rubocop/rubocop/issues/15576): Fix an incorrect autocorrect for `Style/Sample` when `shuffle` is given a `random:` argument; the offense is still reported but no longer autocorrected, since `shuffle` and `sample` consume a seeded generator differently and would select different elements. ([@koic][])
