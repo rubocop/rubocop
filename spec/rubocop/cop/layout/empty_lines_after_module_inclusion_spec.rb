@@ -289,4 +289,24 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense for `include` directly before `rescue`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        include Foo
+      rescue NameError
+        include Bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for `include` directly before `ensure`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        include Foo
+      ensure
+        do_something
+      end
+    RUBY
+  end
 end
