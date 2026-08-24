@@ -106,6 +106,8 @@ module RuboCop
         def traverse_node(node, &block)
           # if the node is a block, any assignments are irrelevant
           return if node.any_block_type?
+          # an assignment inside `defined?` is never executed
+          return if node.defined_type?
 
           result = yield node if ASGN_TYPES.include?(node.type)
 

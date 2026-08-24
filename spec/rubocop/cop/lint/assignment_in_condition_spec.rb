@@ -277,6 +277,21 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     RUBY
   end
 
+  it 'does not register an offense for assignment inside `defined?`' do
+    expect_no_offenses(<<~RUBY)
+      if defined?(foo.bar = ())
+        foo.bar = false
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for local variable assignment inside `defined?`' do
+    expect_no_offenses(<<~RUBY)
+      if defined?(test = 10)
+      end
+    RUBY
+  end
+
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with braces' do
       expect_no_offenses(<<~RUBY)
