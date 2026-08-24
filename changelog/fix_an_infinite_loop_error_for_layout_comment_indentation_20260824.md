@@ -1,0 +1,1 @@
+* [#15599](https://github.com/rubocop/rubocop/pull/15599): Fix an infinite loop error for `Layout/CommentIndentation` when many comment blocks with the same indentation are separated by empty lines. ([@Starlexxx][])
