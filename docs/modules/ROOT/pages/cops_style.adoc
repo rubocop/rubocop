@@ -832,6 +832,7 @@ arr[0][-2]
 [#references-stylearrayfirstlast]
 === References
 
+* https://rubystyle.guide#first-and-last
 * #first-and-last
 
 [#stylearrayintersect]
@@ -3343,6 +3344,11 @@ end
 | Boolean
 |===
 
+[#references-styleconditionalassignment]
+=== References
+
+* https://rubystyle.guide#use-if-case-returns
+
 [#styleconstantvisibility]
 == Style/ConstantVisibility
 
@@ -3605,7 +3611,7 @@ something.to_time
 [#references-styledatetime]
 === References
 
-* https://rubystyle.guide#date-time
+* https://rubystyle.guide#no-datetime
 
 [#styledefwithparentheses]
 == Style/DefWithParentheses
@@ -3770,6 +3776,69 @@ Dir.each_child('path/to/dir').none?
 Dir.empty?('path/to/dir')
 ----
 
+[#styledirectivescope]
+== Style/DirectiveScope
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always (Unsafe)
+| 1.90
+| -
+|===
+
+Checks for directive scopes that can be expressed with the tighter
+`disable-next` form: a `disable`/`enable` pair wrapping exactly one
+statement, or a `push`/`pop` that only disables cops around exactly
+one statement. A statement-scoped directive cannot drift as the
+surrounding code changes and needs no closing boundary.
+
+[#safety-styledirectivescope]
+=== Safety
+
+The autocorrection is unsafe because the suppression scope shrinks
+from the whole region to the statement: offenses of the suppressed
+cops located on the directive lines themselves resurface.
+
+[#examples-styledirectivescope]
+=== Examples
+
+[source,ruby]
+----
+# bad
+# rubocop:disable Metrics/AbcSize
+def foo
+end
+# rubocop:enable Metrics/AbcSize
+
+# good
+# rubocop:disable-next Metrics/AbcSize
+def foo
+end
+
+# bad
+# rubocop:push -Metrics/AbcSize
+def foo
+end
+# rubocop:pop
+
+# good
+# rubocop:disable-next Metrics/AbcSize
+def foo
+end
+
+# good - the region spans more than one statement
+# rubocop:disable Metrics/AbcSize
+def foo
+end
+
+def bar
+end
+# rubocop:enable Metrics/AbcSize
+----
+
 [#styledisablecopswithinsourcecodedirective]
 == Style/DisableCopsWithinSourceCodeDirective
 
@@ -3780,7 +3849,7 @@ Dir.empty?('path/to/dir')
 | Yes
 | Always
 | 0.82
-| 1.89
+| 1.90
 |===
 
 Detects comments to enable/disable RuboCop.
@@ -3796,6 +3865,12 @@ cops (and `all`) will be flagged. This is useful when you want
 to protect a small set of critical cops from being disabled rather than
 allowlisting all other cops. `AllowedCops` and `DisallowedCops` should not
 both be set at the same time; if `DisallowedCops` is set, it takes precedence.
+
+With `AllowTrailingComment` set to `true`, a disable directive carrying
+a `--` trailing justification comment is allowed, so a team can require
+every disable to be documented instead of banning them outright. Enable
+directives are not checked in this mode, since they end a suppression
+rather than start one.
 
 This cop cannot be disabled via directive comments when it is explicitly
 enabled with `Enabled: true`. This prevents users from bypassing the cop
@@ -3845,6 +3920,18 @@ foo
 # rubocop:enable Metrics/AbcSize
 ----
 
+[#allowtrailingcomment_-true-styledisablecopswithinsourcecodedirective]
+==== AllowTrailingComment: true
+
+[source,ruby]
+----
+# bad
+x = 0 # rubocop:disable Layout/SpaceAroundOperators
+
+# good
+x = 0 # rubocop:disable Layout/SpaceAroundOperators -- would misalign the table
+----
+
 [#configurable-attributes-styledisablecopswithinsourcecodedirective]
 === Configurable attributes
 
@@ -3858,6 +3945,10 @@ foo
 | DisallowedCops
 | `[]`
 | Array
+
+| AllowTrailingComment
+| `false`
+| Boolean
 |===
 
 [#styledocumentdynamicevaldefinition]
@@ -4606,6 +4697,11 @@ end
 | `[]`
 | Array
 |===
+
+[#references-styleemptyclassdefinition]
+=== References
+
+* https://rubystyle.guide#single-line-classes
 
 [#styleemptyelse]
 == Style/EmptyElse
@@ -5898,6 +5994,11 @@ null_devices = %w[/dev/null nul]
 { unix: "/dev/null", windows: "nul" }
 ----
 
+[#references-stylefilenull]
+=== References
+
+* https://rubystyle.guide#null-devices
+
 [#stylefileopen]
 == Style/FileOpen
 
@@ -5963,6 +6064,11 @@ end
 # good - use File.read for one-shot reads
 File.read('file')
 ----
+
+[#references-stylefileopen]
+=== References
+
+* https://rubystyle.guide#auto-release-resources
 
 [#stylefileread]
 == Style/FileRead
@@ -6619,6 +6725,11 @@ sprintf("%<greeting>s", greeting: 'Hello')
 | `[]`
 | Array
 |===
+
+[#references-styleformatstringtoken]
+=== References
+
+* https://rubystyle.guide#named-format-tokens
 
 [#stylefrozenstringliteralcomment]
 == Style/FrozenStringLiteralComment
@@ -7904,6 +8015,11 @@ foo.bar.each_with_object({}) { |(k, v), h| h[k.to_s] = v }
 baz.map { |k, v| [k.to_s, v] }.to_h
 ----
 
+[#references-stylehashtransformkeys]
+=== References
+
+* https://rubystyle.guide#hash-transform-methods
+
 [#stylehashtransformvalues]
 == Style/HashTransformValues
 
@@ -7956,6 +8072,11 @@ foo.merge(bar).transform_values { |v| v.to_s }
 foo.bar.each_with_object({}) { |(k, v), h| h[k] = v.to_s }
 baz.map { |k, v| [k, v.to_s] }.to_h
 ----
+
+[#references-stylehashtransformvalues]
+=== References
+
+* https://rubystyle.guide#hash-transform-methods
 
 [#styleidenticalconditionalbranches]
 == Style/IdenticalConditionalBranches
@@ -9047,7 +9168,7 @@ end
 [#references-stylekeywordparametersorder]
 === References
 
-* https://rubystyle.guide#keyword-parameters-order
+* https://rubystyle.guide#keyword-arguments-order
 
 [#stylelambda]
 == Style/Lambda
@@ -9245,6 +9366,11 @@ some_str = 'ala' <<
 some_str = 'ala' \
            'bala'
 ----
+
+[#references-stylelineendconcatenation]
+=== References
+
+* https://rubystyle.guide#heredoc-long-strings
 
 [#stylemagiccommentformat]
 == Style/MagicCommentFormat
@@ -11788,7 +11914,7 @@ end
 [#references-stylenegatedunless]
 === References
 
-* https://rubystyle.guide#if-for-negatives
+* https://rubystyle.guide#unless-for-negatives
 
 [#stylenegatedwhile]
 == Style/NegatedWhile
@@ -12977,6 +13103,11 @@ end
 | `+spec/**/*+`, `+test/**/*+`
 | Array
 |===
+
+[#references-styleoneclassperfile]
+=== References
+
+* https://rubystyle.guide#one-class-per-file
 
 [#styleonelineconditional]
 == Style/OneLineConditional
@@ -15483,6 +15614,11 @@ some_method \
   (argument)
 ----
 
+[#references-styleredundantlinecontinuation]
+=== References
+
+* https://rubystyle.guide#no-trailing-backslash
+
 [#styleredundantminmaxby]
 == Style/RedundantMinMaxBy
 
@@ -15746,6 +15882,11 @@ Checks for redundant escapes inside `Regexp` literals.
 # good
 /[+\-]\d/
 ----
+
+[#references-styleredundantregexpescape]
+=== References
+
+* https://rubystyle.guide#limit-escapes
 
 [#styleredundantreturn]
 == Style/RedundantReturn
@@ -17027,6 +17168,10 @@ user.address.zip if user
 Identifies usages of `shuffle.first`,
 `shuffle.last`, and `shuffle[]` and change them to use
 `sample` instead.
+
+NOTE: An offense involving a `random:` argument is registered but not autocorrected:
+`shuffle` and `sample` consume the given generator differently, so for a seeded generator
+the correction would select different elements.
 
 [#examples-stylesample]
 === Examples
@@ -19366,6 +19511,42 @@ foo = (bar = baz) ? a : b
 | Boolean
 |===
 
+[#styletimenow]
+== Style/TimeNow
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.90
+| -
+|===
+
+Checks for `Time.new` without arguments, which is an implicit way
+to retrieve the current system time. Prefer the more explicit `Time.now`.
+
+[#examples-styletimenow]
+=== Examples
+
+[source,ruby]
+----
+# bad
+Time.new
+
+# good
+Time.now
+
+# good - `Time.new` with arguments constructs a specific time
+Time.new(2026, 8, 19)
+----
+
+[#references-styletimenow]
+=== References
+
+* https://rubystyle.guide#time-now
+
 [#styletoplevelmethoddefinition]
 == Style/TopLevelMethodDefinition
 
@@ -20249,6 +20430,11 @@ a, b, _something = foo
 | `true`
 | Boolean
 |===
+
+[#references-styletrailingunderscorevariable]
+=== References
+
+* https://rubystyle.guide#trailing-underscore-variables
 
 [#styletrivialaccessors]
 == Style/TrivialAccessors

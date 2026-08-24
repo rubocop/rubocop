@@ -243,7 +243,7 @@ array = [1, 2, 3,
 [#references-layoutarrayalignment]
 === References
 
-* https://rubystyle.guide#no-double-indent
+* https://rubystyle.guide#align-multiline-arrays
 
 [#layoutassignmentindentation]
 == Layout/AssignmentIndentation
@@ -1534,10 +1534,18 @@ end
 | Yes
 | Always
 | 0.49
-| -
+| 1.90
 |===
 
 Checks for a newline after the final magic comment.
+
+`NumberOfEmptyLines` configures the minimum number of empty lines required. Set it
+to `2` when using YARD, which otherwise treats the magic comments as documentation
+for the first module or class in the file.
+
+NOTE: `Layout/EmptyLines` has to be disabled for values greater than `1`, as it
+removes the extra empty lines this cop adds, and autocorrecting with both enabled
+loops between them.
 
 [#examples-layoutemptylineaftermagiccomment]
 === Examples
@@ -1559,6 +1567,47 @@ class Person
   # Some code
 end
 ----
+
+[#numberofemptylines_-1-_default_-layoutemptylineaftermagiccomment]
+==== NumberOfEmptyLines: 1 (default)
+
+[source,ruby]
+----
+# good
+# frozen_string_literal: true
+
+class Person
+end
+----
+
+[#numberofemptylines_-2-layoutemptylineaftermagiccomment]
+==== NumberOfEmptyLines: 2
+
+[source,ruby]
+----
+# bad
+# frozen_string_literal: true
+
+class Person
+end
+
+# good
+# frozen_string_literal: true
+
+class Person
+end
+----
+
+[#configurable-attributes-layoutemptylineaftermagiccomment]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| NumberOfEmptyLines
+| `1`
+| Integer
+|===
 
 [#references-layoutemptylineaftermagiccomment]
 === References
@@ -7084,7 +7133,7 @@ RuboCop::Cop::Base
 | Yes
 | Always
 | 0.49
-| -
+| 1.90
 |===
 
 Checks that operators have space around them, except for ** which

@@ -363,6 +363,59 @@ do_something /pattern/i
 do_something(/pattern/i)
 ----
 
+[#lintargumentmismatch]
+== Lint/ArgumentMismatch
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.90
+| -
+|===
+
+Checks for calls that pass the wrong number of positional arguments to a
+method whose definition is known from the project index.
+
+The check is powered by the project-wide index, so it only runs when
+`AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed.
+Without the index the cop does nothing.
+
+Only calls on constant receivers (`Foo.bar`) are considered, and only
+when the receiver resolves in the index, its entire ancestry is resolved
+(so a method inherited from a gem or the standard library never produces
+an offense), and the called method resolves to a single, unambiguous
+signature. Calls that forward arguments (`*`, `**`, `...`) are skipped
+because their argument count is not statically known. Keyword arguments
+passed to a method that declares no keyword parameters are counted as the
+single positional hash they collapse into, matching Ruby's semantics.
+
+Constructor calls (`Foo.new`) and keyword-argument validation are out of
+scope: only positional arity of explicitly defined singleton methods is
+checked.
+
+[#examples-lintargumentmismatch]
+=== Examples
+
+[source,ruby]
+----
+# Given the project defines:
+#   class Report
+#     def self.generate(source, format); end
+#   end
+
+# bad
+Report.generate(source)
+
+# bad
+Report.generate(source, :pdf, :extra)
+
+# good
+Report.generate(source, :pdf)
+----
+
 [#lintarrayliteralinregexp]
 == Lint/ArrayLiteralInRegexp
 
@@ -1041,7 +1094,7 @@ Login
 | Yes
 | No
 | 1.72
-| -
+| 1.90
 |===
 
 Checks that `# rubocop:enable ...` and `# rubocop:disable ...` statements
@@ -1084,6 +1137,18 @@ A comment can be added to the directive by prefixing it with `--`.
 
 # good
 # rubocop:disable Layout/LineLength -- comment
+
+# bad
+# rucocop:disable Layout/LineLength
+
+# good
+# rubocop:disable Layout/LineLength
+
+# bad
+# rubocop:disable Layout/LineLenght
+
+# good
+# rubocop:disable Layout/LineLength
 ----
 
 [#lintdatadefineoverride]
@@ -1509,6 +1574,11 @@ def initialize
 end
 ----
 
+[#references-lintdisjunctiveassignmentinconstructor]
+=== References
+
+* https://rubystyle.guide#disjunctive-assignment-in-constructor
+
 [#lintduplicatebranch]
 == Lint/DuplicateBranch
 
@@ -1909,7 +1979,7 @@ end
 | Yes
 | No
 | 0.29
-| 1.89
+| 1.90
 |===
 
 Checks for duplicated instance (or singleton) method
@@ -1928,7 +1998,22 @@ NOTE: The project index does not record whether a definition in another
 file is wrapped in a conditional, so a platform-specific redefinition in
 another file may still be reported. Aliasing the method to itself (see above)
 before redefining marks the redefinition as intentional and is respected
-across files.
+across files. With `AllCops/ActiveSupportExtensionsEnabled: true`, Active
+Support's redefinition markers (`silence_redefinition_of_method` and
+`redefine_method`) are honored the same way.
+
+NOTE: Methods defined with `define_method` are not recorded in the project
+index, so a duplicate whose other definition uses `define_method` cannot
+be detected across files.
+
+Cross-file duplicates whose other definition lives in a file matching one
+of the `AllowedCrossFilePaths` patterns are not reported. This suits files
+that redefine application methods but are never loaded together with them,
+such as standalone scripts. Patterns are matched with the same glob (or
+regexp) semantics as `Exclude`, against the other file's path relative to
+the directory of the `.rubocop.yml` that configures the cop; absolute
+patterns are matched against the absolute path. Offenses inside such files
+themselves are best silenced with an ordinary per-cop `Exclude`.
 
 [#examples-lintduplicatemethods]
 === Examples
@@ -2048,6 +2133,29 @@ end
 if cond
   delegate :foo, to: :bar
 end
+
+# good - Active Support's redefinition markers signal an intentional
+# redefinition of a method defined in another file
+silence_redefinition_of_method :foo
+def foo
+  1
+end
+----
+
+[#allowedcrossfilepaths_-__script_____-_default_-___-lintduplicatemethods]
+==== AllowedCrossFilePaths: ['script/**/*'] (default: [])
+
+[source,ruby]
+----
+# Cross-file duplicates whose other definition lives in a file
+# matching one of the patterns are not reported.
+
+# good - assuming `AppHelper#format` is also defined in
+# `script/backfill.rb`, which is never loaded with this file
+class AppHelper
+  def format
+  end
+end
 ----
 
 [#delegatingmethods_-__delegate__-_expose__-_default_-__delegate___-lintduplicatemethods]
@@ -2075,6 +2183,10 @@ expose :foo, to: :bar
 
 | DelegatingMethods
 | `delegate`
+| Array
+
+| AllowedCrossFilePaths
+| `[]`
 | Array
 |===
 
@@ -3996,7 +4108,7 @@ end
 | Yes
 | No
 | 0.52
-| 1.88
+| 1.90
 |===
 
 Checks that there is an `# rubocop:enable ...` statement
@@ -4267,6 +4379,11 @@ named captures.
 /(FOO)(BAR)/
 ----
 
+[#references-lintmixedregexpcapturetypes]
+=== References
+
+* https://rubystyle.guide#do-not-mix-named-and-numbered-captures
+
 [#lintmultiplecomparison]
 == Lint/MultipleComparison
 
@@ -4329,6 +4446,13 @@ dynamic definitions never produce offenses. In both cases an offense
 requires a similarly named alternative to exist — an unknown name
 alone is not reported, since the index does not see gems or the
 standard library.
+
+For the same reason, a namespace whose root segment names a gem in the
+bundle (`Flipper` for the `flipper` gem) is left alone: a project that
+reopens it (`module Flipper; module Adapters; ...`) makes it resolve in
+the index, while the members the gem itself defines stay invisible and
+would look like typos. Enabling `AllCops/ProjectIndexIncludesGems`
+indexes those sources and restores the check.
 
 Names that appear as symbols or inside string literals in the same
 file are never reported, since they usually belong to runtime
@@ -5499,7 +5623,7 @@ x += 1
 | Yes
 | Always
 | 0.76
-| -
+| 1.90
 |===
 
 Detects instances of rubocop:enable comments that can be
@@ -5532,6 +5656,15 @@ baz
 foo = "1"
 # rubocop:enable all
 baz
+
+# bad
+foo = 1
+# rubocop:pop
+
+# good
+# rubocop:push -Style/StringLiterals
+foo = "1"
+# rubocop:pop
 ----
 
 [#lintredundantdirglobsort]
@@ -7059,6 +7192,11 @@ rescue Errno::EAGAIN, Errno::EWOULDBLOCK
 end
 ----
 
+[#references-lintshadowedexception]
+=== References
+
+* https://rubystyle.guide#exception-ordering
+
 [#lintshadowingouterlocalvariable]
 == Lint/ShadowingOuterLocalVariable
 
@@ -7216,6 +7354,67 @@ g = Good.new(1, "foo")
 g.members #=> [:id, :name]
 g.clone #=> #<struct Good id=1, name="foo">
 g.count #=> 2
+----
+
+[#lintsuperargumentmismatch]
+== Lint/SuperArgumentMismatch
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.90
+| -
+|===
+
+Checks for `super` calls with explicit arguments that pass the wrong
+number of positional arguments to the overridden implementation, using
+the project index.
+
+The check is powered by the project-wide index, so it only runs when
+`AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed.
+Without the index the cop does nothing.
+
+Only `super` inside a plain instance method defined directly in a class
+body is considered, and only when the enclosing class resolves in the
+index and its entire ancestry is resolved, so a superclass method coming
+from a gem, the standard library, or a dynamic definition never produces
+an offense. The overridden implementation is the first ancestor after
+the enclosing class in the index's method resolution order that defines
+the method; when it is not a plain method definition (an `attr_*` or an
+alias) or its definitions disagree on arity, the call is not checked.
+Calls that forward arguments (`*`, `**`, `...`) are skipped, and bare
+`super` (which forwards the current method's parameters) is not checked.
+Methods the index attributes to `Object`, `Kernel`, or `BasicObject`
+are never used as the overridden implementation, since a `def` inside
+a block at the top level (`Struct.new do ... end`) is indexed under
+`Object` even though it defines a method somewhere else entirely.
+
+[#examples-lintsuperargumentmismatch]
+=== Examples
+
+[source,ruby]
+----
+# Given the project defines:
+#   class Base
+#     def initialize(name, size); end
+#   end
+
+# bad
+class Widget < Base
+  def initialize(name)
+    super(name)
+  end
+end
+
+# good
+class Widget < Base
+  def initialize(name)
+    super(name, 0)
+  end
+end
 ----
 
 [#lintsuppressedexception]
@@ -7964,6 +8163,11 @@ Checks for using Fixnum or Bignum constant.
 1.is_a?(Integer)
 ----
 
+[#references-lintunifiedinteger]
+=== References
+
+* https://rubystyle.guide#integer-type-checking
+
 [#lintunmodifiedreduceaccumulator]
 == Lint/UnmodifiedReduceAccumulator
 
@@ -8543,7 +8747,7 @@ end
 | Yes
 | No
 | 1.89
-| -
+| 1.90
 |===
 
 Checks for private instance methods that are not referenced anywhere
@@ -8557,10 +8761,17 @@ A method counts as referenced when a call with its name appears anywhere
 in the indexed project (regardless of the receiver), when it is the source
 of an `alias`, or when its name appears in the same file as a symbol or
 inside a string literal (covering `send(:name)` and declarative DSLs like
-`before_action :name`). Methods defined in classes or modules with
-descendants are not checked, since they may be invoked through `super`
-or inherited dispatch, and neither are methods whose names are built
-dynamically (e.g. `send("do_#{action}")`).
+`before_action :name`). An interpolated symbol or string with a literal
+prefix (e.g. `send(:"format_#{type}")`) counts as a reference to every
+method whose name starts with that prefix; fully dynamic names cannot
+be detected. Methods defined in classes or modules with descendants are
+not checked, since they may be invoked through `super` or inherited
+dispatch.
+
+Methods whose names are composed by a framework (e.g. Rails
+`attribute_method_suffix` generating `attribute?` methods) can be
+excluded from the check with `AllowedNames` (exact names) or
+`AllowedPatterns` (regular expressions).
 
 The cop is disabled by default because symbol-based references from
 *other* files (e.g. a Rails callback declared in a concern) cannot be
@@ -8596,6 +8807,49 @@ class Service
   end
 end
 ----
+
+[#allowednames_-__attribute___-lintunusedprivatemethod]
+==== AllowedNames: ['attribute?']
+
+[source,ruby]
+----
+# good - the name is explicitly allowed
+class Contact
+  private
+
+  def attribute?
+  end
+end
+----
+
+[#allowedpatterns_-___hook_z__-lintunusedprivatemethod]
+==== AllowedPatterns: ['_hook\z']
+
+[source,ruby]
+----
+# good - the name matches an allowed pattern
+class Service
+  private
+
+  def before_save_hook
+  end
+end
+----
+
+[#configurable-attributes-lintunusedprivatemethod]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedNames
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+|===
 
 [#linturiescapeunescape]
 == Lint/UriEscapeUnescape
@@ -8923,7 +9177,7 @@ end
 | Yes
 | No
 | 1.72
-| -
+| 1.90
 |===
 
 Checks for useless constant scoping. Private constants must be defined using
@@ -8932,6 +9186,11 @@ its appearance.
 
 It does not support autocorrection due to behavior change and multiple ways to fix it.
 Or a public constant may be intended.
+
+Constant assignments that define classes or modules via `Class.new`, `Module.new`,
+`Struct.new`, or `Data.define` are allowed. Those forms are class and module definitions
+written with assignment syntax, and match the common practice of placing nested
+`class` / `module` bodies after `private` without intending private constant visibility.
 
 [#examples-lintuselessconstantscoping]
 === Examples
@@ -8953,6 +9212,19 @@ end
 # good
 class Foo
   PUBLIC_CONST = 42 # If private scope is not intended.
+end
+
+# good - class/module definitions via assignment, same as nested `class`/`module`
+class Foo
+  private
+
+  def some_private_method
+  end
+
+  MyClass = Class.new
+  MyModule = Module.new
+  MyStruct = Struct.new(:name)
+  MyData = Data.define(:name)
 end
 ----
 

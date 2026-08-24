@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.90.0 (2026-08-24)
+
 ### New features
 
 * [#15073](https://github.com/rubocop/rubocop/issues/15073): Add `AllowTrailingComment` option to `Style/DisableCopsWithinSourceCodeDirective`. ([@bbatsov][])

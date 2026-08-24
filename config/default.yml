@@ -618,7 +618,7 @@ Layout/EmptyLineAfterMagicComment:
   StyleGuide: '#separate-magic-comments-from-code'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
   # The minimum number of empty lines required after the last magic comment. Set this
   # to `2` when using YARD, which otherwise treats the magic comments as documentation
   # for the first module or class in the file. `Layout/EmptyLines` has to be disabled
@@ -1422,7 +1422,7 @@ Layout/SpaceAroundOperators:
   StyleGuide: '#spaces-operators'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
   # When `true`, allows most uses of extra spacing if the intent is to align
   # with an operator on the previous or next line, not counting empty lines
   # or comment lines.
@@ -1671,7 +1671,7 @@ Lint/ArgumentMismatch:
     Checks for calls that pass the wrong number of positional arguments
     to a method, using the project index.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.90'
 
 Lint/ArrayLiteralInRegexp:
   Description: 'Checks for an array literal interpolated inside a regexp.'
@@ -1748,7 +1748,7 @@ Lint/CopDirectiveSyntax:
   Description: 'Checks that `# rubocop:` directives are strictly formatted.'
   Enabled: pending
   VersionAdded: '1.72'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
 
 Lint/DataDefineOverride:
   Description: 'Disallow overriding the `Data` built-in methods via `Data.define`.'
@@ -1909,7 +1909,7 @@ Lint/DuplicateMethods:
   Description: 'Checks for duplicate method definitions.'
   Enabled: true
   VersionAdded: '0.29'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
   # Methods that define instance methods by delegation, in the style of
   # Active Support's `delegate` (`delegate :foo, :bar, to: :target`). Register
   # a project's own `delegate`-shaped macros here so the cop recognizes the
@@ -2164,7 +2164,7 @@ Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
   VersionAdded: '0.52'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
   # Maximum number of consecutive lines the cop can be disabled for.
   # 0 allows only single-line disables
   # 1 would mean the maximum allowed is the following:
@@ -2348,7 +2348,7 @@ Lint/RedundantCopEnableDirective:
   Description: Checks for rubocop:enable comments that can be removed.
   Enabled: true
   VersionAdded: '0.76'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
 
 Lint/RedundantDirGlobSort:
   Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
@@ -2559,7 +2559,7 @@ Lint/SuperArgumentMismatch:
     Checks for `super` calls that pass the wrong number of positional
     arguments to the overridden implementation, using the project index.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.90'
 
 Lint/SuppressedException:
   Description: "Don't suppress exceptions."
@@ -2717,7 +2717,7 @@ Lint/UnusedPrivateMethod:
   AllowedNames: []
   AllowedPatterns: []
   VersionAdded: '1.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
 
 Lint/UriEscapeUnescape:
   Description: >-
@@ -2756,7 +2756,7 @@ Lint/UselessConstantScoping:
   Description: 'Checks for useless constant scoping.'
   Enabled: pending
   VersionAdded: '1.72'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
 
 Lint/UselessDefaultValueArgument:
   Description: 'Checks for usage of `fetch` or `Array.new` with default value argument and block.'
@@ -4018,14 +4018,14 @@ Style/DirectiveScope:
                  tighter `disable-next` form.
   Enabled: pending
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.90'
 
 Style/DisableCopsWithinSourceCodeDirective:
   Description: >-
                  Forbids disabling/enabling cops within source code.
   Enabled: false
   VersionAdded: '0.82'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.90'
   AllowedCops: []
   DisallowedCops: []
   AllowTrailingComment: false
@@ -6103,7 +6103,7 @@ Style/TimeNow:
   Description: 'Prefer `Time.now` over `Time.new` when retrieving the current system time.'
   StyleGuide: '#time-now'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.90'
 
 Style/TopLevelMethodDefinition:
   Description: 'Looks for top-level method definitions.'
