@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
   it 'registers an offense for incorrect mode' do
     expect_offense(<<~RUBY)
       # rubocop:disabled Layout/LineLength
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `disable-next`, `todo`, `todo-next`, `push`, or `pop`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `disable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.
     RUBY
   end
 
@@ -131,6 +131,77 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
         # rubocop:disable-next Layout/LineLenght
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Layout/LineLenght` (did you mean `Layout/LineLength`?).
         foo
+      RUBY
+    end
+  end
+
+  context 'with `next` directives' do
+    it 'does not register an offense for signed arguments on their own line' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:next +Layout/LineLength -Style/For -- tradeoff
+        foo
+      RUBY
+    end
+
+    it 'registers an offense for unsigned arguments' do
+      expect_offense(<<~RUBY)
+        # rubocop:next Layout/LineLength
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. `push` and `next` arguments must be `+`- or `-`-prefixed cop names, and `pop` takes no arguments.
+        foo
+      RUBY
+    end
+
+    it 'registers an offense for a bare `next`' do
+      expect_offense(<<~RUBY)
+        # rubocop:next
+        ^^^^^^^^^^^^^^ Malformed directive comment detected. The cop name is missing.
+        foo
+      RUBY
+    end
+
+    it 'registers an offense for a `next` at the end of a code line' do
+      expect_offense(<<~RUBY)
+        foo # rubocop:next -Layout/LineLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ A `-next` directive must be on its own line, above the statement it applies to.
+        bar
+      RUBY
+    end
+
+    it 'registers an offense for an unknown cop name in a signed argument' do
+      expect_offense(<<~RUBY)
+        # rubocop:next -Layout/LineLenght
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Layout/LineLenght` (did you mean `Layout/LineLength`?).
+        foo
+      RUBY
+    end
+  end
+
+  context 'with `push` and `pop` argument validation' do
+    it 'registers an offense for unsigned `push` arguments' do
+      expect_offense(<<~RUBY)
+        # rubocop:push Layout/LineLength
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. `push` and `next` arguments must be `+`- or `-`-prefixed cop names, and `pop` takes no arguments.
+      RUBY
+    end
+
+    it 'registers an offense for an unknown cop name in a `push` argument' do
+      expect_offense(<<~RUBY)
+        # rubocop:push -Layout/LineLenght
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Layout/LineLenght` (did you mean `Layout/LineLength`?).
+      RUBY
+    end
+
+    it 'registers an offense for `pop` with arguments' do
+      expect_offense(<<~RUBY)
+        # rubocop:pop +Layout/LineLength
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. `push` and `next` arguments must be `+`- or `-`-prefixed cop names, and `pop` takes no arguments.
+      RUBY
+    end
+
+    it 'does not register an offense for a bare `push` and `pop`' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:push
+        # rubocop:pop
       RUBY
     end
   end

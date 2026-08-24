@@ -363,6 +363,139 @@ RSpec.describe RuboCop::CommentConfig do
     end
   end
 
+  describe 'next directives' do
+    def disabled_lines_of_cop(cop)
+      (1..source.lines.size).reject { |line| comment_config.cop_enabled_at_line?(cop, line) }
+    end
+
+    context 'with a `-` argument' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:next -Metrics/MethodLength
+          def foo(a,
+                  b)
+            puts a
+          end
+          puts 1
+        RUBY
+      end
+
+      it 'disables the cop for the whole following statement, like `disable-next`' do
+        expect(comment_config.cop_disabled_line_ranges['Metrics/MethodLength']).to eq([2..5])
+      end
+    end
+
+    context 'with a `+` argument inside a disabled region' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/For
+          for x in [1, 2] do x end
+          # rubocop:next +Style/For
+          for y in [3, 4] do y end
+          for z in [5, 6] do z end
+          # rubocop:enable Style/For
+        RUBY
+      end
+
+      it 'enables the cop for the statement only' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).to include(2, 5)
+        expect(disabled).not_to include(4)
+      end
+
+      it 'keeps the resumed range attributed to the opening directive' do
+        resumed = comment_config.cop_disabled_line_ranges['Style/For'].last
+        expect(resumed.directive.comment.text).to eq('# rubocop:disable Style/For')
+      end
+    end
+
+    context 'with mixed arguments' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/For
+          # rubocop:next +Style/For -Style/Not -- tradeoff
+          for y in [3, 4] do not y.nil? end
+          for z in [5, 6] do z end
+          # rubocop:enable Style/For
+        RUBY
+      end
+
+      it 'applies each operation to the statement' do
+        expect(disabled_lines_of_cop('Style/For')).not_to include(3)
+        expect(disabled_lines_of_cop('Style/Not')).to include(3)
+        expect(disabled_lines_of_cop('Style/Not')).not_to include(4)
+      end
+    end
+
+    context 'with a `+` argument and no enclosing disable' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:next +Style/For
+          for y in [3, 4] do y end
+        RUBY
+      end
+
+      it 'is a no-op, aligned with `push`' do
+        expect(disabled_lines_of_cop('Style/For')).to be_empty
+      end
+    end
+
+    context 'with a department argument' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:next -Style
+          @@foo = 1
+          @@bar = 2
+        RUBY
+      end
+
+      it 'disables every cop of the department for the statement' do
+        expect(comment_config.cop_disabled_line_ranges['Style/ClassVars']).to eq([2..2])
+      end
+    end
+
+    context 'when nothing follows the directive' do
+      let(:source) { "puts 1\n# rubocop:next -Style/For\n" }
+
+      it 'is collected as detached' do
+        expect(comment_config.cop_disabled_line_ranges['Style/For']).to be_nil
+        expect(comment_config.detached_next_directives.map(&:mode)).to eq(['next'])
+      end
+    end
+
+    context 'when a `pop` directly follows the suspended statement' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:push -Style/For
+          # rubocop:next +Style/For
+          for y in [3, 4] do y end
+          # rubocop:pop
+          for z in [5, 6] do z end
+        RUBY
+      end
+
+      it 'produces no degenerate range and restores the pushed-away state' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).not_to include(3, 5)
+        ranges = comment_config.cop_disabled_line_ranges['Style/For']
+        expect(ranges).to all(satisfy { |range| range.begin <= range.end })
+      end
+    end
+
+    describe '#opt_in_cops' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:next +Style/For -Style/Not
+          for y in [3, 4] do y end
+        RUBY
+      end
+
+      it 'includes the `+` arguments only' do
+        expect(comment_config.opt_in_cops).to contain_exactly('Style/For')
+      end
+    end
+  end
+
   describe 'a directive with a wrongly-namespaced cop name' do
     let(:source) do
       <<~RUBY

@@ -26,7 +26,7 @@ module RuboCop
     # @api private
     PUSH_POP_ARGS_PATTERN = "([+\\-]#{COP_NAME_PATTERN_NC}(?:\\s+[+\\-]#{COP_NAME_PATTERN_NC})*)"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo push pop disable-next todo-next].freeze
+    AVAILABLE_MODES = %w[disable enable todo push pop disable-next todo-next next].freeze
     # @api private
     # Longest first, so a `-next` mode is not matched as its prefix
     # (`-` is a word boundary).
@@ -71,7 +71,7 @@ module RuboCop
     # Checks if the comment is malformed as a `# rubocop:` directive
     def malformed?
       return true if !start_with_marker? || @match_data.nil?
-      return true if missing_cop_name?
+      return true if missing_cop_name? || invalid_signed_args?
 
       tail = @match_data.post_match.lstrip
       !(tail.empty? || tail.start_with?(TRAILING_COMMENT_MARKER))
@@ -82,6 +82,16 @@ module RuboCop
       return false if push? || pop?
 
       MALFORMED_DIRECTIVE_WITHOUT_COP_NAME_REGEXP.match?(comment.text)
+    end
+
+    # `push` and `next` arguments must be `+`/`-` prefixed cop names, and
+    # `pop` takes no arguments at all.
+    def invalid_signed_args?
+      return cops ? !cops.empty? : false if pop?
+      return false unless push? || next?
+      return false unless cops
+
+      cops.split.any? { |cop_spec| !cop_spec.start_with?('+', '-') }
     end
 
     # The text of the directive's optional `--` trailing comment, or `nil`
@@ -163,10 +173,17 @@ module RuboCop
       mode == 'pop'
     end
 
-    # Returns the push arguments as a hash of cop names with their operations
-    def push_args
-      @push_args ||= parse_push_args
+    # Checks if this directive toggles cops for the next statement only
+    def next?
+      mode == 'next'
     end
+
+    # Returns the `+`/`-` arguments of a `push` or `next` directive as a hash
+    # of operations to cop names
+    def signed_args
+      @signed_args ||= parse_signed_args
+    end
+    alias push_args signed_args
 
     # Checks if this directive enables all cops
     def enabled_all?
@@ -210,6 +227,8 @@ module RuboCop
     end
 
     def directive_count
+      return signed_args.values.sum(&:count) if push? || next?
+
       raw_cop_names.count
     end
 
@@ -244,13 +263,15 @@ module RuboCop
       cops - [LINT_REDUNDANT_DIRECTIVE_COP, LINT_SYNTAX_COP]
     end
 
-    def parse_push_args
-      return {} unless push? && cops
+    def parse_signed_args
+      return {} unless (push? || next?) && cops
 
       args = {}
       cops.split.each do |cop_spec|
         op = cop_spec[0]
         cop_name = cop_spec[1..]
+        next unless %w[+ -].include?(op)
+
         args[op] ||= []
         args[op] << cop_name
       end

@@ -155,17 +155,23 @@ module RuboCop
           end
         end
 
-        # A `disable-next` with no statement attached (or misplaced at the end
-        # of a code line) suppresses nothing, so it is redundant by definition.
+        # A next-statement directive with no statement attached (or misplaced
+        # at the end of a code line) affects nothing, so it is redundant by
+        # definition.
         def each_detached_next_directive
           processed_source.comment_config.detached_next_directives.each do |directive|
-            directive.raw_cop_names.each { |cop| yield directive.comment, cop }
+            names = if directive.next?
+                      directive.signed_args.values.flatten
+                    else
+                      directive.raw_cop_names
+                    end
+            names.each { |cop| yield directive.comment, cop }
           end
         end
 
         def skip_directive?(comment)
           directive = DirectiveComment.new(comment)
-          directive.push? || directive.pop?
+          directive.push? || directive.pop? || directive.next?
         end
 
         def find_redundant_directive(cop, comment, line_range, next_range)
@@ -190,11 +196,11 @@ module RuboCop
 
             comment = directive_comment(range)
 
-            next unless comment
-            # Comments disabling all cops don't count since it's reasonable
-            # to disable a few select cops first and then all cops further
-            # down in the code.
-            next if all_disabled?(comment)
+            # `push`/`next` signed arguments are not analyzed for redundancy
+            # (yet), and comments disabling all cops don't count since it's
+            # reasonable to disable a few select cops first and then all cops
+            # further down in the code.
+            next if comment.nil? || skip_directive?(comment) || all_disabled?(comment)
 
             redundant =
               if department_disabled?(cop, comment)
@@ -333,7 +339,7 @@ module RuboCop
 
         def misplaced_next_directive?(comment)
           directive = DirectiveComment.new(comment)
-          directive.disable_next? &&
+          (directive.disable_next? || directive.next?) &&
             !processed_source.comment_config.comment_only_line?(directive.line_number)
         end
 
