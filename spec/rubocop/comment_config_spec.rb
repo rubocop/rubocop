@@ -501,6 +501,20 @@ RSpec.describe RuboCop::CommentConfig do
       end
     end
 
+    describe '#opt_in_cops' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:push +Style/For -Style/Not
+          for y in [3, 4] do y end
+          # rubocop:pop
+        RUBY
+      end
+
+      it 'includes the `+` arguments, so config-disabled cops get mobilized' do
+        expect(comment_config.opt_in_cops).to contain_exactly('Style/For')
+      end
+    end
+
     context 'temporarily disable a cop for a problematic block' do
       let(:source) do
         <<~RUBY

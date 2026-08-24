@@ -75,8 +75,9 @@ module RuboCop
       non_comment_token_line_numbers.none?(line_number)
     end
 
-    # The names of the cops that are opted in by an `enable` comment directive,
-    # used to mobilize cops disabled in the config on demand.
+    # The names of the cops that are opted in by an `enable` comment directive
+    # or a `+` argument of a `push` directive, used to mobilize cops disabled
+    # in the config on demand.
     #
     # @api private
     # @return [Set<String>]
@@ -84,10 +85,11 @@ module RuboCop
       @opt_in_cops ||= begin
         cops = Set.new
         each_directive do |directive|
-          next unless directive.enabled?
-          next if directive.all_cops?
-
-          cops.merge(directive.raw_cop_names)
+          if directive.enabled?
+            cops.merge(directive.raw_cop_names) unless directive.all_cops?
+          elsif directive.push?
+            cops.merge(directive.push_args.fetch('+', []))
+          end
         end
         cops
       end
