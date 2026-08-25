@@ -440,7 +440,7 @@ module RuboCop
                   begin_pos - indentation
                 end
 
-          pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind
+          pos = ind <= begin_pos ? ind..begin_pos : begin_pos..ind
           range_between(pos.begin, pos.end)
         end
 
