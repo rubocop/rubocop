@@ -66,16 +66,18 @@ module RuboCop
 
         # @!method bit_operation?(node)
         def_node_matcher :bit_operation?, <<~PATTERN
-          (begin
-            (send _ :& _))
+          {
+            (begin (send _ :& _))
+            (send _ :& _)
+          }
         PATTERN
 
         # rubocop:disable-next Metrics/AbcSize
         def on_send(node)
-          return unless node.receiver&.begin_type?
+          return unless bit_operation?(node.receiver)
           return unless (preferred_method = preferred_method(node))
 
-          bit_operation = node.receiver.children.first
+          bit_operation = node.receiver.begin_type? ? node.receiver.children.first : node.receiver
           lhs, _operator, rhs = *bit_operation
 
           preferred = if preferred_method == 'allbits?' && lhs.source == node.first_argument.source
