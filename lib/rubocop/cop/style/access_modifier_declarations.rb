@@ -316,7 +316,7 @@ module RuboCop
         end
 
         def select_grouped_def_nodes(node)
-          node.right_siblings.take_while do |sibling|
+          node.right_siblings.compact.take_while do |sibling|
             !(sibling.send_type? && sibling.bare_access_modifier_declaration?)
           end.select(&:def_type?)
         end
