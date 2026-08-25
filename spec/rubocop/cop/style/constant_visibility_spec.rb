@@ -159,6 +159,25 @@ RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
     RUBY
   end
 
+  it 'does not register an offense when splatting something other than an array literal' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        BAR = 42
+        private_constant(*constants(false))
+      end
+    RUBY
+  end
+
+  it 'registers an offense when a splatted array literal does not name the constant' do
+    expect_offense(<<~RUBY)
+      class Foo
+        BAR = 42
+        ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
+        private_constant(*%i[BAZ])
+      end
+    RUBY
+  end
+
   it 'does not register an offense in the top level scope' do
     expect_no_offenses(<<~RUBY)
       BAR = 42

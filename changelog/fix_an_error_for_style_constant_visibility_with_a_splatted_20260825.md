@@ -1,0 +1,1 @@
+* [#15604](https://github.com/rubocop/rubocop/pull/15604): Fix an error for `Style/ConstantVisibility` when a visibility declaration splats anything other than an array literal, e.g. `private_constant(*constants(false))`. ([@viralpraxis][])

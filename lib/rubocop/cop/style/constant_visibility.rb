@@ -82,12 +82,16 @@ module RuboCop
           end
         end
 
-        # rubocop:disable-next Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity
         def visibility_declaration?(node)
           node.parent.each_child_node(:send).any? do |child|
             next false unless (arguments = visibility_declaration_for(child))
 
-            arguments = arguments.first.children.first.to_a if arguments.first&.splat_type?
+            if (splat = arguments.first)&.splat_type?
+              next true unless splat.children.first.array_type?
+
+              arguments = splat.children.first.children
+            end
             constant_values = arguments.map do |argument|
               # `respond_to?(:value)` is too broad: `int`/`float` nodes respond to it
               # but their value is a `Numeric`, which has no `to_sym` (e.g.
