@@ -145,6 +145,17 @@ RSpec.describe RuboCop::Cop::Style::BitwisePredicate, :config do
         RUBY
       end
 
+      it 'registers an offense when the bitwise operation is not parenthesized' do
+        expect_offense(<<~RUBY)
+          variable & flags == 0
+          ^^^^^^^^^^^^^^^^^^^^^ Replace with `variable.nobits?(flags)` for comparison with bit flags.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          variable.nobits?(flags)
+        RUBY
+      end
+
       it 'does not register an offense when using `nobits?` method' do
         expect_no_offenses(<<~RUBY)
           variable.nobits?(flags)

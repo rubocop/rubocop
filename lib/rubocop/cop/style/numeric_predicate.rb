@@ -90,6 +90,7 @@ module RuboCop
         def on_send(node)
           numeric, replacement = check(node)
           return unless numeric
+          return if handled_by_bitwise_predicate?(node)
 
           return if allowed_method_name?(node.method_name) ||
                     node.each_ancestor(:send, :any_block).any? do |ancestor|
@@ -106,6 +107,16 @@ module RuboCop
 
         def allowed_method_name?(name)
           allowed_method?(name) || matches_allowed_pattern?(name)
+        end
+
+        def handled_by_bitwise_predicate?(node)
+          registry = processed_source.registry
+          bitwise_predicate = registry.find_by_cop_name('Style/BitwisePredicate')
+
+          bitwise_predicate_candidate?(node) &&
+            bitwise_predicate &&
+            registry.enabled?(bitwise_predicate, config) &&
+            bitwise_predicate.support_target_ruby_version?(target_ruby_version)
         end
 
         def check(node)
@@ -178,6 +189,14 @@ module RuboCop
         # @!method inverted_comparison(node)
         def_node_matcher :inverted_comparison, <<~PATTERN
           (send (int 0) ${:== :> :<} [$(...) !gvar_type?])
+        PATTERN
+
+        # @!method bitwise_predicate_candidate?(node)
+        def_node_matcher :bitwise_predicate_candidate?, <<~PATTERN
+          {
+            (send {(begin (send _ :& _)) (send _ :& _)} {:positive? :zero?})
+            (send {(begin (send _ :& _)) (send _ :& _)} {:> :==} (int 0))
+          }
         PATTERN
       end
     end
