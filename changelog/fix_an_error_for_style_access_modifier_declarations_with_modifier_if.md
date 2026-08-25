@@ -1,0 +1,1 @@
+* [#15603](https://github.com/rubocop/rubocop/pull/15603): Fix an error for `Style/AccessModifierDeclarations` with `EnforcedStyle: inline` when an access modifier is the body of an `if` without an `else` branch. ([@viralpraxis][])
