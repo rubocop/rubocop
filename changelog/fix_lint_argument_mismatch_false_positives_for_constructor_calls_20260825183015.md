@@ -1,0 +1,1 @@
+* [#15611](https://github.com/rubocop/rubocop/pull/15611): Fix `Lint/ArgumentMismatch` registering false positives for `Foo.new` calls, which are documented as out of scope but were checked against whichever `new` the project index could reach. ([@HoneyryderChuck][])
