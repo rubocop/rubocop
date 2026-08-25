@@ -4019,6 +4019,7 @@ Style/DirectiveScope:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.90'
+  VersionChanged: '<<next>>'
 
 Style/DisableCopsWithinSourceCodeDirective:
   Description: >-

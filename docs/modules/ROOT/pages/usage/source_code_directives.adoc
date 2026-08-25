@@ -359,5 +359,7 @@ as the code around it changes:
 a suppression you intend to revisit rather than a deliberate exception.
 
 The `Style/DirectiveScope` cop can enforce the tightest-form preference: it
-flags `disable`/`enable` pairs and disable-only `push`/`pop` scopes that
-wrap a single statement, and converts them to `disable-next`.
+flags `disable`/`enable` and `enable`/`disable` pairs as well as `push`/`pop`
+scopes with signed arguments that wrap a single statement, and converts them
+to the matching next-statement form (`disable-next`, `enable-next` or
+`next`).

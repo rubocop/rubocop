@@ -1,0 +1,1 @@
+* [#15601](https://github.com/rubocop/rubocop/pull/15601): Make `Style/DirectiveScope` convert single-statement signed `push`/`pop` scopes and `enable`/`disable` pairs to the `next`, `enable-next` and `disable-next` forms. ([@bbatsov][])
