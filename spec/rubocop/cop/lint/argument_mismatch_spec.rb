@@ -214,6 +214,44 @@ RSpec.describe RuboCop::Cop::Lint::ArgumentMismatch, :config do
       end
     end
 
+    context 'for a private method reached through `Object`' do
+      # A bare `def` at the top level of a file — the shape every block-based
+      # DSL produces — is a private instance method of `Object`, and `Object`
+      # closes the singleton ancestry of every constant in the project.
+      it 'does not register an offense for a constructor call' do
+        index_with_call(
+          'Report.new(source, :pdf)',
+          'file:///dsl.rb' => "def new\nend\n",
+          'file:///report.rb' => "class Report\n  def initialize(source, format); end\nend\n"
+        )
+
+        expect_no_offenses('Report.new(source, :pdf)', '/call.rb')
+      end
+
+      it 'does not register an offense for a call on a reopened namespace' do
+        index_with_call(
+          'Flipper.enable(:flag, actor)',
+          'file:///dsl.rb' => "def enable\nend\n",
+          'file:///flipper.rb' => "module Flipper\n  module Adapters; end\nend\n"
+        )
+
+        expect_no_offenses('Flipper.enable(:flag, actor)', '/call.rb')
+      end
+
+      it 'still registers an offense once the method is made public' do
+        index_with_call(
+          'Report.build(1)',
+          'file:///base.rb' => "class Base\n  def self.build(a, b); end\nend\n",
+          'file:///report.rb' => "class Report < Base\nend\n"
+        )
+
+        expect_offense(<<~RUBY, '/call.rb')
+          Report.build(1)
+                 ^^^^^ Wrong number of arguments to `build` (given 1, expected 2).
+        RUBY
+      end
+    end
+
     context 'with safe navigation' do
       it 'registers an offense on a safe-navigation call' do
         index_with_call('Report&.generate(source)', 'file:///report.rb' => <<~RUBY)
