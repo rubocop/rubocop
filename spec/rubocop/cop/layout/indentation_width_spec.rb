@@ -2489,6 +2489,21 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'registers an offense when the body is indented with fewer tabs than the base' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        \t\ta = if b
+        \tc
+        ^ Use 1 (not -1) tabs for indentation.
+        \t\tend
+        RUBY
+
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        \t\ta = if b
+        \t\t\tc
+        \t\tend
+        RUBY
+      end
+
       context "when `Layout/IndentationStyle` has a different `IndentationWidth` than this cop's `Width`" do
         let(:indentation_style_config) { { 'EnforcedStyle' => 'tabs', 'IndentationWidth' => 4 } }
 
