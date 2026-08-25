@@ -4,10 +4,10 @@ module RuboCop
   module Cop
     module Style
       # Checks for directive scopes that can be expressed with the tighter
-      # `disable-next` form: a `disable`/`enable` pair wrapping exactly one
-      # statement, or a `push`/`pop` that only disables cops around exactly
-      # one statement. A statement-scoped directive cannot drift as the
-      # surrounding code changes and needs no closing boundary.
+      # next-statement forms: a `disable`/`enable` pair, an
+      # `enable`/`disable` pair, or a `push`/`pop` with signed arguments
+      # wrapping exactly one statement. A statement-scoped directive cannot
+      # drift as the surrounding code changes and needs no closing boundary.
       #
       # @safety
       #   The autocorrection is unsafe because the suppression scope shrinks
@@ -37,6 +37,21 @@ module RuboCop
       #   def foo
       #   end
       #
+      #   # bad
+      #   # rubocop:disable Metrics/AbcSize
+      #   # rubocop:push +Metrics/AbcSize
+      #   def foo
+      #   end
+      #   # rubocop:pop
+      #   # rubocop:enable Metrics/AbcSize
+      #
+      #   # good
+      #   # rubocop:disable Metrics/AbcSize
+      #   # rubocop:enable-next Metrics/AbcSize
+      #   def foo
+      #   end
+      #   # rubocop:enable Metrics/AbcSize
+      #
       #   # good - the region spans more than one statement
       #   # rubocop:disable Metrics/AbcSize
       #   def foo
@@ -52,7 +67,9 @@ module RuboCop
 
         MSG_PAIR = 'Use `%<mode>s-next` instead of a `%<mode>s`/`enable` pair ' \
                    'around a single statement.'
-        MSG_PUSH_POP = 'Use `disable-next` instead of `push`/`pop` around a single statement.'
+        MSG_ENABLE_PAIR = 'Use `enable-next` instead of an `enable`/`disable` pair ' \
+                          'around a single statement.'
+        MSG_PUSH_POP = 'Use `%<replacement>s` instead of `push`/`pop` around a single statement.'
 
         def on_new_investigation
           processed_source.comments.each do |comment|
@@ -61,8 +78,10 @@ module RuboCop
 
             if plain_disable?(directive)
               check_pair(directive)
-            elsif disable_only_push?(directive)
+            elsif signed_push?(directive)
               check_push_pop(directive)
+            elsif plain_enable?(directive)
+              check_enable_pair(directive)
             end
           end
         end
@@ -77,8 +96,12 @@ module RuboCop
           directive.disabled? && !directive.disable_next?
         end
 
-        def disable_only_push?(directive)
-          directive.push? && !directive.push_args.empty? && directive.push_args.keys == ['-']
+        def plain_enable?(directive)
+          directive.enabled? && !directive.enable_next? && !directive.all_cops?
+        end
+
+        def signed_push?(directive)
+          directive.push? && !directive.signed_args.empty?
         end
 
         def check_pair(directive)
@@ -100,13 +123,130 @@ module RuboCop
         end
 
         def check_push_pop(directive)
-          pop = single_statement_closing_directive(directive)
-          return unless pop&.pop?
+          pop_line = balancing_pop_line(directive)
+          return unless pop_line && comment_config.comment_only_line?(pop_line)
+          return unless wraps_single_statement?(directive, pop_line)
 
-          add_offense(directive.comment, message: MSG_PUSH_POP) do |corrector|
-            corrector.replace(directive.comment, disable_next_replacement(directive))
-            remove_line(corrector, pop.comment)
+          pop_comment = processed_source.comment_at_line(pop_line)
+          replacement = push_replacement(directive)
+          message = format(MSG_PUSH_POP, replacement: replacement_mode(directive))
+          add_offense(directive.comment, message: message) do |corrector|
+            corrector.replace(directive.comment, replacement)
+            remove_line(corrector, pop_comment)
           end
+        end
+
+        # The line of the `pop` balancing this `push`, taking nesting into
+        # account, or `nil` when the push is never popped.
+        def balancing_pop_line(push_directive)
+          depth = 0
+          each_directive_after(push_directive) do |directive|
+            if directive.push?
+              depth += 1
+            elsif directive.pop?
+              return directive.line_number if depth.zero?
+
+              depth -= 1
+            end
+          end
+          nil
+        end
+
+        def each_directive_after(reference)
+          processed_source.comments.each do |comment|
+            directive = DirectiveComment.new(comment)
+            next unless directive.cop_names || directive.push? || directive.pop?
+
+            yield directive if directive.line_number > reference.line_number
+          end
+        end
+
+        def replacement_mode(directive)
+          ops = directive.signed_args.keys.sort
+          if ops == ['-']
+            'disable-next'
+          elsif ops == ['+']
+            'enable-next'
+          else
+            'next'
+          end
+        end
+
+        def push_replacement(directive)
+          text = case replacement_mode(directive)
+                 when 'disable-next'
+                   "# rubocop:disable-next #{directive.signed_args['-'].join(', ')}"
+                 when 'enable-next'
+                   "# rubocop:enable-next #{directive.signed_args['+'].join(', ')}"
+                 else
+                   "# rubocop:next #{directive.cops}"
+                 end
+          reason = directive.reason
+          reason ? "#{text} -- #{reason}" : text
+        end
+
+        # An `enable`/`disable` pair around one statement inside a disabled
+        # region re-enables the cops for just that statement - `enable-next`
+        # says the same without the closing boundary. The pair only counts
+        # when the `enable` really closed open disables (otherwise the
+        # trailing `disable` opens a new region and the conversion would
+        # change what is covered).
+        def check_enable_pair(directive)
+          closing = enable_pair_closing(directive)
+          return unless closing
+
+          add_offense(directive.comment, message: MSG_ENABLE_PAIR) do |corrector|
+            corrector.replace(directive.comment,
+                              directive.comment.text.sub(/\benable\b/, 'enable-next'))
+            remove_line(corrector, closing.comment)
+          end
+        end
+
+        def enable_pair_closing(directive)
+          scope = comment_config.statement_scope_after(directive.line_number)
+          return nil unless scope && scope.begin == directive.line_number + 1
+
+          closing = re_disable_below(directive, scope.end + 1)
+          closing if closing && closed_open_disables?(directive, closing)
+        end
+
+        def re_disable_below(directive, line)
+          return nil unless comment_config.comment_only_line?(line)
+
+          comment = processed_source.comment_at_line(line)
+          return nil unless comment
+
+          closing = DirectiveComment.new(comment)
+          return nil unless closing.disabled? && !closing.disable_next?
+          return nil unless closing.raw_cop_names.sort == directive.raw_cop_names.sort
+
+          closing
+        end
+
+        # Every cop of the pair must have a range the `enable` closed and a
+        # range the trailing `disable` reopened - otherwise the `enable` was
+        # not inside a disabled region and the conversion would change what
+        # is covered.
+        def closed_open_disables?(directive, closing)
+          directive.cop_names.all? do |cop|
+            ranges = comment_config.cop_disabled_line_ranges[qualified_name(cop)]
+            ranges && closed_at?(ranges, directive.line_number) && reopened_by?(ranges, closing)
+          end
+        end
+
+        def closed_at?(ranges, line)
+          ranges.any? { |range| range.end == line }
+        end
+
+        def reopened_by?(ranges, closing)
+          ranges.any? do |range|
+            range.respond_to?(:directive) && range.directive.comment.equal?(closing.comment)
+          end
+        end
+
+        def qualified_name(cop_name)
+          Registry.qualified_cop_name(cop_name.strip, processed_source.file_path,
+                                      correct_namespace: false)
         end
 
         # The directive closing this one's scope, when that scope wraps
@@ -133,7 +273,7 @@ module RuboCop
           ends = ranges.map(&:end).uniq
           return nil unless ends.size == 1 && ends.first.to_f.finite?
 
-          directive.push? ? ends.first + 1 : ends.first
+          ends.first
         end
 
         def ranges_opened_by(directive)
@@ -153,13 +293,6 @@ module RuboCop
           scope = comment_config.statement_scope_after(directive.line_number)
 
           !scope.nil? && scope.begin == directive.line_number + 1 && scope.end + 1 == closing_line
-        end
-
-        def disable_next_replacement(directive)
-          cops = directive.push_args['-'].join(', ')
-          reason = directive.reason
-          text = "# rubocop:disable-next #{cops}"
-          reason ? "#{text} -- #{reason}" : text
         end
 
         def remove_line(corrector, comment)

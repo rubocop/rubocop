@@ -91,10 +91,92 @@ RSpec.describe RuboCop::Cop::Style::DirectiveScope, :config do
     RUBY
   end
 
-  it 'does not register an offense for a `push` that also enables cops' do
-    expect_no_offenses(<<~RUBY)
+  it 'registers an offense and converts a mixed-argument `push`/`pop` to `next`' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Style/For
       # rubocop:push -Metrics/AbcSize +Style/For
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `next` instead of `push`/`pop` around a single statement.
       def foo
+      end
+      # rubocop:pop
+      # rubocop:enable Style/For
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Style/For
+      # rubocop:next -Metrics/AbcSize +Style/For
+      def foo
+      end
+      # rubocop:enable Style/For
+    RUBY
+  end
+
+  it 'registers an offense and converts a `+`-only `push`/`pop` to `enable-next`' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:push +Metrics/AbcSize -- reviewed
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `enable-next` instead of `push`/`pop` around a single statement.
+      def foo
+      end
+      # rubocop:pop
+      # rubocop:enable Metrics/AbcSize
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:enable-next Metrics/AbcSize -- reviewed
+      def foo
+      end
+      # rubocop:enable Metrics/AbcSize
+    RUBY
+  end
+
+  it 'registers an offense and converts an `enable`/`disable` pair to `enable-next`' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:enable Metrics/AbcSize
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `enable-next` instead of an `enable`/`disable` pair around a single statement.
+      def foo
+      end
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:enable Metrics/AbcSize
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:enable-next Metrics/AbcSize
+      def foo
+      end
+      # rubocop:enable Metrics/AbcSize
+    RUBY
+  end
+
+  it 'does not register an offense for an `enable`/`disable` pair outside a disabled region' do
+    expect_no_offenses(<<~RUBY)
+      # rubocop:enable Metrics/AbcSize
+      def foo
+      end
+      # rubocop:disable Metrics/AbcSize
+      def bar
+      end
+
+      def baz
+      end
+      # rubocop:enable Metrics/AbcSize
+    RUBY
+  end
+
+  it 'matches each `push` to its own balancing `pop` when nested' do
+    expect_no_offenses(<<~RUBY)
+      # rubocop:push -Metrics/AbcSize
+      # rubocop:push -Style/For
+      def foo
+      end
+
+      def quux
+      end
+      # rubocop:pop
+      def bar
       end
       # rubocop:pop
     RUBY
