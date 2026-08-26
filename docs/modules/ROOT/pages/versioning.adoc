@@ -35,7 +35,7 @@ Here are a few examples:
 | New CLI flags or formatters | Minor
 | Renaming or moving cops (with backwards-compatible obsoletions) | Minor
 | Dropping runtime Ruby version support | Minor
-| Enabling pending cops by default | *Major*
+| Enabling pending cops by default | *Major* (one narrow exception, see below)
 | Changing cop defaults (e.g. `EnforcedStyle`) | *Major*
 | Removing cops without a replacement | *Major*
 | Breaking changes to the Ruby API | *Major*
@@ -152,3 +152,9 @@ Style/ANewCop:
 ----
 
 IMPORTANT: On major RuboCop version updates (e.g. 1.0 -> 2.0), *all* pending cops are enabled in bulk.
+
+There's one narrow exception to waiting for a major release. A cop that reports configuration
+which silently does nothing (rather than code that could be written differently) may be enabled
+in a minor release, since leaving it pending means people keep believing settings work when they
+don't. `Lint/CopDirectiveSyntax`, which flags malformed `# rubocop:` directives, was enabled this
+way in 1.91.

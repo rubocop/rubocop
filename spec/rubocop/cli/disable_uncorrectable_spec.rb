@@ -249,7 +249,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
             C:  3:  3: [Todo] Metrics/MethodLength: Method has too many lines. [11/10]
             C:  4:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [<8, 12, 6> 15.62/15]
             C:  4:  3: [Todo] Metrics/MethodLength: Method has too many lines. [11/10]
-            C:  4: 32: [Corrected] Style/DoubleCopDisableDirective: More than one disable comment on one line.
+            W:  4: 32: [Corrected] Lint/CopDirectiveSyntax: Malformed directive comment detected. Only the first directive on a line takes effect. List the cop names in a single directive instead.
 
             1 file inspected, 8 offenses detected, 8 offenses corrected
           OUTPUT
