@@ -1,0 +1,1 @@
+* [#15609](https://github.com/rubocop/rubocop/pull/15609): Fix an infinite loop for `Style/EndlessMethod` cop with `Style/AmbiguousEndlessMethodDefinition`, and stop it from pulling code that follows `end` into the method body. ([@Starlexxx][])
