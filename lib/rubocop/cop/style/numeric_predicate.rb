@@ -110,13 +110,9 @@ module RuboCop
         end
 
         def handled_by_bitwise_predicate?(node)
-          registry = processed_source.registry
-          bitwise_predicate = registry.find_by_cop_name('Style/BitwisePredicate')
-
           bitwise_predicate_candidate?(node) &&
-            bitwise_predicate &&
-            registry.enabled?(bitwise_predicate, config) &&
-            bitwise_predicate.support_target_ruby_version?(target_ruby_version)
+            config.for_cop('Style/BitwisePredicate').fetch('Enabled') &&
+            BitwisePredicate.support_target_ruby_version?(target_ruby_version)
         end
 
         def check(node)
