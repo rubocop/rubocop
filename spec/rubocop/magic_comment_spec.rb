@@ -4,6 +4,7 @@ RSpec.describe RuboCop::MagicComment do
   shared_examples 'magic comment' do |comment, expectations = {}|
     encoding = expectations[:encoding]
     frozen_string = expectations[:frozen_string_literal]
+    warn_indent = expectations[:warn_indent]
     shareable_constant_value = expectations[:shareable_constant_value]
     typed = expectations[:typed]
 
@@ -13,6 +14,10 @@ RSpec.describe RuboCop::MagicComment do
 
     it "returns #{frozen_string.inspect} for frozen_string_literal when comment is #{comment}" do
       expect(described_class.parse(comment).frozen_string_literal).to eql(frozen_string)
+    end
+
+    it "returns #{warn_indent.inspect} for warn_indent when comment is #{comment}" do
+      expect(described_class.parse(comment).warn_indent).to eql(warn_indent)
     end
 
     it "returns #{shareable_constant_value.inspect} for shareable_constant_value " \
@@ -57,6 +62,11 @@ RSpec.describe RuboCop::MagicComment do
   it_behaves_like 'magic comment', '# FROZEN-STRING-LITERAL: true', frozen_string_literal: true
 
   it_behaves_like 'magic comment', '# fRoZeN-sTrInG_lItErAl: true', frozen_string_literal: true
+
+  it_behaves_like 'magic comment', '# warn_indent: true', warn_indent: 'true'
+  it_behaves_like 'magic comment', '# warn-indent: false', warn_indent: 'false'
+  it_behaves_like 'magic comment', '# WARN_INDENT: true', warn_indent: 'true'
+  it_behaves_like 'magic comment', '# -*- warn_indent: true -*-', warn_indent: 'true'
 
   it_behaves_like 'magic comment', '# shareable_constant_value: literal', shareable_constant_value: 'literal'
 
@@ -203,6 +213,12 @@ RSpec.describe RuboCop::MagicComment do
 
     context 'with a frozen string literal comment' do
       let(:comment) { '# frozen-string-literal: true' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'with a warn indent comment' do
+      let(:comment) { '# warn-indent: true' }
 
       it { is_expected.to be(true) }
     end

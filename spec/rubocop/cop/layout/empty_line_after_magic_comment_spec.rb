@@ -64,6 +64,20 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     RUBY
   end
 
+  it 'registers an offense when code that immediately follows `warn_indent` comment' do
+    expect_offense(<<~RUBY)
+      # warn_indent: true
+      class Foo; end
+      ^ Expected at least 1 empty line after magic comments; found 0.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # warn_indent: true
+
+      class Foo; end
+    RUBY
+  end
+
   it 'registers an offense for documentation immediately following comment' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
@@ -100,6 +114,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     expect_no_offenses(<<~RUBY)
       # frozen_string_literal: true
       # encoding: utf-8
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'accepts magic comment with `warn_indent`' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+      # shareable_constant_value: literal
+      # warn_indent: true
 
       class Foo; end
     RUBY

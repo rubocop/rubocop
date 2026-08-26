@@ -90,6 +90,21 @@ RSpec.describe RuboCop::Cop::Style::MagicCommentFormat, :config do
       RUBY
     end
 
+    it 'registers an offense for kebab case in `warn_indent`' do
+      expect_offense(<<~RUBY)
+        # warn-indent: true
+          ^^^^^^^^^^^ Prefer snake case for magic comments.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # warn_indent: true
+
+        puts 1
+      RUBY
+    end
+
     it 'registers an offense for kebab case in emacs style' do
       expect_offense(<<~RUBY)
         # -*- encoding: ASCII-8BIT; frozen-string-literal: true -*-

@@ -60,6 +60,20 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
   end
 
   it 'registers an offense and corrects when an `encoding` magic comment does not precede ' \
+     'a `warn_indent` magic comment' do
+    expect_offense(<<~RUBY)
+      # warn_indent: true
+      # encoding: ascii
+      ^^^^^^^^^^^^^^^^^ The encoding magic comment should precede all other magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # encoding: ascii
+      # warn_indent: true
+    RUBY
+  end
+
+  it 'registers an offense and corrects when an `encoding` magic comment does not precede ' \
      'a `shareable_constant_value` magic comment' do
     expect_offense(<<~RUBY)
       # shareable_constant_value: literal

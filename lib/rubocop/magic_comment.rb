@@ -12,6 +12,7 @@ module RuboCop
       encoding: '(?:en)?coding',
       frozen_string_literal: 'frozen[_-]string[_-]literal',
       rbs_inline: 'rbs_inline',
+      warn_indent: 'warn[_-]indent',
       shareable_constant_value: 'shareable[_-]constant[_-]value',
       typed: 'typed'
     }.freeze
@@ -38,6 +39,7 @@ module RuboCop
       frozen_string_literal_specified? ||
         encoding_specified? ||
         rbs_inline_specified? ||
+        warn_indent_specified? ||
         shareable_constant_value_specified? ||
         typed_specified?
     end
@@ -77,6 +79,13 @@ module RuboCop
       specified?(frozen_string_literal)
     end
 
+    # Was a warn_indent specified?
+    #
+    # @return [Boolean]
+    def warn_indent_specified?
+      specified?(warn_indent)
+    end
+
     # Was a shareable_constant_value specified?
     #
     # @return [Boolean]
@@ -98,6 +107,13 @@ module RuboCop
       else
         setting
       end
+    end
+
+    # Expose the `warn_indent` value.
+    #
+    # @return [String] for warn_indent config
+    def warn_indent
+      extract_warn_indent
     end
 
     # Expose the `shareable_constant_value` value coerced to a boolean if possible.
@@ -216,6 +232,10 @@ module RuboCop
       # Emacs comments cannot specify RBS::inline behavior.
       def extract_rbs_inline_value; end
 
+      def extract_warn_indent
+        match(KEYWORDS[:warn_indent])
+      end
+
       def extract_shareable_constant_value
         match(KEYWORDS[:shareable_constant_value])
       end
@@ -257,6 +277,9 @@ module RuboCop
 
       # Vim comments cannot specify RBS::inline behavior.
       def extract_rbs_inline_value; end
+
+      # Vim comments cannot specify indentation warning behavior.
+      def warn_indent; end
 
       # Vim comments cannot specify shareable constant values behavior.
       def shareable_constant_value; end
@@ -314,6 +337,10 @@ module RuboCop
 
       def extract_rbs_inline_value
         extract(/\A\s*#\s*#{KEYWORDS[:rbs_inline]}:\s*#{TOKEN}\s*\z/io)
+      end
+
+      def extract_warn_indent
+        extract(/\A\s*#\s*#{KEYWORDS[:warn_indent]}:\s*#{TOKEN}\s*\z/io)
       end
 
       def extract_shareable_constant_value
