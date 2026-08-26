@@ -656,6 +656,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Naming/BlockForwarding` with `Style/MethodDefParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.2
+    YAML
+    source = <<~RUBY
+      def foo &block
+        bar(&block)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Naming/BlockForwarding,Style/MethodDefParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(&)
+        bar(&)
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: explicit` of `Naming/BlockForwarding` with `Style/ArgumentsForwarding`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
