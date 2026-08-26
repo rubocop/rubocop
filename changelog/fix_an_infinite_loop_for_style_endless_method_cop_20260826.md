@@ -1,0 +1,1 @@
+* [#15609](https://github.com/rubocop/rubocop/pull/15609): Fix an infinite loop and an incorrect autocorrect for `Style/EndlessMethod` when the method definition itself has a modifier `if`/`unless`/`while`/`until` or is followed by `and`/`or`/`&&`/`||`. ([@Starlexxx][])
