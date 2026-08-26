@@ -1,0 +1,1 @@
+* [#15607](https://github.com/rubocop/rubocop/issues/15607): Recognize `warn_indent` as a magic comment. This fixes a false positive for `Layout/EmptyLineAfterMagicComment` and makes `Lint/OrderedMagicComments` and `Style/MagicCommentFormat` aware of it. ([@koic][])
