@@ -33,19 +33,24 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         RUBY
       end
 
-      it 'registers an offense for a bitwise comparison' do
-        expect_offense(<<~RUBY)
-          stat.mode & 0o077 == 0
-          ^^^^^^^^^^^^^^^^^^^^^^ Use `(stat.mode & 0o077).zero?` instead of `stat.mode & 0o077 == 0`.
-        RUBY
+      context 'when `Style/BitwisePredicate` is disabled' do
+        let(:other_cops) { { 'Style/BitwisePredicate' => { 'Enabled' => false } } }
 
-        expect_correction(<<~RUBY)
-          (stat.mode & 0o077).zero?
-        RUBY
+        it 'registers an offense for a bitwise comparison' do
+          expect_offense(<<~RUBY)
+            stat.mode & 0o077 == 0
+            ^^^^^^^^^^^^^^^^^^^^^^ Use `(stat.mode & 0o077).zero?` instead of `stat.mode & 0o077 == 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            (stat.mode & 0o077).zero?
+          RUBY
+        end
       end
 
       context 'when `Style/BitwisePredicate` is enabled' do
         let(:other_cops) { { 'Style/BitwisePredicate' => { 'Enabled' => true } } }
+        let(:registry) { RuboCop::Cop::Registry.new([described_class]) }
 
         it 'does not register an offense for a bitwise comparison' do
           expect_no_offenses('stat.mode & 0o077 == 0')
