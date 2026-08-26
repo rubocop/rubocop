@@ -175,9 +175,7 @@ module RuboCop
             add_offense(node, message: MSG_MULTI_LINE) do |corrector|
               correct_to_multiline(corrector, node)
             end
-          elsif !node.endless? && can_be_made_endless?(node) && single_line_when_made_endless?(node)
-            return if too_long_when_made_endless?(node)
-
+          elsif convertible_to_endless?(node) && single_line_when_made_endless?(node)
             add_offense(node, message: MSG_REQUIRE_SINGLE) do |corrector|
               corrector.replace(node, endless_replacement(node))
             end
@@ -185,12 +183,16 @@ module RuboCop
         end
 
         def handle_require_always_style(node)
-          return if node.endless? || !can_be_made_endless?(node)
-          return if too_long_when_made_endless?(node)
+          return unless convertible_to_endless?(node)
 
           add_offense(node, message: MSG_REQUIRE_ALWAYS) do |corrector|
             corrector.replace(node, endless_replacement(node))
           end
+        end
+
+        def convertible_to_endless?(node)
+          !node.endless? && can_be_made_endless?(node) &&
+            !too_long_when_made_endless?(node) && !ambiguous_when_made_endless?(node)
         end
 
         def handle_disallow_style(node)
@@ -227,6 +229,31 @@ module RuboCop
         def single_line_when_made_endless?(node)
           !endless_replacement(node).include?("\n")
         end
+
+        def ambiguous_when_made_endless?(node)
+          lower_precedence_operation?(node.body) ||
+            ((operation = ambiguous_operation(node)) && lower_precedence_operation?(operation))
+        end
+
+        def lower_precedence_operation?(node)
+          case node.type
+          when :if, :while, :until
+            node.modifier_form?
+          when :and, :or
+            node.semantic_operator?
+          else
+            false
+          end
+        end
+
+        # @!method ambiguous_operation(node)
+        def_node_matcher :ambiguous_operation, <<~PATTERN
+          ^${
+            (if _ <any_def _>)
+            ({and or} any_def _)
+            ({while until} _ any_def)
+          }
+        PATTERN
 
         def too_long_when_made_endless?(node)
           return false unless config.cop_enabled?('Layout/LineLength')
