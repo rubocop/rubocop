@@ -81,6 +81,8 @@ module RuboCop
           last_arg = node.last_argument
 
           if last_arg.hash_type? && !last_arg.braces?
+            return items if enforce_hash_argument_with_separator?
+
             items += last_arg.pairs
           else
             items << last_arg

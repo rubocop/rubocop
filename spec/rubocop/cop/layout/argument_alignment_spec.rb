@@ -442,6 +442,37 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
+    context 'when `Layout/HashAlignment` is set to `EnforcedColonStyle: separator`' do
+      let(:config) do
+        RuboCop::Config.new('Layout/ArgumentAlignment' => cop_config,
+                            'Layout/HashAlignment' => {
+                              'Enabled' => true, 'EnforcedColonStyle' => 'separator'
+                            },
+                            'Layout/IndentationWidth' => { 'Width' => indentation_width })
+      end
+
+      it 'does not register an offense for a separator-aligned hash argument' do
+        expect_no_offenses(<<~RUBY)
+          validates :foo,
+                    bar: 1,
+                 bazqux: 2
+        RUBY
+      end
+
+      it 'registers an offense and corrects misindented non-hash arguments' do
+        expect_offense(<<~RUBY)
+          func(:foo,
+               :bar)
+               ^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          func(:foo,
+            :bar)
+        RUBY
+      end
+    end
+
     it 'registers an offense and corrects when missed indentation kwargs' do
       expect_offense(<<~RUBY)
         func1(foo: 'foo',
