@@ -1,0 +1,1 @@
+* [#15610](https://github.com/rubocop/rubocop/pull/15610): Fix `Lint/ArgumentMismatch` registering false positives for calls that resolve to a private method on `Object`, such as a bare `def` written at the top level of a DSL file. ([@HoneyryderChuck][])

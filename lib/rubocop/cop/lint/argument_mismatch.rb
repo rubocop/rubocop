@@ -77,9 +77,14 @@ module RuboCop
           nil
         end
 
+        # A call with an explicit receiver cannot reach a private method, so its
+        # signature says nothing about the call. This matters because `Object`
+        # closes the singleton ancestry of every constant, and a bare `def` at
+        # the top level of any file — what every block-based DSL produces — is a
+        # private instance method of `Object`.
         def singleton_signature_shape(declaration, method_name)
           member = indexed_singleton_member(declaration, "#{method_name}()")
-          return nil unless member
+          return nil unless member&.public?
 
           indexed_member_shape(member)
         end
