@@ -827,6 +827,45 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
 
   it_behaves_like 'not on separate lines'
 
+  context 'when a value starts on the line below its key' do
+    let(:cop_config) do
+      {
+        'EnforcedHashRocketStyle' => 'separator',
+        'EnforcedColonStyle' => 'separator',
+        'EnforcedLastArgumentHashStyle' => 'always_inspect'
+      }
+    end
+
+    it 'does not register an offense for a hash rocket pair' do
+      expect_no_offenses(<<~RUBY)
+        f("aaaa" =>
+             foo,
+          "b" => 2)
+      RUBY
+    end
+
+    it 'does not register an offense for a colon pair' do
+      expect_no_offenses(<<~RUBY)
+        f(aaaa:
+             foo,
+          b: 2)
+      RUBY
+    end
+
+    it 'still checks a hash whose values all start on their key\'s line' do
+      expect_offense(<<~RUBY)
+        f("aaaa" => foo,
+          "b" => 2)
+          ^^^^^^^^ Align the separators of a hash literal if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        f("aaaa" => foo,
+             "b" => 2)
+      RUBY
+    end
+  end
+
   context 'with table alignment configuration' do
     let(:cop_config) do
       {
