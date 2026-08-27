@@ -56,11 +56,30 @@ module RuboCop
     # or methods are involved.
     def build_index(paths)
       graph = Rubydex::Graph.new
-      graph.index_all(paths.map(&:to_s))
+      graph.index_all(paths.map(&:to_s) + core_definition_paths(graph))
       graph.resolve
       graph
     rescue StandardError => e
       warn Rainbow("rubydex index build failed: #{e.message}. Continuing without it.").yellow
+    end
+
+    # The RBS signature files of Ruby's core and standard library. Rubydex declares
+    # `BasicObject`, `Kernel`, `Object`, `Module` and `Class` with empty bodies so that
+    # ancestries linearize, but their members come from these files alone. Without them
+    # the index cannot tell "this name does not exist" from "this name is core", and a
+    # lookup does not stop where Ruby stops: `Foo.new` finds no `Class#new` in the
+    # singleton ancestry and walks on into `Object`'s instance methods, where a single
+    # top-level `def new` answers every constructor lookup in the project.
+    #
+    # Rubydex gathers these paths for `Graph#index_workspace`, which RuboCop does not use:
+    # the index is built from RuboCop's own target list, so that `AllCops/Include` and
+    # `Exclude` govern it and every inspected file is indexed. No public API exposes the
+    # paths on their own yet (Shopify/rubydex#1027), hence the `send`; versions without
+    # the method, and systems without an `rbs` gem, simply contribute nothing.
+    def core_definition_paths(graph)
+      return [] unless graph.respond_to?(:add_core_rbs_definition_paths, true)
+
+      [].tap { |paths| graph.send(:add_core_rbs_definition_paths, paths) }
     end
 
     # The Ruby source files of every gem in the project's bundle, for

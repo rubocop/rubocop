@@ -2126,6 +2126,32 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
       expect(offenses).to be_empty
     end
 
+    it 'does not report a definition whose other site is an RBS signature' do
+      Dir.mktmpdir do |tmpdir|
+        # Ruby's core and standard library reach the index as the `rbs` gem's
+        # signature files. A signature declares a method, it does not define one, so
+        # monkey patching a core method is not a cross-file duplicate.
+        File.write(File.join(tmpdir, 'core_ext.rb'), <<~RUBY)
+          class Array
+            def sum(identity = nil, &block)
+              super
+            end
+          end
+        RUBY
+        # Same for a project class that merely shares a name with a stdlib one.
+        File.write(File.join(tmpdir, 'collides.rb'), <<~RUBY)
+          class Set
+            def initialize(items)
+              @items = items
+            end
+          end
+        RUBY
+        write_rubocop_config(tmpdir, 'AllCops' => { 'UseProjectIndex' => true })
+
+        expect(cop_offenses(tmpdir)).to be_empty
+      end
+    end
+
     it 'does not report duplicates whose other definition site matches `AllowedCrossFilePaths`' do
       offenses = run_with_config(
         'AllCops' => { 'UseProjectIndex' => true },
