@@ -21,7 +21,9 @@ module RuboCop
       #
       # Constructor calls (`Foo.new`) and keyword-argument validation are out of
       # scope: only positional arity of explicitly defined singleton methods is
-      # checked.
+      # checked. `new` is skipped outright, because `Class#new` is not in the
+      # index: any `new` the index does find sits below it in the method
+      # resolution order, where Ruby would never reach it.
       #
       # @example
       #   # Given the project defines:
@@ -45,8 +47,7 @@ module RuboCop
         MSG = 'Wrong number of arguments to `%<method>s` (given %<given>d, expected %<expected>s).'
 
         def on_send(node)
-          return unless project_index
-          return unless node.receiver&.const_type?
+          return unless checkable_call?(node)
 
           shape = resolved_signature_shape(node)
           return unless shape
@@ -60,6 +61,10 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def checkable_call?(node)
+          project_index && node.receiver&.const_type? && !node.method?(:new)
+        end
 
         def message(node, given, min, max)
           format(MSG, method: node.method_name, given: given, expected: expected_range(min, max))

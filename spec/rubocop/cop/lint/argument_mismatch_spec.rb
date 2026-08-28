@@ -252,6 +252,31 @@ RSpec.describe RuboCop::Cop::Lint::ArgumentMismatch, :config do
       end
     end
 
+    context 'for a constructor call' do
+      # `Report.new` dispatches through `Class#new`, which the index does not
+      # carry. Every `new` it can find is further down the singleton ancestry,
+      # past where Ruby stops looking.
+      it 'does not register an offense against an `Object` method named `new`' do
+        index_with_call(
+          'Report.new(source, :pdf)',
+          'file:///core_ext.rb' => "class Object\n  def new(template); end\nend\n",
+          'file:///report.rb' => "class Report\n  def initialize(source, format); end\nend\n"
+        )
+
+        expect_no_offenses('Report.new(source, :pdf)', '/call.rb')
+      end
+
+      it 'does not register an offense against the constructor itself' do
+        index_with_call('Report.new(source)', 'file:///report.rb' => <<~RUBY)
+          class Report
+            def initialize(source, format); end
+          end
+        RUBY
+
+        expect_no_offenses('Report.new(source)', '/call.rb')
+      end
+    end
+
     context 'with safe navigation' do
       it 'registers an offense on a safe-navigation call' do
         index_with_call('Report&.generate(source)', 'file:///report.rb' => <<~RUBY)
