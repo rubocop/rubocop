@@ -104,6 +104,11 @@ module RuboCop
         alias on_defs on_def
 
         def on_new_investigation
+          @breakable_range_by_line_index = {}
+          @breakable_string_delimiters = {}
+          @endless_methods_by_line = {}
+          @heredocs = nil
+
           return unless processed_source.raw_source.include?(';')
 
           check_for_breakable_semicolons(processed_source)
@@ -288,7 +293,7 @@ module RuboCop
           source_range = node.source_range
           relevant_substr = largest_possible_string(node)
 
-          if (space_pos = relevant_substr.rindex(/\s/))
+          if (space_pos = breakable_space_position(node, relevant_substr))
             source_range.resize(space_pos + 1)
           elsif (escape_pos = relevant_substr.rindex(/\\(u[\da-f]{0,4}|x[\da-f]{0,2})?\z/))
             source_range.resize(escape_pos)
@@ -298,6 +303,19 @@ module RuboCop
 
             source_range.adjust(end_pos: adjustment)
           end
+        end
+
+        def breakable_space_position(node, substr)
+          limit = string_content_length(node) - 1
+          space_pos = substr.rindex(/\s/)
+          space_pos = substr[0, limit].rindex(/\s/) if space_pos && space_pos + 1 > limit
+          space_pos
+        end
+
+        def string_content_length(node)
+          content_end = node.loc?(:end) ? node.loc.end.begin_pos : node.source_range.end_pos
+
+          content_end - node.source_range.begin_pos
         end
 
         def breakable_dstr_begin_position(node)
