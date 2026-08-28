@@ -1,0 +1,1 @@
+* [#15616](https://github.com/rubocop/rubocop/pull/15616): Remove `Style/DoubleCopDisableDirective`, superseded by `Lint/CopDirectiveSyntax`, which now reports and corrects more than one directive on a line. ([@bbatsov][])
