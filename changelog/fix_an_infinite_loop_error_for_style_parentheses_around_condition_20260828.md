@@ -1,0 +1,1 @@
+* [#15618](https://github.com/rubocop/rubocop/pull/15618): Fix an infinite loop between `Style/ParenthesesAroundCondition` with `AllowSafeAssignment: false` and `Lint/AssignmentInCondition`. ([@Starlexxx][])
