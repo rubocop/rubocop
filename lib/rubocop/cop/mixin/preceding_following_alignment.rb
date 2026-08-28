@@ -182,7 +182,18 @@ module RuboCop
       # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
       def relevant_assignment_lines(line_range)
-        relevant_lines(line_range) { |line_number| assignment_lines.include?(line_number) }
+        relevant_lines(line_range, interrupting_operator_lines) do |line_number|
+          assignment_lines.include?(line_number)
+        end
+      end
+
+      def interrupting_operator_lines
+        @interrupting_operator_lines ||=
+          processed_source.tokens.each_with_object(Set.new) do |token, lines|
+            next unless ASSIGNMENT_OR_COMPARISON_TOKENS.include?(token.type)
+
+            lines << token.line unless assignment_lines.include?(token.line)
+          end
       end
 
       def alignment_lines(line_number)

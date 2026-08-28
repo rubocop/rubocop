@@ -2531,6 +2531,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects when specifying `ForceEqualSignAlignment: true` of `Layout/ExtraSpacing` and ' \
+     '`Layout/SpaceAroundOperators`' do
+    create_file('example.rb', <<~RUBY)
+      aaaa = b
+      e << f
+      g += h
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ExtraSpacing:
+        ForceEqualSignAlignment: true
+    YAML
+
+    expect(
+      cli.run(['--autocorrect', '--only', 'Layout/ExtraSpacing,Layout/SpaceAroundOperators'])
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      aaaa = b
+      e << f
+      g += h
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`Layout/HashAlignment` and `Layout/FirstHashElementIndentation`' do
     create_file('example.rb', <<~RUBY)

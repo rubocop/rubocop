@@ -685,6 +685,23 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
+    it 'does not register an offense when assignments are separated by a line ' \
+       'with another alignable operator' do
+      expect_no_offenses(<<~RUBY)
+        aaaa = b
+        e << f
+        g += h
+      RUBY
+    end
+
+    it 'does not register an offense when assignments are separated by a comparison' do
+      expect_no_offenses(<<~RUBY)
+        aaaa = b
+        raise if e == f
+        g += h
+      RUBY
+    end
+
     it 'registers an offense and corrects consecutive assignments that are not aligned' do
       expect_offense(<<~RUBY)
         a = 1
