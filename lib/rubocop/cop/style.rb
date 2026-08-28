@@ -63,7 +63,6 @@ module RuboCop
       register_cop :DocumentationMethod, "#{__dir__}/style/documentation_method"
       register_cop :Documentation, "#{__dir__}/style/documentation"
       register_cop :DocumentDynamicEvalDefinition, "#{__dir__}/style/document_dynamic_eval_definition"
-      register_cop :DoubleCopDisableDirective, "#{__dir__}/style/double_cop_disable_directive"
       register_cop :DoubleNegation, "#{__dir__}/style/double_negation"
       register_cop :EachForSimpleLoop, "#{__dir__}/style/each_for_simple_loop"
       register_cop :EachWithObject, "#{__dir__}/style/each_with_object"

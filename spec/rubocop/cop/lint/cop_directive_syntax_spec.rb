@@ -47,7 +47,11 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
   it 'registers an offense for duplicate directives' do
     expect_offense(<<~RUBY)
       # rubocop:disable Layout/LineLength # rubocop:disable Style/Encoding
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Only the first directive on a line takes effect. List the cop names in a single directive instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Layout/LineLength, Style/Encoding
     RUBY
   end
 
@@ -301,6 +305,81 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
     it 'does not register an offense for an unqualified cop name that resolves' do
       expect_no_offenses(<<~RUBY)
         # rubocop:disable LineLength
+      RUBY
+    end
+  end
+
+  context 'with more than one directive on a line' do
+    let(:msg) do
+      'Malformed directive comment detected. Only the first directive on a line takes effect. ' \
+        'List the cop names in a single directive instead.'
+    end
+
+    it 'registers an offense and combines two disable directives' do
+      expect_offense(<<~RUBY, msg: msg)
+        x = 1 # rubocop:disable Style/For # rubocop:disable Metrics/AbcSize
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = 1 # rubocop:disable Style/For, Metrics/AbcSize
+      RUBY
+    end
+
+    it 'combines two `-next` directives without mangling the mode name' do
+      expect_offense(<<~RUBY, msg: msg)
+        # rubocop:disable-next Style/For # rubocop:disable-next Metrics/AbcSize
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+        x = 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable-next Style/For, Metrics/AbcSize
+        x = 1
+      RUBY
+    end
+
+    it 'combines a `todo` and a `disable` under the first mode' do
+      expect_offense(<<~RUBY, msg: msg)
+        x = 1 # rubocop:todo Style/For # rubocop:disable Metrics/AbcSize
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = 1 # rubocop:todo Style/For, Metrics/AbcSize
+      RUBY
+    end
+
+    it 'does not correct directives of different modes' do
+      expect_offense(<<~RUBY, msg: msg)
+        x = 1 # rubocop:disable Style/For # rubocop:enable Metrics/AbcSize
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct when a reason separates the directives' do
+      expect_offense(<<~RUBY, msg: msg)
+        x = 1 # rubocop:disable Style/For -- keep it # rubocop:disable Metrics/AbcSize
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct when one of the directives disables all cops' do
+      expect_offense(<<~RUBY, msg: msg)
+        x = 1 # rubocop:disable Style/For # rubocop:disable all
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not register an offense for a single directive listing several cops' do
+      expect_no_offenses(<<~RUBY)
+        x = 1 # rubocop:disable Style/For, Metrics/AbcSize
       RUBY
     end
   end

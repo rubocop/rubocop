@@ -20,7 +20,8 @@ module RuboCop
         rule_message + "\n(obsolete configuration found in #{smart_loaded_path}, please update it)"
       end
 
-      # Cop rules currently can only be failures, not warnings
+      # Failure by default; rules that accept `severity: warning` say so
+      # themselves.
       def warning?
         false
       end

@@ -236,6 +236,24 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
     end
 
+    context 'when the configuration includes a removed cop that only warns' do
+      let(:hash) { { 'Style/DoubleCopDisableDirective' => { Enabled: true } } }
+
+      let(:expected_warnings) do
+        [
+          <<~OUTPUT.chomp
+            The `Style/DoubleCopDisableDirective` cop has been removed since it has been superseded by `Lint/CopDirectiveSyntax`. Please use `Lint/CopDirectiveSyntax` instead.
+            (obsolete configuration found in example/.rubocop.yml, please update it)
+          OUTPUT
+        ]
+      end
+
+      it 'warns instead of failing' do
+        expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+        expect(config_obsoletion.warnings).to eq(expected_warnings)
+      end
+    end
+
     context 'when the configuration includes any extracted cops' do
       let(:hash) do
         {
