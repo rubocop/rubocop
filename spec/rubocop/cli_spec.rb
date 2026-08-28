@@ -711,7 +711,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           create_file('example.rb', <<~RUBY)
             # frozen_string_literal: true
 
-            assert_equal nil, combinator {}.call # rubocop:disable Lint/EmptyBlock'
+            assert_equal nil, combinator {}.call # rubocop:disable Lint/EmptyBlock
           RUBY
           expect(cli.run(['example.rb'])).to eq(0)
           expect($stdout.string).to include('1 file inspected, no offenses detected')
