@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/RedundantCopDisableDirective
-# rubocop:disable Style/DoubleCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -23,12 +21,11 @@ module RuboCop
       #   # good
       #   # rubocop:disable all
       #
-      #   # bad
+      #   # bad - only the first directive takes effect
       #   # rubocop:disable Layout/LineLength # rubocop:disable Style/Encoding
       #
       #   # good
-      #   # rubocop:disable Layout/LineLength
-      #   # rubocop:disable Style/Encoding
+      #   # rubocop:disable Layout/LineLength, Style/Encoding
       #
       #   # bad
       #   # rubocop:wrongmode Layout/LineLength
@@ -55,11 +52,15 @@ module RuboCop
       #   # rubocop:disable Layout/LineLength
       #
       class CopDirectiveSyntax < Base
+        extend AutoCorrector
+
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
         INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `enable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
+        MULTIPLE_DIRECTIVES_MSG = 'Only the first directive on a line takes effect. ' \
+                                  'List the cop names in a single directive instead.'
         MALFORMED_COP_NAMES_MSG = 'Cop names must be separated by commas. ' \
                                   'Comment in the directive must start with `--`.'
         INVALID_SIGNED_ARGS_MSG = '`push` and `next` arguments must be `+`- or `-`-prefixed ' \
@@ -91,13 +92,62 @@ module RuboCop
         private
 
         def check_directive(comment, directive_comment)
-          if directive_comment.malformed?
+          if (directives = multiple_directives(comment))
+            add_offense(comment, message: "#{COMMON_MSG} #{MULTIPLE_DIRECTIVES_MSG}") do |corrector|
+              merge_directives(corrector, comment, directives)
+            end
+          elsif directive_comment.malformed?
             add_offense(comment, message: offense_message(directive_comment))
           elsif misplaced_next_directive?(directive_comment)
             add_offense(comment, message: NEXT_DIRECTIVE_AT_EOL_MSG)
           elsif (name = unknown_cop_name(directive_comment))
             add_offense(comment, message: unknown_cop_message(directive_comment, name))
           end
+        end
+
+        # Everything after the first directive in a comment is trailing text as
+        # far as the parser is concerned, so a second directive written on the
+        # same line disables nothing at all.
+        def multiple_directives(comment)
+          matches = comment.text.to_enum(:scan, DirectiveComment::DIRECTIVE_COMMENT_REGEXP)
+                           .map { Regexp.last_match }
+          matches if matches.size > 1
+        end
+
+        def merge_directives(corrector, comment, directives)
+          return unless directives_adjacent?(comment, directives)
+          return unless (mode = merged_mode(directives))
+          return unless (cops = merged_cops(directives))
+
+          corrector.replace(comment, "# rubocop:#{mode} #{cops.join(', ')}")
+        end
+
+        # `all` covers every cop already, so folding it into a list of names
+        # would be a rewrite rather than a merge.
+        def merged_cops(directives)
+          cops = directives.flat_map { |match| match[2].to_s.split(',').map(&:strip) }
+          cops = cops.reject(&:empty?).uniq
+          cops unless cops.empty? || cops.include?('all')
+        end
+
+        # Anything written between the directives is a `--` reason or prose,
+        # and merging around it would either move it or drop it.
+        def directives_adjacent?(comment, directives)
+          text = comment.text
+          bounds = directives.map { |match| match.end(0) }
+                             .zip(directives.map { |match| match.begin(0) }[1..] + [text.length])
+          bounds.all? { |from, to| text[from...to].strip.empty? }
+        end
+
+        # `todo` is an alias of `disable`, so those two combine. Anything else
+        # (an `enable` beside a `disable`, or directives of different scopes)
+        # means different things per directive and can't be folded into one.
+        def merged_mode(directives)
+          modes = directives.map { |match| match[1] }.uniq
+          return modes.first if modes.size == 1
+          return modes.first if (modes - %w[disable todo]).empty?
+
+          nil
         end
 
         # An EOL next-statement directive is not honored - it must fail
@@ -179,5 +229,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Lint/RedundantCopDisableDirective
-# rubocop:enable Style/DoubleCopDisableDirective

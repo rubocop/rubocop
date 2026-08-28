@@ -80,6 +80,11 @@ removed:
       `Lint/BinaryOperatorWithIdenticalOperands`. Please use
       `Lint/BinaryOperatorWithIdenticalOperands` instead
   Style/BracesAroundHashParameters: true
+  Style/DoubleCopDisableDirective:
+    severity: warning
+    reason: >
+      it has been superseded by `Lint/CopDirectiveSyntax`. Please use
+      `Lint/CopDirectiveSyntax` instead
   Style/MethodMissingSuper:
     reason: >
       it has been superseded by `Lint/MissingSuper`. Please use

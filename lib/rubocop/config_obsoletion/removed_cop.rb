@@ -27,7 +27,15 @@ module RuboCop
         end
       end
 
+      def warning?
+        severity == 'warning'
+      end
+
       private
+
+      def severity
+        metadata['severity']
+      end
 
       def reason
         metadata['reason']
