@@ -866,6 +866,29 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
   end
 
+  context 'when the first pair omits its value', :ruby31 do
+    let(:cop_config) { { 'EnforcedColonStyle' => 'separator' } }
+
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        f(
+          aa:,
+          b: nil
+        )
+      RUBY
+    end
+
+    it 'still checks a hash whose first pair has a value' do
+      expect_offense(<<~RUBY)
+        f(
+          aaa: nil,
+          bb:
+          ^^^ Align the separators of a hash literal if they span more than one line.
+        )
+      RUBY
+    end
+  end
+
   context 'with table alignment configuration' do
     let(:cop_config) do
       {
