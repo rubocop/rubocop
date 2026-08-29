@@ -1,0 +1,1 @@
+* [#15621](https://github.com/rubocop/rubocop/pull/15621): Fix incorrect analysis results when the result cache cannot compute a file checksum, which could serve one file's cached results for another file. ([@koic][])

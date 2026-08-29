@@ -325,6 +325,20 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     end
   end
 
+  describe 'when the file checksum cannot be computed' do
+    it 'neither writes nor reads the cache entry shared with other such files' do
+      missing_cache = described_class.new('nonexistent.rb', team, options, config_store, cache_root)
+      missing_cache.save(offenses)
+
+      other_missing_cache = described_class.new(
+        'other_nonexistent.rb', team, options, config_store, cache_root
+      )
+
+      expect(missing_cache).not_to be_valid
+      expect(other_missing_cache).not_to be_valid
+    end
+  end
+
   describe '#save' do
     context 'when the default internal encoding is UTF-8' do
       let(:offenses) do
@@ -375,7 +389,9 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       cfg = RuboCop::Config.new('AllCops' => { 'MaxFilesInCache' => max_files_in_cache })
       allow(config_store).to receive(:for_pwd).and_return(cfg)
       allow(config_store).to receive(:for_file).with('other.rb').and_return(cfg)
+      allow(config_store).to receive(:for_file).with('some.rb').and_return(cfg)
       create_file('other.rb', ['x = 1'])
+      create_file('some.rb', ['y = 2'])
     end
 
     it 'removes the oldest files in the standard cache_root if needed' do

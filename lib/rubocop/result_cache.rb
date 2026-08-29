@@ -123,7 +123,7 @@ module RuboCop
     end
 
     def valid?
-      File.exist?(@path)
+      !@checksum_unavailable && File.exist?(@path)
     end
 
     def load
@@ -132,6 +132,8 @@ module RuboCop
     end
 
     def save(offenses)
+      return if @checksum_unavailable
+
       dir = File.dirname(@path)
 
       begin
@@ -182,8 +184,11 @@ module RuboCop
       digester.file(file)
       digester.hexdigest
     rescue Errno::ENOENT
-      # Spurious files that come and go should not cause a crash, at least not
-      # here.
+      # Spurious files that come and go should not cause a crash, at least not here.
+      # Every file that fails to checksum shares this sentinel value, so the cache entry
+      # must be neither saved nor considered valid, or one file's cached results could be
+      # served as another's.
+      @checksum_unavailable = true
       '_'
     end
 
