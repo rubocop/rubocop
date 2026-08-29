@@ -318,6 +318,7 @@ module RuboCop
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get the
           # last value of each. A local variable fixes the problem.
+          return if tab_indented_key_insertion?(node, delta)
 
           if node.value && node.respond_to?(:value_omission?) && !node.value_omission?
             correct_key_value(corrector, delta, node.key.source_range,
@@ -327,6 +328,12 @@ module RuboCop
             delta_value = delta[:key] || 0
             correct_no_value(corrector, delta_value, node.source_range)
           end
+        end
+
+        def tab_indented_key_insertion?(node, delta)
+          return false unless tab_indentation_enforced?
+
+          (delta[:key] || 0).positive? && begins_its_line?(node.source_range)
         end
 
         def correct_no_value(corrector, key_delta, key)
@@ -384,6 +391,10 @@ module RuboCop
         def enforce_first_argument_with_fixed_indentation?
           argument_alignment_config = config.for_enabled_cop('Layout/ArgumentAlignment')
           argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def tab_indentation_enforced?
+          config.for_enabled_cop('Layout/IndentationStyle')['EnforcedStyle'] == 'tabs'
         end
 
         def same_line?(node1, node2)
