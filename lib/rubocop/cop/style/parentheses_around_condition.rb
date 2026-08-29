@@ -123,8 +123,13 @@ module RuboCop
 
         def parens_allowed?(node)
           parens_required?(node) ||
-            (safe_assignment?(node) && safe_assignment_allowed?) ||
+            (safe_assignment?(node) && safe_assignment_kept?) ||
             (node.multiline? && allow_multiline_conditions?)
+        end
+
+        def safe_assignment_kept?
+          safe_assignment_allowed? ||
+            config.for_enabled_cop('Lint/AssignmentInCondition')['AllowSafeAssignment']
         end
 
         def allow_multiline_conditions?

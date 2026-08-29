@@ -255,6 +255,35 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
         end
       RUBY
     end
+
+    context 'when `Lint/AssignmentInCondition` allows safe assignment' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Style/ParenthesesAroundCondition' => cop_config,
+          'Lint/AssignmentInCondition' => { 'Enabled' => true, 'AllowSafeAssignment' => true }
+        )
+      end
+
+      it 'accepts variable assignment in condition surrounded with parentheses' do
+        expect_no_offenses(<<~RUBY)
+          if (test = 10)
+          end
+        RUBY
+      end
+
+      it 'does not accept parentheses around a non-assignment condition' do
+        expect_offense(<<~RUBY)
+          if (test == 10)
+             ^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if test == 10
+          end
+        RUBY
+      end
+    end
   end
 
   context 'parentheses in multiline conditions are allowed' do
