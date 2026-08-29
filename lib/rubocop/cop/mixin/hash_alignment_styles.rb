@@ -55,8 +55,7 @@ module RuboCop
       # Common functionality for checking alignment of hash values.
       module ValueAlignment
         def checkable_layout?(node)
-          !node.pairs_on_same_line? && !node.mixed_delimiters? &&
-            node.pairs.none? { |pair| value_on_later_line?(pair) }
+          !node.pairs_on_same_line? && !node.mixed_delimiters? && alignable_values?(node)
         end
 
         def deltas(first_pair, current_pair)
@@ -68,6 +67,12 @@ module RuboCop
         end
 
         private
+
+        def alignable_values?(node)
+          return false if node.pairs.first.value_omission?
+
+          node.pairs.none? { |pair| value_on_later_line?(pair) }
+        end
 
         def value_on_later_line?(pair)
           pair.value && pair.key.last_line != pair.value.first_line
