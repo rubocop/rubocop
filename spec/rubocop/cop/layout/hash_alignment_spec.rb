@@ -1822,4 +1822,28 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       end
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/HashAlignment' => default_cop_config.merge(cop_config),
+        'Layout/ArgumentAlignment' => argument_alignment_config,
+        'Layout/IndentationStyle' => { 'Enabled' => true, 'EnforcedStyle' => 'tabs' }
+      )
+    end
+
+    it 'does not register an offense for a tab-indented hash' do
+      expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+      h = { foo: 1,
+      \t\t\tbar: 2 }
+      RUBY
+    end
+
+    it 'does not register an offense for a space-indented misaligned hash' do
+      expect_no_offenses(<<~RUBY)
+        h = { foo: 1,
+          bar: 2 }
+      RUBY
+    end
+  end
 end

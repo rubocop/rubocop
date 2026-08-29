@@ -2696,6 +2696,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects when specifying `EnforcedStyle: tabs` of `Layout/IndentationStyle` and `Layout/HashAlignment`' do
+    create_file('example.rb', <<~RUBY)
+      h = { foo: 1,
+            bar: 2 }
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/IndentationStyle:
+        EnforcedStyle: tabs
+    YAML
+
+    expect(
+      cli.run(['--autocorrect', '--only', 'Layout/IndentationStyle,Layout/HashAlignment'])
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<-RUBY.gsub(/^      /, ''))
+      h = { foo: 1,
+      \t\t\tbar: 2 }
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`Layout/HashAlignment` and `Layout/FirstHashElementIndentation`' do
     create_file('example.rb', <<~RUBY)
