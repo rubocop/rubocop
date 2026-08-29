@@ -57,12 +57,15 @@ module RuboCop
 
         def on_send(node)
           return if (receiver = node.receiver) && allowed_receiver?(receiver)
+          return if part_of_ignored_node?(node)
 
           if offense_for_brackets?(node)
+            ignore_node(node.first_argument)
             add_offense(node.loc.selector, message: BRACKET_MSG) do |corrector|
               correct_fetch_to_brackets(corrector, node)
             end
           elsif offense_for_fetch?(node)
+            ignore_node(node.first_argument)
             add_offense(node, message: FETCH_MSG) do |corrector|
               correct_brackets_to_fetch(corrector, node)
             end

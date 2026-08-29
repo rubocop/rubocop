@@ -58,6 +58,17 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
       expect_no_offenses('fetch(key) { default }')
     end
 
+    it 'registers an offense for the outer call when the key is itself a fetch' do
+      expect_offense(<<~RUBY)
+        a.fetch(b.fetch(:y))
+          ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a[b[:y]]
+      RUBY
+    end
+
     context 'when using safe navigation operator' do
       it 'does not register an offense for fetch with one argument' do
         # The bracket equivalent would be the unreadable `hash&.[](key)`.
@@ -132,6 +143,33 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
           hash&.fetch(key)
         RUBY
       end
+    end
+  end
+
+  context 'with EnforcedStyle: fetch and a key that is itself a lookup' do
+    let(:cop_config) { { 'EnforcedStyle' => 'fetch' } }
+
+    it 'registers an offense for the outer call and corrects both' do
+      expect_offense(<<~RUBY)
+        a[b[:y]]
+        ^^^^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a.fetch(b.fetch(:y))
+      RUBY
+    end
+
+    it 'registers both offenses when the nesting is in the receiver' do
+      expect_offense(<<~RUBY)
+        a[:x][:y]
+        ^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+        ^^^^^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a.fetch(:x).fetch(:y)
+      RUBY
     end
   end
 
