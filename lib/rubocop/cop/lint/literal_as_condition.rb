@@ -48,7 +48,7 @@ module RuboCop
           add_offense(node.lhs) do |corrector|
             # Don't autocorrect `'foo' && return` because having `return` as
             # the leftmost node can lead to a void value expression syntax error.
-            next if node.rhs.type?(:return, :break, :next)
+            next if void_value_expression?(node.rhs)
 
             corrector.replace(node, node.rhs.source)
           end
@@ -60,7 +60,7 @@ module RuboCop
           add_offense(node.lhs) do |corrector|
             # Don't autocorrect `'foo' && return` because having `return` as
             # the leftmost node can lead to a void value expression syntax error.
-            next if node.rhs.type?(:return, :break, :next)
+            next if void_value_expression?(node.rhs)
 
             corrector.replace(node, node.rhs.source)
           end
@@ -174,6 +174,12 @@ module RuboCop
         end
 
         private
+
+        def void_value_expression?(node)
+          node = node.children.last while node&.begin_type?
+
+          node&.type?(:return, :break, :next)
+        end
 
         def check_for_literal(node)
           cond = condition(node)
