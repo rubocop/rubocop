@@ -1012,6 +1012,30 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
+      context 'when a body repeats the same access modifier' do
+        let(:cop_config) { { 'EnforcedStyle' => 'inline' } }
+
+        it 'registers an offense for each and inlines them' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class A
+              %{access_modifier}
+              ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+              def b; end
+              %{access_modifier}
+              ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+              def c; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class A
+              #{access_modifier} def b; end
+              #{access_modifier} def c; end
+            end
+          RUBY
+        end
+      end
+
       it_behaves_like 'always accepted', access_modifier
     end
   end

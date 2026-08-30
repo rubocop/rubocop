@@ -347,7 +347,8 @@ module RuboCop
         end
 
         def remove_modifier_node_within_begin(corrector, modifier_node, begin_node)
-          def_node = begin_node.children[begin_node.children.index(modifier_node) + 1]
+          modifier_index = begin_node.children.find_index { |child| child.equal?(modifier_node) }
+          def_node = begin_node.children[modifier_index + 1]
           # Stop the removal range at the first comment that precedes the def, if
           # any exist. Without this, comments between the modifier and the def are
           # dropped because they fall inside the removed range.
