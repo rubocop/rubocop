@@ -805,6 +805,28 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       expect_no_corrections
     end
 
+    it 'registers an offense but does not autocorrect when a parenthesized `return` is used after `||`' do
+      expect_offense(<<~RUBY)
+        def clone(opts = nil || (return self))
+                         ^^^ Literal `nil` appeared as a condition.
+          super
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not autocorrect when a parenthesized `return` is used after `&&`' do
+      expect_offense(<<~RUBY)
+        def foo(opts = 123 && (foo; return self))
+                       ^^^ Literal `123` appeared as a condition.
+          super
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'registers an offense but does not autocorrect when inside `if` and `return` is used after `&&`' do
       expect_offense(<<~RUBY)
         def foo
