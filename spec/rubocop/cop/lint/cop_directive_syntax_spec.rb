@@ -94,9 +94,21 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
     RUBY
   end
 
+  it 'does not register an offense when a trailing comment mentions another directive' do
+    expect_no_offenses(<<~RUBY)
+      # rubocop:disable Layout/LineLength -- see # rubocop:disable Style/Encoding in old branch
+    RUBY
+  end
+
   it 'does not register an offense for a single line directive with trailing comment' do
     expect_no_offenses(<<~RUBY)
       a = 1 # rubocop:disable Layout/LineLength -- This is a good comment.
+    RUBY
+  end
+
+  it 'does not register an offense for a single line directive whose trailing comment mentions another directive' do
+    expect_no_offenses(<<~RUBY)
+      a = 1 # rubocop:disable Layout/LineLength -- see # rubocop:disable Style/Encoding in old branch
     RUBY
   end
 
