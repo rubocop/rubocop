@@ -89,21 +89,30 @@ module RuboCop
               'in an array, relative to %<base_description>s.'
 
         def on_array(node)
-          return if style != :consistent && enforce_first_argument_with_fixed_indentation?
+          return if autocorrect_incompatible_with_other_cops?(node, nil)
 
           check(node, nil) if node.loc.begin
         end
 
         def on_send(node)
-          return if style != :consistent && enforce_first_argument_with_fixed_indentation?
-
           each_argument_node(node, :array) do |array_node, left_parenthesis|
+            next if autocorrect_incompatible_with_other_cops?(array_node, left_parenthesis)
+
             check(array_node, left_parenthesis)
           end
         end
         alias on_csend on_send
 
         private
+
+        def autocorrect_incompatible_with_other_cops?(array_node, left_parenthesis)
+          return false unless enforce_first_argument_with_fixed_indentation?
+          return true if style != :consistent
+
+          _base_column, indent_base_type =
+            indent_base(array_node.loc.begin, array_node.values.first, left_parenthesis)
+          indent_base_type != :start_of_line
+        end
 
         def autocorrect(corrector, node)
           AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)

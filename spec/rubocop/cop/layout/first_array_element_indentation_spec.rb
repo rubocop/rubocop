@@ -10,10 +10,27 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation, :config do
                         cop_config.merge(supported_styles).merge(
                           'IndentationWidth' => cop_indent
                         ),
+                        'Layout/ArrayAlignment' => array_alignment_config,
                         'Layout/IndentationWidth' => { 'Width' => 2 })
   end
   let(:cop_config) { { 'EnforcedStyle' => 'special_inside_parentheses' } }
+  let(:array_alignment_config) { {} }
   let(:cop_indent) { nil } # use indent from Layout/IndentationWidth
+
+  context 'when Layout/ArrayAlignment uses `with_fixed_indentation`' do
+    let(:cop_config) { { 'EnforcedStyle' => 'consistent' } }
+    let(:array_alignment_config) { { 'EnforcedStyle' => 'with_fixed_indentation' } }
+
+    it 'does not register an offense for a multi-line array value in a multi-pair hash' do
+      expect_no_offenses(<<~RUBY)
+        foo bar: [
+              'foo',
+              'bar'
+        ],
+        baz: 'baz'
+      RUBY
+    end
+  end
 
   context 'when array is operand' do
     it 'accepts correctly indented first element' do
