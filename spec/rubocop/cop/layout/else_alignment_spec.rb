@@ -882,4 +882,23 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
       RUBY
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/EndAlignment' => end_alignment_config,
+        'Layout/IndentationStyle' => { 'Enabled' => true, 'EnforcedStyle' => 'tabs' }
+      )
+    end
+
+    it 'does not register an offense for a misaligned `else`' do
+      expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+      \tif a
+      \t\tb
+      else
+      \t\tc
+      \tend
+      RUBY
+    end
+  end
 end

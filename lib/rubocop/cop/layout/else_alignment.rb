@@ -123,6 +123,8 @@ module RuboCop
         end
 
         def check_alignment(base_range, else_range)
+          return if tab_indentation_enforced?
+
           return unless begins_its_line?(else_range)
 
           @column_delta = column_offset_between(base_range, else_range)

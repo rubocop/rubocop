@@ -118,6 +118,7 @@ module RuboCop
         MSG = 'Indent `%<branch_type>s` %<depth>s `%<base>s`.'
 
         def on_case(case_node)
+          return if tab_indentation_enforced?
           return if case_node.single_line?
           return if enforced_style_end? && end_and_last_conditional_same_line?(case_node)
 
@@ -125,6 +126,7 @@ module RuboCop
         end
 
         def on_case_match(case_match_node)
+          return if tab_indentation_enforced?
           return if case_match_node.single_line?
           return if enforced_style_end? && end_and_last_conditional_same_line?(case_match_node)
 

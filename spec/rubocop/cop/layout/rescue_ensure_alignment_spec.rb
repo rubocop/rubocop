@@ -1343,4 +1343,22 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/IndentationStyle' => { 'Enabled' => true, 'EnforcedStyle' => 'tabs' }
+      )
+    end
+
+    it 'does not register an offense for a misaligned `rescue`' do
+      expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+      \tbegin
+      \t\tfoo
+      rescue Bar
+      \t\tbaz
+      \tend
+      RUBY
+    end
+  end
 end

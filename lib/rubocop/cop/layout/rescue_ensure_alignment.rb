@@ -22,6 +22,7 @@ module RuboCop
       #     puts 'error'
       #   end
       class RescueEnsureAlignment < Base
+        include Alignment
         include RangeHelp
         include EndKeywordAlignment
         extend AutoCorrector
@@ -33,10 +34,14 @@ module RuboCop
         ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method private_class_method].freeze
 
         def on_resbody(node)
+          return if tab_indentation_enforced?
+
           check(node) unless modifier?(node)
         end
 
         def on_ensure(node)
+          return if tab_indentation_enforced?
+
           check(node)
         end
 
