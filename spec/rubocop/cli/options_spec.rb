@@ -1286,7 +1286,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect(cli.run(['--format', 'emacs', '--display-cop-names', 'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         #{file}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-        #{file}:1:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:8: C: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:26: C: [Correctable] Migration/DepartmentName: Department name is missing.
         #{file}:1:41: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
@@ -1297,7 +1297,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(cli.run(['--format', 'emacs', '--no-display-cop-names', 'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
           #{file}:1:1: C: [Correctable] Missing frozen string literal comment.
-          #{file}:1:8: W: [Correctable] Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:8: C: [Correctable] Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:26: C: [Correctable] Department name is missing.
           #{file}:1:41: C: [Correctable] Trailing whitespace detected.
         RESULT
@@ -1316,7 +1316,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(cli.run(['--format', 'emacs', '--display-cop-names', 'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
           #{file}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-          #{file}:1:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:8: C: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:26: C: [Correctable] Migration/DepartmentName: Department name is missing.
           #{file}:1:41: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
@@ -1327,7 +1327,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           expect(cli.run(['--format', 'emacs', 'example1.rb'])).to eq(1)
           expect($stdout.string).to eq(<<~RESULT)
             #{file}:1:1: C: [Correctable] Missing frozen string literal comment.
-            #{file}:1:8: W: [Correctable] Unnecessary disabling of `Style/NumericLiterals`.
+            #{file}:1:8: C: [Correctable] Unnecessary disabling of `Style/NumericLiterals`.
             #{file}:1:26: C: [Correctable] Department name is missing.
             #{file}:1:41: C: [Correctable] Trailing whitespace detected.
           RESULT
@@ -1348,7 +1348,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect(cli.run(['--format', 'emacs', '--extra-details', 'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         #{file}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-        #{file}:1:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:8: C: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:47: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
       RESULT
 
@@ -1376,7 +1376,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       expect(cli.run(['--format', 'emacs', '--display-style-guide', 'example1.rb'])).to eq(1)
 
-      output = "#{file}:1:6: C: [Correctable] Security/JSONLoad: " \
+      output = "#{file}:1:6: W: [Correctable] Security/JSONLoad: " \
                "Prefer `JSON.parse` over `JSON.load`. (#{urls})"
       expect($stdout.string.lines.to_a[-1]).to eq([output, ''].join("\n"))
     end
@@ -2148,11 +2148,10 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             end
           RUBY
 
-          expect(cli.run(['--fail-level', 'warning',
+          expect(cli.run(['--fail-level', 'convention',
                           '--display-only-fail-level-offenses',
                           target_file])).to eq 1
           expect($stderr.string).to eq('')
-          expect($stdout.string).to include('1 file inspected, 1 offense detected')
           expect($stdout.string).to include('RedundantCopDisableDirective')
         end
       end

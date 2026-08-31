@@ -1694,6 +1694,7 @@ Lint/AmbiguousOperatorPrecedence:
                  Checks for expressions containing multiple binary operations with
                  ambiguous precedence.
   Enabled: pending
+  Severity: convention
   VersionAdded: '1.21'
 
 Lint/AmbiguousRange:
@@ -1783,6 +1784,7 @@ Lint/ConstantResolution:
   Description: 'Checks that constants are fully qualified with `::`.'
   VersionChanged: '1.89'
   Enabled: false
+  Severity: convention
   VersionAdded: '0.86'
   # Restrict this cop to only looking at certain names
   Only: []
@@ -1911,6 +1913,7 @@ Lint/DisjunctiveAssignmentInConstructor:
   Description: 'In constructor, plain assignment is preferred over disjunctive.'
   StyleGuide: '#disjunctive-assignment-in-constructor'
   Enabled: true
+  Severity: convention
   Safe: false
   VersionAdded: '0.62'
   VersionChanged: '0.88'
@@ -2015,6 +2018,7 @@ Lint/EmptyBlock:
 Lint/EmptyClass:
   Description: 'Checks for classes and metaclasses without a body.'
   Enabled: pending
+  Severity: convention
   VersionAdded: '1.3'
   AllowComments: false
 
@@ -2041,6 +2045,7 @@ Lint/EmptyExpression:
 Lint/EmptyFile:
   Description: 'Enforces that Ruby source files are not empty.'
   Enabled: true
+  Severity: convention
   AllowComments: true
   VersionAdded: '0.90'
 
@@ -2118,6 +2123,7 @@ Lint/HeredocMethodCallPosition:
                  the receiver of the call is a HEREDOC.
   StyleGuide: '#heredoc-method-calls'
   Enabled: false
+  Severity: convention
   VersionAdded: '0.68'
 
 Lint/IdentityComparison:
@@ -2215,6 +2221,7 @@ Lint/MisplacedMagicComment:
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
+  Severity: convention
   VersionAdded: '0.52'
   VersionChanged: '1.90'
   # Maximum number of consecutive lines the cop can be disabled for.
@@ -2394,17 +2401,20 @@ Lint/RedundantCopDisableDirective:
                  Note: this cop is not disabled when disabling all cops.
                  It must be explicitly disabled.
   Enabled: true
+  Severity: convention
   VersionAdded: '0.76'
 
 Lint/RedundantCopEnableDirective:
   Description: Checks for rubocop:enable comments that can be removed.
   Enabled: true
+  Severity: convention
   VersionAdded: '0.76'
   VersionChanged: '1.90'
 
 Lint/RedundantDirGlobSort:
   Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
   Enabled: pending
+  Severity: convention
   VersionAdded: '1.8'
   VersionChanged: '1.26'
   SafeAutoCorrect: false
@@ -2412,17 +2422,20 @@ Lint/RedundantDirGlobSort:
 Lint/RedundantRegexpQuantifiers:
   Description: 'Checks for redundant quantifiers in Regexps.'
   Enabled: pending
+  Severity: convention
   VersionAdded: '1.53'
 
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
   Enabled: true
+  Severity: convention
   VersionAdded: '0.76'
   VersionChanged: '1.73'
 
 Lint/RedundantSafeNavigation:
   Description: 'Checks for redundant safe navigation calls.'
   Enabled: true
+  Severity: convention
   VersionAdded: '0.93'
   VersionChanged: '1.79'
   AllowedMethods:
@@ -2443,6 +2456,7 @@ Lint/RedundantSafeNavigation:
 Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
   Enabled: true
+  Severity: convention
   VersionAdded: '0.76'
   VersionChanged: '1.7'
   AllowPercentLiteralArrayArgument: true
@@ -2451,22 +2465,26 @@ Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   StyleGuide: '#no-to-s'
   Enabled: true
+  Severity: convention
   VersionAdded: '0.19'
   VersionChanged: '0.77'
 
 Lint/RedundantTypeConversion:
   Description: 'Checks for redundantly converting a literal to the same type.'
   Enabled: pending
+  Severity: convention
   VersionAdded: '1.72'
 
 Lint/RedundantWithIndex:
   Description: 'Checks for redundant `with_index`.'
   Enabled: true
+  Severity: convention
   VersionAdded: '0.50'
 
 Lint/RedundantWithObject:
   Description: 'Checks for redundant `with_object`.'
   Enabled: true
+  Severity: convention
   SafeAutoCorrect: false
   VersionAdded: '0.51'
   VersionChanged: '1.88'
@@ -2631,6 +2649,7 @@ Lint/SuppressedExceptionInNumberConversion:
 Lint/SymbolConversion:
   Description: 'Checks for unnecessary symbol conversions.'
   Enabled: pending
+  Severity: convention
   VersionAdded: '1.9'
   VersionChanged: '1.16'
   EnforcedStyle: strict
@@ -2671,11 +2690,13 @@ Lint/TrailingCommaInAttributeDeclaration:
 Lint/TripleQuotes:
   Description: 'Checks for useless triple quote constructs.'
   Enabled: pending
+  Severity: convention
   VersionAdded: '1.9'
 
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
+  Severity: convention
   VersionAdded: '0.21'
   AllowKeywordBlockArguments: false
 
@@ -2737,6 +2758,7 @@ Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
+  Severity: convention
   AutoCorrect: contextual
   VersionAdded: '0.21'
   VersionChanged: '1.61'
@@ -2747,6 +2769,7 @@ Lint/UnusedMethodArgument:
   Description: 'Checks for unused method arguments.'
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
+  Severity: convention
   AutoCorrect: contextual
   VersionAdded: '0.21'
   VersionChanged: '1.69'
@@ -2766,6 +2789,7 @@ Lint/UnusedPrivateMethod:
   # would be reported as false positives. It is intended for occasional
   # dead-code sweeps rather than permanent enforcement.
   Enabled: false
+  Severity: refactor
   AllowedNames: []
   AllowedPatterns: []
   VersionAdded: '1.89'
@@ -2890,6 +2914,7 @@ Metrics/AbcSize:
     - https://wiki.c2.com/?AbcMetric
     - https://en.wikipedia.org/wiki/ABC_Software_Metric
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Rejected by more than a third of projects; those that keep it split evenly between 20 and 30.
   Preview:
@@ -2906,6 +2931,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Rejected by nearly a third of projects; the raised limits range from 30 to 300.
   Preview:
@@ -2927,6 +2953,7 @@ Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting.'
   StyleGuide: '#three-is-the-number-thou-shalt-count'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Rejected by a fifth of projects; almost nobody adjusts the limit instead.
   Preview:
@@ -2940,6 +2967,7 @@ Metrics/BlockNesting:
 Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Rejected by a third of projects; those that keep it set the limit three times higher.
   Preview:
@@ -2953,6 +2981,7 @@ Metrics/ClassLength:
 Metrics/CollectionLiteralLength:
   Description: 'Checks for `Array` or `Hash` literals with many entries.'
   Enabled: pending
+  Severity: refactor
   VersionAdded: '1.47'
   VersionChanged: '1.88'
   Max: 250
@@ -2961,6 +2990,7 @@ Metrics/CollectionLiteralLength:
 Metrics/CyclomaticComplexity:
   Description: 'Checks that the cyclomatic complexity of methods is not higher than the configured maximum.'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Rejected by a third of projects; those that keep it raise the limit to 10 or more.
   Preview:
@@ -2975,6 +3005,7 @@ Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   StyleGuide: '#short-methods'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Rejected outright by a third of projects; the ones that keep it disagree on the limit.
   Preview:
@@ -2990,6 +3021,7 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Same story as `ClassLength`.
   Preview:
@@ -3004,6 +3036,7 @@ Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
   StyleGuide: '#too-many-params'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Rejected by a fifth of projects, more than raise the limit.
   Preview:
@@ -3017,6 +3050,7 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Description: 'Checks that the perceived complexity of methods is not higher than the configured maximum.'
   Enabled: true
+  Severity: refactor
   # Expected to be disabled by default in the next major release.
   # Same story as `CyclomaticComplexity`.
   Preview:
@@ -3404,6 +3438,7 @@ Naming/VariableNumber:
 Security/CompoundHash:
   Description: 'Checks for `hash` implementations that combine values manually instead of delegating to `Array#hash`.'
   Enabled: pending
+  Severity: warning
   Safe: false
   VersionAdded: '1.28'
   VersionChanged: '1.51'
@@ -3411,6 +3446,7 @@ Security/CompoundHash:
 Security/Eval:
   Description: 'Checks for the use of `Kernel#eval` and `Binding#eval` with dynamic arguments.'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.47'
 
 Security/IoMethods:
@@ -3418,6 +3454,7 @@ Security/IoMethods:
                  Checks for the first argument to `IO.read`, `IO.binread`, `IO.write`, `IO.binwrite`,
                  `IO.foreach`, and `IO.readlines`.
   Enabled: pending
+  Severity: warning
   Safe: false
   VersionAdded: '1.22'
 
@@ -3429,6 +3466,7 @@ Security/JSONLoad:
     - 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load'
     - 'https://bugs.ruby-lang.org/issues/19528'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.43'
   VersionChanged: '1.22'
   # Autocorrect here will change to a method that may cause crashes depending
@@ -3442,11 +3480,13 @@ Security/MarshalLoad:
   References:
     - 'https://ruby-doc.org/core-2.7.0/Marshal.html#module-Marshal-label-Security+considerations'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.47'
 
 Security/Open:
   Description: 'Checks for the use of `Kernel#open` and `URI.open` with dynamic data.'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.53'
   VersionChanged: '1.0'
   Safe: false
@@ -3458,6 +3498,7 @@ Security/YAMLLoad:
   References:
     - 'https://ruby-doc.org/stdlib-2.7.0/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.47'
   SafeAutoCorrect: false
 
