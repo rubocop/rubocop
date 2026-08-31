@@ -109,6 +109,10 @@ module RuboCop
         MSG = 'Use a guard clause (`%<example>s`) instead of wrapping the ' \
               'code inside a conditional expression.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MissingElse]
+        end
+
         def on_def(node)
           body = node.body
 

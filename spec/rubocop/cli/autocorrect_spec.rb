@@ -678,6 +678,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/GuardClause` with `Style/MissingElse`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/EmptyElse:
+        EnforcedStyle: empty
+      Style/MissingElse:
+        Enabled: true
+    YAML
+    source = <<~RUBY
+      def rename(hash)
+        if hash
+          do_this
+          do_that
+        end
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/GuardClause,Style/MissingElse,Style/EmptyElse'
+                   ])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def rename(hash)
+        return unless hash
+          do_this
+          do_that
+      #{'  '}
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: explicit` of `Naming/BlockForwarding` with `Style/ArgumentsForwarding`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
