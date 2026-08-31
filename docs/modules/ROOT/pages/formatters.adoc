@@ -29,6 +29,7 @@ or the default `progress` format if no `-f/--format` is specified before the `-o
 | JUnit | `junit` | CI systems like Jenkins (machine-parsable)
 | TAP | `tap` | Test Anything Protocol consumers (machine-parsable)
 | GitHub Actions | `github` | GitHub Actions annotations
+| SARIF | `sarif` | GitHub code scanning and other SARIF consumers (machine-parsable)
 | HTML | `html` | HTML report for sharing / CI artifacts
 | Markdown | `markdown` | Markdown report for PR comments
 | File List | `files` | Pipe file names to other tools (machine-parsable)
@@ -426,3 +427,38 @@ $ rubocop --format github
 
 ::error file=lib/foo.rb,line=6,col=5::Style/Documentation: Missing top-level class documentation comment.
 ----
+
+== SARIF Formatter
+
+Formats offenses as https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html[SARIF 2.1.0],
+the standard interchange format for static analysis results. It's understood by
+https://docs.github.com/en/code-security/code-scanning[GitHub code scanning], Azure DevOps and
+other tools that aggregate analyzer output.
+
+[source,sh]
+----
+$ rubocop --format sarif --out rubocop.sarif
+----
+
+The point of it is getting offenses into a tool that collects results from
+several analyzers. On GitHub that means uploading the file, after which offenses
+show up as code scanning alerts on the pull request, annotated on the diff:
+
+[source,yaml]
+----
+# .github/workflows/rubocop.yml
+- run: bundle exec rubocop --format sarif --out rubocop.sarif
+  continue-on-error: true # let the upload happen even when there are offenses
+- uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: rubocop.sarif
+----
+
+SARIF only defines three severity levels, so RuboCop's `info`, `refactor` and `convention`
+severities are all reported as `note`, `warning` stays `warning`, and `error` and `fatal`
+become `error`.
+
+Each cop that reported an offense is described once under `runs[].tool.driver.rules`, with its
+description and a link to its documentation. Offenses suppressed by a `rubocop:disable` directive
+(shown with `--display-suppressed`) are reported as SARIF suppressions, along with the reason
+given in the directive.

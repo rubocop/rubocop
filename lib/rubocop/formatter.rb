@@ -24,6 +24,7 @@ module RuboCop
     autoload :PacmanFormatter, 'rubocop/formatter/pacman_formatter'
     autoload :ProgressFormatter, 'rubocop/formatter/progress_formatter'
     autoload :QuietFormatter, 'rubocop/formatter/quiet_formatter'
+    autoload :SARIFFormatter, 'rubocop/formatter/sarif_formatter'
     autoload :TapFormatter, 'rubocop/formatter/tap_formatter'
     autoload :WorstOffendersFormatter, 'rubocop/formatter/worst_offenders_formatter'
 

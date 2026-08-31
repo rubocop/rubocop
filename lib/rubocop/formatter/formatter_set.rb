@@ -23,6 +23,7 @@ module RuboCop
         '[pa]cman'      => 'PacmanFormatter',
         '[p]rogress'    => 'ProgressFormatter',
         '[q]uiet'       => 'QuietFormatter',
+        '[sa]rif'       => 'SARIFFormatter',
         '[s]imple'      => 'SimpleTextFormatter',
         '[t]ap'         => 'TapFormatter',
         '[w]orst'       => 'WorstOffendersFormatter'
