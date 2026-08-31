@@ -148,6 +148,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                  [pa]cman
                                                  [p]rogress (default)
                                                  [q]uiet
+                                                 [sa]rif
                                                  [s]imple
                                                  [t]ap
                                                  [w]orst
