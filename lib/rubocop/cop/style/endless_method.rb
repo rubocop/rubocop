@@ -227,13 +227,7 @@ module RuboCop
         def too_long_when_made_endless?(node)
           return false unless config.cop_enabled?('Layout/LineLength')
 
-          offset = modifier_offset(node)
-
-          endless_replacement(node).length + offset > max_line_length
-        end
-
-        def modifier_offset(node)
-          same_line?(node.parent, node) ? node.loc.column - node.parent.loc.column : 0
+          endless_replacement(node).length + node.loc.column > max_line_length
         end
       end
     end

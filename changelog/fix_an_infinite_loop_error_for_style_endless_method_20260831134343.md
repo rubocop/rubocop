@@ -1,0 +1,1 @@
+* [#15644](https://github.com/rubocop/rubocop/pull/15644): Fix an infinite loop error for `Style/EndlessMethod` when an indented method definition would exceed `Layout/LineLength` once made endless. ([@viralpraxis][])
