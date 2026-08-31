@@ -27,6 +27,7 @@ require_relative 'rubocop/ext/regexp_parser'
 require_relative 'rubocop/core_ext/string'
 require_relative 'rubocop/ext/processed_source'
 
+require_relative 'rubocop/changed_files'
 require_relative 'rubocop/error'
 require_relative 'rubocop/file_finder'
 require_relative 'rubocop/file_patterns'

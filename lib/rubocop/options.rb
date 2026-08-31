@@ -109,6 +109,10 @@ module RuboCop
         option(opts, '--ignore-parent-exclusion')
         option(opts, '--ignore-unrecognized-cops')
         option(opts, '--force-default-config')
+        option(opts, '--changed [REVISION]') do |revision|
+          @options[:changed] = revision || ChangedFiles::DEFAULT_REVISION
+          @validator.validate_changed_revision(revision)
+        end
         option(opts, '-s', '--stdin FILE')
         option(opts, '--editor-mode')
         option(opts, '-P', '--[no-]parallel')
@@ -414,6 +418,7 @@ module RuboCop
       validate_display_only_correctable_and_autocorrect
       validate_lsp_and_editor_mode
       validate_diff
+      validate_changed_and_stdin
       validate_enable_all_cops_and_disable_all_cops
       disable_parallel_when_invalid_option_combo
 
@@ -467,6 +472,12 @@ module RuboCop
       return unless @options.key?(:diff) && @options.key?(:auto_gen_config)
 
       raise OptionArgumentError, '--diff cannot be used with --auto-gen-config.'
+    end
+
+    def validate_changed_and_stdin
+      return unless @options.key?(:changed) && @options.key?(:stdin)
+
+      raise OptionArgumentError, '--changed cannot be used with --stdin.'
     end
 
     def validate_lsp_and_editor_mode
@@ -531,6 +542,17 @@ module RuboCop
 
     def incompatible_options
       @incompatible_options ||= @options.keys & Options::EXITING_OPTIONS
+    end
+
+    # OptionParser hands `--changed lib/` the path as the revision, which is a
+    # natural thing to type, so point at the fix rather than at git's error.
+    def validate_changed_revision(revision)
+      return unless revision && File.exist?(revision)
+
+      raise OptionArgumentError,
+            "--changed takes a git revision, but `#{revision}` is a path. Write the revision " \
+            "as `--changed=#{revision}` if that is really what you meant, or drop it to " \
+            'compare against HEAD.'
     end
 
     def validate_exclude_limit_option
@@ -610,6 +632,10 @@ module RuboCop
       ignore_parent_exclusion:          ['Prevent from inheriting `AllCops/Exclude` from',
                                          'parent folders.'],
       ignore_unrecognized_cops:         ['Ignore unrecognized cops or departments in the config.'],
+      changed:                          ['Inspect only the files that differ from a git',
+                                         'revision, defaulting to HEAD. Untracked files',
+                                         'count as changed. Pass a revision with',
+                                         '`--changed=REVISION`.'],
       force_default_config:             ['Use default configuration even if configuration',
                                          'files are present in the directory tree.'],
       format:                           ['Choose an output formatter. This option',

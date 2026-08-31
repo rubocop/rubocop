@@ -98,6 +98,49 @@ $ rubocop -x
 
 TIP: Review the diff after running autocorrect, especially with `-A`. See xref:usage/autocorrect.adoc[Autocorrect] for more details on safe vs. unsafe corrections.
 
+== Inspecting Only What Changed
+
+On a large project you often care only about the code you just touched.
+`--changed` asks git which files differ and inspects those:
+
+[source,sh]
+----
+# Files you have modified since the last commit, including untracked ones
+$ rubocop --changed
+
+# Everything your branch changes relative to main - useful on CI
+$ rubocop --changed=main
+----
+
+Deleted files are skipped, and `Include`/`Exclude` still apply, so the result is
+the intersection of "what git says changed" and "what RuboCop would inspect
+anyway". Paths given on the command line narrow it further, so
+`rubocop --changed lib` inspects the changed files under `lib`.
+
+Two things it is good for. On a large codebase that is mid-adoption, it keeps a
+local run fast and focused on the code you are actually touching:
+
+[source,sh]
+----
+$ rubocop --changed --diff
+----
+
+And on CI, it holds new code to a standard the whole repository does not meet
+yet, without a todo file:
+
+[source,sh]
+----
+$ git fetch origin main --depth=1
+$ rubocop --changed=origin/main
+----
+
+NOTE: The whole file is inspected, not just the lines that changed, so a file you
+touched can still report an offense from a part you did not write. Tools like
+https://github.com/prontolabs/pronto[Pronto] exist for line-level filtering.
+
+In a repository without any commits every file counts as changed, and outside a
+git repository `--changed` reports the error rather than guessing.
+
 == Editor Integration
 
 For the best experience, set up RuboCop in your editor so you get real-time feedback as you type. RuboCop has a xref:usage/lsp.adoc[built-in LSP server] that works with any editor that supports the Language Server Protocol.
