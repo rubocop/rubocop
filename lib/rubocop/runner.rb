@@ -53,7 +53,7 @@ module RuboCop
       Lint/RedundantCopDisableDirective RedundantCopDisableDirective Lint
     ].freeze
 
-    attr_reader :errors, :warnings
+    attr_reader :errors, :warnings, :diffs
     attr_writer :aborting
 
     def initialize(options, config_store)
@@ -63,6 +63,7 @@ module RuboCop
       @warnings = []
       @aborting = false
       @inspected_files = []
+      @diffs = []
       @report_queue = {}
     end
 
@@ -205,8 +206,7 @@ module RuboCop
     end
 
     def run_in_parallel?(files)
-      return false if @options[:auto_gen_config]
-      return false unless @options[:parallel]
+      return false unless parallel_supported_by_options?
 
       if files.size <= 1
         puts 'Skipping parallel inspection: only a single file needs inspection' if @options[:debug]
@@ -218,6 +218,13 @@ module RuboCop
       puts 'Running parallel inspection' if @options[:debug]
 
       true
+    end
+
+    # `--auto-gen-config` needs the offenses of every file in one place, and
+    # `--diff` collects the diffs in this process, where a worker's copy of
+    # them would be lost.
+    def parallel_supported_by_options?
+      @options[:parallel] && !@options[:auto_gen_config] && !@options[:diff]
     end
 
     def project_index_disables_parallel?
@@ -379,6 +386,7 @@ module RuboCop
     def do_inspection_loop(file)
       # We can reuse the prism result since the source did not change yet.
       processed_source = get_processed_source(file, @prism_result)
+      original_source = processed_source.raw_source
       # This variable is 2d array used to track corrected offenses after each
       # inspection iteration. This is used to output meaningful infinite loop
       # error message.
@@ -391,11 +399,7 @@ module RuboCop
       # once. The corrections are kept in memory while iterating and written
       # back to the file when the loop is done.
       iterate_until_no_changes(processed_source, offenses_by_iteration) do
-        # The offenses that couldn't be corrected will be found again so we
-        # only keep the corrected ones in order to avoid duplicate reporting.
-        !offenses_by_iteration.empty? && offenses_by_iteration.last.select!(&:corrected?)
-        team, new_offenses, updated_source_file = inspect_iteration(processed_source)
-        offenses_by_iteration.push(new_offenses)
+        team, updated_source_file = inspect_and_correct(processed_source, offenses_by_iteration)
 
         # We have to reprocess the source to pickup the changes. Since the
         # change could (theoretically) introduce parsing errors, we break the
@@ -411,15 +415,49 @@ module RuboCop
       # Return summary of corrected offenses after all iterations
       [processed_source, offenses_by_iteration.flatten.uniq]
     ensure
-      # Write the file once, even when the loop was left through an exception
-      # (e.g. an infinite correction loop), like the per-iteration writes
-      # used to be.
-      File.write(file, corrected_source) if corrected_source
+      finalize_corrections(file, original_source, corrected_source)
+    end
+
+    def inspect_and_correct(processed_source, offenses_by_iteration)
+      # The offenses that couldn't be corrected will be found again so we
+      # only keep the corrected ones in order to avoid duplicate reporting.
+      !offenses_by_iteration.empty? && offenses_by_iteration.last.select!(&:corrected?)
+      team, new_offenses, updated_source_file = inspect_iteration(processed_source)
+      offenses_by_iteration.push(new_offenses)
+
+      [team, updated_source_file]
+    end
+
+    # Write the file once, even when the loop was left through an exception
+    # (e.g. an infinite correction loop), like the per-iteration writes used
+    # to be. Under `--diff` nothing is written at all.
+    def finalize_corrections(file, original_source, corrected_source)
+      if @options[:diff]
+        record_diff(file, original_source, corrected_source)
+      elsif corrected_source
+        File.write(file, corrected_source)
+      end
+    end
+
+    # `--diff` reports what autocorrection would do instead of doing it. With
+    # `--stdin` the corrected source is handed back through the options rather
+    # than deferred, so that is where the new source comes from.
+    def record_diff(file, original_source, corrected_source)
+      new_source = @options[:stdin] || corrected_source
+      return unless original_source && new_source
+
+      # The original source is the file as it is on disk, so the corrected one
+      # has to go through the same line ending conversion `File.write` would
+      # apply, or on Windows every single line reads as changed.
+      new_source = emulate_write_read_cycle(new_source)
+
+      diff = UnifiedDiff.new(PathUtil.smart_path(file), original_source, new_source).to_s
+      @diffs << diff unless diff.empty?
     end
 
     def inspect_iteration(processed_source)
       team = mobilize_team(processed_source)
-      team.defer_corrections = in_memory_corrections_possible?
+      team.defer_corrections = @options[:diff] || in_memory_corrections_possible?
       offenses, updated_source_file = inspect_file(processed_source, team)
       [team, offenses, updated_source_file]
     end

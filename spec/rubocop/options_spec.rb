@@ -186,6 +186,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --disable-uncorrectable      Used with --autocorrect to annotate any
                                                offenses that do not support autocorrect
                                                with `rubocop:todo` comments.
+                  --diff                       Print a unified diff of what autocorrection
+                                               would change, without writing any files.
+                                               Turns on safe autocorrection unless a mode
+                                               was already given with -a, -A or -x.
 
           Config Generation:
                   --auto-gen-config            Generate a configuration file acting as a

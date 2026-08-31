@@ -34,6 +34,7 @@ require_relative 'rubocop/name_similarity'
 require_relative 'rubocop/path_util'
 require_relative 'rubocop/platform'
 require_relative 'rubocop/string_interpreter'
+require_relative 'rubocop/unified_diff'
 require_relative 'rubocop/util'
 require_relative 'rubocop/warning'
 
