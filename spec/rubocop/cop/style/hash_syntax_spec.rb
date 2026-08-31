@@ -2012,4 +2012,45 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
     end
   end
+
+  context 'when hash rockets are enforced and a value repeats its key', :ruby31 do
+    context 'by EnforcedStyle' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'hash_rockets', 'EnforcedShorthandSyntax' => 'always' }
+      end
+
+      it 'converts to a hash rocket rather than to shorthand' do
+        expect_offense(<<~RUBY)
+          f(a: a)
+            ^^ Use hash rockets syntax.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(:a => a)
+        RUBY
+      end
+    end
+
+    context 'by UseHashRocketsWithSymbolValues' do
+      let(:cop_config) do
+        {
+          'EnforcedStyle' => 'ruby19',
+          'EnforcedShorthandSyntax' => 'always',
+          'UseHashRocketsWithSymbolValues' => true
+        }
+      end
+
+      it 'converts to hash rockets rather than to shorthand' do
+        expect_offense(<<~RUBY)
+          f(a: :sym, b: b)
+            ^^ Use hash rockets syntax.
+                     ^^ Use hash rockets syntax.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(:a => :sym, :b => b)
+        RUBY
+      end
+    end
+  end
 end
