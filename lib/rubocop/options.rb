@@ -33,6 +33,8 @@ module RuboCop
 
       define_options.parse!(args)
 
+      imply_autocorrect_for_diff
+
       @validator.validate_compatibility
 
       if @options[:stdin]
@@ -50,6 +52,15 @@ module RuboCop
     end
 
     private
+
+    # `--diff` is a dry run of autocorrection, so it turns autocorrection on
+    # unless the user already picked a mode with `-a`, `-A` or `-x`.
+    def imply_autocorrect_for_diff
+      return unless @options[:diff] && !@options[:autocorrect]
+
+      @options[:safe_autocorrect] = true
+      @options[:autocorrect] = true
+    end
 
     # rubocop:disable-next Metrics/AbcSize
     def define_options
@@ -161,6 +172,8 @@ module RuboCop
         end
 
         option(opts, '--disable-uncorrectable')
+
+        option(opts, '--diff')
       end
     end
     # rubocop:enable Naming/InclusiveLanguage
@@ -400,6 +413,7 @@ module RuboCop
       validate_display_only_failed_and_display_only_correctable
       validate_display_only_correctable_and_autocorrect
       validate_lsp_and_editor_mode
+      validate_diff
       validate_enable_all_cops_and_disable_all_cops
       disable_parallel_when_invalid_option_combo
 
@@ -445,6 +459,14 @@ module RuboCop
 
       raise OptionArgumentError,
             '--display-only-failed cannot be used together with other display options.'
+    end
+
+    # `--diff` promises not to write anything, and `--auto-gen-config` exists to
+    # write a file.
+    def validate_diff
+      return unless @options.key?(:diff) && @options.key?(:auto_gen_config)
+
+      raise OptionArgumentError, '--diff cannot be used with --auto-gen-config.'
     end
 
     def validate_lsp_and_editor_mode
@@ -572,6 +594,10 @@ module RuboCop
       disable_uncorrectable:            ['Used with --autocorrect to annotate any',
                                          'offenses that do not support autocorrect',
                                          'with `rubocop:todo` comments.'],
+      diff:                             ['Print a unified diff of what autocorrection',
+                                         'would change, without writing any files.',
+                                         'Turns on safe autocorrection unless a mode',
+                                         'was already given with -a, -A or -x.'],
       no_exclude_limit:                 ['Do not set the limit for how many files to exclude.'],
       force_exclusion:                  ['Any files excluded by `Exclude` in configuration',
                                          'files will be excluded, even if given explicitly',

@@ -28,7 +28,16 @@ module RuboCop
             all_passed || @options[:auto_gen_config]
           end
 
-          maybe_print_corrected_source
+          if @options[:diff]
+            print_diffs(runner.diffs)
+          else
+            maybe_print_corrected_source
+          end
+
+          # A diff means autocorrectable offenses are still in the working
+          # tree, so the run has not passed even though they were "corrected"
+          # in memory.
+          all_pass_or_excluded &&= runner.diffs.empty?
 
           merge_todo_audit_status(runner_status(runner, all_pass_or_excluded))
         end
@@ -117,6 +126,17 @@ module RuboCop
           return unless Gem.loaded_specs.key?('rubocop')
 
           "#{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}\n"
+        end
+
+        def print_diffs(diffs)
+          return if diffs.empty?
+          # Integration tools own stdout when they ask for a machine-readable
+          # format, so the diff would only corrupt their input.
+          return if INTEGRATION_FORMATTERS.include?(@options[:format])
+
+          output = @options[:stderr] ? $stderr : $stdout
+          output.puts
+          diffs.each { |diff| output.print(diff) }
         end
 
         def maybe_print_corrected_source

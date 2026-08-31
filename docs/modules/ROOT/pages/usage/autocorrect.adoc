@@ -91,6 +91,37 @@ The `--disable-uncorrectable` flag generates `# rubocop:todo` comments in the
 code to suppress reporting of offenses that could not be corrected
 automatically. This is useful for gradually adopting new cops.
 
+== Previewing corrections
+
+[source,sh]
+----
+$ rubocop --diff
+----
+
+The `--diff` flag prints a unified diff of what autocorrection would change and
+leaves every file untouched. It turns on safe autocorrection by itself, and
+follows the mode you pick when combined with `-A` or `-x`.
+
+The exit status is non-zero whenever there is something to correct - a patch
+means work is left, whatever `--fail-level` says. That makes it a useful CI
+check: the build fails with the patch that would fix it right there in the log.
+
+[source,sh]
+----
+# Fail the build when anything is not formatted the way the project wants,
+# and show what would change.
+$ rubocop --diff
+
+# Take the patch and apply it locally.
+$ rubocop --diff --format quiet | git apply
+----
+
+It cannot be combined with `--auto-gen-config`, which exists to write a file.
+
+NOTE: Offenses still show up in the report as corrected, because they were
+corrected in memory. Nothing is written to disk. Use `--format quiet` to see the
+diff on its own.
+
 == Configuring autocorrect per cop
 
 Individual cops can have their autocorrect behavior configured in `.rubocop.yml`.
