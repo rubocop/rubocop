@@ -350,6 +350,43 @@ RSpec.describe RuboCop::Cop::Registry do
       expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
     end
 
+    context 'when a cop is in preview' do
+      let(:config) { RuboCop::Config.new('Lint/BooleanSymbol' => { 'Enabled' => 'preview' }) }
+
+      it 'does not include them' do
+        expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+      end
+
+      context 'when specifying the `--preview` command-line option' do
+        let(:options) { { preview: true } }
+
+        it 'includes them' do
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `Preview: true` in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => { 'Preview' => true },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'preview' }
+          )
+        end
+
+        it 'includes them' do
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+
+        context 'when specifying the `--no-preview` command-line option' do
+          let(:options) { { preview: false } }
+
+          it 'does not include them' do
+            expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+      end
+    end
+
     context 'when new cops are introduced' do
       let(:config) { RuboCop::Config.new('Lint/BooleanSymbol' => { 'Enabled' => 'pending' }) }
 

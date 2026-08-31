@@ -579,6 +579,48 @@ def on_send(node)
 end
 ----
 
+=== Shipping unstable behavior with `preview?`
+
+Making an existing cop report a case it used to miss, or correct one
+differently, changes results for every project that has the cop enabled. Such a
+change normally has to wait for a major release. `preview?` is the way to ship
+it sooner, to the projects that ask for it:
+
+[source,ruby]
+----
+def on_send(node)
+  return unless redundant_call?(node)
+  # Flagging the safe-navigation form is new; it is behind preview until we
+  # have heard from enough projects to make it the default.
+  return if node.csend_type? && !preview?
+
+  add_offense(node)
+end
+----
+
+The gate is on for projects running with `AllCops: Preview: true` or
+`--preview`, and off for everyone else. Cover both sides in the specs, since the
+stable path is the one most users are on:
+
+[source,ruby]
+----
+context 'when preview is enabled' do
+  let(:all_cops_config) { super().merge('Preview' => true) }
+
+  it 'registers an offense for the safe-navigation form' do
+    expect_offense(<<~RUBY)
+      foo&.bar
+      ^^^^^^^^ Remove the redundant call.
+    RUBY
+  end
+end
+----
+
+Reach for this only when the change is genuinely contested. A change that is
+plainly a bug fix should just ship, and a whole new cop belongs in `pending`
+instead. See xref:versioning.adoc#preview["Preview"] for the full rule and the
+lifecycle a preview change follows afterwards.
+
 [[common-patterns]]
 == Common patterns
 

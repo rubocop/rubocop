@@ -280,6 +280,12 @@ module RuboCop
         config.enabled_new_cop?(cop_name)
       end
 
+      # Preview cops are opt-in and stay silent otherwise, so unlike pending cops
+      # they are never reported as needing a decision.
+      def enabled_preview_cop?(cop_cfg, config)
+        cop_cfg.fetch('Enabled') == 'preview' && config.preview?(@options)
+      end
+
       def names
         clear_enrollment_queue
         @cops_by_badge.keys.map(&:to_s)
@@ -420,7 +426,9 @@ module RuboCop
         # caching which expects cop names or cop classes as keys.
         cfg = config.for_cop(cop_name)
 
-        cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config, cop_name)
+        cop_enabled = cfg.fetch('Enabled') == true ||
+                      enabled_pending_cop?(cfg, config, cop_name) ||
+                      enabled_preview_cop?(cfg, config)
 
         if options.fetch(:safe, false)
           cop_enabled && cfg.fetch('Safe', true)

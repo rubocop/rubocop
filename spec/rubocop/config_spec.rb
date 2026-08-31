@@ -926,6 +926,36 @@ RSpec.describe RuboCop::Config do
     it { is_expected.to be_cop_enabled('Metrics/MethodLength') }
   end
 
+  describe '#preview?' do
+    subject(:preview) { configuration.preview?(options) }
+
+    let(:options) { {} }
+
+    context 'when `AllCops: Preview` is not set' do
+      let(:hash) { {} }
+
+      it { is_expected.to be(false) }
+
+      context 'when `--preview` is given' do
+        let(:options) { { preview: true } }
+
+        it { is_expected.to be(true) }
+      end
+    end
+
+    context 'when `AllCops: Preview` is true' do
+      let(:hash) { { 'AllCops' => { 'Preview' => true } } }
+
+      it { is_expected.to be(true) }
+
+      context 'when `--no-preview` is given' do
+        let(:options) { { preview: false } }
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
   describe '#pending_cops' do
     subject(:pending_cops) { configuration.pending_cops.map(&:name) }
 

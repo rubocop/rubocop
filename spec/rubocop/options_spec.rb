@@ -68,6 +68,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                disabled by default. Overrides
                                                `AllCops/EnabledByDefault` and
                                                `AllCops/DisabledByDefault` in config files.
+                  --[no-]preview               Opt in to unstable behavior: cops that are
+                                               `Enabled: preview`, and changes to existing
+                                               cops that are not the default yet.
+                                               Overrides `AllCops: Preview`.
                   --ignore-disable-comments    Report offenses even if they have been manually disabled
                                                with a `rubocop:disable` or `rubocop:todo` directive.
                   --force-exclusion            Any files excluded by `Exclude` in configuration

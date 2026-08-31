@@ -226,6 +226,16 @@ module RuboCop
       end
     end
 
+    # Whether preview behavior is on, for cops that gate an unstable change
+    # behind it and for cops that are themselves `Enabled: preview`.
+    # `--preview` / `--no-preview` win over `AllCops: Preview`.
+    def preview?(options = {})
+      preview = options[:preview]
+      return preview unless preview.nil?
+
+      for_all_cops['Preview'] == true
+    end
+
     def active_support_extensions_enabled?
       for_all_cops['ActiveSupportExtensionsEnabled']
     end
