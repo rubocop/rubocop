@@ -551,9 +551,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # not honored and gets reported with a suggestion instead.
       # 2 real cops were enabled, but only 1 had been disabled correctly.
       expect($stdout.string).to eq(<<~RESULT)
-        #{abs('example.rb')}:3:19: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/LineLength` (did you mean `Layout/LineLength`?).
+        #{abs('example.rb')}:3:19: C: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/LineLength` (did you mean `Layout/LineLength`?).
         #{abs('example.rb')}:4:121: C: Layout/LineLength: Line is too long. [130/120]
-        #{abs('example.rb')}:8:21: W: [Correctable] Lint/RedundantCopEnableDirective: Unnecessary enabling of Layout/LineLength.
+        #{abs('example.rb')}:8:21: C: [Correctable] Lint/RedundantCopEnableDirective: Unnecessary enabling of Layout/LineLength.
         #{abs('example.rb')}:9:121: C: Layout/LineLength: Line is too long. [132/120]
         #{abs('example.rb')}:11:5: C: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RESULT
@@ -687,9 +687,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~RESULT)
           #{abs('example.rb')}:3:121: C: Layout/LineLength: Line is too long. [130/120]
-          #{abs('example.rb')}:4:1: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
-          #{abs('example.rb')}:5:12: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Layout/LineLength`, `Metrics/ClassLength`.
-          #{abs('example.rb')}:6:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:4:1: C: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:5:12: C: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Layout/LineLength`, `Metrics/ClassLength`.
+          #{abs('example.rb')}:6:8: C: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
         RESULT
       end
 

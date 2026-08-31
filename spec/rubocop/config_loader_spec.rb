@@ -1140,7 +1140,8 @@ RSpec.describe RuboCop::ConfigLoader do
               'Max' => 5,
               'CountAsOne' => [],
               'AllowedMethods' => [],
-              'AllowedPatterns' => []
+              'AllowedPatterns' => [],
+              'Severity' => 'refactor'
             }
           )
         expect { expect(configuration_from_file.to_h).to eq(config) }.not_to output.to_stderr
