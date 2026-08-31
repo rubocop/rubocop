@@ -426,6 +426,31 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'takes the indentation into account' do
+        expect_no_offenses(<<~RUBY)
+          module A
+            module B
+              def my_method
+                'this_string_puts_the_endless_form_just_over_the_limit______'
+              end
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when the same body fits at the top level' do
+        expect_offense(<<~RUBY)
+          def my_method
+          ^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            'this_string_puts_the_endless_form_just_over_the_limit______'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method = 'this_string_puts_the_endless_form_just_over_the_limit______'
+        RUBY
+      end
+
       it 'does not register an offense when the endless with access modifier version excess Metrics/MaxLineLength[Max]' do
         expect_no_offenses(<<~RUBY)
           private def my_method
