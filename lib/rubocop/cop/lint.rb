@@ -77,6 +77,7 @@ module RuboCop
       register_cop :LiteralInInterpolation, "#{__dir__}/lint/literal_in_interpolation"
       register_cop :Loop, "#{__dir__}/lint/loop"
       register_cop :MisplacedMagicComment, "#{__dir__}/lint/misplaced_magic_comment"
+      register_cop :MissingCopDisableReason, "#{__dir__}/lint/missing_cop_disable_reason"
       register_cop :MissingCopEnableDirective, "#{__dir__}/lint/missing_cop_enable_directive"
       register_cop :MissingSuper, "#{__dir__}/lint/missing_super"
       register_cop :MixedCaseRange, "#{__dir__}/lint/mixed_case_range"

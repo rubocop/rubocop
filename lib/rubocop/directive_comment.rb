@@ -12,6 +12,8 @@ module RuboCop
     # @api private
     LINT_SYNTAX_COP = "#{LINT_DEPARTMENT}/Syntax"
     # @api private
+    LINT_MISSING_DISABLE_REASON_COP = "#{LINT_DEPARTMENT}/MissingCopDisableReason"
+    # @api private
     STYLE_DISABLE_COPS_DIRECTIVE_COP = 'Style/DisableCopsWithinSourceCodeDirective'
     # @api private
     COP_NAME_PATTERN = '([A-Za-z]\w+/)*(?:[A-Za-z]\w+)'
@@ -267,8 +269,11 @@ module RuboCop
       department == LINT_DEPARTMENT ? exclude_lint_department_cops(names) : names
     end
 
+    # These cops judge the directives themselves, so a directive must not be
+    # able to silence them wholesale - the blanket disable is exactly the case
+    # they have something to say about.
     def exclude_lint_department_cops(cops)
-      cops - [LINT_REDUNDANT_DIRECTIVE_COP, LINT_SYNTAX_COP]
+      cops - [LINT_REDUNDANT_DIRECTIVE_COP, LINT_SYNTAX_COP, LINT_MISSING_DISABLE_REASON_COP]
     end
 
     def parse_signed_args

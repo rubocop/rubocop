@@ -2167,6 +2167,17 @@ Lint/MisplacedMagicComment:
   SafeAutoCorrect: false
   VersionAdded: '<<next>>'
 
+Lint/MissingCopDisableReason:
+  Description: >-
+                 Checks that `rubocop:disable` directives say why the cops are disabled.
+                 Note: this cop is not disabled when disabling all cops. It must be
+                 explicitly disabled.
+  Enabled: false
+  VersionAdded: '<<next>>'
+  # Cop or department names. A directive is exempt only when everything it
+  # disables is listed here.
+  AllowedCops: []
+
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true

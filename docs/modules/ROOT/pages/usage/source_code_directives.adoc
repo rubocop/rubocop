@@ -115,6 +115,22 @@ You can add a comment to the disabling/enabling directive by prefixing it with `
 
 The syntax of directives can be checked using the cop `Lint/CopDirectiveSyntax`.
 
+A reason is optional, but a project can require one. `Lint/MissingCopDisableReason`
+(disabled by default) reports any `disable` that does not explain itself, which
+turns a suppression into a record of a decision rather than a bare fact:
+
+[source,yaml]
+----
+Lint/MissingCopDisableReason:
+  Enabled: true
+----
+
+`rubocop:todo` directives are exempt, since `--auto-gen-config` and
+`--disable-uncorrectable` generate them and "this is debt" is explanation
+enough. Neither `rubocop:disable all` nor `rubocop:disable Lint` silences the cop - a
+blanket disable with no explanation is the case it most wants to report - so it
+has to be named to be turned off.
+
 To see what the directives in a codebase actually suppress, run with
 `--display-suppressed`: suppressed offenses are reported tagged `[Suppressed]`
 (including their `--` justification in the JSON formatter) without affecting
