@@ -103,6 +103,7 @@ module RuboCop
         option(opts, '--enable-pending-cops')
         option(opts, '--disable-all-cops')
         option(opts, '--enable-all-cops')
+        option(opts, '--[no-]preview')
         option(opts, '--ignore-disable-comments')
         option(opts, '--force-exclusion')
         option(opts, '--only-recognized-file-types')
@@ -694,6 +695,10 @@ module RuboCop
                                          '`AllCops/DisabledByDefault` in config files.'],
       display_style_guide:              'Display style guide URLs in offense messages.',
       enable_pending_cops:              'Run with pending cops.',
+      preview:                          ['Opt in to unstable behavior: cops that are',
+                                         '`Enabled: preview`, and changes to existing',
+                                         'cops that are not the default yet.',
+                                         'Overrides `AllCops: Preview`.'],
       enable_all_cops:                  ['Run with all cops enabled, including those',
                                          'disabled by default. Overrides',
                                          '`AllCops/EnabledByDefault` and',

@@ -21,7 +21,7 @@ module RuboCop
 
     # @api private
     CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect References].to_set.freeze
-    CONFIG_CHECK_DEPARTMENTS = %w[pending override_department].freeze
+    CONFIG_CHECK_DEPARTMENTS = %w[pending preview override_department].freeze
     CONFIG_CHECK_AUTOCORRECTS = %w[always contextual disabled].freeze
     private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
 

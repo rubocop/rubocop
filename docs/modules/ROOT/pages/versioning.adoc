@@ -37,6 +37,7 @@ Here are a few examples:
 | Dropping runtime Ruby version support | Minor
 | Enabling pending cops by default | *Major* (one narrow exception, see below)
 | Changing cop defaults (e.g. `EnforcedStyle`) | *Major*
+| Changing what an existing cop reports or corrects, behind `Preview` | Minor
 | Removing cops without a replacement | *Major*
 | Breaking changes to the Ruby API | *Major*
 | Dropping analysis support for a Ruby version | *Major*
@@ -49,6 +50,97 @@ RuboCop supporting their Ruby runtime.
 NOTE: Prior to RuboCop 1.0 bumps of the minor (second) version number
 were considered major releases and always included new features and/or
 changes to existing features.
+
+== Preview
+
+Some changes cannot ship as a pending cop. A cop that starts reporting a case it
+used to miss, or corrects one differently, changes results for everybody who has
+that cop enabled - so historically such changes have had to wait for a major
+release, whatever their merit.
+
+`Preview` is the channel for those changes. It is off by default:
+
+[source,yaml]
+----
+AllCops:
+  Preview: true
+----
+
+or `--preview` on the command line, which overrides the configuration either way
+(`--no-preview` turns it back off).
+
+It gates two things:
+
+* **Behavior changes to existing cops.** A cop can put an unstable change behind
+  `preview?` and ship it in a minor release. Nothing changes for anyone who has
+  not opted in.
++
+[source,ruby]
+----
+def on_send(node)
+  return unless offense?(node)
+  # Reporting the safe-navigation form is new, and not everyone will agree.
+  return if node.csend_type? && !preview?
+
+  add_offense(node)
+end
+----
+* **Cops that are not ready to be `pending` yet**, marked `Enabled: preview`.
+  Unlike pending cops, they are not reported as needing a decision - opting in is
+  the whole point, so there is nothing to nag about.
+
+[source,yaml]
+----
+Style/SomethingExperimental:
+  Enabled: preview
+----
+
+=== Preview or Pending?
+
+Both settings mean "not on by default", so the line between them matters:
+
+* If we already know something should become the default, it is `pending`. That
+  is a heads-up about a decision already made, which is why pending cops are
+  announced: deciding early beats being surprised at the next major release.
+* If we are asking users to help us find out, it is `preview`. There is no plan
+  to commit to yet, so there is nothing to announce.
+
+The intended lifecycle for a new cop is `preview` (for the brave) to `pending`
+(on for anyone with `NewCops: enable`) to enabled by default in the next major
+release. Not every cop needs the first step.
+
+=== Interaction With Other Settings
+
+The two halves of preview do not answer to the same switches, which is worth
+keeping straight.
+
+A cop marked `Enabled: preview` behaves like any other cop that is off:
+
+* `NewCops: enable` does not turn it on. Pending and preview are independent
+  channels, and opting in to one says nothing about the other.
+* `--only` runs it by name, whether or not preview is on.
+* `--enable-all-cops`, `AllCops: EnabledByDefault` and
+  `AllCops: DisabledByDefault` rewrite the *defaults*, so they cover a cop that
+  ships as `Enabled: preview` in RuboCop's own configuration. An
+  `Enabled: preview` you wrote in your own config is an explicit choice and wins
+  over them, exactly as an explicit `Enabled: false` does.
+
+Behavior gated behind `preview?` answers to the `Preview` setting and nothing
+else. Neither `--only` nor `--enable-all-cops` reaches inside a cop to switch it
+on, so a cop running under `--only` still reports its stable behavior unless
+preview is also on.
+
+Trying preview on a project is one flag, which makes it cheap to report back on
+a change before it becomes the default:
+
+[source,sh]
+----
+$ rubocop --preview
+----
+
+NOTE: Preview behavior is unstable by definition. It can change or be withdrawn
+in any release, which is exactly what the flag buys us: a way to get a change in
+front of users early without committing to it.
 
 == Pending Cops
 

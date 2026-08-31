@@ -579,6 +579,30 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
   end
 
+  describe '#preview?' do
+    subject { cop.preview? }
+
+    it { is_expected.to be(false) }
+
+    context 'when the `--preview` option is given' do
+      let(:cop_options) { { preview: true } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when `AllCops: Preview` is set' do
+      let(:config) { RuboCop::Config.new('AllCops' => { 'Preview' => true }) }
+
+      it { is_expected.to be(true) }
+
+      context 'when the `--no-preview` option is given' do
+        let(:cop_options) { { preview: false } }
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
   describe '#safe_autocorrect?' do
     subject { cop.safe_autocorrect? }
 

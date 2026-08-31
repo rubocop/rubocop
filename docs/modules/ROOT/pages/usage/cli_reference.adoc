@@ -153,6 +153,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--raise-cop-error`
 | Raise cop-related errors with cause and location. This is used to prevent cops from failing silently. Default is false.
 
+| `--[no-]preview`
+| Opt in to unstable behavior: cops that are `Enabled: preview`, and changes to existing cops that are not the default yet. See xref:versioning.adoc#preview[Preview].
+
 | `--plugin`
 | Plugin RuboCop extension file (see xref:plugins.adoc#loading-plugin-extensions[Loading Plugin Extensions]).
 

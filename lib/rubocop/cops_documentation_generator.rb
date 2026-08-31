@@ -389,7 +389,11 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def cop_status(status)
     return 'Disabled' unless status
 
-    status == 'pending' ? 'Pending' : 'Enabled'
+    case status
+    when 'pending' then 'Pending'
+    when 'preview' then 'Preview'
+    else 'Enabled'
+    end
   end
 
   # HTML anchor are somewhat limited in what characters they can contain, just

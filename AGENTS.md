@@ -111,6 +111,55 @@ Key conventions:
 - **Cop description** — the first line of the YARD comment must be a complete
   sentence starting with a verb and ending with a period.
 
+## Preview: Shipping Unstable Behavior
+
+`AllCops: Preview` (or `--preview`) is the opt-in channel for changes that are
+not ready to be the default. Cops read it via `preview?`.
+
+Use it when:
+
+- **An existing cop should start reporting a case it currently misses**, and the
+  change is contested enough that turning it on for everyone would be rude.
+  Without preview this waits for a major release.
+- **An existing cop should correct something differently**, and the new
+  correction needs real-world exposure before it becomes the default.
+- **A new cop is too speculative even for `pending`**, so it ships as
+  `Enabled: preview` in `config/default.yml`. It is opt-in only and, unlike a
+  pending cop, is never reported as needing a decision.
+
+Do **not** use it when:
+
+- The change is a plain bug fix. Those just ship.
+- The cop is new and you already expect it to be on by default eventually. That
+  is what `Enabled: pending` is for.
+
+The rule of thumb: if you already know it should become the default, it is
+`pending`. If you are asking users to help you find out, it is `preview`.
+
+```ruby
+def on_send(node)
+  return unless offense?(node)
+  return if node.csend_type? && !preview?
+
+  add_offense(node)
+end
+```
+
+Cover both paths in specs, since the stable one is what most users run:
+
+```ruby
+context 'when preview is enabled' do
+  let(:all_cops_config) { super().merge('Preview' => true) }
+
+  it 'registers an offense for the safe-navigation form' do
+    # ...
+  end
+end
+```
+
+Preview behavior is unstable by contract: it can change or be withdrawn in any
+release. See `docs/modules/ROOT/pages/versioning.adoc` for the lifecycle.
+
 ## Writing Specs
 
 ```ruby

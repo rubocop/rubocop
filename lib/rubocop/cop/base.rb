@@ -288,6 +288,13 @@ module RuboCop
         @config.string_literals_frozen_by_default?
       end
 
+      # Whether the user opted in to unstable behavior, with `--preview` or
+      # `AllCops: Preview`. Cops branch on this to ship a change that is not
+      # ready to be the default yet.
+      def preview?
+        @config.preview?(@options)
+      end
+
       def relevant_file?(file)
         return false unless target_satisfies_all_gem_version_requirements?
         return true unless @config.clusivity_config_for_badge?(self.class.badge)
