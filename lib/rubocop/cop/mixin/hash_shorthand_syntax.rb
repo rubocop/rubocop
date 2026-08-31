@@ -87,13 +87,17 @@ module RuboCop
       def ignore_mixed_hash_shorthand_syntax?(hash_node)
         target_ruby_version <= 3.0 ||
           !%w[consistent either_consistent].include?(enforced_shorthand_syntax) ||
-          !hash_node.hash_type?
+          !hash_node.hash_type? || hash_rockets_enforced?(hash_node)
       end
 
       def ignore_hash_shorthand_syntax?(pair_node)
         target_ruby_version <= 3.0 || enforced_shorthand_syntax == 'either' ||
           %w[consistent either_consistent].include?(enforced_shorthand_syntax) ||
-          !pair_node.parent.hash_type?
+          !pair_node.parent.hash_type? || hash_rockets_enforced?(pair_node.parent)
+      end
+
+      def hash_rockets_enforced?(hash_node)
+        style == :hash_rockets || force_hash_rockets?(hash_node.pairs)
       end
 
       def enforced_shorthand_syntax
