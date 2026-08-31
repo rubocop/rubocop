@@ -74,7 +74,7 @@ module RuboCop
       # inconsistencies between workers.
       ResultCache.source_checksum
 
-      target_files = find_target_files(paths)
+      target_files = only_changed(find_target_files(paths))
       build_project_index(target_files)
 
       if @options[:list_target_files]
@@ -95,6 +95,16 @@ module RuboCop
     end
 
     private
+
+    # The project index is deliberately built from the unfiltered file list:
+    # cross-file offenses must not depend on which files happen to have changed.
+    def only_changed(target_files)
+      return target_files unless @options[:changed]
+
+      changed = ChangedFiles.new(@options[:changed]).paths
+
+      target_files.select { |file| changed.include?(file) }.freeze
+    end
 
     def find_target_files(paths)
       target_finder = TargetFinder.new(@config_store, @options)

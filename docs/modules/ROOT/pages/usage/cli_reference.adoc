@@ -45,6 +45,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `-C/--cache`
 | Store and reuse results for faster operation.
 
+| `--changed[=REVISION]`
+| Inspect only the files that differ from a git revision, defaulting to `HEAD`. Untracked files count as changed.
+
 | `-d/--debug`
 | Displays some extra debug output.
 

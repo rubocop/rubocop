@@ -81,6 +81,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --ignore-unrecognized-cops   Ignore unrecognized cops or departments in the config.
                   --force-default-config       Use default configuration even if configuration
                                                files are present in the directory tree.
+                  --changed [REVISION]         Inspect only the files that differ from a git
+                                               revision, defaulting to HEAD. Untracked files
+                                               count as changed. Pass a revision with
+                                               `--changed=REVISION`.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
                   --editor-mode                Optimize real-time feedback in editors,
