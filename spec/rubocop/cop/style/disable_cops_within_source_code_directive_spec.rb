@@ -330,6 +330,57 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       RUBY
     end
 
+    context 'when AllowedCops names a department' do
+      let(:cop_config) { { 'AllowWithReason' => true, 'AllowedCops' => ['Metrics'] } }
+
+      it 'does not register an offense for a cop in that department' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable Metrics/AbcSize
+          def foo
+          end
+          # rubocop:enable Metrics/AbcSize
+        RUBY
+      end
+
+      it 'registers an offense for a cop outside it' do
+        expect_offense(<<~RUBY)
+          x = 0 # rubocop:disable Layout/SpaceAroundOperators
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+        RUBY
+      end
+    end
+
+    context 'when AllowedCops names a cop but a directive disables its whole department' do
+      let(:cop_config) { { 'AllowWithReason' => true, 'AllowedCops' => ['Metrics/AbcSize'] } }
+
+      it 'registers an offense, since the directive is broader than the exemption' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+          def foo
+          end
+          # rubocop:enable Metrics
+        RUBY
+      end
+    end
+
+    context 'when DisallowedCops names a department' do
+      let(:cop_config) { { 'AllowWithReason' => true, 'DisallowedCops' => ['Lint'] } }
+
+      it 'registers an offense for a cop in that department' do
+        expect_offense(<<~RUBY)
+          foo # rubocop:disable Lint/Void
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+        RUBY
+      end
+
+      it 'does not register an offense for a cop outside it' do
+        expect_no_offenses(<<~RUBY)
+          x = 0 # rubocop:disable Layout/SpaceAroundOperators
+        RUBY
+      end
+    end
+
     context 'combined with AllowedCops' do
       let(:cop_config) do
         { 'AllowWithReason' => true, 'AllowedCops' => ['Metrics/AbcSize'] }
