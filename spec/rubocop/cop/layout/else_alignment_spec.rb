@@ -737,6 +737,123 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
     end
   end
 
+  context 'with class/rescue/else/end' do
+    it 'accepts a correctly aligned else' do
+      expect_no_offenses(<<~RUBY)
+        class MyClass
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
+    it 'registers an offense for misaligned else' do
+      expect_offense(<<~RUBY)
+        class MyClass
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+          else
+          ^^^^ Align `else` with `class`.
+          puts 'normal handling'
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class MyClass
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+  end
+
+  context 'with module/rescue/else/end' do
+    it 'accepts a correctly aligned else' do
+      expect_no_offenses(<<~RUBY)
+        module MyModule
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
+    it 'registers an offense for misaligned else' do
+      expect_offense(<<~RUBY)
+        module MyModule
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+          else
+          ^^^^ Align `else` with `module`.
+          puts 'normal handling'
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module MyModule
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+  end
+
+  context 'with sclass/rescue/else/ensure/end' do
+    it 'accepts a correctly aligned else' do
+      expect_no_offenses(<<~RUBY)
+        class << self
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        ensure
+          puts 'cleanup'
+        end
+      RUBY
+    end
+
+    it 'registers an offense for misaligned else' do
+      expect_offense(<<~RUBY)
+        class << self
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+          else
+          ^^^^ Align `else` with `class`.
+          puts 'normal handling'
+        ensure
+          puts 'cleanup'
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class << self
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        ensure
+          puts 'cleanup'
+        end
+      RUBY
+    end
+  end
+
   context 'ensure/rescue/else in Block Argument' do
     it 'accepts a correctly aligned else' do
       expect_no_offenses(<<~RUBY)

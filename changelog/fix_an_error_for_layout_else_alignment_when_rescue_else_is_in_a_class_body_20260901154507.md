@@ -1,0 +1,1 @@
+* [#15646](https://github.com/rubocop/rubocop/pull/15646): Fix an error for `Layout/ElseAlignment` when `else` is used with `rescue` in a `class`, `module`, or singleton class body. ([@viralpraxis][])
