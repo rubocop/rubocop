@@ -4034,7 +4034,11 @@ Style/DisableCopsWithinSourceCodeDirective:
   Enabled: false
   VersionAdded: '0.82'
   VersionChanged: '1.90'
+  # Cop or department names. A directive is exempt only when everything it
+  # disables is listed here.
   AllowedCops: []
+  # Cop or department names. When set, only directives touching these are
+  # flagged.
   DisallowedCops: []
   # Permit a directive that carries a `-- reason` justification, instead of
   # forbidding directives outright.

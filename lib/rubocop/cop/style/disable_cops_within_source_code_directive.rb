@@ -12,6 +12,10 @@ module RuboCop
       # Specific cops can be allowed with the `AllowedCops` configuration. Note that
       # if this configuration is set, `rubocop:disable all` is still disallowed.
       #
+      # `AllowedCops` and `DisallowedCops` accept cop names and department names
+      # alike. Listing a cop does not cover its whole department: a directive
+      # disabling `Metrics` is broader than one disabling `Metrics/AbcSize`.
+      #
       # Alternatively, specific cops can be disallowed with the `DisallowedCops`
       # configuration. When `DisallowedCops` is set, only directives for the listed
       # cops (and `all`) will be flagged. This is useful when you want
@@ -58,6 +62,13 @@ module RuboCop
       #   foo
       #   # rubocop:enable Metrics/AbcSize
       #
+      # @example AllowedCops: [Metrics]
+      #   # good - every cop the directive disables is in an exempt department
+      #   # rubocop:disable Metrics/AbcSize
+      #   def foo
+      #   end
+      #   # rubocop:enable Metrics/AbcSize
+      #
       # @example AllowWithReason: true
       #   # bad
       #   x = 0 # rubocop:disable Layout/SpaceAroundOperators
@@ -95,10 +106,10 @@ module RuboCop
             if directive_cops.include?('all')
               directive_cops
             else
-              directive_cops.uniq.select { |cop| disallowed_cops_config.include?(cop) }
+              directive_cops.uniq.select { |cop| listed?(disallowed_cops_config, cop) }
             end
           else
-            directive_cops.reject { |cop| allowed_cops.include?(cop) }
+            directive_cops.reject { |cop| cop != 'all' && listed?(allowed_cops, cop) }
           end
         end
 
@@ -136,6 +147,12 @@ module RuboCop
 
         def allowed_cops
           @allowed_cops ||= Array(cop_config['AllowedCops']).to_set
+        end
+
+        # A name matches either outright or through its department, so
+        # `Metrics` covers `Metrics/AbcSize` but not the other way round.
+        def listed?(names, cop)
+          names.include?(cop) || names.include?(cop.split('/').first)
         end
 
         def any_cops_allowed?
