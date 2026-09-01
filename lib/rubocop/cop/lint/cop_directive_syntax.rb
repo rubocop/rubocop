@@ -92,7 +92,7 @@ module RuboCop
         private
 
         def check_directive(comment, directive_comment)
-          if (directives = multiple_directives(comment))
+          if (directives = multiple_directives(comment, directive_comment))
             add_offense(comment, message: "#{COMMON_MSG} #{MULTIPLE_DIRECTIVES_MSG}") do |corrector|
               merge_directives(corrector, comment, directives)
             end
@@ -107,11 +107,20 @@ module RuboCop
 
         # Everything after the first directive in a comment is trailing text as
         # far as the parser is concerned, so a second directive written on the
-        # same line disables nothing at all.
-        def multiple_directives(comment)
+        # same line disables nothing at all. A valid `--` reason may mention a
+        # directive as plain text, which should not be treated as another one.
+        def multiple_directives(comment, directive_comment)
           matches = comment.text.to_enum(:scan, DirectiveComment::DIRECTIVE_COMMENT_REGEXP)
                            .map { Regexp.last_match }
+          matches = filter_reason_matches(matches, directive_comment)
+
           matches if matches.size > 1
+        end
+
+        def filter_reason_matches(matches, directive_comment)
+          return matches unless directive_comment.reason
+
+          [matches.first, *matches.drop(1).reject { |match| match.post_match.match?(/\S/) }]
         end
 
         def merge_directives(corrector, comment, directives)
