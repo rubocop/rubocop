@@ -108,6 +108,7 @@ module RuboCop
         def autocorrect_incompatible_with_other_cops?(array_node, left_parenthesis)
           return false unless enforce_first_argument_with_fixed_indentation?
           return true if style != :consistent
+          return false if array_node.children.size < 2
 
           _base_column, indent_base_type =
             indent_base(array_node.loc.begin, array_node.values.first, left_parenthesis)
