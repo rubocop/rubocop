@@ -19,7 +19,7 @@ module RuboCop
       # allowlisting all other cops. `AllowedCops` and `DisallowedCops` should not
       # both be set at the same time; if `DisallowedCops` is set, it takes precedence.
       #
-      # With `AllowTrailingComment` set to `true`, a disable directive carrying
+      # With `AllowWithReason` set to `true`, a disable directive carrying
       # a `--` trailing justification comment is allowed, so a team can require
       # every disable to be documented instead of banning them outright. Enable
       # directives are not checked in this mode, since they end a suppression
@@ -58,7 +58,7 @@ module RuboCop
       #   foo
       #   # rubocop:enable Metrics/AbcSize
       #
-      # @example AllowTrailingComment: true
+      # @example AllowWithReason: true
       #   # bad
       #   x = 0 # rubocop:disable Layout/SpaceAroundOperators
       #
@@ -77,7 +77,7 @@ module RuboCop
         def on_new_investigation
           processed_source.comments.each do |comment|
             directive = DirectiveComment.new(comment)
-            next if allow_trailing_comment? && (directive.reason || directive.enabled?)
+            next if allow_with_reason? && (directive.reason || directive.enabled?)
 
             directive_cops = directive_cops(directive)
             disallowed_cops = compute_disallowed_cops(directive_cops)
@@ -116,7 +116,7 @@ module RuboCop
         end
 
         def offense_message(disallowed_cops)
-          if allow_trailing_comment?
+          if allow_with_reason?
             MSG_MISSING_REASON
           elsif any_cops_allowed? || disallowed_cops_config.any?
             format(MSG_FOR_COPS, cops: "`#{disallowed_cops.join('`, `')}`")
@@ -130,8 +130,8 @@ module RuboCop
           match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
         end
 
-        def allow_trailing_comment?
-          cop_config['AllowTrailingComment']
+        def allow_with_reason?
+          cop_config['AllowWithReason']
         end
 
         def allowed_cops

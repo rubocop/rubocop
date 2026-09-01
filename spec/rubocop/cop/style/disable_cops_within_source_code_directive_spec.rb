@@ -286,8 +286,8 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
     RUBY
   end
 
-  context 'when AllowTrailingComment is true' do
-    let(:cop_config) { { 'AllowTrailingComment' => true } }
+  context 'when AllowWithReason is true' do
+    let(:cop_config) { { 'AllowWithReason' => true } }
 
     it 'does not register an offense for a `disable-next` with a justification' do
       expect_no_offenses(<<~RUBY)
@@ -332,7 +332,7 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
 
     context 'combined with AllowedCops' do
       let(:cop_config) do
-        { 'AllowTrailingComment' => true, 'AllowedCops' => ['Metrics/AbcSize'] }
+        { 'AllowWithReason' => true, 'AllowedCops' => ['Metrics/AbcSize'] }
       end
 
       it 'does not register an offense for an allowed cop without a justification' do
