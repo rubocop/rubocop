@@ -155,13 +155,34 @@ RSpec.describe RuboCop::RemoteConfig do
       let(:new_location) { 'http://cdn.example.com/rubocop.yml' }
 
       before do
-        stub_request(:get, remote_config_url).to_return(headers: { 'Location' => new_location })
+        stub_request(:get, remote_config_url)
+          .to_return(status: 302, headers: { 'Location' => new_location })
 
         stub_request(:get, new_location)
           .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
       end
 
       it 'follows the redirect and downloads the file' do
+        expect(remote_config).to eq(cached_file_path)
+        expect(File).to exist(cached_file_path)
+      end
+    end
+
+    context 'when the remote URL responds with a relative redirect' do
+      let(:remote_config_url) { 'http://example.com/configs/project.yml' }
+      let(:new_location) { '../shared/base.yml' }
+      let(:redirected_location) { 'http://example.com/shared/base.yml' }
+      let(:cached_file_name) { 'project-e8599307a1a72fe8b3228b9cbb2f0929.yml' }
+
+      before do
+        stub_request(:get, remote_config_url)
+          .to_return(status: 302, headers: { 'Location' => new_location })
+
+        stub_request(:get, redirected_location)
+          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+      end
+
+      it 'resolves the redirect relative to the current URL and downloads the file' do
         expect(remote_config).to eq(cached_file_path)
         expect(File).to exist(cached_file_path)
       end

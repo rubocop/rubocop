@@ -49,9 +49,9 @@ module RuboCop
       http.use_ssl = uri.instance_of?(URI::HTTPS)
 
       generate_request(uri) do |request|
-        handle_response(http.request(request), limit, &block)
+        handle_response(http.request(request), uri, limit, &block)
       rescue SocketError => e
-        handle_response(e, limit, &block)
+        handle_response(e, uri, limit, &block)
       end
     end
 
@@ -64,12 +64,12 @@ module RuboCop
       yield request
     end
 
-    def handle_response(response, limit, &block)
+    def handle_response(response, uri, limit, &block)
       case response
       when Net::HTTPSuccess, Net::HTTPNotModified, SocketError
         yield response
       when Net::HTTPRedirection
-        request(URI.parse(response['location']), limit - 1, &block)
+        request(URI.join(uri, response['location']), limit - 1, &block)
       else
         begin
           response.error!
