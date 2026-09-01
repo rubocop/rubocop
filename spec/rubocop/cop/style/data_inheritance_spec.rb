@@ -123,6 +123,40 @@ RSpec.describe RuboCop::Cop::Style::DataInheritance, :config do
       RUBY
     end
 
+    it 'accepts extending instance of `Data.define` when the class body assigns a constant' do
+      expect_no_offenses(<<~RUBY)
+        class Person < Data.define(:first_name, :last_name)
+          MAX_AGE = 120
+        end
+      RUBY
+    end
+
+    it 'accepts extending instance of `Data.define` when a constant is assigned in a nested scope' do
+      expect_no_offenses(<<~RUBY)
+        class Person < Data.define(:first_name, :last_name)
+          if something
+            MAX_AGE = 120
+          end
+        end
+      RUBY
+    end
+
+    it 'accepts extending instance of `Data.define` when the class body defines a nested class' do
+      expect_no_offenses(<<~RUBY)
+        class Person < Data.define(:first_name, :last_name)
+          class Error < StandardError; end
+        end
+      RUBY
+    end
+
+    it 'accepts extending instance of `Data.define` when the class body defines a nested module' do
+      expect_no_offenses(<<~RUBY)
+        class Person < Data.define(:first_name, :last_name)
+          module Helpers; end
+        end
+      RUBY
+    end
+
     it 'accepts plain class' do
       expect_no_offenses(<<~RUBY)
         class Person

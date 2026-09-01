@@ -1,0 +1,1 @@
+* [#11696](https://github.com/rubocop/rubocop/issues/11696): Fix `Style/DataInheritance` to not register an offense when the class body defines constants, nested classes, or nested modules. ([@MatheusRich][])
