@@ -4036,7 +4036,9 @@ Style/DisableCopsWithinSourceCodeDirective:
   VersionChanged: '1.90'
   AllowedCops: []
   DisallowedCops: []
-  AllowTrailingComment: false
+  # Permit a directive that carries a `-- reason` justification, instead of
+  # forbidding directives outright.
+  AllowWithReason: false
 
 Style/DocumentDynamicEvalDefinition:
   Description: >-

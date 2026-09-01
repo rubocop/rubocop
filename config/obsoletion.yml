@@ -154,6 +154,10 @@ changed_parameters:
     parameters: IgnoreCopDirectives
     alternative: AllowCopDirectives
     severity: warning
+  - cops: Style/DisableCopsWithinSourceCodeDirective
+    parameters: AllowTrailingComment
+    alternative: AllowWithReason
+    severity: warning
   - cops:
       - Lint/BlockAlignment
       - Layout/BlockAlignment
