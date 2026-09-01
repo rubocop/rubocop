@@ -73,7 +73,11 @@ module RuboCop
       #   def foo(&block)
       #   end
       class ItAssignment < Base
+        extend TargetRubyVersion
+
         MSG = '`it` is the default block parameter; consider another name.'
+
+        minimum_target_ruby_version 3.4
 
         def on_lvasgn(node)
           return unless node.name == :it
