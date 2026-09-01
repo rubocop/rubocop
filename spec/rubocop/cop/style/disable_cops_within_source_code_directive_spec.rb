@@ -94,6 +94,21 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
     end
   end
 
+  context 'with AllowedDirectives and no other configuration' do
+    let(:cop_config) { { 'AllowedDirectives' => ['todo'] } }
+
+    it 'ignores the exempt kind while still forbidding the rest' do
+      expect_no_offenses(<<~RUBY)
+        x = 0 # rubocop:todo Layout/SpaceAroundOperators
+      RUBY
+
+      expect_offense(<<~RUBY)
+        y = 0 # rubocop:disable Layout/SpaceAroundOperators
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+      RUBY
+    end
+  end
+
   context 'with DisallowedCops' do
     let(:cop_config) { { 'DisallowedCops' => ['Lint/Void', 'Security/Eval'] } }
 
@@ -328,6 +343,32 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
         x = 0 # rubocop:todo Layout/SpaceAroundOperators
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
       RUBY
+    end
+
+    context 'when AllowedDirectives exempts todo directives' do
+      let(:cop_config) do
+        { 'AllowWithReason' => true, 'AllowedDirectives' => %w[todo todo-next] }
+      end
+
+      it 'does not register an offense for a `todo` directive without a justification' do
+        expect_no_offenses(<<~RUBY)
+          x = 0 # rubocop:todo Layout/SpaceAroundOperators
+        RUBY
+      end
+
+      it 'does not register an offense for a `todo-next` directive' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:todo-next Layout/SpaceAroundOperators
+          x = 0
+        RUBY
+      end
+
+      it 'still registers an offense for a plain disable without a justification' do
+        expect_offense(<<~RUBY)
+          x = 0 # rubocop:disable Layout/SpaceAroundOperators
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+        RUBY
+      end
     end
 
     context 'when AllowedCops names a department' do

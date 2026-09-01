@@ -23,6 +23,12 @@ module RuboCop
       # allowlisting all other cops. `AllowedCops` and `DisallowedCops` should not
       # both be set at the same time; if `DisallowedCops` is set, it takes precedence.
       #
+      # `AllowedDirectives` names directive forms - `disable`, `todo`,
+      # `disable-next`, `todo-next`, `push`, `next` - and exempts them from the
+      # cop entirely. `rubocop:todo` is the usual candidate, since
+      # `--disable-uncorrectable` generates those and they record debt rather
+      # than a decision someone should be asked to justify.
+      #
       # With `AllowWithReason` set to `true`, a disable directive carrying
       # a `--` trailing justification comment is allowed, so a team can require
       # every disable to be documented instead of banning them outright. Enable
@@ -62,6 +68,13 @@ module RuboCop
       #   foo
       #   # rubocop:enable Metrics/AbcSize
       #
+      # @example AllowedDirectives: [todo]
+      #   # good - the cop does not look at `todo` directives at all
+      #   x = 0 # rubocop:todo Layout/SpaceAroundOperators
+      #
+      #   # bad
+      #   x = 0 # rubocop:disable Layout/SpaceAroundOperators
+      #
       # @example AllowedCops: [Metrics]
       #   # good - every cop the directive disables is in an exempt department
       #   # rubocop:disable Metrics/AbcSize
@@ -88,6 +101,7 @@ module RuboCop
         def on_new_investigation
           processed_source.comments.each do |comment|
             directive = DirectiveComment.new(comment)
+            next if exempt_mode?(directive)
             next if allow_with_reason? && (directive.reason || directive.enabled?)
 
             directive_cops = directive_cops(directive)
@@ -139,6 +153,14 @@ module RuboCop
         def directive_cops(directive)
           match_captures = directive.match_captures
           match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
+        end
+
+        def exempt_mode?(directive)
+          allowed_directives.include?(directive.mode)
+        end
+
+        def allowed_directives
+          @allowed_directives ||= Array(cop_config['AllowedDirectives'])
         end
 
         def allow_with_reason?

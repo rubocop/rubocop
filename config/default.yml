@@ -4043,6 +4043,9 @@ Style/DisableCopsWithinSourceCodeDirective:
   # Permit a directive that carries a `-- reason` justification, instead of
   # forbidding directives outright.
   AllowWithReason: false
+  # Directive forms this cop ignores entirely. One or more of `disable`,
+  # `todo`, `disable-next`, `todo-next`, `push`, `next`.
+  AllowedDirectives: []
 
 Style/DocumentDynamicEvalDefinition:
   Description: >-
