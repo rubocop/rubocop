@@ -208,4 +208,45 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
       RUBY
     end
   end
+
+  it 'does not register an offense for parenthesized `and`' do
+    expect_no_offenses(<<~RUBY)
+      false? (foo and bar)
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized `or`' do
+    expect_no_offenses(<<~RUBY)
+      false? (foo or bar)
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized `not`' do
+    expect_no_offenses(<<~RUBY)
+      false? (not foo)
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized modifier `rescue`' do
+    expect_no_offenses(<<~RUBY)
+      false? (foo rescue bar)
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized modifier `if`' do
+    expect_no_offenses(<<~RUBY)
+      false? (foo if bar)
+    RUBY
+  end
+
+  it 'registers an offense and corrects for parenthesized `&&`' do
+    expect_offense(<<~RUBY)
+      false? (foo && bar)
+            ^ `(foo && bar)` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      false?(foo && bar)
+    RUBY
+  end
 end

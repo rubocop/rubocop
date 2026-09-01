@@ -46,11 +46,27 @@ module RuboCop
 
         def valid_first_argument?(first_arg)
           first_arg.operator_keyword? || first_arg.hash_type? || ternary_expression?(first_arg) ||
-            compound_range?(first_arg)
+            compound_range?(first_arg) || invalid_bare_argument?(first_arg)
         end
 
         def compound_range?(first_arg)
           first_arg.range_type? && first_arg.parenthesized_call?
+        end
+
+        def invalid_bare_argument?(node)
+          node = node.children.first while node&.begin_type? && node.children.one?
+          return false unless node
+
+          keyword_operator?(node) || modifier_expression?(node)
+        end
+
+        def keyword_operator?(node)
+          (node.operator_keyword? && node.semantic_operator?) ||
+            node.rescue_type? || (node.send_type? && node.prefix_not?)
+        end
+
+        def modifier_expression?(node)
+          node.type?(:if, :while, :until) && node.modifier_form?
         end
 
         def chained_calls?(node)
