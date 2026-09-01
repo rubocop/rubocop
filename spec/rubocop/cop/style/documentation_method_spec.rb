@@ -1038,6 +1038,32 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             end
           RUBY
         end
+
+        it 'ignores an allowed inline def preceded by another argument' do
+          expect_no_offenses(<<~RUBY)
+            module Foo
+              ruby2_keywords :baz, def bar; end
+            end
+          RUBY
+        end
+
+        it 'registers an offense for a non-allowed inline def preceded by another argument' do
+          expect_offense(<<~RUBY)
+            module Foo
+              ruby2_keywords :bar, def baz; end
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing method documentation comment.
+            end
+          RUBY
+        end
+
+        it 'registers an offense for a non-allowed `module_function` def preceded by another argument' do
+          expect_offense(<<~RUBY)
+            module Foo
+              module_function :bar, def baz; end
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing method documentation comment.
+            end
+          RUBY
+        end
       end
     end
   end

@@ -1,0 +1,1 @@
+* [#15647](https://github.com/rubocop/rubocop/pull/15647): Fix an error for `Style/DocumentationMethod` when an inline `module_function`/`ruby2_keywords` `def` is preceded by another argument. ([@viralpraxis][])
