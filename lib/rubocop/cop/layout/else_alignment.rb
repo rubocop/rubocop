@@ -93,6 +93,7 @@ module RuboCop
           when :def, :defs then base_for_method_definition(parent)
           when :kwbegin then parent.loc.begin
           when :block, :numblock, :itblock then start_line_range(parent)
+          when :class, :module, :sclass then parent.loc.keyword
           else node.loc.keyword
           end
         end
