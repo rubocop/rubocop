@@ -154,11 +154,7 @@ module RuboCop
           match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
         end
 
-        # A directive mentioned inside another comment - documentation, or prose
-        # about directives - suppresses nothing, so there is nothing to forbid
-        # or to ask a justification for.
         def ignored?(directive)
-          return true unless directive.start_with_marker?
           return true if exempt_mode?(directive)
 
           allow_with_reason? && (directive.reason || directive.enabled?)
