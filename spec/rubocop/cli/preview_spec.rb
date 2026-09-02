@@ -85,6 +85,71 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
     end
   end
 
+  context 'when user configuration sets `AllCops: Exclude`' do
+    before do
+      create_file('vendor/bundle/gem.rb', 'x   =  1')
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Exclude:
+            - 'nothing/**/*'
+      YAML
+    end
+
+    it 'replaces the default excludes without preview' do
+      expect(cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])).to eq(1)
+      expect($stdout.string).to include('vendor/bundle/gem.rb')
+    end
+
+    it 'merges with the default excludes with --preview' do
+      expect(
+        cli.run(['--preview', '--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])
+      ).to eq(0)
+      expect($stdout.string).not_to include('vendor/bundle/gem.rb')
+    end
+
+    it 'merges with the default excludes when the config opts in' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+          Exclude:
+            - 'nothing/**/*'
+      YAML
+
+      expect(cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])).to eq(0)
+      expect($stdout.string).not_to include('vendor/bundle/gem.rb')
+    end
+
+    it 'lets an explicit `inherit_mode` override win over preview' do
+      create_file('.rubocop.yml', <<~YAML)
+        inherit_mode:
+          override:
+            - Exclude
+
+        AllCops:
+          Preview: true
+          Exclude:
+            - 'nothing/**/*'
+      YAML
+
+      expect(cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])).to eq(1)
+      expect($stdout.string).to include('vendor/bundle/gem.rb')
+    end
+
+    it 'lets --no-preview override the config' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+          Exclude:
+            - 'nothing/**/*'
+      YAML
+
+      args = ['--no-preview', '--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.']
+
+      expect(cli.run(args)).to eq(1)
+      expect($stdout.string).to include('vendor/bundle/gem.rb')
+    end
+  end
+
   it 'rejects an unknown `Enabled` value' do
     create_file('.rubocop.yml', <<~YAML)
       Style/For:

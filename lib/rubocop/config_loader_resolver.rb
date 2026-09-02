@@ -107,7 +107,7 @@ module RuboCop
       config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
       override_enabled_for_disabled_departments(default_configuration, config)
 
-      opts = { inherit_mode: config['inherit_mode'] || {}, unset_nil: unset_nil }
+      opts = { inherit_mode: inherit_mode_for_default(config), unset_nil: unset_nil }
       Config.new(merge(default_configuration, config, **opts), config_file)
     end
 
@@ -167,6 +167,28 @@ module RuboCop
     end
 
     private
+
+    # Under `Preview`, `Exclude` is merged with the default configuration rather
+    # than replacing it, so that excluding one directory does not silently drop
+    # `vendor/**/*` and the other defaults. An explicit `inherit_mode` in user
+    # configuration still wins, in either direction.
+    def inherit_mode_for_default(config)
+      mode = config['inherit_mode'] || {}
+      return mode unless preview?(config)
+      return mode if Array(mode['override']).include?('Exclude')
+      return mode if Array(mode['merge']).include?('Exclude')
+
+      mode.merge('merge' => Array(mode['merge']) + ['Exclude'])
+    end
+
+    # `config` has already been through `handle_disabled_by_default` by this
+    # point, which returns a plain hash, so read `AllCops` directly rather than
+    # going through `Config#for_all_cops`.
+    def preview?(config)
+      return ConfigLoader.preview unless ConfigLoader.preview.nil?
+
+      (config['AllCops'] || {})['Preview'] == true
+    end
 
     def resolve_default_overrides(config)
       if ConfigLoader.disabled_by_default || ConfigLoader.enabled_by_default
