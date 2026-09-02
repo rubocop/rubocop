@@ -44,7 +44,7 @@ module RuboCop
       uri.start_with?('http://', 'https://')
     end
 
-    SMART_PATH_CACHE = {} # rubocop:disable Style/MutableConstant
+    SMART_PATH_CACHE = {} # rubocop:disable Style/MutableConstant -- a cache, written to at runtime
     private_constant :SMART_PATH_CACHE
 
     def smart_path(path)

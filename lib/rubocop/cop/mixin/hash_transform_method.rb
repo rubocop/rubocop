@@ -38,7 +38,7 @@ module RuboCop
          (block (send _ :each_with_object (hash)) ...)}
       PATTERN
 
-      def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
+      def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler -- the patterns matched here all name their block parameters
         on_bad_each_with_object(node) do |*match|
           handle_possible_offense(node, match, 'each_with_object')
         end

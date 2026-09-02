@@ -117,7 +117,7 @@ module RuboCop
         end
 
         def ternary_replacement(node)
-          condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
+          condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring -- takes all three branches in one step
 
           "#{expr_replacement(condition)} ? " \
             "#{expr_replacement(if_branch)} : " \

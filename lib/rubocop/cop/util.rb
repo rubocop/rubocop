@@ -63,7 +63,7 @@ module RuboCop
           end
         else
           # Use a block version to avoid allocating enumerators.
-          node.each_descendant do # rubocop:disable Lint/UnreachableLoop
+          node.each_descendant do # rubocop:disable Lint/UnreachableLoop -- the block form avoids allocating an enumerator
             return true
           end
         end

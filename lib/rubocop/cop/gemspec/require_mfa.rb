@@ -92,7 +92,7 @@ module RuboCop
           (str "true")
         PATTERN
 
-        def on_block(node) # rubocop:disable Metrics/MethodLength, InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
+        def on_block(node) # rubocop:disable Metrics/MethodLength, InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler -- the gemspec block is matched by its named block variable
           gem_specification(node) do |block_var|
             metadata_value = metadata(node)
             mfa_value = mfa_value(metadata_value)

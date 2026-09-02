@@ -8,7 +8,7 @@ module RuboCop
     # A class for loading and resolving plugins.
     # @api private
     class Loader
-      # rubocop:disable Layout/LineLength
+      # rubocop:disable Layout/LineLength -- the comment on each key does not wrap
       DEFAULT_PLUGIN_CONFIG = {
         'enabled' => true,
         'require_path' => nil, # If not set, will be set to the plugin name

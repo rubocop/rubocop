@@ -172,7 +172,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
                 ],
                 correctable: true
               },
-              message: 'Layout/SpaceInsideArrayLiteralBrackets: Do not use space inside array brackets.', # rubocop:disable Layout/LineLength
+              message: 'Layout/SpaceInsideArrayLiteralBrackets: Do not use space inside array brackets.', # rubocop:disable Layout/LineLength -- the expected message is verbatim
               range: {
                 start: { character: 4, line: 2 },
                 end: { character: 6, line: 2 }
@@ -381,7 +381,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
                 ],
                 correctable: false
               },
-              message: "Lint/Syntax: unexpected token tIDENTIFIER\n\nThis offense is not autocorrectable.\n", # rubocop:disable Layout/LineLength
+              message: "Lint/Syntax: unexpected token tIDENTIFIER\n\nThis offense is not autocorrectable.\n", # rubocop:disable Layout/LineLength -- the expected message is verbatim
               range: {
                 start: { character: 8, line: 0 },
                 end: { character: 9, line: 0 }

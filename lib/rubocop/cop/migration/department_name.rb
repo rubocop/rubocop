@@ -2,7 +2,7 @@
 
 # Lint/RedundantCopDisableDirective needs to be disabled so as
 # to be able to provide examples of rubocop:disable comments.
-# rubocop:disable-next Lint/RedundantCopDisableDirective
+# rubocop:disable-next Lint/RedundantCopDisableDirective -- the examples below read as real directives
 module RuboCop
   module Cop
     module Migration

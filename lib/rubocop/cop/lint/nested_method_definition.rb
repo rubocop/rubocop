@@ -95,7 +95,7 @@ module RuboCop
         MSG = 'Method definitions must not be nested. Use `lambda` instead.'
 
         def on_def(node)
-          subject, = *node # rubocop:disable InternalAffairs/NodeDestructuring
+          subject, = *node # rubocop:disable InternalAffairs/NodeDestructuring -- the first child differs between `def` and `defs`
           return if node.defs_type? && allowed_subject_type?(subject)
 
           def_ancestor = node.each_ancestor(:any_def).first

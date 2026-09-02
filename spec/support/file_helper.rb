@@ -32,7 +32,7 @@ module FileHelper
     file_path
   end
 
-  # rubocop:disable-next InternalAffairs/CreateEmptyFile
+  # rubocop:disable-next InternalAffairs/CreateEmptyFile -- the helper is what `create_empty_file` is built on
   def create_empty_file(file_path)
     create_file(file_path, '')
   end

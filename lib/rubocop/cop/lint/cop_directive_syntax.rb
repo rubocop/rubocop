@@ -57,7 +57,7 @@ module RuboCop
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
-        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `enable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
+        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `enable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength -- the message lists every mode and does not wrap
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MULTIPLE_DIRECTIVES_MSG = 'Only the first directive on a line takes effect. ' \
                                   'List the cop names in a single directive instead.'

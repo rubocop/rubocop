@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Lint/RedundantCopDisableDirective
+# rubocop:disable-next Lint/RedundantCopDisableDirective -- the examples below read as real directives
 module RuboCop
   module Cop
     module Lint

@@ -67,7 +67,7 @@ module RuboCop
 
         # NOTE: itblock is not handled because this cop is limited to Ruby <= 2.7
         # via `maximum_target_ruby_version`, so itblock nodes (Ruby 3.4+) are never encountered.
-        def on_block(node) # rubocop:disable InternalAffairs/ItblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/ItblockHandler -- limited to Ruby <= 2.7, where `it` blocks do not exist
           return unless node.body
           return unless unsorted_dir_loop?(node.send_node)
 

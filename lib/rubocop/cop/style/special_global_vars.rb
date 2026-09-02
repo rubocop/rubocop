@@ -101,7 +101,7 @@ module RuboCop
                       'module (don\'t forget to require it) over `%<global>s`.'
         MSG_REGULAR = 'Prefer `%<prefer>s` over `%<global>s`.'
 
-        ENGLISH_VARS = { # rubocop:disable Style/MutableConstant
+        ENGLISH_VARS = { # rubocop:disable Style/MutableConstant -- merged into below, then frozen
           :$: => [:$LOAD_PATH],
           :$" => [:$LOADED_FEATURES],
           :$0 => [:$PROGRAM_NAME],

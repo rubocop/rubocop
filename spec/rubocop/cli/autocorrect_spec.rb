@@ -1177,7 +1177,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
             EnforcedStyle: #{style}
         YAML
         expect(cli.run(['--autocorrect-all'])).to eq(0)
-        # rubocop:disable-next Style/HashLikeCase
+        # rubocop:disable-next Style/HashLikeCase -- the source under test is what it is
         corrected = case style
                     when :semantic
                       <<~RUBY

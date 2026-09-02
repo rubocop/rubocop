@@ -400,7 +400,7 @@ module RuboCop
           if body_node.rescue_type?
             check_rescue?(body_node)
           elsif body_node.ensure_type?
-            block_body, = *body_node # rubocop:disable InternalAffairs/NodeDestructuring
+            block_body, = *body_node # rubocop:disable InternalAffairs/NodeDestructuring -- `EnsureNode` has no accessor for the protected body
             if block_body&.rescue_type?
               check_rescue?(block_body)
             else

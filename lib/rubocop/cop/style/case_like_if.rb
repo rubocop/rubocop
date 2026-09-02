@@ -106,7 +106,7 @@ module RuboCop
           when :or
             find_target(node.lhs)
           when :match_with_lvasgn
-            lhs, rhs = *node # rubocop:disable InternalAffairs/NodeDestructuring
+            lhs, rhs = *node # rubocop:disable InternalAffairs/NodeDestructuring -- `match_with_lvasgn` has no named operand accessors
             if lhs.regexp_type?
               rhs
             elsif rhs.regexp_type?
@@ -171,7 +171,7 @@ module RuboCop
               return collect_conditions(node.lhs, target, conditions) &&
                      collect_conditions(node.rhs, target, conditions)
             when :match_with_lvasgn
-              lhs, rhs = *node # rubocop:disable InternalAffairs/NodeDestructuring
+              lhs, rhs = *node # rubocop:disable InternalAffairs/NodeDestructuring -- `match_with_lvasgn` has no named operand accessors
               condition_from_binary_op(lhs, rhs, target)
             when :send
               condition_from_send_node(node, target)
@@ -258,7 +258,7 @@ module RuboCop
         def regexp_with_working_captures?(node)
           case node.type
           when :match_with_lvasgn
-            lhs, _rhs = *node # rubocop:disable InternalAffairs/NodeDestructuring
+            lhs, _rhs = *node # rubocop:disable InternalAffairs/NodeDestructuring -- `match_with_lvasgn` has no named operand accessors
             node.loc.selector.source == '=~' && regexp_with_named_captures?(lhs)
           when :send
             node.method?(:match) &&

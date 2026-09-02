@@ -36,6 +36,13 @@ Naming/PredicatePrefix:
     - def_node_matcher
     - def_node_search
 
+Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: true
+  AllowWithReason: true
+  AllowedCops:
+    - Metrics
+    - RSpec
+
 Style/FormatStringToken:
   # Because we parse a lot of source codes from strings. Percent arrays
   # look like unannotated format string tokens to this cop.

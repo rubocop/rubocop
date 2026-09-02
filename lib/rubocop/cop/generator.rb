@@ -147,7 +147,7 @@ module RuboCop
                                     badge: badge,
                                     version_added: version_added)
 
-        injector.inject do # rubocop:disable Lint/UnexpectedBlockArity
+        injector.inject do # rubocop:disable Lint/UnexpectedBlockArity -- this `inject` is the injector API, not `Enumerable#inject`
           output.puts(format(CONFIGURATION_ADDED_MESSAGE,
                              configuration_file_path: config_file_path))
         end

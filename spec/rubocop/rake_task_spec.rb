@@ -11,7 +11,7 @@ RSpec.describe RuboCop::RakeTask do
   after { Rake::Task.clear }
 
   describe 'defining tasks' do
-    # rubocop:todo Naming/InclusiveLanguage
+    # rubocop:todo Naming/InclusiveLanguage -- `--auto-correct` is the deprecated flag name
     it 'creates a rubocop task and a rubocop auto_correct task' do
       described_class.new
 

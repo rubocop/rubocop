@@ -1403,7 +1403,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         printed_config = if defined?(YAML.unsafe_load) # RUBY_VERSION >= '3.1.0'
                            YAML.unsafe_load(out.join)
                          else
-                           YAML.load(out.join) # rubocop:disable Security/YAMLLoad
+                           YAML.load(out.join) # rubocop:disable Security/YAMLLoad -- the input is written by this spec
                          end
 
         expected_cop_names.each do |cop_name|
@@ -1771,7 +1771,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         end
       end
 
-      # rubocop:disable-next Layout/LineContinuationLeadingSpace
+      # rubocop:disable-next Layout/LineContinuationLeadingSpace -- the source under test is what it is
       context 'when clang format is specified' do
         it 'outputs with clang format' do
           create_file('example1.rb', ['x= 0 ', '#' * 130, 'y ', 'puts x'])

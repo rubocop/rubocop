@@ -75,7 +75,7 @@ module RuboCop
           @on_csend_definition = node if node.new_identifier.value == :on_csend
         end
 
-        def on_send(node) # rubocop:disable InternalAffairs/OnSendWithoutOnCSend
+        def on_send(node) # rubocop:disable InternalAffairs/OnSendWithoutOnCSend -- this cop is what enforces the rule, and does not apply to itself
           return unless (new_identifier = node.first_argument)
           return unless new_identifier.basic_literal?
 

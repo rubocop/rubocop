@@ -48,7 +48,7 @@ module RuboCop
           { ({return next break} nil) (nil) }
         PATTERN
 
-        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler -- a lambda whose body is `nil` uses no parameters
           return unless node.lambda_or_proc?
           return unless nil_return?(node.body)
           # `return` inside a non-lambda proc returns from the enclosing method,

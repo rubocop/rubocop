@@ -38,7 +38,7 @@ module RuboCop
       class BlockParameterName < Base
         include UncommunicativeName
 
-        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler -- there are no parameter names to check
           return unless node.arguments?
 
           check(node, node.arguments)
