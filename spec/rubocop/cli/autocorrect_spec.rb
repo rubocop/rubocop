@@ -2644,6 +2644,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects when specifying `EnforcedStyle: tabs` of `Layout/IndentationStyle` and `Layout/BlockAlignment`' do
+    create_file('example.rb', <<-RUBY.gsub(/^      /, ''))
+      \tfoo do |v|
+      \t\tv
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/IndentationStyle:
+        EnforcedStyle: tabs
+    YAML
+
+    expect(
+      cli.run(['--autocorrect', '--only', 'Layout/IndentationStyle,Layout/BlockAlignment'])
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do |v|
+      \t\tv
+      \tend
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`EnforcedColonStyle: separator` of `Layout/HashAlignment`' do
     create_file('example.rb', <<~RUBY)

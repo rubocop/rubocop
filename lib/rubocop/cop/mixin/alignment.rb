@@ -15,6 +15,10 @@ module RuboCop
         cop_config['IndentationWidth'] || config.for_cop('Layout/IndentationWidth')['Width'] || 2
       end
 
+      def tab_indentation_enforced?
+        config.for_enabled_cop('Layout/IndentationStyle')['EnforcedStyle'] == 'tabs'
+      end
+
       def indentation(node)
         offset(node) + (SPACE * configured_indentation_width)
       end

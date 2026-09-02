@@ -68,6 +68,7 @@ module RuboCop
       #   end
       #
       class BlockAlignment < Base
+        include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
         extend AutoCorrector
@@ -154,6 +155,15 @@ module RuboCop
                           else
                             start_for_line_node(node)
                           end
+
+          if tab_indentation_enforced?
+            copy_anchor_indentation(corrector, ancestor_node, node)
+          else
+            correct_end_alignment(corrector, ancestor_node, node)
+          end
+        end
+
+        def correct_end_alignment(corrector, ancestor_node, node)
           start_col = compute_start_col(ancestor_node, node)
           loc_end = node.loc.end
           delta = start_col - loc_end.column
@@ -163,6 +173,25 @@ module RuboCop
           elsif delta.negative?
             remove_space_before(corrector, loc_end.begin_pos, -delta)
           end
+        end
+
+        def copy_anchor_indentation(corrector, ancestor_node, node)
+          loc_end = node.loc.end
+          return unless begins_its_line?(loc_end)
+
+          indentation_range = range_between(loc_end.begin_pos - loc_end.column, loc_end.begin_pos)
+
+          corrector.replace(indentation_range, anchor_indentation(ancestor_node, node))
+        end
+
+        def anchor_indentation(ancestor_node, node)
+          anchor_line = if style == :start_of_block
+                          do_line_anchor_loc(node, node.loc.begin).source_line
+                        else
+                          (ancestor_node || node).source_range.source_line
+                        end
+
+          anchor_line[/\A\s*/]
         end
 
         def format_message(start_loc, end_loc, do_source_line_column,

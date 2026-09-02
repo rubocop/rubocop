@@ -1,0 +1,1 @@
+* [#15633](https://github.com/rubocop/rubocop/pull/15633): Fix infinite loops between `Layout/BlockAlignment`, `Layout/CaseIndentation`, `Layout/ElseAlignment`, `Layout/RescueEnsureAlignment` and `Layout/IndentationStyle` enforcing tabs. ([@Starlexxx][])
