@@ -42,6 +42,11 @@ Style/DisableCopsWithinSourceCodeDirective:
   AllowedCops:
     - Metrics
     - RSpec
+  Exclude:
+    # Its own `@example` blocks show unjustified directives, which is the whole
+    # point of them. The cop cannot be silenced by a directive once it is
+    # explicitly enabled, so the file has to be excluded here.
+    - 'lib/rubocop/cop/style/disable_cops_within_source_code_directive.rb'
 
 Style/FormatStringToken:
   # Because we parse a lot of source codes from strings. Percent arrays
