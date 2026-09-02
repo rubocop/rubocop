@@ -363,3 +363,60 @@ flags `disable`/`enable` and `enable`/`disable` pairs as well as `push`/`pop`
 scopes with signed arguments that wrap a single statement, and converts them
 to the matching next-statement form (`disable-next`, `enable-next` or
 `next`).
+
+== Cops That Check Directives
+
+Directives are code too, and a handful of cops keep them honest. All but the
+last two are on by default, so most of this happens without any configuration.
+
+|===
+| Cop | What it reports | Default
+
+| xref:cops_lint.adoc#lintcopdirectivesyntax[`Lint/CopDirectiveSyntax`]
+| A directive RuboCop cannot act on: a missing or misspelled mode, cop names
+  that are not comma-separated, a trailing comment that does not start with
+  `--`, a second directive on the same line, or a cop name that does not
+  exist. These suppress nothing, silently, which is what makes them worth
+  reporting.
+| Enabled
+
+| xref:cops_migration.adoc#migrationdepartmentname[`Migration/DepartmentName`]
+| A cop named without its department, such as `# rubocop:disable LineLength`.
+| Enabled
+
+| xref:cops_lint.adoc#lintredundantcopdisabledirective[`Lint/RedundantCopDisableDirective`]
+| A `disable` that is no longer suppressing anything - the offense it was
+  hiding is gone. Autocorrection removes the directive along with its `--`
+  reason.
+| Enabled
+
+| xref:cops_lint.adoc#lintredundantcopenabledirective[`Lint/RedundantCopEnableDirective`]
+| An `enable` for a cop that was not disabled at that point.
+| Enabled
+
+| xref:cops_lint.adoc#lintmissingcopenabledirective[`Lint/MissingCopEnableDirective`]
+| A `disable` that is never closed, so it runs to the end of the file.
+  `MaxRangeSize` bounds how many lines a region may span before it is
+  reported.
+| Enabled
+
+| xref:cops_style.adoc#styledirectivescope[`Style/DirectiveScope`]
+| A `disable`/`enable` pair or a `push`/`pop` scope that wraps a single
+  statement and could use the tighter next-statement form.
+| Pending
+
+| xref:cops_style.adoc#styledisablecopswithinsourcecodedirective[`Style/DisableCopsWithinSourceCodeDirective`]
+| Directives themselves, for projects that would rather not have them. It can
+  forbid them outright, restrict which cops may be suppressed with
+  `AllowedCops`/`DisallowedCops`, exempt whole directive forms with
+  `AllowedDirectives`, or - with `AllowWithReason` - permit any directive that
+  carries a `--` justification.
+| Disabled
+|===
+
+Two of these are deliberately hard to silence with a directive, for the obvious
+reason. `Lint/RedundantCopDisableDirective` is not covered by
+`# rubocop:disable all` or by disabling the `Lint` department - a pointless
+directive is exactly what it exists to report - so it has to be named to be
+turned off. `Style/DisableCopsWithinSourceCodeDirective` goes further: once it is
+explicitly enabled, no directive can disable it at all.
