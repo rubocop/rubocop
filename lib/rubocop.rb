@@ -39,7 +39,7 @@ require_relative 'rubocop/unified_diff'
 require_relative 'rubocop/util'
 require_relative 'rubocop/warning'
 
-# rubocop:disable Style/RequireOrder
+# rubocop:disable Style/RequireOrder -- ordered by load dependency, not alphabetically
 
 require_relative 'rubocop/project_index_loader'
 require_relative 'rubocop/cop/util'

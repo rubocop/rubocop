@@ -119,7 +119,7 @@ module RuboCop
         end
 
         def offense?(node)
-          _condition, _if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
+          _condition, _if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring -- takes all three branches in one step
           return false if use_if_branch?(else_branch) || use_hash_key_assignment?(else_branch)
 
           synonymous_condition_and_branch?(node) && !node.elsif? &&
@@ -143,7 +143,7 @@ module RuboCop
         end
 
         def synonymous_condition_and_branch?(node)
-          condition, if_branch, _else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
+          condition, if_branch, _else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring -- takes all three branches in one step
           # e.g.
           #   if var
           #     var
@@ -192,7 +192,7 @@ module RuboCop
         end
 
         def branches_have_assignment?(node)
-          _condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
+          _condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring -- takes all three branches in one step
 
           return false unless if_branch && else_branch
 
@@ -294,7 +294,7 @@ module RuboCop
         end
 
         def make_ternary_form(node)
-          _condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
+          _condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring -- takes all three branches in one step
           arithmetic_operation = use_arithmetic_operation?(if_branch)
 
           ternary_form = [

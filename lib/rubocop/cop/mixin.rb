@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module Cop # rubocop:disable Style/Documentation
+  module Cop # rubocop:disable Style/Documentation -- a namespace that only autoloads the mixins below
     # Autoloads mixin modules included by cops. Mixins are autoloaded to reduce the number of
     # requires because they're used only when the relevant cop class is loaded.
 
@@ -14,7 +14,7 @@ module RuboCop
     autoload :AllowedReceivers, "#{__dir__}/mixin/allowed_receivers"
     autoload :ForbiddenIdentifiers, "#{__dir__}/mixin/forbidden_identifiers"
     autoload :ForbiddenPattern, "#{__dir__}/mixin/forbidden_pattern"
-    autoload :AutoCorrector, "#{__dir__}/mixin/auto_corrector" # rubocop:todo Naming/InclusiveLanguage
+    autoload :AutoCorrector, "#{__dir__}/mixin/auto_corrector" # rubocop:todo Naming/InclusiveLanguage -- the file is named `auto_corrector.rb`
     autoload :CheckAssignment, "#{__dir__}/mixin/check_assignment"
     autoload :CheckLineBreakable, "#{__dir__}/mixin/check_line_breakable"
     autoload :CheckSingleLineSuitability, "#{__dir__}/mixin/check_single_line_suitability"

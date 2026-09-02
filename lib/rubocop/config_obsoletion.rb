@@ -15,7 +15,7 @@ module RuboCop
       'changed_parameters' => ChangedParameter,
       'changed_enforced_styles' => ChangedEnforcedStyles
     }.freeze
-    LOAD_RULES_CACHE = {} # rubocop:disable Style/MutableConstant
+    LOAD_RULES_CACHE = {} # rubocop:disable Style/MutableConstant -- a cache, written to at runtime
     private_constant :LOAD_RULES_CACHE
 
     attr_reader :rules, :warnings

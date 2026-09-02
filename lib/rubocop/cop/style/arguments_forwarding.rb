@@ -202,7 +202,7 @@ module RuboCop
           rest_arg, kwrest_arg, block_arg = *forwardable_args
           registered_block_arg_offense = false
 
-          send_classifications.each do |send_node, c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
+          send_classifications.each do |send_node, c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength -- the block parameter list does not wrap
             if !forward_rest && !forward_kwrest && c != :all_anonymous
               if allow_anonymous_forwarding_in_block?(forward_block_arg)
                 register_forward_block_arg_offense(!forward_rest, node.arguments, block_arg)
@@ -232,7 +232,7 @@ module RuboCop
 
           rest_arg, kwrest_arg, block_arg = *forwardable_args
 
-          send_classifications.each do |send_node, _c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
+          send_classifications.each do |send_node, _c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength -- the block parameter list does not wrap
             if allow_anonymous_forwarding_in_block?(forward_rest)
               register_forward_args_offense(def_node.arguments, rest_arg)
               register_forward_args_offense(send_node, forward_rest)

@@ -184,7 +184,7 @@ module RuboCop
           def accesses?(rhs, lhs)
             if lhs.method?(:[]=)
               # FIXME: Workaround `rubocop:disable` comment for JRuby.
-              # rubocop:disable-next Performance/RedundantEqualityComparisonBlock
+              # rubocop:disable-next Performance/RedundantEqualityComparisonBlock -- a JRuby workaround, as the comment above says
               matching_calls(rhs, lhs.receiver, :[]).any? { |args| args == lhs.arguments }
             else
               access_method = lhs.method_name.to_s.chop.to_sym

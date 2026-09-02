@@ -54,7 +54,7 @@ module RuboCop
           @contain_dev_null_string_in_file = ast.each_descendant(:str).any? do |str|
             content = str.str_content
 
-            valid_string?(content) && content.downcase == '/dev/null' # rubocop:disable Style/FileNull
+            valid_string?(content) && content.downcase == '/dev/null' # rubocop:disable Style/FileNull -- the cop needs the literal it is matching
           end
         end
 
@@ -62,7 +62,7 @@ module RuboCop
           value = node.value
           return unless valid_string?(value)
           return if acceptable?(node)
-          return if value.downcase == 'nul' && !@contain_dev_null_string_in_file # rubocop:disable Style/FileNull
+          return if value.downcase == 'nul' && !@contain_dev_null_string_in_file # rubocop:disable Style/FileNull -- the cop needs the literal it is matching
           return unless REGEXP.match?(value)
 
           add_offense(node, message: format(MSG, source: value)) do |corrector|

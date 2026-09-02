@@ -49,7 +49,7 @@ module RuboCop
       InvestigationReport = Struct.new(:cop, :processed_source, :offenses, :corrector)
 
       # List of methods names to restrict calls for `on_send` / `on_csend`
-      RESTRICT_ON_SEND = Set[].freeze # rubocop:disable InternalAffairs/UselessRestrictOnSend
+      RESTRICT_ON_SEND = Set[].freeze # rubocop:disable InternalAffairs/UselessRestrictOnSend -- the base class default, which cops override
 
       # List of cops that should not try to autocorrect at the same
       # time as this cop
@@ -326,7 +326,7 @@ module RuboCop
 
       ### Reserved for Commissioner
 
-      # rubocop:disable Layout/ClassStructure
+      # rubocop:disable Layout/ClassStructure -- grouped under the Commissioner heading above
       # @api private
       def callbacks_needed
         self.class.callbacks_needed

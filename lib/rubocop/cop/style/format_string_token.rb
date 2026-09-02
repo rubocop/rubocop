@@ -228,7 +228,7 @@ module RuboCop
           "Prefer #{message_text(style)} over #{message_text(detected_style)}."
         end
 
-        # rubocop:disable-next Style/FormatStringToken
+        # rubocop:disable-next Style/FormatStringToken -- the cop needs the token style it is matching
         def message_text(style)
           {
             annotated: 'annotated tokens (like `%<foo>s`)',

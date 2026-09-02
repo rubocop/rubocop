@@ -150,7 +150,7 @@ module RuboCop
       end
     end
 
-    # rubocop:todo Naming/InclusiveLanguage
+    # rubocop:todo Naming/InclusiveLanguage -- `--auto-correct` is the deprecated flag name
     # the autocorrect command-line arguments map to the autocorrect @options values like so:
     #                            :fix_layout  :autocorrect  :safe_autocorrect  :autocorrect_all
     # -x, --fix-layout           true         true          -                  -

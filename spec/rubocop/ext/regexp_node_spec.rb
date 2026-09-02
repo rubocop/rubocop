@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Ext::RegexpNode do
         nodes = node.parsed_tree.each_expression.map { |exp, _index| exp }
 
         # `Parser::Source::Map` does not have `source_range` method.
-        # rubocop:disable-next InternalAffairs/LocationExpression
+        # rubocop:disable-next InternalAffairs/LocationExpression -- exercises the very API the cop flags
         sources = nodes.map { |n| n.loc.expression.source }
 
         expect(sources).to eq %w{([a-z]+) [a-z]+ a-z a z \d* \s? (?:foo) foo}

@@ -74,7 +74,7 @@ module RuboCop
 
     def setup_subtasks(name, *args, &task_block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       namespace(name) do
-        # rubocop:todo-next Naming/InclusiveLanguage
+        # rubocop:todo-next Naming/InclusiveLanguage -- the deprecated flag spelling is the subject here
         task(:auto_correct, *args) do |_, task_args|
           require 'rainbow'
           warn Rainbow(

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module Cop # rubocop:disable Style/Documentation
+  module Cop # rubocop:disable Style/Documentation -- a namespace that only autoloads the correctors below
     # Autoloads corrector classes used by cops. Classes are autoloaded to reduce the number of
     # required classes because they're referenced only when autocorrection is performed.
 
-    # rubocop:disable Layout/LineLength
+    # rubocop:disable Layout/LineLength -- the autoload paths do not wrap
     autoload :AlignmentCorrector, 'rubocop/cop/correctors/alignment_corrector'
     autoload :ConditionCorrector, 'rubocop/cop/correctors/condition_corrector'
     autoload :EachToForCorrector, 'rubocop/cop/correctors/each_to_for_corrector'

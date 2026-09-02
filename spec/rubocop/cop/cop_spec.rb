@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       describe 'for a builtin cop class' do
         let(:cop_class) { RuboCop::Cop::Layout::BlockEndNewline }
 
-        it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength
+        it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength -- the expected URL is verbatim
       end
 
       describe 'for a custom cop class without DocumentationBaseURL', :restore_registry do
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       describe 'for a builtin cop class' do
         let(:cop_class) { RuboCop::Cop::Layout::BlockEndNewline }
 
-        it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength
+        it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength -- the expected URL is verbatim
       end
 
       describe 'for a custom cop class without DocumentationBaseURL', :restore_registry do

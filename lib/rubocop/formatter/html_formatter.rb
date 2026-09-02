@@ -74,7 +74,7 @@ module RuboCop
         end
 
         # Make Kernel#binding public.
-        # rubocop:disable-next Lint/UselessMethodDefinition
+        # rubocop:disable-next Lint/UselessMethodDefinition -- redefined only to make `Kernel#binding` public
         def binding
           super
         end
@@ -143,7 +143,7 @@ module RuboCop
         }.freeze
 
         # Make Kernel#binding public.
-        # rubocop:disable-next Lint/UselessMethodDefinition
+        # rubocop:disable-next Lint/UselessMethodDefinition -- redefined only to make `Kernel#binding` public
         def binding
           super
         end

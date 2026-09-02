@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
       stub_const('Fake::FakeCop', Class.new(RuboCop::Cop::Base) do
                                     # The investigation callbacks are only dispatched
                                     # to cops that refine them.
-                                    # rubocop:disable Lint/UselessMethodDefinition
+                                    # rubocop:disable Lint/UselessMethodDefinition -- a stub that exists to be called
                                     def on_new_investigation
                                       super
                                     end

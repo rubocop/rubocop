@@ -808,7 +808,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
 
-    it 'does not autocorrect an offense within another offense' do # rubocop:disable InternalAffairs/ExampleDescription
+    it 'does not autocorrect an offense within another offense' do # rubocop:disable InternalAffairs/ExampleDescription -- the description names the offense twice on purpose
       expect_offense(<<~RUBY)
         require 'spec_helper'
         describe ArticlesController do

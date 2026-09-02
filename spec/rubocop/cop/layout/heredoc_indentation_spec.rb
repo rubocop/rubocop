@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
       { empty: '', whitespace: '    ' }.each do |description, line|
         it "registers an offense for not indented enough with #{description} line" do
           # Using <<- in this section makes the code more readable.
-          # rubocop:disable Layout/HeredocIndentation
+          # rubocop:disable Layout/HeredocIndentation -- the heredoc under test is what it is
           expect_offense(<<-RUBY)
             def baz
               <<~#{quote}MSG#{quote}

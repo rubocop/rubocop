@@ -2,7 +2,7 @@
 
 # The Lint/RedundantCopDisableDirective cop needs to be disabled so as
 # to be able to provide a (bad) example of a redundant disable.
-# rubocop:disable-next Lint/RedundantCopDisableDirective
+# rubocop:disable-next Lint/RedundantCopDisableDirective -- the examples below read as real directives
 module RuboCop
   module Cop
     module Lint

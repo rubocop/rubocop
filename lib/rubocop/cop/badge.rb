@@ -45,7 +45,7 @@ module RuboCop
 
       def hash
         # Do hashing manually to reduce Array allocations.
-        department.hash ^ cop_name.hash # rubocop:disable Security/CompoundHash
+        department.hash ^ cop_name.hash # rubocop:disable Security/CompoundHash -- hashing manually avoids the Array allocation
       end
 
       def match?(other)

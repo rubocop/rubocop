@@ -187,7 +187,7 @@ module RuboCop
             issues[:directives] << directive if directive_offends?(directive)
           end
 
-          comment.values.each do |value| # rubocop:disable Style/HashEachMethods
+          comment.values.each do |value| # rubocop:disable Style/HashEachMethods -- the receiver is a magic comment, not a Hash
             issues[:values] << value if wrong_capitalization?(value.source, value_capitalization)
           end
 

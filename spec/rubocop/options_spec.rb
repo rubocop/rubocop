@@ -40,10 +40,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'shows help text' do
         begin
           options.parse(['--help'])
-        rescue SystemExit # rubocop:disable Lint/SuppressedException
+        rescue SystemExit # rubocop:disable Lint/SuppressedException -- the exit is the expected outcome
         end
 
-        # rubocop:todo-next Naming/InclusiveLanguage
+        # rubocop:todo-next Naming/InclusiveLanguage -- the deprecated flag spelling is the subject here
         expected_help = <<~OUTPUT
           Usage: rubocop [options] [file1, file2, ...]
 
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'lists all builtin formatters' do
         begin
           options.parse(['--help'])
-        rescue SystemExit # rubocop:disable Lint/SuppressedException
+        rescue SystemExit # rubocop:disable Lint/SuppressedException -- the exit is the expected outcome
         end
 
         option_sections = $stdout.string.lines.slice_before(/^\s*-/)
@@ -675,7 +675,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
-    # rubocop:todo-next Naming/InclusiveLanguage
+    # rubocop:todo-next Naming/InclusiveLanguage -- the deprecated flag spelling is the subject here
     describe 'deprecated options' do
       describe '--auto-correct' do
         it 'emits a warning and sets the correct options instead' do

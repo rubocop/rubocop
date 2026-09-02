@@ -47,7 +47,7 @@ module RuboCop
         end
       end
 
-      # rubocop:disable-next Layout/LineLength,Metrics/AbcSize,Metrics/MethodLength
+      # rubocop:disable-next Layout/LineLength,Metrics/AbcSize,Metrics/MethodLength -- the XML is emitted line by line
       def finished(_inspected_files)
         output.puts %(<?xml version='1.0'?>)
         output.puts %(<testsuites>)

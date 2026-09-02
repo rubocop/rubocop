@@ -5,7 +5,7 @@ RSpec.describe RuboCop::CommentConfig do
 
   describe '#cop_enabled_at_line?' do
     let(:source) do
-      # rubocop:disable-next Lint/EmptyExpression, Lint/EmptyInterpolation
+      # rubocop:disable-next Lint/EmptyExpression, Lint/EmptyInterpolation -- the source under test is what it is
       <<~RUBY
         # rubocop:disable Metrics/MethodLength with a comment why
         def some_method
