@@ -1,0 +1,1 @@
+* [#15653](https://github.com/rubocop/rubocop/pull/15653): Fix `Style/DisableCopsWithinSourceCodeDirective` reading directive text quoted inside other comments, such as documentation examples, as a real directive. ([@bbatsov][])

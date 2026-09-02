@@ -94,6 +94,16 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
     end
   end
 
+  it 'does not register an offense for a directive quoted inside another comment' do
+    expect_no_offenses(<<~RUBY)
+      # Example in documentation:
+      #   x = 0 # rubocop:disable Layout/SpaceAroundOperators
+      #
+      # Prose about `# rubocop:disable Layout/SpaceAroundOperators`.
+      x = 0
+    RUBY
+  end
+
   context 'with AllowedDirectives and no other configuration' do
     let(:cop_config) { { 'AllowedDirectives' => ['todo'] } }
 
