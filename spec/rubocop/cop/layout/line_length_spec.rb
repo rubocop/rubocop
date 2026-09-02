@@ -1817,6 +1817,46 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             RUBY
           end
         end
+
+        context 'and the heredoc is nested inside another argument' do
+          it 'does not break up the line after the argument containing the heredoc' do
+            expect_offense(<<~RUBY)
+              foo bar(<<~STRING, 4), baz: /a_long_pattern/
+                                                      ^^^^ Line is too long. [44/40]
+                text
+              STRING
+            RUBY
+
+            expect_no_corrections
+          end
+
+          it 'breaks up the line before the argument containing the heredoc' do
+            expect_offense(<<~RUBY)
+              foo(abc, bar(<<~STRING, 4), xxxxxxxxxxxxx)
+                                                      ^^ Line is too long. [42/40]
+                text
+              STRING
+            RUBY
+
+            expect_correction(<<~RUBY)
+              foo(abc,#{trailing_whitespace}
+              bar(<<~STRING, 4), xxxxxxxxxxxxx)
+                text
+              STRING
+            RUBY
+          end
+
+          it 'does not break up a hash literal after the value containing the heredoc' do
+            expect_offense(<<~RUBY)
+              h = { key: bar(<<~STRING, 4), zz: /abc/ }
+                                                      ^ Line is too long. [41/40]
+                text
+              STRING
+            RUBY
+
+            expect_no_corrections
+          end
+        end
       end
     end
 
