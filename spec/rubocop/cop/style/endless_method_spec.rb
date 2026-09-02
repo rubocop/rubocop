@@ -738,4 +738,30 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       end
     end
   end
+
+  context 'when the body is a block spread over several lines', :ruby30 do
+    let(:cop_config) { { 'EnforcedStyle' => 'require_single_line' } }
+
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def a
+          b
+            .c { d }
+        end
+      RUBY
+    end
+
+    it 'still registers an offense for a body that really is on one line' do
+      expect_offense(<<~RUBY)
+        def a
+        ^^^^^ Use endless method definitions for single line methods.
+          b { c }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def a = b { c }
+      RUBY
+    end
+  end
 end
