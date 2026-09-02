@@ -397,6 +397,59 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for a method with a modifier `if` body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x if y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method with a modifier `while` body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x while y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method with an `and` body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x and y
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a method with a `&&` body' do
+        expect_offense(<<~RUBY)
+          def my_method
+          ^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            x && y
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method = x && y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition with a modifier `if`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end if y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition followed by `and`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end and y
+        RUBY
+      end
+
       it 'registers an offense and corrects for a single line method with access modifier' do
         expect_offense(<<~RUBY)
           private def my_method
@@ -626,6 +679,30 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
 
         expect_correction(<<~RUBY)
           def my_method = x
+        RUBY
+      end
+
+      it 'does not register an offense for a method with a modifier `if` body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x if y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method with an `or` body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x or y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition with a modifier `unless`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end unless y
         RUBY
       end
 
