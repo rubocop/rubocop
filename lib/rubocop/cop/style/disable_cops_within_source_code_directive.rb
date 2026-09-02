@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/RedundantCopDisableDirective
+# rubocop:disable Lint/RedundantCopDisableDirective -- the examples below read as real directives
 
 module RuboCop
   module Cop
@@ -101,8 +101,7 @@ module RuboCop
         def on_new_investigation
           processed_source.comments.each do |comment|
             directive = DirectiveComment.new(comment)
-            next if exempt_mode?(directive)
-            next if allow_with_reason? && (directive.reason || directive.enabled?)
+            next if ignored?(directive)
 
             directive_cops = directive_cops(directive)
             disallowed_cops = compute_disallowed_cops(directive_cops)
@@ -153,6 +152,16 @@ module RuboCop
         def directive_cops(directive)
           match_captures = directive.match_captures
           match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
+        end
+
+        # A directive mentioned inside another comment - documentation, or prose
+        # about directives - suppresses nothing, so there is nothing to forbid
+        # or to ask a justification for.
+        def ignored?(directive)
+          return true unless directive.start_with_marker?
+          return true if exempt_mode?(directive)
+
+          allow_with_reason? && (directive.reason || directive.enabled?)
         end
 
         def exempt_mode?(directive)
