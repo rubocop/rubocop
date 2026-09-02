@@ -1,0 +1,1 @@
+* [#15655](https://github.com/rubocop/rubocop/pull/15655): Fix `Style/StructInheritance` to not register an offense when the class body defines constants, nested classes, or nested modules. ([@MatheusRich][])
