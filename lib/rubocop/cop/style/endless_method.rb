@@ -175,7 +175,7 @@ module RuboCop
             add_offense(node, message: MSG_MULTI_LINE) do |corrector|
               correct_to_multiline(corrector, node)
             end
-          elsif !node.endless? && can_be_made_endless?(node) && node.body.single_line?
+          elsif !node.endless? && can_be_made_endless?(node) && single_line_when_made_endless?(node)
             return if too_long_when_made_endless?(node)
 
             add_offense(node, message: MSG_REQUIRE_SINGLE) do |corrector|
@@ -222,6 +222,10 @@ module RuboCop
 
         def can_be_made_endless?(node)
           node.body && !node.body.begin_type? && !node.body.kwbegin_type?
+        end
+
+        def single_line_when_made_endless?(node)
+          !endless_replacement(node).include?("\n")
         end
 
         def too_long_when_made_endless?(node)
