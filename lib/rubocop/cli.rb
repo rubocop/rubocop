@@ -183,12 +183,18 @@ module RuboCop
 
     def set_options_to_config_loader
       ConfigLoader.debug = @options[:debug]
-      ConfigLoader.disable_pending_cops = @options[:disable_pending_cops]
-      ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
       ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
+      set_cop_selection_options_to_config_loader
+    end
+
+    # Options that decide which cops run, as opposed to how configuration is loaded.
+    def set_cop_selection_options_to_config_loader
+      ConfigLoader.disable_pending_cops = @options[:disable_pending_cops]
+      ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.enabled_by_default = @options[:enable_all_cops]
       ConfigLoader.disabled_by_default = @options[:disable_all_cops]
+      ConfigLoader.preview = @options[:preview]
     end
 
     def set_options_to_pending_cops_reporter
