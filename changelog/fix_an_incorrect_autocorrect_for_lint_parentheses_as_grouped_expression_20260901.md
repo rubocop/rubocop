@@ -1,0 +1,1 @@
+* [#15648](https://github.com/rubocop/rubocop/pull/15648): Fix an incorrect autocorrect for `Lint/ParenthesesAsGroupedExpression` when the parentheses contain `and`, `or`, `not`, or a modifier expression. ([@Starlexxx][])
