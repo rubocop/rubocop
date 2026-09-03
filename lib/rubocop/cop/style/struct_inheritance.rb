@@ -10,6 +10,10 @@ module RuboCop
       #   Autocorrection is unsafe because it will change the inheritance
       #   tree (e.g. return value of `Module#ancestors`) of the constant.
       #
+      #   It is also unsafe because constants that the class body resolves through its
+      #   ancestors (e.g. one provided by an included module) fall out of scope inside
+      #   the block.
+      #
       # @example
       #   # bad
       #   class Person < Struct.new(:first_name, :last_name)
@@ -39,6 +43,7 @@ module RuboCop
 
         def on_class(node)
           return unless struct_constructor?(node.parent_class)
+          return if defines_constants?(node.body)
 
           add_offense(node.parent_class) do |corrector|
             corrector.remove(
@@ -57,6 +62,15 @@ module RuboCop
         PATTERN
 
         private
+
+        # Constants, including nested classes and modules, are scoped to the class when they
+        # are defined in a class body, but leak into the enclosing namespace once moved into a
+        # `Struct.new` block, so such a class cannot be rewritten as an assignment.
+        def defines_constants?(class_body)
+          return false unless class_body
+
+          class_body.each_node(:casgn, :class, :module).any?
+        end
 
         def correct_parent(parent, corrector)
           if parent.block_type?
