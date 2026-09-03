@@ -65,6 +65,7 @@ module RuboCop
       register_cop :DocumentDynamicEvalDefinition, "#{__dir__}/style/document_dynamic_eval_definition"
       register_cop :DoubleNegation, "#{__dir__}/style/double_negation"
       register_cop :EachForSimpleLoop, "#{__dir__}/style/each_for_simple_loop"
+      register_cop :EachWith, "#{__dir__}/style/each_with"
       register_cop :EachWithObject, "#{__dir__}/style/each_with_object"
       register_cop :EmptyBlockParameter, "#{__dir__}/style/empty_block_parameter"
       register_cop :EmptyCaseCondition, "#{__dir__}/style/empty_case_condition"

@@ -74,7 +74,7 @@ module RuboCop
 
           apply_range_offsets(pattern_node)
 
-          node_groups.each_with_index do |group, index|
+          node_groups.each.with_index do |group, index|
             register_offense(group, index)
           end
         end

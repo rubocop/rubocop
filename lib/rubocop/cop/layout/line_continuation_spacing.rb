@@ -36,7 +36,7 @@ module RuboCop
 
           last_line = last_line(processed_source)
 
-          processed_source.raw_source.lines.each_with_index do |line, index|
+          processed_source.raw_source.lines.each.with_index do |line, index|
             break if index >= last_line
 
             line_number = index + 1

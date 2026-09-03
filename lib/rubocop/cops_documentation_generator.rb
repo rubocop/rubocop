@@ -104,7 +104,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def examples(example_objects, cop)
     return '' if example_objects.none?
 
-    example_objects.each_with_object(cop_subsection('Examples', cop).dup) do |example, content|
+    example_objects.each.with_object(cop_subsection('Examples', cop).dup) do |example, content|
       content << "\n" unless content.end_with?("\n\n")
       content << example_header(example.name, cop) unless example.name == ''
       content << code_example(example)
@@ -114,7 +114,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def safety_object(safety_objects, cop)
     return '' if safety_objects.all? { |s| s.text.blank? }
 
-    safety_objects.each_with_object(cop_subsection('Safety', cop).dup) do |safety_object, content|
+    safety_objects.each.with_object(cop_subsection('Safety', cop).dup) do |safety_object, content|
       next if safety_object.text.blank?
 
       content << "\n" unless content.end_with?("\n\n")

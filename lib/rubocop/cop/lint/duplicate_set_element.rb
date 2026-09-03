@@ -51,12 +51,12 @@ module RuboCop
           }
         PATTERN
 
+        # rubocop:disable Metrics/AbcSize
         def on_send(node)
           return unless (set_elements = set_init_elements(node))
 
           seen_elements = Set[]
-
-          set_elements.each_with_index do |set_element, index|
+          set_elements.each.with_index do |set_element, index|
             # NOTE: Skip due to the possibility of corner cases where Set elements
             # may have changing return values if they are not literals, constants, or variables.
             next if !set_element.literal? && !set_element.const_type? && !set_element.variable?
@@ -69,6 +69,7 @@ module RuboCop
           end
         end
         alias on_csend on_send
+        # rubocop:enable Metrics/AbcSize
 
         private
 

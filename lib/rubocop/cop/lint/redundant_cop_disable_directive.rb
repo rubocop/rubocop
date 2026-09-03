@@ -129,7 +129,7 @@ module RuboCop
         end
 
         def each_line_range(cop, line_ranges)
-          line_ranges.each_with_index do |line_range, line_range_index|
+          line_ranges.each.with_index do |line_range, line_range_index|
             next if should_skip_line_range?(cop, line_range)
 
             comment = directive_comment(line_range)
