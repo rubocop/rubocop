@@ -178,16 +178,22 @@ module RuboCop
     end
 
     def file_checksum(file, config_store)
+      stat = File.stat(file)
+      return unavailable_checksum unless stat.file?
+
       digester = Digest::SHA1.new
-      mode = File.stat(file).mode
-      digester.update("#{file}#{mode}#{config_store.for_file(file).signature}")
+      digester.update("#{file}#{stat.mode}#{config_store.for_file(file).signature}")
       digester.file(file)
       digester.hexdigest
     rescue Errno::ENOENT
       # Spurious files that come and go should not cause a crash, at least not here.
-      # Every file that fails to checksum shares this sentinel value, so the cache entry
-      # must be neither saved nor considered valid, or one file's cached results could be
-      # served as another's.
+      unavailable_checksum
+    end
+
+    # Every file that fails to checksum shares this sentinel value, so the cache entry
+    # must be neither saved nor considered valid, or one file's cached results could be
+    # served as another's.
+    def unavailable_checksum
       @checksum_unavailable = true
       '_'
     end

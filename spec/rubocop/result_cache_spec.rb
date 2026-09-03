@@ -339,6 +339,22 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     end
   end
 
+  describe 'when the file is not a regular file' do
+    let(:file) { File::NULL }
+
+    before do
+      skip 'Device files are not stat-able on Windows' if RuboCop::Platform.windows?
+
+      allow(config_store).to receive(:for_file).with(file).and_return(RuboCop::Config.new)
+    end
+
+    it 'is neither saved nor considered valid' do
+      cache.save(offenses)
+
+      expect(cache).not_to be_valid
+    end
+  end
+
   describe '#save' do
     context 'when the default internal encoding is UTF-8' do
       let(:offenses) do
