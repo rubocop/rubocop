@@ -119,6 +119,28 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
       expect($stdout.string).not_to include('vendor/bundle/gem.rb')
     end
 
+    it 'merges a cop `Exclude` inherited from another file' do
+      create_file('legacy.rb', 'z   =  3')
+      create_file('shared.yml', <<~YAML)
+        Layout/SpaceAroundOperators:
+          Exclude:
+            - 'legacy.rb'
+      YAML
+      create_file('.rubocop.yml', <<~YAML)
+        inherit_from: shared.yml
+
+        AllCops:
+          Preview: true
+
+        Layout/SpaceAroundOperators:
+          Exclude:
+            - 'nothing.rb'
+      YAML
+
+      expect(cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])).to eq(0)
+      expect($stdout.string).not_to include('legacy.rb')
+    end
+
     it 'lets an explicit `inherit_mode` override win over preview' do
       create_file('.rubocop.yml', <<~YAML)
         inherit_mode:
