@@ -1111,6 +1111,25 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           Exclude:
             - 'example1.rb'
       YAML
+      it_behaves_like 'leaves out Excludes', 'because `Preview` is on', <<~YAML
+        AllCops:
+          Preview: true
+
+        Layout/TrailingWhitespace:
+          Exclude:
+            - 'example1.rb'
+      YAML
+
+      it 'records --preview in the regeneration command' do
+        create_file('.rubocop.yml', <<~YAML)
+          Layout/TrailingWhitespace:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(cli.run(['--preview', '--auto-gen-config'])).to eq(0)
+
+        expect(File.read('.rubocop_todo.yml')).to include('`rubocop --auto-gen-config --preview`')
+      end
     end
 
     context 'when duplicated default configuration parameter' do
