@@ -1,0 +1,1 @@
+* [#15363](https://github.com/rubocop/rubocop/issues/15363): Let a cop's entry in the default configuration carry a `Preview` section with the defaults it is expected to adopt in the next major release, applied under `Preview`. ([@bbatsov][])
