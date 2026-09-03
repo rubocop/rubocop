@@ -93,6 +93,7 @@ module RuboCop
         command += ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
         command += ' --disable-pending-cops' if @options[:disable_pending_cops]
         command += ' --enable-pending-cops' if @options[:enable_pending_cops]
+        command += preview_option
         command += exclude_limit_option
         command += ' --no-offense-counts' unless show_offense_counts?
 
@@ -101,6 +102,14 @@ module RuboCop
         command += ' --no-auto-gen-enforced-style' unless auto_gen_enforced_style?
 
         command
+      end
+
+      def preview_option
+        case @options[:preview]
+        when true then ' --preview'
+        when false then ' --no-preview'
+        else ''
+        end
       end
 
       def exclude_limit_option
@@ -259,7 +268,7 @@ module RuboCop
         config = ConfigStore.new.for(parent)
         cfg = config[cop_name] || {}
 
-        if merge_mode_for_exclude?(config) || merge_mode_for_exclude?(cfg)
+        if exclude_merges?(config, cfg)
           offending_files
         else
           cop_exclude = cfg['Exclude']
@@ -270,6 +279,14 @@ module RuboCop
           end
           ((cop_exclude || []) + offending_files).uniq
         end
+      end
+
+      # `Preview` merges `Exclude` with the default configuration, so the excludes
+      # already in the configuration do not have to be copied into the todo file.
+      def exclude_merges?(config, cop_config)
+        merge_mode_for_exclude?(config) ||
+          merge_mode_for_exclude?(cop_config) ||
+          config.preview?(@options)
       end
 
       def merge_mode_for_exclude?(cfg)
