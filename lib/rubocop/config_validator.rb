@@ -11,7 +11,7 @@ module RuboCop
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details
                        Enabled Reference References Safe SafeAutoCorrect].freeze
     # @api private
-    INTERNAL_PARAMS = %w[Description StyleGuide
+    INTERNAL_PARAMS = %w[Description StyleGuide Preview
                          VersionAdded VersionChanged VersionRemoved
                          Reference References Safe SafeAutoCorrect].freeze
     # @api private

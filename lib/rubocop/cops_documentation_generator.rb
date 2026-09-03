@@ -20,6 +20,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     safety:                ->(data) { safety_object(data.safety_objects, data.cop) },
     examples:              ->(data) { examples(data.example_objects, data.cop) },
     configuration:         ->(data) { configurations(data.cop.department, data.cop, data.config) },
+    preview:               ->(data) { preview_defaults(data.cop) },
     references:            ->(data) { references(data.cop, data.see_objects) }
   }.freeze
 
@@ -194,7 +195,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def configurations(department, cop, cop_config)
     header = ['Name', 'Default value', 'Configurable values']
     configs = cop_config.each_key.reject do |key|
-      key == 'AllowMultipleStyles' ||
+      key == 'AllowMultipleStyles' || key == 'Preview' ||
         (key != 'SupportedTypes' && key.start_with?('Supported'))
     end
     return '' if configs.empty?
@@ -207,6 +208,22 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     end
 
     cop_subsection('Configurable attributes', cop) + to_table(header, content)
+  end
+
+  def preview_defaults(cop)
+    cop_config = config.for_cop(cop)
+    preview = cop_config['Preview']
+    return '' unless preview.is_a?(Hash)
+
+    header = ['Name', 'Current default', 'Preview default']
+    content = preview.map do |name, value|
+      [name, format_table_value(cop_config[name]), format_table_value(value)]
+    end
+
+    cop_subsection('Preview defaults', cop) +
+      'These defaults apply under xref:versioning.adoc#preview[Preview] and are ' \
+      "expected to become the regular defaults in the next major release.\n\n" +
+      to_table(header, content)
   end
 
   def configuration_name(department, name)

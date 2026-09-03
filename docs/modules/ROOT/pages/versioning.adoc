@@ -55,10 +55,12 @@ changes to existing features.
 
 Some changes cannot ship as a pending cop. A cop that starts reporting a case it
 used to miss, or corrects one differently, changes results for everybody who has
-that cop enabled - so historically such changes have had to wait for a major
-release, whatever their merit.
+that cop enabled. A default that turns out to be wrong - a cop most projects
+disable, a threshold most projects raise - cannot move at all without a major
+release. Either way the change waits, whatever its merit.
 
-`Preview` is the channel for those changes. It is off by default:
+`Preview` is the channel for those changes: it is where the next major release's
+defaults live until that release ships. It is off by default:
 
 [source,yaml]
 ----
@@ -69,8 +71,20 @@ AllCops:
 or `--preview` on the command line, which overrides the configuration either way
 (`--no-preview` turns it back off).
 
-It gates two things:
+It gates three things:
 
+* **Changes to a cop's defaults.** A cop's entry in the default configuration
+  can carry a `Preview` section holding the defaults it is expected to adopt in
+  the next major release. Under preview those replace the current ones; an
+  explicit setting in your own configuration still wins over both.
++
+[source,yaml]
+----
+Style/Documentation:
+  Enabled: true
+  Preview:
+    Enabled: false
+----
 * **Behavior changes to existing cops.** A cop can put an unstable change behind
   `preview?` and ship it in a minor release. Nothing changes for anyone who has
   not opted in.
@@ -125,6 +139,11 @@ A cop marked `Enabled: preview` behaves like any other cop that is off:
   `Enabled: preview` you wrote in your own config is an explicit choice and wins
   over them, exactly as an explicit `Enabled: false` does.
 
+Preview defaults are defaults, so everything that rewrites defaults applies to
+them too: `--enable-all-cops`, `EnabledByDefault` and `DisabledByDefault` all
+win, and a re-enabled department under `DisabledByDefault` comes back with its
+preview defaults rather than its regular ones.
+
 Behavior gated behind `preview?` answers to the `Preview` setting and nothing
 else. Neither `--only` nor `--enable-all-cops` reaches inside a cop to switch it
 on, so a cop running under `--only` still reports its stable behavior unless
@@ -138,9 +157,11 @@ a change before it becomes the default:
 $ rubocop --preview
 ----
 
-NOTE: Preview behavior is unstable by definition. It can change or be withdrawn
-in any release, which is exactly what the flag buys us: a way to get a change in
-front of users early without committing to it.
+NOTE: Preview is provisional by definition. What it contains is our current
+intent for the next major release, not a promise: an entry can change or be
+withdrawn in any minor release if it does not work out, and a withdrawal is
+recorded in the changelog like any other change. That is exactly what the flag
+buys us: a way to get a change in front of users early without committing to it.
 
 == Pending Cops
 

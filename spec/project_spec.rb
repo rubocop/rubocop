@@ -108,6 +108,21 @@ RSpec.describe 'RuboCop Project', type: :feature do
       raise errors.join("\n") unless errors.empty?
     end
 
+    it 'only overrides existing parameters in `Preview` sections' do
+      cop_names.each do |cop_name|
+        preview = config.dig(cop_name, 'Preview')
+        next if preview.nil?
+
+        expect(preview).to be_a(Hash), "`#{cop_name}: Preview` should be a section of defaults."
+        expect(preview).not_to be_empty, "`#{cop_name}: Preview` should not be empty."
+
+        unknown = preview.keys - config[cop_name].keys
+        expect(unknown).to be_empty,
+                           "`#{cop_name}: Preview` overrides #{unknown.join(', ')}, " \
+                           'which the cop does not have.'
+      end
+    end
+
     # rubocop:disable-next RSpec/NoExpectationExample
     it 'does not have any duplication' do
       fname = File.expand_path('../config/default.yml', __dir__)

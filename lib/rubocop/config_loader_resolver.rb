@@ -95,16 +95,19 @@ module RuboCop
     # When the `--disable-all-cops` or `--enable-all-cops` CLI option is given,
     # it takes precedence over the configuration values.
     def merge_with_default(config, config_file, unset_nil:)
-      default_configuration = ConfigLoader.default_configuration
+      base_defaults = apply_preview_defaults(ConfigLoader.default_configuration, preview?(config))
+      default_configuration = base_defaults
       disabled_by_default, enabled_by_default = resolve_default_overrides(config)
 
       if disabled_by_default || enabled_by_default
-        default_configuration = transform(default_configuration) do |params|
+        default_configuration = transform(base_defaults) do |params|
           params.merge('Enabled' => !disabled_by_default)
         end
       end
 
-      config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
+      if disabled_by_default
+        config = handle_disabled_by_default(config, default_configuration, base_defaults)
+      end
       override_enabled_for_disabled_departments(default_configuration, config)
 
       opts = { inherit_mode: inherit_mode_for_default(config), unset_nil: unset_nil }
@@ -163,6 +166,21 @@ module RuboCop
         next unless base_hash.dig(cop_name, 'Enabled') == true
 
         derived_hash.replace(merge({ cop_name => { 'Enabled' => false } }, derived_hash))
+      end
+    end
+
+    # A cop's entry in the default configuration may carry a `Preview` section
+    # with the defaults it is expected to adopt in the next major release. Under
+    # `Preview` those replace the current defaults. The section is dropped either
+    # way, so the resolved configuration only ever shows what is in effect.
+    def apply_preview_defaults(default_configuration, preview)
+      transform(default_configuration) do |params|
+        # `AllCops: Preview` is the switch itself, not a section of defaults.
+        next params unless params['Preview'].is_a?(Hash)
+
+        params = params.dup
+        preview_params = params.delete('Preview')
+        preview ? params.merge(preview_params) : params
       end
     end
 
@@ -301,7 +319,7 @@ module RuboCop
       file.is_a?(RemoteConfig)
     end
 
-    def handle_disabled_by_default(config, new_default_configuration)
+    def handle_disabled_by_default(config, new_default_configuration, base_defaults)
       department_config = config.to_hash.reject { |cop| cop.include?('/') }
       department_config.each do |dept, dept_params|
         next unless dept_params['Enabled']
@@ -310,7 +328,7 @@ module RuboCop
           next unless cop.start_with?("#{dept}/")
 
           # Retain original default configuration for cops in the department.
-          params['Enabled'] = ConfigLoader.default_configuration[cop]['Enabled']
+          params['Enabled'] = base_defaults[cop]['Enabled']
         end
       end
 

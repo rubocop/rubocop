@@ -17,6 +17,7 @@ RSpec.describe RuboCop::ConfigStore do
     allow(RuboCop::ConfigLoader)
       .to receive(:merge_with_default) { |config| "merged #{config.to_h}" }
     allow(RuboCop::ConfigLoader).to receive(:default_configuration).and_return('default config')
+    allow(RuboCop::ConfigLoader).to receive(:apply_default_overrides) { |arg| arg }
   end
 
   describe '.for' do
