@@ -168,12 +168,15 @@ module RuboCop
 
     private
 
-    # Under `Preview`, `Exclude` is merged with the default configuration rather
-    # than replacing it, so that excluding one directory does not silently drop
-    # `vendor/**/*` and the other defaults. An explicit `inherit_mode` in user
-    # configuration still wins, in either direction.
     def inherit_mode_for_default(config)
-      mode = config['inherit_mode'] || {}
+      with_preview_exclude_merge(config['inherit_mode'] || {}, config)
+    end
+
+    # Under `Preview`, `Exclude` is merged rather than replaced, so that excluding
+    # one directory does not silently drop the excludes it would have inherited -
+    # from the default configuration or from a file named in `inherit_from`. An
+    # explicit `inherit_mode` still wins, in either direction.
+    def with_preview_exclude_merge(mode, config)
       return mode unless preview?(config)
       return mode if Array(mode['override']).include?('Exclude')
       return mode if Array(mode['merge']).include?('Exclude')
@@ -232,7 +235,7 @@ module RuboCop
     def determine_inherit_mode(hash, key)
       cop_cfg = hash[key]
       local_inherit = cop_cfg['inherit_mode'] if cop_cfg.is_a?(Hash)
-      local_inherit || hash['inherit_mode'] || {}
+      with_preview_exclude_merge(local_inherit || hash['inherit_mode'] || {}, hash)
     end
 
     def should_union?(derived_hash, base_hash, root_mode, key)
