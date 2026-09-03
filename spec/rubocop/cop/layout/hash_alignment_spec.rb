@@ -886,6 +886,38 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           ^^^ Align the separators of a hash literal if they span more than one line.
         )
       RUBY
+
+      expect_correction(<<~RUBY)
+        f(
+          aaa: nil,
+           bb:
+        )
+      RUBY
+    end
+  end
+
+  context 'when a later pair omits its value', :ruby31 do
+    let(:cop_config) do
+      { 'EnforcedHashRocketStyle' => 'table', 'EnforcedColonStyle' => 'separator' }
+    end
+
+    it 'does not shift the key past the start of its line' do
+      expect_offense(<<~RUBY)
+        f(
+          a: "x",
+          bbbbb:,
+          ^^^^^^ Align the separators of a hash literal if they span more than one line.
+          c: 1
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        f(
+          a: "x",
+        bbbbb:,
+          c: 1
+        )
+      RUBY
     end
   end
 
