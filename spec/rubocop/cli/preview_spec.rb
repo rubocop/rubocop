@@ -172,6 +172,87 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
     end
   end
 
+  context 'when a cop carries preview defaults' do
+    # `Style/Documentation` ships with `Preview: { Enabled: false }`.
+    before do
+      create_file('undocumented.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        class Undocumented
+          def call; end
+        end
+      RUBY
+    end
+
+    # No `--only` here: that would force the cop on regardless of its defaults.
+    def documentation_offenses(*args)
+      cli.run(args + ['--format', 'simple', '.'])
+      $stdout.string.scan('Style/Documentation:').size
+    end
+
+    it 'keeps the regular defaults without preview' do
+      expect(documentation_offenses).to eq(1)
+    end
+
+    it 'applies the preview defaults with --preview' do
+      expect(documentation_offenses('--preview')).to eq(0)
+    end
+
+    it 'applies the preview defaults when the config opts in' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+      YAML
+
+      expect(documentation_offenses).to eq(0)
+    end
+
+    it 'lets an explicit setting in user configuration win over the preview defaults' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+        Style/Documentation:
+          Enabled: true
+      YAML
+
+      expect(documentation_offenses).to eq(1)
+    end
+
+    it 'still runs the cop when it is requested by name with --only' do
+      cli.run(['--preview', '--only', 'Style/Documentation', '--format', 'simple', '.'])
+
+      expect($stdout.string).to include('Style/Documentation')
+    end
+
+    it 'lets `EnabledByDefault` win over the preview defaults' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+          EnabledByDefault: true
+      YAML
+
+      expect(documentation_offenses).to eq(1)
+    end
+
+    it 'respects the preview defaults when a department is re-enabled under `DisabledByDefault`' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+          DisabledByDefault: true
+        Style:
+          Enabled: true
+      YAML
+
+      expect(documentation_offenses).to eq(0)
+    end
+
+    it 'does not expose the `Preview` section in the resolved configuration' do
+      cli.run(['--preview', '--show-cops', 'Style/Documentation'])
+
+      expect($stdout.string).not_to include('Preview')
+    end
+  end
+
   it 'rejects an unknown `Enabled` value' do
     create_file('.rubocop.yml', <<~YAML)
       Style/For:

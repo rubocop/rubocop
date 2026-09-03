@@ -621,6 +621,23 @@ plainly a bug fix should just ship, and a whole new cop belongs in `pending`
 instead. See xref:versioning.adoc#preview["Preview"] for the full rule and the
 lifecycle a preview change follows afterwards.
 
+A change to a cop's *defaults* does not need `preview?` at all. Give the cop's
+entry in `config/default.yml` a `Preview` section with the values it is expected
+to adopt in the next major release, and the configuration loader applies them
+under preview:
+
+[source,yaml]
+----
+Style/Documentation:
+  Enabled: true
+  Preview:
+    Enabled: false
+----
+
+The section is rendered in the cop's documentation as a "Preview defaults" table
+and never appears in the resolved configuration, so the cop itself reads its
+settings the same way whether preview is on or off.
+
 [[common-patterns]]
 == Common patterns
 

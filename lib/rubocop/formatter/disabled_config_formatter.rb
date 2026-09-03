@@ -23,6 +23,7 @@ module RuboCop
         Enabled
         Exclude
         Include
+        Preview
         Reference
         References
         Safe

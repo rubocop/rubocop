@@ -4064,6 +4064,10 @@ Style/DocumentDynamicEvalDefinition:
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true
+  # Turned off by over half of the projects that configure RuboCop at all, so it
+  # is expected to be disabled by default in the next major release.
+  Preview:
+    Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '1.89'
   AllowedConstants: []
