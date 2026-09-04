@@ -5,7 +5,8 @@ module RuboCop
     module Layout
       # Checks the spacing inside and after block parameters pipes. Line breaks
       # inside parameter pipes are checked by `Layout/MultilineBlockLayout` and
-      # not by this cop.
+      # not by this cop. Spaces inside a lambda's parameter parentheses are left
+      # to `Layout/SpaceInsideParens` when that cop enforces a conflicting style.
       #
       # @example EnforcedStyleInsidePipes: no_space (default)
       #   # bad
@@ -34,7 +35,7 @@ module RuboCop
 
           return unless node.arguments? && pipes?(arguments)
 
-          check_inside_pipes(arguments)
+          check_inside_pipes(arguments) unless conflicting_space_inside_parens_style?(arguments)
           check_after_closing_pipe(arguments) if node.body
           check_each_arg(arguments)
         end
@@ -51,6 +52,16 @@ module RuboCop
 
         def style_parameter_name
           'EnforcedStyleInsidePipes'
+        end
+
+        def conflicting_space_inside_parens_style?(arguments)
+          return false unless arguments.loc.begin.source == '('
+
+          case config.for_enabled_cop('Layout/SpaceInsideParens')['EnforcedStyle']
+          when 'no_space' then style == :space
+          when 'space', 'compact' then style == :no_space
+          else false
+          end
         end
 
         def check_inside_pipes(arguments)
