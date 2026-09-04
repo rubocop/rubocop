@@ -170,7 +170,10 @@ module RuboCop
             return 'a one-line pattern matching'
           end
           return 'an interpolated expression' if interpolation?(begin_node)
-          return 'a method argument' if argument_of_parenthesized_method_call?(begin_node, node)
+          if argument_of_parenthesized_method_call?(begin_node, node) &&
+             !keyword_logical_operator?(node)
+            return 'a method argument'
+          end
           return 'a one-line rescue' if oneline_rescue_parentheses_required?(begin_node, node)
 
           return if begin_node.chained?
@@ -313,6 +316,13 @@ module RuboCop
 
           (node.begin.nil? && begin_node == parent.children.first) ||
             (node.end.nil? && begin_node == parent.children.last)
+        end
+
+        # `and`/`or` keyword operators bind looser than the method-argument
+        # boundary, so `foo((x and y))` cannot drop its parentheses without
+        # becoming a syntax error (unlike `&&`/`||`).
+        def keyword_logical_operator?(node)
+          node.operator_keyword? && node.semantic_operator?
         end
 
         def disallowed_one_line_pattern_matching?(begin_node, node)
