@@ -359,6 +359,59 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+    source = <<~RUBY
+      do_something(
+        foo: 1,
+        bar: 2
+      )
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/TrailingCommaInArguments'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something \\
+        foo: 1,
+        bar: 2
+
+    RUBY
+  end
+
+  it 'corrects `Style/TrailingCommaInArguments` when `EnforcedStyle: omit_parentheses` of ' \
+     '`Style/MethodCallWithArgsParentheses` keeps the parentheses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+    source = <<~RUBY
+      value = do_something(
+        foo: 1,
+        bar: 2
+      ).result
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/TrailingCommaInArguments'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      value = do_something(
+        foo: 1,
+        bar: 2,
+      ).result
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
      '`EnforcedStyle: conditionals` of `Style/AndOr`' do
     create_file('.rubocop.yml', <<~YAML)
