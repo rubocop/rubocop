@@ -1276,11 +1276,11 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
       C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Expected at least 1 empty line after magic comments; found 0.
       C:  3:  1: Style/Documentation: Missing top-level documentation comment for class A.
-      W:  4:  3: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
+      C:  4:  3: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
       C:  5:  3: [Corrected] Layout/IndentationWidth: Use 2 (not 6) spaces for indentation.
-      W:  5: 22: [Corrected] Lint/RedundantCopEnableDirective: Unnecessary enabling of Metrics/MethodLength.
-      W:  7: 54: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/For.
-      W:  9:  5: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/ClassVars.
+      C:  5: 22: [Corrected] Lint/RedundantCopEnableDirective: Unnecessary enabling of Metrics/MethodLength.
+      C:  7: 54: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/For.
+      C:  9:  5: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/ClassVars.
 
       1 file inspected, 8 offenses detected, 7 offenses corrected
     RESULT
@@ -2053,7 +2053,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       == example.rb ==
       C:  1:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
       C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
-      W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
+      C:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
 
       1 file inspected, 3 offenses detected
     RESULT
@@ -3601,7 +3601,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       example.rb:1:1: W: [Corrected] Lint/ImplicitStringConcatenation: Combine "" and "string" into a single string literal, rather than using implicit string concatenation.
       """string"""
       ^^^^^^^^^^
-      example.rb:1:1: W: [Corrected] Lint/TripleQuotes: Delimiting a string with multiple quotes has no effect, use a single quote instead.
+      example.rb:1:1: C: [Corrected] Lint/TripleQuotes: Delimiting a string with multiple quotes has no effect, use a single quote instead.
       """string"""
       ^^^^^^^^^^^^
       example.rb:1:3: W: [Corrected] Lint/ImplicitStringConcatenation: Combine "string" and "" into a single string literal, rather than using implicit string concatenation.

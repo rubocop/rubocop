@@ -88,19 +88,10 @@ Style/Alias:
 
 == Severity
 
-Each cop has a default severity level based on which department it belongs
-to. The level is normally `warning` for `Lint` and `convention` for all the
-others, but this can be changed in user configuration. Cops can customize their
-severity level. Allowed values are `info`, `refactor`, `convention`, `warning`, `error`
-and `fatal`.
-
-Cops with severity `info` will be reported but will not cause `rubocop` to return
-a non-zero value.
-
-There is one exception from the general rule above and that is `Lint/Syntax`, a
-special cop that checks for syntax errors before the other cops are invoked. It
-cannot be disabled and its severity (`fatal`) cannot be changed in
-configuration.
+Every cop reports its offenses at a severity, which is what `--fail-level`
+filters on and what the leading letter in the output shows. Allowed values are
+`info`, `refactor`, `convention`, `warning`, `error` and `fatal`, and any cop's
+severity can be set in configuration:
 
 [source,yaml]
 ----
@@ -110,6 +101,54 @@ Lint:
 Metrics/CyclomaticComplexity:
   Severity: warning
 ----
+
+A cop configured this way keeps reporting exactly what it reported before. The
+setting has always meant "report this cop's offenses at this level", and it
+still does.
+
+Cops with severity `info` will be reported but will not cause `rubocop` to return
+a non-zero value.
+
+`Lint/Syntax` is the one exception to all of this: it checks for syntax errors
+before any other cop runs, and neither its `Enabled` nor its `Severity` (`fatal`)
+can be changed in configuration.
+
+=== How RuboCop assigns them
+
+The severities that ship in
+https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml]
+answer one question: should this fail a build?
+
+|===
+| Severity | What it says
+
+| `warning`
+| The code is probably wrong: a likely bug, a security problem, or something that
+  misbehaves at runtime. Worth failing a build over.
+
+| `convention`
+| A matter of style and consistency. The code works; it does not read the way the
+  project wants it to.
+
+| `refactor`
+| A maintainability smell - size, complexity, dead code. Something to fix
+  deliberately, not something to be blocked by.
+
+| `info`
+| Advisory only, and never causes a non-zero exit.
+|===
+
+That puts the line between blocking and advisory at `--fail-level warning`.
+`error` and `fatal` are left to RuboCop itself.
+
+A cop's department sets its starting point - `warning` for `Lint`, `convention`
+for the rest - and individual cops override it where that reading is wrong. A
+`Lint` cop that reports redundant but harmless code (`Lint/RedundantSplatExpansion`,
+say) is a `convention`, a `Security` cop is a `warning`, and the `Metrics` cops
+are `refactor`.
+
+This is how the defaults are chosen, not a rule about the setting. Your own
+`Severity` values mean whatever your project wants them to mean.
 
 == Details
 

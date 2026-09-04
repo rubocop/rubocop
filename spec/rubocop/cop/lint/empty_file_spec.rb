@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyFile, :config do
     expect(offenses.size).to eq(1)
     offense = offenses.first
     expect(offense.message).to eq('Empty file detected.')
-    expect(offense.severity).to eq(:warning)
+    expect(offense.severity).to eq(:convention)
   end
 
   it 'does not register an offense when the file contains code' do
