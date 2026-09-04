@@ -7,9 +7,43 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
                         cop_config.merge(supported_styles).merge(
                           'IndentationWidth' => cop_indent
                         ),
+                        'Layout/ParameterAlignment' => parameter_alignment_config,
                         'Layout/IndentationWidth' => { 'Width' => 2 })
   end
+  let(:parameter_alignment_config) { {} }
   let(:cop_indent) { nil } # use indent from Layout/IndentationWidth
+
+  context 'when Layout/ParameterAlignment uses `with_fixed_indentation`' do
+    let(:cop_config) { { 'EnforcedStyle' => 'align_parentheses' } }
+    let(:parameter_alignment_config) { { 'EnforcedStyle' => 'with_fixed_indentation' } }
+
+    it 'does not register an offense for a multi-line method definition' do
+      expect_no_offenses(<<~RUBY)
+        def foo(
+                 a,
+                 bb
+        )
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects a single-parameter method definition' do
+      expect_offense(<<~RUBY)
+        def foo(
+        a
+        ^ Use 2 spaces for indentation in method args, relative to the position of the opening parenthesis.
+        )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(
+                 a
+        )
+        end
+      RUBY
+    end
+  end
 
   context 'consistent style' do
     let(:cop_config) { { 'EnforcedStyle' => 'consistent' } }
