@@ -407,4 +407,59 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
   end
+
+  context 'when `Layout/SpaceInsideParens` enforces a conflicting style' do
+    context 'when EnforcedStyleInsidePipes is space' do
+      let(:cop_config) { { 'EnforcedStyleInsidePipes' => 'space' } }
+      let(:other_cops) do
+        { 'Layout/SpaceInsideParens' => { 'Enabled' => true, 'EnforcedStyle' => 'no_space' } }
+      end
+
+      it 'accepts a lambda with no spaces inside its parentheses' do
+        expect_no_offenses('->(x, y) { puts x }')
+      end
+
+      it 'registers an offense for a block with no spaces inside its pipes' do
+        expect_offense(<<~RUBY)
+          {}.each { |x, y| puts x }
+                     ^ Space before first block parameter missing.
+                        ^ Space after last block parameter missing.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {}.each { | x, y | puts x }
+        RUBY
+      end
+    end
+
+    context 'when EnforcedStyleInsidePipes is no_space' do
+      let(:cop_config) { { 'EnforcedStyleInsidePipes' => 'no_space' } }
+      let(:other_cops) do
+        { 'Layout/SpaceInsideParens' => { 'Enabled' => true, 'EnforcedStyle' => 'space' } }
+      end
+
+      it 'accepts a lambda with spaces inside its parentheses' do
+        expect_no_offenses('->( x, y ) { puts x }')
+      end
+    end
+  end
+
+  context 'when `Layout/SpaceInsideParens` is disabled' do
+    let(:cop_config) { { 'EnforcedStyleInsidePipes' => 'space' } }
+    let(:other_cops) do
+      { 'Layout/SpaceInsideParens' => { 'Enabled' => false, 'EnforcedStyle' => 'no_space' } }
+    end
+
+    it 'registers an offense for a lambda with no spaces inside its parentheses' do
+      expect_offense(<<~RUBY)
+        ->(x, y) { puts x }
+           ^ Space before first block parameter missing.
+              ^ Space after last block parameter missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ->( x, y ) { puts x }
+      RUBY
+    end
+  end
 end
