@@ -118,6 +118,11 @@ not ready to be the default. Cops read it via `preview?`.
 
 Use it when:
 
+- **A cop's default should change in the next major release** (its `Enabled`
+  state, a `Max` threshold, an `EnforcedStyle`). Add a `Preview` section to the
+  cop's entry in `config/default.yml` with the new values. This needs no code:
+  the configuration loader applies the section under preview and drops it
+  otherwise. This is the most common case.
 - **An existing cop should start reporting a case it currently misses**, and the
   change is contested enough that turning it on for everyone would be rude.
   Without preview this waits for a major release.
@@ -136,7 +141,16 @@ Do **not** use it when:
 The rule of thumb: if you already know it should become the default, it is
 `pending`. If you are asking users to help you find out, it is `preview`.
 
+```yaml
+# config/default.yml: a default change, no code needed
+Style/Documentation:
+  Enabled: true
+  Preview:
+    Enabled: false
+```
+
 ```ruby
+# a behavior change inside a cop
 def on_send(node)
   return unless offense?(node)
   return if node.csend_type? && !preview?

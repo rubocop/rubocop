@@ -19,7 +19,14 @@ RSpec.describe RuboCop::ConfigLoader do
     RuboCop::ConfigFinder.project_root = nil
   end
 
-  let(:default_config) { described_class.default_configuration }
+  # The default configuration as it resolves: a cop's `Preview` section never
+  # survives into the loaded configuration. (`AllCops: Preview` is the switch
+  # itself and stays.)
+  let(:default_config) do
+    described_class.default_configuration.to_h.transform_values do |params|
+      params.reject { |key, value| key == 'Preview' && value.is_a?(Hash) }
+    end
+  end
 
   describe '.configuration_file_for', :isolated_environment do
     subject(:configuration_file_for) { described_class.configuration_file_for(dir_path) }
