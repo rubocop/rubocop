@@ -94,9 +94,7 @@ module RuboCop
 
       # @api private
       def first_argument_is_heredoc?(node)
-        first_argument = node.first_argument
-
-        first_argument.respond_to?(:heredoc?) && first_argument.heredoc?
+        node.first_argument.respond_to?(:heredoc?) && node.first_argument.heredoc?
       end
 
       # @api private
@@ -104,12 +102,21 @@ module RuboCop
       # after the heredoc or else it will cause a syntax error.
       def shift_elements_for_heredoc_arg(node, elements, index)
         return index unless node.type?(:call, :array)
+        return index unless (heredoc_pos = heredoc_begin_position(node))
 
-        heredoc_index = elements.index { |arg| arg.respond_to?(:heredoc?) && arg.heredoc? }
-        return index unless heredoc_index
-        return nil if heredoc_index.zero?
+        last_safe = elements.rindex { |element| element.source_range.begin_pos <= heredoc_pos }
+        return nil if last_safe.nil? ||
+                      (last_safe.zero? && elements.first.source_range.end_pos > heredoc_pos)
 
-        heredoc_index >= index ? index : heredoc_index + 1
+        [index, last_safe + 1].min
+      end
+
+      # @api private
+      def heredoc_begin_position(node)
+        children = node.call_type? ? node.arguments : node.children
+        children.flat_map { |child| [child, *child.each_descendant(:any_str)] }
+                .find { |descendant| descendant.type?(:any_str) && descendant.heredoc? }
+                &.source_range&.begin_pos
       end
 
       # @api private
@@ -128,9 +135,7 @@ module RuboCop
         # or redundant edits, we only mark one offense at a time.
         return true if contained_by_breakable_collection_on_same_line?(node)
 
-        return true if contained_by_multiline_collection_that_could_be_broken_up?(node)
-
-        false
+        contained_by_multiline_collection_that_could_be_broken_up?(node)
       end
 
       # @api private
@@ -145,9 +150,7 @@ module RuboCop
         # break before the second argument and the rest of the
         # argument will get auto-formatted onto separate lines
         # by other cops.
-        has_second_element = elements.length >= 2
-
-        starts_with_bracket && has_second_element
+        starts_with_bracket && elements.length >= 2
       end
 
       # @api private
