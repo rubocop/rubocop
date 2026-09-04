@@ -53,12 +53,18 @@ module RuboCop
         def on_def(node)
           return if node.arguments.empty?
           return if node.arguments.loc.begin.nil?
+          return if autocorrect_incompatible_with_other_cops?(node)
 
           check(node)
         end
         alias on_defs on_def
 
         private
+
+        def autocorrect_incompatible_with_other_cops?(node)
+          node.arguments.size >= 2 &&
+            style == :align_parentheses && enforce_parameter_with_fixed_indentation?
+        end
 
         def autocorrect(corrector, node)
           AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
@@ -94,6 +100,11 @@ module RuboCop
             configured_indentation_width: configured_indentation_width,
             base_description: base_description
           )
+        end
+
+        def enforce_parameter_with_fixed_indentation?
+          parameter_alignment_config = config.for_enabled_cop('Layout/ParameterAlignment')
+          parameter_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
         end
       end
     end

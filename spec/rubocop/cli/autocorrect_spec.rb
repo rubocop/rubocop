@@ -2840,6 +2840,39 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects method parameters when specifying `EnforcedStyle: with_fixed_indentation` of ' \
+     '`Layout/ParameterAlignment` and `EnforcedStyle: align_parentheses` of ' \
+     '`Layout/FirstParameterIndentation`' do
+    create_file('example.rb', <<~RUBY)
+      def foo(
+               a,
+               bb
+      )
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ParameterAlignment:
+        EnforcedStyle: with_fixed_indentation
+      Layout/FirstParameterIndentation:
+        EnforcedStyle: align_parentheses
+    YAML
+
+    expect(
+      cli.run(
+        ['--autocorrect', '--only', 'Layout/ParameterAlignment,Layout/FirstParameterIndentation']
+      )
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(
+        a,
+        bb
+      )
+      end
+    RUBY
+  end
+
   it 'does not crash Lint/SafeNavigationWithEmpty and accepts Style/SafeNavigation ' \
      'when checking `foo&.empty?` in a conditional' do
     create_file('example.rb', <<~RUBY)
