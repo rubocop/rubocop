@@ -1,0 +1,1 @@
+* [#15382](https://github.com/rubocop/rubocop/pull/15382): Fix incorrect autocorrects for `Style/ItBlockParameter` when a block argument is only referenced inside a nested block, and when a multi-line numbered parameter block is used with `EnforcedStyle: allow_single_line`. ([@bbatsov][])
