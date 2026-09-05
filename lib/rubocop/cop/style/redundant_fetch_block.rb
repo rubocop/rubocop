@@ -47,7 +47,7 @@ module RuboCop
         # @!method redundant_fetch_block_candidate?(node)
         def_node_matcher :redundant_fetch_block_candidate?, <<~PATTERN
           (block
-            $(call _ :fetch _)
+            $(call _ :fetch !splat)
             (args)
             ${nil? basic_literal? const_type?})
         PATTERN
