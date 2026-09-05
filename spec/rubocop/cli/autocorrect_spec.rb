@@ -2696,6 +2696,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects long lines with a trailing-space split point when specifying `SplitStrings: true` of ' \
+     '`Layout/LineLength` with `Layout/LineEndStringConcatenationIndentation` and ' \
+     '`Style/StringLiterals`' do
+    create_file('example.rb', <<~'RUBY')
+      foo("aaaaaaaaaaaaaaaaaaaaaaaa#{b} cc dd " \
+          "ee")
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 40
+        SplitStrings: true
+    YAML
+
+    expect(
+      cli.run(
+        ['--autocorrect', '--only',
+         'Layout/LineLength,Layout/LineEndStringConcatenationIndentation,Style/StringLiterals']
+      )
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~'RUBY')
+      foo("aaaaaaaaaaaaaaaaaaaaaaaa#{b} cc " \
+          'dd ' \
+          'ee')
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`Layout/HashAlignment` and `Layout/FirstHashElementIndentation`' do
     create_file('example.rb', <<~RUBY)

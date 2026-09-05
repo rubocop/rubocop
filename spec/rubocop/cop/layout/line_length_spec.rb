@@ -891,6 +891,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             end
           end
 
+          context 'when the last space is at the end of the string content' do
+            it 'breaks the string at the previous space' do
+              expect_offense(<<~'RUBY')
+                foo("aaaaaaaaaaaaaaaaaaaaaaaaa#{b} cc dd " \
+                                                        ^^^^ Line is too long. [44/40]
+                    "ee")
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                foo("aaaaaaaaaaaaaaaaaaaaaaaaa#{b} cc " \
+                "dd " \
+                    "ee")
+              RUBY
+            end
+          end
+
           context 'when there is already a continuation' do
             it 'breaks the string at the limit' do
               expect_offense(<<~'RUBY')
