@@ -1752,6 +1752,7 @@ Lint/ConstantResolution:
 Lint/CopDirectiveSyntax:
   Description: 'Checks that `# rubocop:` directives are strictly formatted.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '1.72'
   VersionChanged: '<<next>>'
 
