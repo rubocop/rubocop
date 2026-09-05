@@ -220,6 +220,10 @@ module RuboCop
         private
 
         def autocorrect_incompatible_with_other_cops?(node)
+          tab_indentation_enforced? || fixed_indented_hash_argument?(node)
+        end
+
+        def fixed_indented_hash_argument?(node)
           return false unless enforce_first_argument_with_fixed_indentation? &&
                               node.pairs.any? &&
                               node.parent&.call_type?
@@ -384,6 +388,10 @@ module RuboCop
         def enforce_first_argument_with_fixed_indentation?
           argument_alignment_config = config.for_enabled_cop('Layout/ArgumentAlignment')
           argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def tab_indentation_enforced?
+          config.for_enabled_cop('Layout/IndentationStyle')['EnforcedStyle'] == 'tabs'
         end
 
         def same_line?(node1, node2)
