@@ -149,9 +149,7 @@ module RuboCop
           receiver_source = extract_receiver_source(receiver)
           argument_source = extract_receiver_source(argument)
 
-          if argument.respond_to?(:parenthesized?) && !argument.parenthesized?
-            argument_source = "(#{argument_source})"
-          end
+          argument_source = "(#{argument_source})" unless argument.begin_type?
 
           corrector.replace(node, "#{receiver_source}.fdiv#{argument_source}")
         end
