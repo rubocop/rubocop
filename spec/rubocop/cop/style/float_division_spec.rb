@@ -226,6 +226,17 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when the divisor is a method call with arguments' do
+      expect_offense(<<~RUBY)
+        a.to_f / foo(1)
+        ^^^^^^^^^^^^^^^ Prefer using `fdiv` for float divisions.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a.fdiv(foo(1))
+      RUBY
+    end
+
     it 'does not register offense on usage of fdiv' do
       expect_no_offenses('a.fdiv(b)')
     end

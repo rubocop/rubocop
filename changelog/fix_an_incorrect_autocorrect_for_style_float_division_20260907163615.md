@@ -1,0 +1,1 @@
+* [#15669](https://github.com/rubocop/rubocop/pull/15669): Fix an incorrect autocorrect for `Style/FloatDivision` when using `EnforcedStyle: fdiv` and the divisor is a method call with parenthesized arguments. ([@viralpraxis][])
