@@ -68,6 +68,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
     RUBY
   end
 
+  it 'registers an offense when using double splat hash braces with a braced hash `merge` argument' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar}.merge({baz: qux}))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux)
+    RUBY
+  end
+
   it 'registers an offense when using double splat hash braces with `merge` safe navigation method call' do
     expect_offense(<<~RUBY)
       do_something(**{foo: bar, baz: qux}&.merge(options))

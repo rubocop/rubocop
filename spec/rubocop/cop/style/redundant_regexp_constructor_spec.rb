@@ -56,6 +56,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpConstructor, :config do
     RUBY
   end
 
+  it 'registers an offense and preserves the delimiters when wrapping `%r{foo/bar}`' do
+    expect_offense(<<~RUBY)
+      Regexp.new(%r{foo/bar})
+      ^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      %r{foo/bar}
+    RUBY
+  end
+
   it 'does not register an offense when wrapping a string literal with `Regexp.new`' do
     expect_no_offenses(<<~RUBY)
       Regexp.new('regexp')

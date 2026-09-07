@@ -27,17 +27,17 @@ module RuboCop
         def_node_matcher :redundant_regexp_constructor, <<~PATTERN
           (send
             (const {nil? cbase} :Regexp) {:new :compile}
-            (regexp $... (regopt $...)))
+            $(regexp _* (regopt _*)))
         PATTERN
 
         def on_send(node)
-          return unless (regexp, regopt = redundant_regexp_constructor(node))
+          return unless (regexp = redundant_regexp_constructor(node))
 
           add_offense(node, message: format(MSG, method: node.method_name)) do |corrector|
-            pattern = regexp.map(&:source).join
-            regopt = regopt.join
-
-            corrector.replace(node, "/#{pattern}/#{regopt}")
+            # Reuse the inner literal's own source so its delimiters are preserved.
+            # Forcing `/.../` would break patterns like `%r{foo/bar}` that contain
+            # an unescaped slash.
+            corrector.replace(node, regexp.source)
           end
         end
       end
