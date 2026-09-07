@@ -74,6 +74,11 @@ module RuboCop
 
         METHOD_MEMBER_REGEXP = /#([a-zA-Z_]\w*[?!]?)\(\)\z/.freeze
         LITERAL_IDENTIFIER_PATTERN = /[a-zA-Z_]\w*[?!]?/.freeze
+        # Bare class and module objects, used to ask what every namespace
+        # inherits from Ruby itself rather than hardcoding a list of names that
+        # would rot between Ruby versions.
+        CLASS_PROBE = Class.new
+        MODULE_PROBE = Module.new
 
         def on_const(node)
           return unless check?('CheckConstants') && checkable_constant?(node)
@@ -207,8 +212,53 @@ module RuboCop
           return nil if responds_in_index?(declaration, node.method_name.to_s, base)
           return nil unless fully_resolved_index_ancestry?(declaration)
           return nil if gem_owned_namespace?(declaration)
+          return nil if responds_natively?(declaration, node.method_name.to_s, base)
 
           declaration
+        end
+
+        # Whether Ruby itself answers the call, in which case the name's
+        # absence from the index is no evidence of a typo. There are two ways
+        # that happens, and neither is visible to a source index because the
+        # interpreter implements them in C or compiles them in.
+        #
+        # First, the namespace may be one Ruby provides. `Time` and `Regexp`
+        # resolve in the index only because something indexed reopens them --
+        # `ProjectIndexIncludesGems` makes that routine, since gems like
+        # ActiveSupport reopen both -- and their ancestry resolves too, so
+        # every other completeness guard passes and the handful of members the
+        # reopening added become the whole dictionary. `Time.now` then looks
+        # like a typo of `Time.noon`.
+        #
+        # Second, the constant may be any class or module at all. It is itself
+        # an object, so it answers everything `Class`/`Module`, `Object` and
+        # `Kernel` define -- `send`, `to_s`, `freeze` and the rest. That holds
+        # for a project's own classes, which the first case does not cover
+        # because they do not exist in this process: `Bar.send` was reported as
+        # a typo of `Bar.send_pm`.
+        #
+        # Only names the running Ruby answers to are skipped, so a genuine typo
+        # is still reported. Methods from a stdlib file RuboCop has not itself
+        # required are not covered: they are equally invisible to the index,
+        # but there is nothing to ask.
+        def responds_natively?(declaration, name, base)
+          candidates = [name, base].uniq
+
+          return true if core_object_responds?(declaration, candidates)
+
+          const = Object.const_get(declaration.name.to_s)
+          const.is_a?(Module) && candidates.any? { |candidate| const.respond_to?(candidate) }
+        rescue StandardError
+          false
+        end
+
+        # Whether a bare object of the same kind already answers the name. A
+        # module is probed with a module: `Formatting.superclass` is a real
+        # offense, since modules have no `superclass`.
+        def core_object_responds?(declaration, candidates)
+          probe = declaration.is_a?(Rubydex::Class) ? CLASS_PROBE : MODULE_PROBE
+
+          candidates.any? { |candidate| probe.respond_to?(candidate) }
         end
 
         def setter_call?(node)

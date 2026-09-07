@@ -1,0 +1,1 @@
+* [#15643](https://github.com/rubocop/rubocop/issues/15643): Fix `Lint/NameTypo` false positives for methods Ruby itself provides, such as `Time.now`, `Regexp.new`, and methods every namespace inherits like `Bar.send`. ([@IslamElsayed][])

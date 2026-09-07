@@ -320,6 +320,89 @@ RSpec.describe RuboCop::Cop::Lint::NameTypo, :config do
         end
       end
 
+      context 'when the receiver is a namespace Ruby itself provides' do
+        # `ProjectIndexIncludesGems` makes this the common case rather than an
+        # exotic one: gems such as ActiveSupport reopen `Time` and `Regexp`, so
+        # the namespace resolves in the index and its ancestry resolves too,
+        # leaving the few members the reopening added as the whole dictionary.
+        # `Time.now` is compiled into the interpreter and `Regexp.new` is
+        # implemented in C, so neither is in the index, and each has a
+        # close-named sibling among the added members to be blamed on.
+        before do
+          cop.project_index = build_index(
+            'file:///core_ext.rb' => <<~RUBY
+              class Time
+                def self.noon; end
+                def self.current; end
+              end
+
+              class Regexp
+                def self.next; end
+              end
+            RUBY
+          )
+        end
+
+        it 'does not register an offense for a method compiled into the interpreter' do
+          expect_no_offenses(<<~RUBY)
+            Time.now
+          RUBY
+        end
+
+        it 'does not register an offense for a method implemented in C' do
+          expect_no_offenses(<<~RUBY)
+            Regexp.new('foo')
+          RUBY
+        end
+
+        it 'still registers an offense for a typo of an indexed member' do
+          expect_offense(<<~RUBY)
+            Time.currrent
+                 ^^^^^^^^ Possible typo: `Time` does not respond to `currrent`. Did you mean `current`?
+          RUBY
+        end
+      end
+
+      context 'when the call is a method every namespace inherits from Ruby' do
+        # A constant naming a class or module is itself an object, so it answers
+        # everything Class/Module, Object and Kernel define. The interpreter
+        # implements those in C, so they are missing from the index for a
+        # project's own classes too, not just for the ones Ruby provides -- and
+        # a nearby member name is then blamed for them.
+        before do
+          cop.project_index = build_index(
+            'file:///models.rb' => <<~RUBY
+              class Bar
+                def send_pm; end
+              end
+
+              module Formatting
+                def self.names; end
+              end
+            RUBY
+          )
+        end
+
+        it 'does not register an offense for a method inherited from Object' do
+          expect_no_offenses(<<~RUBY)
+            Bar.send(:send_pm)
+          RUBY
+        end
+
+        it 'does not register an offense for a method inherited from Module' do
+          expect_no_offenses(<<~RUBY)
+            Formatting.name
+          RUBY
+        end
+
+        it 'still registers an offense for a typo of a method the class defines' do
+          expect_offense(<<~RUBY)
+            Bar.send_pmm
+                ^^^^^^^^ Possible typo: `Bar` does not respond to `send_pmm`. Did you mean `send_pm`?
+          RUBY
+        end
+      end
+
       context 'when CheckMethods is false' do
         let(:cop_config) { { 'CheckMethods' => false } }
 
