@@ -258,7 +258,7 @@ module RuboCop
           return false unless allow_for_alignment?
           return false unless with_space.source.start_with?(EXCESSIVE_SPACE)
 
-          return !aligned_with_operator?(operator) unless type == :assignment
+          return !aligned_with_operator?(operator) unless grouped_alignment_type?(type)
 
           token            = Token.new(operator, nil, operator.source)
           align_preceding  = aligned_with_preceding_equals_operator(token)
@@ -267,6 +267,10 @@ module RuboCop
                           aligned_with_subsequent_equals_operator(token) == :none
 
           aligned_with_subsequent_equals_operator(token) != :yes
+        end
+
+        def grouped_alignment_type?(type)
+          type == :assignment || (type == :special_asgn && force_equal_sign_alignment?)
         end
 
         def excess_trailing_space?(right_operand, with_space)
