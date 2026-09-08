@@ -70,6 +70,30 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           end
 
+          context 'a cop that is disabled in the config, around `push`/`pop` blocks' do
+            let(:other_cops) { { 'Metrics/MethodLength' => { 'Enabled' => false } } }
+
+            it 'returns no offense for a single block' do
+              expect_no_offenses(<<~RUBY)
+                # rubocop:push -Style/For
+                foo
+                # rubocop:pop
+              RUBY
+            end
+
+            it 'returns no offense for repeated blocks' do
+              expect_no_offenses(<<~RUBY)
+                # rubocop:push -Style/For
+                foo
+                # rubocop:pop
+
+                # rubocop:push -Style/For
+                bar
+                # rubocop:pop
+              RUBY
+            end
+          end
+
           context 'a cop that is pending in the config' do
             let(:other_cops) { { 'Metrics/MethodLength' => { 'Enabled' => 'pending' } } }
 
