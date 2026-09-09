@@ -107,7 +107,7 @@ module RuboCop
               remove_to_f_method(corrector, node.receiver)
               add_to_f_method(corrector, node.first_argument)
             when :fdiv
-              correct_from_slash_to_fdiv(corrector, node, node.receiver, node.first_argument)
+              correct_from_slash_to_fdiv(corrector, node.receiver, node.first_argument)
             end
           end
         end
@@ -145,21 +145,17 @@ module RuboCop
           corrector.remove(send_node.loc.selector)
         end
 
-        def correct_from_slash_to_fdiv(corrector, node, receiver, argument)
-          receiver_source = extract_receiver_source(receiver)
-          argument_source = extract_receiver_source(argument)
+        def correct_from_slash_to_fdiv(corrector, receiver, argument)
+          remove_to_f_method(corrector, receiver) if to_f_method?(receiver)
 
-          argument_source = "(#{argument_source})" unless argument.begin_type?
+          argument_parenthesized = argument.begin_type?
+          corrector.replace(
+            receiver.source_range.end.join(argument.source_range.begin),
+            argument_parenthesized ? '.fdiv' : '.fdiv('
+          )
 
-          corrector.replace(node, "#{receiver_source}.fdiv#{argument_source}")
-        end
-
-        def extract_receiver_source(node)
-          if node.send_type? && node.method?(:to_f)
-            node.receiver.source
-          else
-            node.source
-          end
+          remove_to_f_method(corrector, argument) if to_f_method?(argument)
+          corrector.insert_after(argument, ')') unless argument_parenthesized
         end
       end
     end
