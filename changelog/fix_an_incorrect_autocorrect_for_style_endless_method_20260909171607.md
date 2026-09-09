@@ -1,0 +1,1 @@
+* [#15680](https://github.com/rubocop/rubocop/pull/15680): Fix an incorrect autocorrect for `Style/EndlessMethod` when using `EnforcedStyle: require_always` and the method body has a `rescue` or `ensure` clause. ([@viralpraxis][])

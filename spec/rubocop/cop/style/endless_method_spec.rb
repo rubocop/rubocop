@@ -523,6 +523,26 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
     context 'EnforcedStyle: require_always' do
       let(:cop_config) { { 'EnforcedStyle' => 'require_always' } }
 
+      it 'does not register an offense for a method with a `rescue` body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          rescue StandardError
+            y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method with an `ensure` body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          ensure
+            y
+          end
+        RUBY
+      end
+
       it 'does not register an offense for an endless method' do
         expect_no_offenses(<<~RUBY)
           def my_method() = x
