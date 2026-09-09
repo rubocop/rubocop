@@ -1,0 +1,1 @@
+* [#15675](https://github.com/rubocop/rubocop/pull/15675): Fix an infinite loop between `Layout/SpaceAroundOperators` and `Layout/ExtraSpacing` with `ForceEqualSignAlignment: true` for aligned operator assignments. ([@Starlexxx][])

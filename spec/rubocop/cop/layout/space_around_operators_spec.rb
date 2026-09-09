@@ -1310,5 +1310,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         SECOND = true
       RUBY
     end
+
+    it 'allows operator assignments to be aligned with a preceding assignment' do
+      expect_no_offenses(<<~RUBY)
+        aaaa = 1
+        foo
+        b   += 2
+      RUBY
+    end
   end
 end
