@@ -1358,6 +1358,28 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'does not register an offense for singleton methods in separate Class.new blocks assigned to an instance variable' do
+    expect_no_offenses(<<~RUBY)
+      def setup
+        @first = Class.new do
+          class << self
+            def name
+              'FIRST'
+            end
+          end
+        end
+
+        Class.new do
+          class << self
+            def name
+              'SECOND'
+            end
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense for duplicate methods inside the same Class.new block inside a block' do
     expect_offense(<<~RUBY)
       let(:klass) do
