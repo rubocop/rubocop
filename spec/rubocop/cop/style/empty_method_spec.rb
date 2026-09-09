@@ -345,4 +345,41 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
       end
     end
   end
+
+  context 'when `Style/SingleLineMethods` disallows empty single line methods' do
+    let(:config) do
+      merged = RuboCop::ConfigLoader.default_configuration['Style/EmptyMethod'].merge(cop_config)
+      RuboCop::Config.new(
+        'Style/EmptyMethod' => merged,
+        'Style/SingleLineMethods' => { 'Enabled' => true, 'AllowIfMethodIsEmpty' => false }
+      )
+    end
+
+    context 'when configured with compact style' do
+      let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
+
+      it 'does not register an offense for an expanded empty method' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+          end
+        RUBY
+      end
+    end
+
+    context 'when configured with expanded style' do
+      let(:cop_config) { { 'EnforcedStyle' => 'expanded' } }
+
+      it 'registers an offense and corrects a compact empty method' do
+        expect_offense(<<~RUBY)
+          def foo; end
+          ^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+          end
+        RUBY
+      end
+    end
+  end
 end

@@ -731,6 +731,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/EmptyMethod` with `AllowIfMethodIsEmpty: false` of `Style/SingleLineMethods`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/SingleLineMethods:
+        AllowIfMethodIsEmpty: false
+    YAML
+    source = <<~RUBY
+      def foo; end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/EmptyMethod,Style/SingleLineMethods,Style/Semicolon,' \
+                               'Layout/TrailingWhitespace'
+                   ])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo
+      end
+    RUBY
+  end
+
   it 'corrects `Style/GuardClause` with `Style/MissingElse`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/EmptyElse:
