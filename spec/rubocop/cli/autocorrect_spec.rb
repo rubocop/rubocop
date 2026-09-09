@@ -319,6 +319,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'keeps parentheses when `Style/EndlessMethod` makes a method endless in the same pass' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/EndlessMethod:
+        EnforcedStyle: require_single_line
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+      Layout/SpaceInsideArrayLiteralBrackets:
+        EnforcedStyle: space
+    YAML
+    source = <<~RUBY
+      def aa
+        @bb ||= [cc].dd("ee")
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all', '--only',
+                     'Style/EndlessMethod,Style/MethodCallWithArgsParentheses,' \
+                     'Layout/SpaceInsideArrayLiteralBrackets'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def aa = @bb ||= [ cc ].dd("ee")
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

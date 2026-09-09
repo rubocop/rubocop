@@ -143,6 +143,10 @@ module RuboCop
         MSG_REQUIRE_SINGLE = 'Use endless method definitions for single line methods.'
         MSG_REQUIRE_ALWAYS = 'Use endless method definitions.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_def(node)
           return if node.assignment_method? || use_heredoc?(node)
 
