@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock, :config do
+  it 'does not register an offense for splatted arguments' do
+    expect_no_offenses(<<~RUBY)
+      hash.fetch(*args) { 5 }
+    RUBY
+  end
+
+  it 'does not register an offense for splatted arguments with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      hash&.fetch(*args) { 5 }
+    RUBY
+  end
+
   context 'with SafeForConstants: true' do
     let(:config) do
       RuboCop::Config.new('Style/RedundantFetchBlock' => { 'SafeForConstants' => true })
