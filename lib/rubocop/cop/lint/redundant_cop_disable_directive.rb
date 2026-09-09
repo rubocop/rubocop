@@ -170,6 +170,12 @@ module RuboCop
         end
 
         def skip_directive?(comment)
+          # A cop disabled in the configuration is represented by a synthetic directive that
+          # has no comment in the source, so there is nothing to report or to remove.
+          # Its range starts at `CONFIG_DISABLED_LINE_RANGE_MIN` and runs to the end of the file,
+          # but a `pop` splits it, and the pieces in between are bounded on both sides.
+          return true if comment.is_a?(CommentConfig::ConfigDisabledCopDirectiveComment)
+
           directive = DirectiveComment.new(comment)
           directive.push? || directive.pop? || directive.next?
         end
