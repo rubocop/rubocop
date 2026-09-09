@@ -425,6 +425,10 @@ Layout/ArgumentAlignment:
   #     method_call(a,
   #       b)
   EnforcedStyle: with_first_argument
+  # Expected to become the default in the next major release.
+  # Same preference as `ParameterAlignment`.
+  Preview:
+    EnforcedStyle: with_fixed_indentation
   SupportedStyles:
     - with_first_argument
     - with_fixed_indentation
@@ -512,6 +516,10 @@ Layout/CaseIndentation:
   VersionAdded: '0.49'
   VersionChanged: '1.16'
   EnforcedStyle: case
+  # Expected to become the default in the next major release.
+  # `when` aligned with `end` is the pick of nearly every project that sets this.
+  Preview:
+    EnforcedStyle: end
   SupportedStyles:
     - case
     - end
@@ -773,6 +781,10 @@ Layout/EndAlignment:
   # The value `start_of_line` means that `end` should be aligned with the start
   # of the line which the matching keyword appears on.
   EnforcedStyleAlignWith: keyword
+  # Expected to become the default in the next major release.
+  # Aligning `end` with the variable is the pick of most projects that set this.
+  Preview:
+    EnforcedStyleAlignWith: variable
   SupportedStylesAlignWith:
     - keyword
     - variable
@@ -852,6 +864,10 @@ Layout/FirstArrayElementIndentation:
   # The value `align_brackets` means that the indentation of the first element
   # shall always be relative to the position of the opening bracket.
   EnforcedStyle: special_inside_parentheses
+  # Expected to become the default in the next major release.
+  # Same preference as `FirstHashElementIndentation`.
+  Preview:
+    EnforcedStyle: consistent
   SupportedStyles:
     - special_inside_parentheses
     - consistent
@@ -886,6 +902,10 @@ Layout/FirstHashElementIndentation:
   # The value `align_braces` means that the indentation of the first key shall
   # always be relative to the position of the opening brace.
   EnforcedStyle: special_inside_parentheses
+  # Expected to become the default in the next major release.
+  # A consistent indent wins over the parentheses-sensitive rule by a wide margin.
+  Preview:
+    EnforcedStyle: consistent
   SupportedStyles:
     - special_inside_parentheses
     - consistent
@@ -1273,6 +1293,10 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: aligned
+  # Expected to become the default in the next major release.
+  # Indenting continuation lines wins over aligning them by a wide margin.
+  Preview:
+    EnforcedStyle: indented
   SupportedStyles:
     - aligned
     - indented
@@ -1312,6 +1336,10 @@ Layout/MultilineOperationIndentation:
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: aligned
+  # Expected to become the default in the next major release.
+  # Same preference as `MultilineMethodCallIndentation`.
+  Preview:
+    EnforcedStyle: indented
   SupportedStyles:
     - aligned
     - indented
@@ -1341,6 +1369,10 @@ Layout/ParameterAlignment:
   #     def method_foo(a,
   #       b)
   EnforcedStyle: with_first_parameter
+  # Expected to become the default in the next major release.
+  # A fixed indent wins over aligning with the first parameter.
+  Preview:
+    EnforcedStyle: with_fixed_indentation
   SupportedStyles:
     - with_first_parameter
     - with_fixed_indentation
@@ -3427,6 +3459,10 @@ Style/Alias:
   VersionAdded: '0.9'
   VersionChanged: '0.36'
   EnforcedStyle: prefer_alias
+  # Expected to become the default in the next major release.
+  # `alias_method` is the pick of most projects that set this.
+  Preview:
+    EnforcedStyle: prefer_alias_method
   SupportedStyles:
     - prefer_alias
     - prefer_alias_method
@@ -4204,6 +4240,10 @@ Style/EmptyMethod:
   VersionAdded: '0.46'
   VersionChanged: '1.61'
   EnforcedStyle: compact
+  # Expected to become the default in the next major release.
+  # Expanded empty methods are the pick of nearly every project that sets this.
+  Preview:
+    EnforcedStyle: expanded
   SupportedStyles:
     - compact
     - expanded
@@ -5848,6 +5888,10 @@ Style/RescueStandardError:
   Enabled: true
   VersionAdded: '0.52'
   EnforcedStyle: explicit
+  # Expected to become the default in the next major release.
+  # A bare `rescue` is the pick of most projects that set this.
+  Preview:
+    EnforcedStyle: implicit
   # implicit: Do not include the error class, `rescue`
   # explicit: Require an error class `rescue StandardError`
   SupportedStyles:
@@ -6105,6 +6149,10 @@ Style/StringLiterals:
   VersionAdded: '0.9'
   VersionChanged: '0.36'
   EnforcedStyle: single_quotes
+  # Expected to become the default in the next major release.
+  # Double quotes are what most Ruby is written with; Standard and omakase pick them too.
+  Preview:
+    EnforcedStyle: double_quotes
   SupportedStyles:
     - single_quotes
     - double_quotes
@@ -6119,6 +6167,10 @@ Style/StringLiteralsInInterpolation:
   Enabled: true
   VersionAdded: '0.27'
   EnforcedStyle: single_quotes
+  # Expected to become the default in the next major release.
+  # Follows `Style/StringLiterals`.
+  Preview:
+    EnforcedStyle: double_quotes
   SupportedStyles:
     - single_quotes
     - double_quotes
@@ -6211,6 +6263,10 @@ Style/TernaryParentheses:
   VersionAdded: '0.42'
   VersionChanged: '0.46'
   EnforcedStyle: require_no_parentheses
+  # Expected to become the default in the next major release.
+  # Parentheses only around complex conditions is the pick of nearly every project that sets this.
+  Preview:
+    EnforcedStyle: require_parentheses_when_complex
   SupportedStyles:
     - require_parentheses
     - require_no_parentheses
