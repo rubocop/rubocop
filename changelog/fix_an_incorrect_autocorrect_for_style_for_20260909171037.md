@@ -1,0 +1,1 @@
+* [#15678](https://github.com/rubocop/rubocop/pull/15678): Fix an incorrect autocorrect for `Style/For` when using `EnforcedStyle: for` and the block body has a `rescue` or `ensure` clause. ([@viralpraxis][])

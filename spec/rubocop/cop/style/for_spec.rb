@@ -407,6 +407,26 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
   context 'when for is the enforced style' do
     let(:cop_config) { { 'EnforcedStyle' => 'for' } }
 
+    it 'does not register an offense for a block with a `rescue` body' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].each do |n|
+          puts n
+        rescue StandardError
+          handle
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a block with an `ensure` body' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].each do |n|
+          puts n
+        ensure
+          cleanup
+        end
+      RUBY
+    end
+
     it 'accepts for' do
       expect_no_offenses(<<~RUBY)
         def func

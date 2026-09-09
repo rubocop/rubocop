@@ -69,6 +69,7 @@ module RuboCop
 
           if style == :for
             return unless node.receiver
+            return if rescue_or_ensure_body?(node)
 
             add_offense(node, message: PREFER_FOR) do |corrector|
               EachToForCorrector.new(node).call(corrector)
@@ -86,6 +87,10 @@ module RuboCop
 
         def suspect_enumerable?(node)
           node.multiline? && node.method?(:each) && !node.send_node.arguments?
+        end
+
+        def rescue_or_ensure_body?(node)
+          node.body&.type?(:rescue, :ensure)
         end
       end
     end
