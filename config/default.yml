@@ -2858,6 +2858,10 @@ Metrics/AbcSize:
     - https://wiki.c2.com/?AbcMetric
     - https://en.wikipedia.org/wiki/ABC_Software_Metric
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Rejected by more than a third of projects; those that keep it split evenly between 20 and 30.
+  Preview:
+    Enabled: false
   VersionAdded: '0.27'
   VersionChanged: '1.5'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
@@ -2870,6 +2874,10 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Rejected by nearly a third of projects; the raised limits range from 30 to 300.
+  Preview:
+    Enabled: false
   VersionAdded: '0.44'
   VersionChanged: '1.5'
   CountComments: false  # count full line comments?
@@ -2887,6 +2895,10 @@ Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting.'
   StyleGuide: '#three-is-the-number-thou-shalt-count'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Rejected by a fifth of projects; almost nobody adjusts the limit instead.
+  Preview:
+    Enabled: false
   VersionAdded: '0.25'
   VersionChanged: '1.65'
   CountBlocks: false
@@ -2896,6 +2908,10 @@ Metrics/BlockNesting:
 Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Rejected by a third of projects; those that keep it set the limit three times higher.
+  Preview:
+    Enabled: false
   VersionAdded: '0.25'
   VersionChanged: '0.87'
   CountComments: false  # count full line comments?
@@ -2913,6 +2929,10 @@ Metrics/CollectionLiteralLength:
 Metrics/CyclomaticComplexity:
   Description: 'Checks that the cyclomatic complexity of methods is not higher than the configured maximum.'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Rejected by a third of projects; those that keep it raise the limit to 10 or more.
+  Preview:
+    Enabled: false
   VersionAdded: '0.25'
   VersionChanged: '0.81'
   AllowedMethods: []
@@ -2923,6 +2943,10 @@ Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   StyleGuide: '#short-methods'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Rejected outright by a third of projects; the ones that keep it disagree on the limit.
+  Preview:
+    Enabled: false
   VersionAdded: '0.25'
   VersionChanged: '1.5'
   CountComments: false  # count full line comments?
@@ -2934,6 +2958,10 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Same story as `ClassLength`.
+  Preview:
+    Enabled: false
   VersionAdded: '0.31'
   VersionChanged: '0.87'
   CountComments: false  # count full line comments?
@@ -2944,6 +2972,10 @@ Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
   StyleGuide: '#too-many-params'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Rejected by a fifth of projects, more than raise the limit.
+  Preview:
+    Enabled: false
   VersionAdded: '0.25'
   VersionChanged: '1.5'
   Max: 5
@@ -2953,6 +2985,10 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Description: 'Checks that the perceived complexity of methods is not higher than the configured maximum.'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Same story as `CyclomaticComplexity`.
+  Preview:
+    Enabled: false
   VersionAdded: '0.25'
   VersionChanged: '1.88'
   AllowedMethods: []
