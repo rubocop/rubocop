@@ -267,6 +267,10 @@ Bundler/OrderedGems:
   Description: >-
                  Gems within groups in the Gemfile should be alphabetically sorted.
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Alphabetical Gemfiles are a preference; grouping gems by purpose is as common.
+  Preview:
+    Enabled: false
   VersionAdded: '0.46'
   VersionChanged: '0.47'
   TreatCommentsAsGroupSeparators: true
@@ -615,6 +619,10 @@ Layout/EmptyComment:
 Layout/EmptyLineAfterGuardClause:
   Description: 'Add empty line after guard clause.'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Goes with `GuardClause`; a blank line after a guard is a preference.
+  Preview:
+    Enabled: false
   VersionAdded: '0.56'
   VersionChanged: '0.59'
 
@@ -3117,6 +3125,10 @@ Naming/HeredocDelimiterNaming:
   Description: 'Use descriptive heredoc delimiters.'
   StyleGuide: '#heredoc-delimiters'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Heredoc delimiter names are rarely worth policing.
+  Preview:
+    Enabled: false
   VersionAdded: '0.50'
   ForbiddenDelimiters:
     - !ruby/regexp '/(^|\s)(EO[A-Z]{1}|END)(\s|$)/i'
@@ -3294,6 +3306,10 @@ Naming/VariableNumber:
   Description: 'Use the configured style when numbering symbols, methods and variables.'
   StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # A naming convention few projects want enforced.
+  Preview:
+    Enabled: false
   VersionAdded: '0.50'
   VersionChanged: '1.4'
   EnforcedStyle: normalcase
@@ -3557,6 +3573,10 @@ Style/BlockDelimiters:
                 Prefer {...} over do...end for single-line blocks.
   StyleGuide: '#single-line-blocks'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Brace-versus-`do` rules by line count are widely overridden or switched off.
+  Preview:
+    Enabled: false
   VersionAdded: '0.30'
   VersionChanged: '0.35'
   EnforcedStyle: line_count_based
@@ -3715,6 +3735,10 @@ Style/ClassAndModuleChildren:
   # project-wide index is consulted for both operations.
   SafeAutoCorrect: false
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Fights Rails autoloading conventions, and the autocorrect is unsafe.
+  Preview:
+    Enabled: false
   VersionAdded: '0.19'
   VersionChanged: '1.89'
   #
@@ -4089,6 +4113,10 @@ Style/DoubleNegation:
   Description: 'Checks for uses of double negation (!!).'
   StyleGuide: '#no-bang-bang'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # `!!` is the idiomatic boolean coercion.
+  Preview:
+    Enabled: false
   VersionAdded: '0.19'
   VersionChanged: '1.2'
   EnforcedStyle: allowed_in_returns
@@ -4350,6 +4378,10 @@ Style/FormatString:
   Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
   StyleGuide: '#sprintf'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # A pure preference between `format`, `sprintf` and `%`.
+  Preview:
+    Enabled: false
   VersionAdded: '0.19'
   VersionChanged: '0.49'
   EnforcedStyle: format
@@ -4362,6 +4394,10 @@ Style/FormatStringToken:
   Description: 'Use a consistent style for format string tokens.'
   StyleGuide: '#named-format-tokens'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Most real format strings use `%s`, which is what the cop flags.
+  Preview:
+    Enabled: false
   VersionAdded: '0.49'
   VersionChanged: '1.74'
   EnforcedStyle: annotated
@@ -4390,6 +4426,10 @@ Style/FrozenStringLiteralComment:
                  Add the frozen_string_literal comment to the top of files
                  to help transition to frozen string literals by default.
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Ruby is moving towards frozen string literals by default.
+  Preview:
+    Enabled: false
   VersionAdded: '0.36'
   VersionChanged: '0.79'
   EnforcedStyle: always
@@ -4431,6 +4471,10 @@ Style/GuardClause:
   Description: 'Checks for conditionals that can be replaced with guard clauses.'
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Same objection as `IfUnlessModifier`, and among the most inline-suppressed cops.
+  Preview:
+    Enabled: false
   VersionAdded: '0.20'
   VersionChanged: '1.31'
   # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
@@ -4587,6 +4631,10 @@ Style/IfUnlessModifier:
                  single-line body.
   StyleGuide: '#if-as-a-modifier'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Forces a shape on control flow that a quarter of configured projects switch off.
+  Preview:
+    Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.30'
 
@@ -4738,6 +4786,10 @@ Style/Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
   StyleGuide: '#lambda-multi-line'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # A pure preference between `->` and `lambda`.
+  Preview:
+    Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.40'
   EnforcedStyle: line_count_dependent
@@ -4934,6 +4986,10 @@ Style/ModuleFunction:
   Description: 'Checks for usage of `extend self` in modules.'
   StyleGuide: '#module-function'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # `module_function` versus `extend self` is a preference, and the autocorrect is unsafe.
+  Preview:
+    Enabled: false
   VersionAdded: '0.11'
   VersionChanged: '0.65'
   EnforcedStyle: module_function
@@ -5041,6 +5097,10 @@ Style/NegatedIf:
                  (or control flow or).
   StyleGuide: '#unless-for-negatives'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # `if !x` versus `unless x` is a preference, and `unless` is contested on its own.
+  Preview:
+    Enabled: false
   VersionAdded: '0.20'
   VersionChanged: '0.48'
   EnforcedStyle: both
@@ -5135,6 +5195,10 @@ Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Same objection as `IfUnlessModifier`: it forces a shape on loop bodies.
+  Preview:
+    Enabled: false
   VersionAdded: '0.22'
   VersionChanged: '1.75'
   # With `always` all conditions at the end of an iteration needs to be
@@ -5218,6 +5282,10 @@ Style/NumericLiterals:
                  readability.
   StyleGuide: '#underscores-in-numerics'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # Underscores in long numbers are a preference, and generated tables trip it constantly.
+  Preview:
+    Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.48'
   MinDigits: 5
@@ -5236,6 +5304,10 @@ Style/NumericPredicate:
   # of the variables which rubocop doesn't have.
   Safe: false
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # A pure preference between `x > 0` and `x.positive?`.
+  Preview:
+    Enabled: false
   VersionAdded: '0.42'
   VersionChanged: '0.59'
   EnforcedStyle: predicate
@@ -5348,6 +5420,10 @@ Style/ParallelAssignment:
                   matches on both sides of the assignment.
   StyleGuide: '#parallel-assignment'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # `a, b = 1, 2` is often the clearer form.
+  Preview:
+    Enabled: false
   VersionAdded: '0.32'
 
 Style/ParenthesesAroundCondition:
@@ -5399,6 +5475,10 @@ Style/PerlBackrefs:
   Description: 'Avoid Perl-style regex back references.'
   StyleGuide: '#no-perl-regexp-last-matchers'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # `$1` is idiomatic Ruby.
+  Preview:
+    Enabled: false
   VersionAdded: '0.13'
 
 Style/PredicateWithKind:
@@ -5440,6 +5520,10 @@ Style/RaiseArgs:
   Description: 'Checks the arguments passed to raise/fail.'
   StyleGuide: '#exception-class-messages'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # A pure preference between `raise Foo, msg` and `raise Foo.new(msg)`.
+  Preview:
+    Enabled: false
   Safe: false
   VersionAdded: '0.14'
   VersionChanged: '1.61'
@@ -5728,6 +5812,10 @@ Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: '#percent-r'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # A pure preference between `//` and `%r{}`.
+  Preview:
+    Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.30'
   EnforcedStyle: slashes
@@ -5883,6 +5971,10 @@ Style/SignalException:
   Description: 'Checks for proper usage of fail and raise.'
   StyleGuide: '#prefer-raise-over-fail'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # `raise` versus `fail` stopped being a meaningful distinction long ago.
+  Preview:
+    Enabled: false
   VersionAdded: '0.11'
   VersionChanged: '0.37'
   EnforcedStyle: only_raise
@@ -5944,6 +6036,10 @@ Style/SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'
   StyleGuide: '#no-cryptic-perlisms'
   Enabled: true
+  # Expected to be disabled by default in the next major release.
+  # The long names need `require 'English'`; the short ones are idiomatic.
+  Preview:
+    Enabled: false
   VersionAdded: '0.13'
   VersionChanged: '0.36'
   SafeAutoCorrect: false
