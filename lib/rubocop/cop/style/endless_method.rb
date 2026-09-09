@@ -221,7 +221,7 @@ module RuboCop
         end
 
         def can_be_made_endless?(node)
-          node.body && !node.body.begin_type? && !node.body.kwbegin_type?
+          node.body && !node.body.type?(:begin, :kwbegin, :rescue, :ensure)
         end
 
         def single_line_when_made_endless?(node)
