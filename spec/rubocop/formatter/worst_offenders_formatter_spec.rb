@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Formatter::WorstOffendersFormatter do
 
       before do
         formatter.started(files)
-        files.each_with_index do |file, index|
+        files.each.with_index do |file, index|
           formatter.file_finished(file, [offense] * (index + 2))
         end
       end

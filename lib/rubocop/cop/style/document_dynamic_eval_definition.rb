@@ -118,7 +118,7 @@ module RuboCop
           # Collect comments in the method call, but outside the heredoc
           comments = processed_source.each_comment_in_lines(node.source_range.line_span)
 
-          comments.each_with_object({}) do |comment, hash|
+          comments.each.with_object({}) do |comment, hash|
             merge_adjacent_comments(comment.text, comment.loc.line, hash)
           end.values
         end
@@ -128,7 +128,7 @@ module RuboCop
           line_range = (heredoc_body.begin - 1)..(heredoc_body.end - 1)
           lines = processed_source.lines[line_range]
 
-          lines.each_with_object({}).with_index(line_range.begin) do |(line, hash), index|
+          lines.each.with_object({}).with_index(line_range.begin) do |(line, hash), index|
             merge_adjacent_comments(line, index, hash)
           end.values
         end
