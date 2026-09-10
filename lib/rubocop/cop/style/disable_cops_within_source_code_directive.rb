@@ -33,7 +33,8 @@ module RuboCop
       # a `--` trailing justification comment is allowed, so a team can require
       # every disable to be documented instead of banning them outright. Enable
       # directives are not checked in this mode, since they end a suppression
-      # rather than start one.
+      # rather than start one. Offenses in this mode are not autocorrected,
+      # since only a human can supply the missing justification.
       #
       # This cop cannot be disabled via directive comments when it is explicitly
       # enabled with `Enabled: true`. This prevents users from bypassing the cop
@@ -128,6 +129,11 @@ module RuboCop
 
         def register_offense(comment, directive_cops, disallowed_cops)
           add_offense(comment, message: offense_message(disallowed_cops)) do |corrector|
+            # The remedy in `AllowWithReason` mode is to write the missing `--` justification,
+            # which cannot be autocorrected. Removing the directive would also unsuppress
+            # the disabled cops and let their autocorrections rewrite the annotated code.
+            next if allow_with_reason?
+
             replacement = ''
 
             if directive_cops.length != disallowed_cops.length
