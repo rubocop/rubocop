@@ -1,0 +1,1 @@
+* [#15363](https://github.com/rubocop/rubocop/issues/15363): Set the `EnforcedStyle` of `Style/SymbolArray` and `Style/WordArray` to `brackets` under `Preview`, ahead of it becoming the default in RuboCop 2.0. ([@bbatsov][])
