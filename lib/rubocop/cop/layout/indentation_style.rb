@@ -67,7 +67,7 @@ module RuboCop
           match = if style == :spaces
                     line.match(/\A\s*\t+/)
                   else
-                    line.match(/\A\s* +/)
+                    line.match(/\A +/)
                   end
           return unless match
 
