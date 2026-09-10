@@ -650,13 +650,8 @@ module RuboCop
     end
 
     def minimum_severity_to_fail
-      @minimum_severity_to_fail ||= begin
-        # Unless given explicitly as `fail_level`, `:info` severity offenses do not fail
-        name = @options[:fail_level] || :refactor
-
-        # autocorrect is a fake level - use the default
-        RuboCop::Cop::Severity.new(name == :autocorrect ? :refactor : name)
-      end
+      @minimum_severity_to_fail ||=
+        RuboCop::Cop::Severity.minimum_to_fail(@options, @config_store.for_pwd)
     end
 
     # rubocop:disable-next Metrics/MethodLength

@@ -651,6 +651,7 @@ module RuboCop
                                          'specified --format, or the default format',
                                          'if no format is specified.'],
       fail_level:                       ['Minimum severity for exit with error code.',
+                                         'Overrides `AllCops: FailLevel` in the configuration.',
                                          '  [A] autocorrect',
                                          '  [I] info',
                                          '  [R] refactor',

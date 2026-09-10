@@ -86,6 +86,27 @@ default settings that all configurations inherit from. Project and personal
 default ones. If there is no `.rubocop.yml` file in the project, home or XDG
 directories, `config/default.yml` will be used.
 
+[#fail-level]
+== Choosing what fails a run
+
+By default any offense at `refactor` severity or above makes `rubocop` exit with
+a non-zero status, which is every enabled cop except those at `info`. To draw
+the line higher, so that style offenses are reported without failing the build,
+set `FailLevel`:
+
+[source,yaml]
+----
+AllCops:
+  FailLevel: warning
+----
+
+With this, only `Lint` and `Security` offenses, and anything else configured to
+report at `warning` or above, fail the run; everything below is still printed.
+The `--fail-level` command line option overrides the setting for a single run,
+and `--display-only-fail-level-offenses` hides everything below the line. See
+xref:configuration/cop_settings.adoc#severity[Severity] for what each level
+means.
+
 == Setting the target Ruby version
 
 Some checks are dependent on the version of the Ruby interpreter which the

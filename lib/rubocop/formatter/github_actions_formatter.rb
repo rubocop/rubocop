@@ -15,6 +15,10 @@ module RuboCop
         @offenses_for_files[file] = offenses unless offenses.empty?
       end
 
+      def file_started(_file, options)
+        @config_store = options[:config_store]
+      end
+
       def finished(_inspected_files)
         @offenses_for_files.each do |file, offenses|
           offenses.each do |offense|
@@ -31,11 +35,8 @@ module RuboCop
       end
 
       def minimum_severity_to_fail
-        @minimum_severity_to_fail ||= begin
-          # Unless given explicitly as `fail_level`, `:info` severity offenses do not fail
-          name = options.fetch(:fail_level, :refactor)
-          RuboCop::Cop::Severity.new(name)
-        end
+        @minimum_severity_to_fail ||=
+          RuboCop::Cop::Severity.minimum_to_fail(options, @config_store&.for_pwd)
       end
 
       def github_severity(offense)

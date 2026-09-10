@@ -101,6 +101,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                This is used to prevent cops from failing silently.
                                                Default is false.
                   --fail-level SEVERITY        Minimum severity for exit with error code.
+                                               Overrides `AllCops: FailLevel` in the configuration.
                                                  [A] autocorrect
                                                  [I] info
                                                  [R] refactor
