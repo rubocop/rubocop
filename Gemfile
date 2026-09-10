@@ -15,7 +15,12 @@ gem 'rake', '~> 13.0'
 # rbs 4.1.0.pre.2 ships a `java` platform gem that works on JRuby, so pin to it there
 # until a stable release that supports JRuby ships.
 # https://github.com/ruby/rdoc/issues/1746
-gem 'rbs', '4.1.0.pre.2' if RUBY_ENGINE == 'jruby'
+#
+# `Lint/NameTypo` also reads the RBS core signatures to recognize the methods the
+# interpreter itself provides, which are in no source index, so rbs is declared for
+# every engine rather than arriving only as an rdoc dependency.
+rbs_requirement = RUBY_ENGINE == 'jruby' ? ['4.1.0.pre.2'] : []
+gem 'rbs', *rbs_requirement, require: false
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.27.0', require: false
 gem 'rubocop-rake', '~> 0.7.0', require: false

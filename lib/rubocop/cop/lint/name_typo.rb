@@ -6,6 +6,15 @@ rescue LoadError
   nil
 end
 
+# Ruby's own core signatures, used to recognize the methods the interpreter
+# provides. Shipped with Ruby as a bundled gem; without it those names are
+# simply not recognized.
+begin
+  require 'rbs'
+rescue LoadError
+  nil
+end
+
 module RuboCop
   module Cop
     module Lint
@@ -16,6 +25,15 @@ module RuboCop
       # The check is powered by the project-wide index, so it only runs when
       # `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed.
       # Without the index the cop does nothing.
+      #
+      # Methods the interpreter itself provides are in no source index, since
+      # they are implemented in C or compiled in: `Time.now` and `Regexp.new`,
+      # and everything a constant naming a class or module inherits from
+      # `Class`/`Module`, `Object` and `Kernel`. Those are recognized from the
+      # RBS core signatures, which describe the language rather than RuboCop's
+      # own process. That reads the `rbs` gem -- shipped with Ruby, but as a
+      # bundled gem rather than a default one, so it has to be in the bundle to
+      # be loadable. Without it such names can be reported as typos.
       #
       # Constants are checked only in qualified references (`Foo::Bar`) whose
       # namespace resolves in the index; bare names cannot be distinguished
@@ -74,11 +92,99 @@ module RuboCop
 
         METHOD_MEMBER_REGEXP = /#([a-zA-Z_]\w*[?!]?)\(\)\z/.freeze
         LITERAL_IDENTIFIER_PATTERN = /[a-zA-Z_]\w*[?!]?/.freeze
-        # Bare class and module objects, used to ask what every namespace
-        # inherits from Ruby itself rather than hardcoding a list of names that
-        # would rot between Ruby versions.
-        CLASS_PROBE = Class.new
-        MODULE_PROBE = Module.new
+        # Ruby's own methods, read from the RBS core signatures that ship with
+        # the `rbs` gem. This is static, versioned data describing the Ruby
+        # being targeted, not a reflection of RuboCop's own process, so the
+        # answer does not change with what RuboCop happens to have loaded.
+        #
+        # Nothing is loaded until the first query, and only `core` is read --
+        # never a stdlib or gem signature -- so the vocabulary is exactly what
+        # the interpreter itself provides.
+        module CoreSignatures
+          class << self
+            # Whether Ruby's core gives the named class or module a singleton
+            # method by one of these names. Always false for a name core does
+            # not declare, which includes every class a project defines itself.
+            def singleton_method?(namespace, names)
+              type_name = core_type_names[qualified(namespace)]
+
+              type_name ? any_method?(type_name, :singleton, names) : false
+            end
+
+            # Whether a bare class or module object answers to one of these
+            # names, as every constant naming one does. Asked by kind, since
+            # `Module` has no `superclass` and `Formatting.superclass` is
+            # therefore a real offense.
+            def object_method?(kind, names)
+              type_name = core_type_names[kind == :class ? '::Class' : '::Module']
+
+              type_name ? any_method?(type_name, :instance, names) : false
+            end
+
+            private
+
+            def any_method?(type_name, kind, names)
+              methods = methods_for(type_name, kind)
+
+              methods ? names.any? { |name| methods.include?(name.to_sym) } : false
+            end
+
+            def methods_for(type_name, kind)
+              key = [type_name.to_s, kind]
+              method_cache.fetch(key) do
+                method_cache[key] = build_methods(type_name, kind)
+              end
+            end
+
+            def build_methods(type_name, kind)
+              definition = if kind == :singleton
+                             builder.build_singleton(type_name)
+                           else
+                             builder.build_instance(type_name)
+                           end
+              definition.methods.keys.to_set
+            rescue StandardError
+              nil
+            end
+
+            def method_cache
+              @method_cache ||= {}
+            end
+
+            # Core type names by their fully qualified string, which sidesteps
+            # constructing an `RBS::TypeName` and the API differences between
+            # `rbs` versions in doing so.
+            def core_type_names
+              @core_type_names ||= begin
+                env = environment
+                env ? env.class_decls.keys.to_h { |type_name| [type_name.to_s, type_name] } : {}
+              end
+            end
+
+            # Core declares every name at the root, so a namespace is looked up
+            # fully qualified. A project's own `Foo::Bar` simply misses.
+            def qualified(namespace)
+              name = namespace.to_s
+              name.start_with?('::') ? name : "::#{name}"
+            end
+
+            def builder
+              @builder ||= RBS::DefinitionBuilder.new(env: environment)
+            end
+
+            # The core signatures alone: `EnvironmentLoader` with no library
+            # asked for reads `core` and nothing else.
+            def environment
+              return @environment if defined?(@environment)
+
+              @environment = begin
+                RBS::Environment.from_loader(RBS::EnvironmentLoader.new).resolve_type_names
+              rescue StandardError, LoadError
+                nil
+              end
+            end
+          end
+        end
 
         def on_const(node)
           return unless check?('CheckConstants') && checkable_constant?(node)
@@ -212,14 +318,14 @@ module RuboCop
           return nil if responds_in_index?(declaration, node.method_name.to_s, base)
           return nil unless fully_resolved_index_ancestry?(declaration)
           return nil if gem_owned_namespace?(declaration)
-          return nil if responds_natively?(declaration, node.method_name.to_s, base)
+          return nil if core_provided_method?(declaration, node.method_name.to_s, base)
 
           declaration
         end
 
-        # Whether Ruby itself answers the call, in which case the name's
-        # absence from the index is no evidence of a typo. There are two ways
-        # that happens, and neither is visible to a source index because the
+        # Whether Ruby itself provides the method, in which case its absence
+        # from the index is no evidence of a typo. There are two ways that
+        # happens, and neither is visible to a source index because the
         # interpreter implements them in C or compiles them in.
         #
         # First, the namespace may be one Ruby provides. `Time` and `Regexp`
@@ -232,33 +338,26 @@ module RuboCop
         #
         # Second, the constant may be any class or module at all. It is itself
         # an object, so it answers everything `Class`/`Module`, `Object` and
-        # `Kernel` define -- `send`, `to_s`, `freeze` and the rest. That holds
-        # for a project's own classes, which the first case does not cover
-        # because they do not exist in this process: `Bar.send` was reported as
-        # a typo of `Bar.send_pm`.
+        # `Kernel` define -- `send`, `to_s`, `freeze` and the rest. That covers
+        # a project's own classes, which the first case does not, since core
+        # does not declare them: `Bar.send` was reported as a typo of
+        # `Bar.send_pm`.
         #
-        # Only names the running Ruby answers to are skipped, so a genuine typo
-        # is still reported. Methods from a stdlib file RuboCop has not itself
-        # required are not covered: they are equally invisible to the index,
-        # but there is nothing to ask.
-        def responds_natively?(declaration, name, base)
+        # Only names core actually declares are skipped, so a genuine typo is
+        # still reported. Methods a stdlib library adds (`Time.rfc2822`) are
+        # equally invisible to the index and stay uncovered: whether the
+        # analyzed project requires that library is not something the core
+        # signatures can say.
+        def core_provided_method?(declaration, name, base)
+          return false unless defined?(RBS)
+
           candidates = [name, base].uniq
+          kind = declaration.is_a?(Rubydex::Class) ? :class : :module
 
-          return true if core_object_responds?(declaration, candidates)
-
-          const = Object.const_get(declaration.name.to_s)
-          const.is_a?(Module) && candidates.any? { |candidate| const.respond_to?(candidate) }
+          CoreSignatures.object_method?(kind, candidates) ||
+            CoreSignatures.singleton_method?(declaration.name, candidates)
         rescue StandardError
           false
-        end
-
-        # Whether a bare object of the same kind already answers the name. A
-        # module is probed with a module: `Formatting.superclass` is a real
-        # offense, since modules have no `superclass`.
-        def core_object_responds?(declaration, candidates)
-          probe = declaration.is_a?(Rubydex::Class) ? CLASS_PROBE : MODULE_PROBE
-
-          candidates.any? { |candidate| probe.respond_to?(candidate) }
         end
 
         def setter_call?(node)

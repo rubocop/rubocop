@@ -378,6 +378,7 @@ RSpec.describe RuboCop::Cop::Lint::NameTypo, :config do
 
               module Formatting
                 def self.names; end
+                def self.superclasses; end
               end
             RUBY
           )
@@ -399,6 +400,16 @@ RSpec.describe RuboCop::Cop::Lint::NameTypo, :config do
           expect_offense(<<~RUBY)
             Bar.send_pmm
                 ^^^^^^^^ Possible typo: `Bar` does not respond to `send_pmm`. Did you mean `send_pm`?
+          RUBY
+        end
+
+        # Core is consulted by kind. `superclass` is a method of `Class` and
+        # not of `Module`, so a module is not credited with it and the typo of
+        # the module's own `superclasses` is still caught.
+        it 'still registers an offense for a class-only method called on a module' do
+          expect_offense(<<~RUBY)
+            Formatting.superclass
+                       ^^^^^^^^^^ Possible typo: `Formatting` does not respond to `superclass`. Did you mean `superclasses`?
           RUBY
         end
       end
