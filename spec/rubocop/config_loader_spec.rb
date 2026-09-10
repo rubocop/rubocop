@@ -20,8 +20,9 @@ RSpec.describe RuboCop::ConfigLoader do
   end
 
   # The default configuration as it resolves: a cop's `Preview` section never
-  # survives into the loaded configuration. (`AllCops: Preview` is the switch
-  # itself and stays.)
+  # survives into the loaded configuration, and that includes the one under
+  # `AllCops`. (A project's own `AllCops: Preview: true` is a boolean, so a
+  # boolean would survive.)
   let(:default_config) do
     described_class.default_configuration.to_h.transform_values do |params|
       params.reject { |key, value| key == 'Preview' && value.is_a?(Hash) }

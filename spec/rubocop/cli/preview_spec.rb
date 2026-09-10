@@ -27,7 +27,8 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
     end
 
     it 'runs the cop with --preview' do
-      expect(cli.run(['--preview', '--format', 'simple', 'example.rb'])).to eq(1)
+      cli.run(['--preview', '--format', 'simple', 'example.rb'])
+
       expect($stdout.string).to include('Style/For')
     end
 
@@ -39,7 +40,8 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
           Enabled: preview
       YAML
 
-      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+      cli.run(['--format', 'simple', 'example.rb'])
+
       expect($stdout.string).to include('Style/For')
     end
 
@@ -153,7 +155,8 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
             - 'nothing/**/*'
       YAML
 
-      expect(cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])).to eq(1)
+      cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])
+
       expect($stdout.string).to include('vendor/bundle/gem.rb')
     end
 
@@ -250,6 +253,49 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
       cli.run(['--preview', '--show-cops', 'Style/Documentation'])
 
       expect($stdout.string).not_to include('Preview')
+    end
+  end
+
+  context 'when `AllCops` carries preview defaults' do
+    # `AllCops: Preview` ships `FailLevel: warning`.
+    before do
+      # A convention offense (trailing whitespace) and nothing else.
+      create_file('example.rb', "# frozen_string_literal: true\n\nputs 1 \n")
+    end
+
+    it 'keeps failing on a convention offense without preview' do
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+    end
+
+    it 'reports a convention offense without failing under --preview' do
+      expect(cli.run(['--preview', '--format', 'simple', 'example.rb'])).to eq(0)
+      expect($stdout.string).to include('Layout/TrailingWhitespace')
+    end
+
+    it 'applies the preview defaults when the config opts in' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+      YAML
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
+    end
+
+    it 'still fails on a warning-level offense under --preview' do
+      create_file('example.rb', "# frozen_string_literal: true\n\ndef m\n  x = 1\nend\n")
+
+      expect(cli.run(['--preview', '--format', 'simple', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Lint/UselessAssignment')
+    end
+
+    it 'lets an explicit `FailLevel` win over the preview default' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Preview: true
+          FailLevel: refactor
+      YAML
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
     end
   end
 

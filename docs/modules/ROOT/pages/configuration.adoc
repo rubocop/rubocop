@@ -102,6 +102,8 @@ AllCops:
 
 With this, only `Lint` and `Security` offenses, and anything else configured to
 report at `warning` or above, fail the run; everything below is still printed.
+This is the default under xref:versioning.adoc#preview[Preview], and is expected
+to become the default in the next major release.
 The `--fail-level` command line option overrides the setting for a single run,
 and `--display-only-fail-level-offenses` hides everything below the line. See
 xref:configuration/cop_settings.adoc#severity[Severity] for what each level

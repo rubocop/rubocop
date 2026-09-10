@@ -119,10 +119,14 @@ AllCops:
   # of extra memory proportional to the bundle's size. Has no effect when
   # `UseProjectIndex` is `false` or when RuboCop does not run inside Bundler.
   ProjectIndexIncludesGems: false
-  # Opts in to unstable behavior: cops that are `Enabled: preview`, and changes
-  # to existing cops that are not ready to be the default yet. Can be overridden
-  # by the `--preview` and `--no-preview` command line options.
-  Preview: false
+  # Projects opt in to preview with `Preview: true` here, or with the `--preview`
+  # command line option. In this file the key instead holds the `AllCops`
+  # settings expected to change in the next major release: they apply under
+  # preview and are dropped otherwise, exactly like a cop's `Preview` section.
+  Preview:
+    # Style offenses are reported but stop failing the build; `Lint` and
+    # `Security` offenses still do.
+    FailLevel: warning
 
   # Enables the result cache if `true`. Can be overridden by the `--cache` command
   # line option.
