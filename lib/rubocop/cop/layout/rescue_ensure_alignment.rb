@@ -22,6 +22,7 @@ module RuboCop
       #     puts 'error'
       #   end
       class RescueEnsureAlignment < Base
+        include Alignment
         include RangeHelp
         include EndKeywordAlignment
         extend AutoCorrector
@@ -74,9 +75,17 @@ module RuboCop
           # Some inline node is sitting before current node.
           return nil unless whitespace.source.strip.empty?
 
-          new_column = alignment_location.column
+          indentation = alignment_indentation(alignment_location)
+          return nil if indentation.nil? || whitespace.source == indentation
 
-          corrector.replace(whitespace, ' ' * new_column)
+          corrector.replace(whitespace, indentation)
+        end
+
+        def alignment_indentation(location)
+          return ' ' * location.column unless using_tabs?
+          return unless begins_its_line?(location)
+
+          location.source_line[/\A\s*/]
         end
 
         def format_message(alignment_node, alignment_loc, kw_loc)
