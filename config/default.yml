@@ -6263,6 +6263,10 @@ Style/SymbolArray:
   VersionAdded: '0.9'
   VersionChanged: '0.49'
   EnforcedStyle: percent
+  # Expected to become the default in the next major release.
+  # Bracketed arrays are the pick of nearly every project that sets this; Standard turns the cop off instead.
+  Preview:
+    EnforcedStyle: brackets
   MinSize: 2
   SupportedStyles:
     - percent
@@ -6520,6 +6524,10 @@ Style/WordArray:
   VersionAdded: '0.9'
   VersionChanged: '1.19'
   EnforcedStyle: percent
+  # Expected to become the default in the next major release.
+  # Same preference as `SymbolArray`, and the two are configured together in practice.
+  Preview:
+    EnforcedStyle: brackets
   SupportedStyles:
     # percent style: %w(word1 word2)
     - percent
