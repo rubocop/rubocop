@@ -88,19 +88,39 @@ Style/Alias:
 
 == Severity
 
-Each cop has a default severity level based on which department it belongs
-to. The level is normally `warning` for `Lint` and `convention` for all the
-others, but this can be changed in user configuration. Cops can customize their
-severity level. Allowed values are `info`, `refactor`, `convention`, `warning`, `error`
-and `fatal`.
+Every offense carries a severity, which is what `--fail-level` and
+`AllCops: FailLevel` filter on and what the leading letter in the default output
+shows. The allowed values, from lowest to highest, are `info`, `refactor`,
+`convention`, `warning`, `error` and `fatal`.
 
-Cops with severity `info` will be reported but will not cause `rubocop` to return
-a non-zero value.
+A cop's default severity comes from its department:
 
-There is one exception from the general rule above and that is `Lint/Syntax`, a
-special cop that checks for syntax errors before the other cops are invoked. It
-cannot be disabled and its severity (`fatal`) cannot be changed in
-configuration.
+|===
+| Department | Default | What it says
+
+| `Lint`, `Security`
+| `warning`
+| The code is probably wrong: a likely bug, a security problem, or something
+  that misbehaves at runtime. Worth failing a build over.
+
+| `Metrics`
+| `refactor`
+| A maintainability smell such as size or complexity. Something to fix
+  deliberately, not something to be blocked by.
+
+| everything else
+| `convention`
+| A matter of style and consistency. The code works; it does not read the way
+  the project wants it to.
+|===
+
+`info` sits below all of these: offenses at that level are reported but never
+cause a non-zero exit, whatever the fail level.
+
+A few cops ship with a severity other than their department's, where a
+department mixes lint-like and style cops: `Bundler/InsecureProtocolSource`
+reports as a `warning` while `Bundler/OrderedGems` does not. Any cop's severity
+can be changed in configuration, and so can a whole department's:
 
 [source,yaml]
 ----
@@ -110,6 +130,14 @@ Lint:
 Metrics/CyclomaticComplexity:
   Severity: warning
 ----
+
+A cop configured this way keeps reporting exactly what it reported before; only
+the level changes. Which level makes the run fail is a separate setting, see
+xref:configuration.adoc#fail-level[Choosing what fails a run].
+
+`Lint/Syntax` is the one exception to all of this: it checks for syntax errors
+before any other cop runs, and neither its `Enabled` nor its `Severity`
+(`fatal`) can be changed in configuration.
 
 == Details
 

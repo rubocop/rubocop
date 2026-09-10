@@ -213,6 +213,21 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     expect(cop.offenses.first.severity).to eq(:convention)
   end
 
+  { 'Lint' => :warning, 'Security' => :warning, 'Metrics' => :refactor,
+    'Style' => :convention }.each do |department, severity|
+    context "for a #{department} cop", :restore_registry do
+      # Inherits from `Base` rather than the deprecated class under test, whose
+      # inheritance warning would fail the run under strict warnings.
+      let(:cop_class) { stub_cop_class("RuboCop::Cop::#{department}::TestCop") }
+
+      it "defaults to #{severity} severity" do
+        cop.add_offense(location, message: 'message')
+
+        expect(cop.send(:complete_investigation).offenses.first.severity).to eq(severity)
+      end
+    end
+  end
+
   it 'sets custom severity if present' do
     cop.config[cop.name] = { 'Severity' => 'warning' }
     cop.add_offense(nil, location: location, message: 'message')
