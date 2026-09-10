@@ -166,6 +166,8 @@ module RuboCop
           return if node.single_line? || style == :allow_always
 
           add_offense(node, message: MSG_MULTI_LINE) do |corrector|
+            next if endless_parent?(node)
+
             correct_to_multiline(corrector, node)
           end
         end
@@ -179,7 +181,7 @@ module RuboCop
             return if too_long_when_made_endless?(node)
 
             add_offense(node, message: MSG_REQUIRE_SINGLE) do |corrector|
-              corrector.replace(node, endless_replacement(node))
+              correct_to_endless(corrector, node)
             end
           end
         end
@@ -189,14 +191,22 @@ module RuboCop
           return if too_long_when_made_endless?(node)
 
           add_offense(node, message: MSG_REQUIRE_ALWAYS) do |corrector|
-            corrector.replace(node, endless_replacement(node))
+            correct_to_endless(corrector, node)
           end
         end
 
         def handle_disallow_style(node)
           return unless node.endless?
 
-          add_offense(node) { |corrector| correct_to_multiline(corrector, node) }
+          add_offense(node) do |corrector|
+            next if endless_parent?(node)
+
+            correct_to_multiline(corrector, node)
+          end
+        end
+
+        def endless_parent?(node)
+          node.parent&.any_def_type? && node.parent.endless?
         end
 
         def use_heredoc?(node)
@@ -204,6 +214,17 @@ module RuboCop
           return true if body.any_str_type? && body.heredoc?
 
           body.each_descendant(:str).any?(&:heredoc?)
+        end
+
+        def correct_to_endless(corrector, node)
+          corrector.replace(signature_to_body_range(node), ' = ')
+          corrector.remove(node.body.source_range.end.join(node.loc.end.end))
+        end
+
+        def signature_to_body_range(node)
+          signature_end = node.arguments.any? ? node.arguments.source_range.end : node.loc.name.end
+
+          signature_end.join(node.body.source_range.begin)
         end
 
         def endless_replacement(node)

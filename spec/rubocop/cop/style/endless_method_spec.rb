@@ -15,6 +15,22 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
     context 'EnforcedStyle: disallow' do
       let(:cop_config) { { 'EnforcedStyle' => 'disallow' } }
 
+      it 'registers an offense and corrects nested endless method definitions' do
+        expect_offense(<<~RUBY)
+          def a = def b = 1
+          ^^^^^^^^^^^^^^^^^ Avoid endless method definitions.
+                  ^^^^^^^^^ Avoid endless method definitions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def a
+            def b
+              1
+            end
+          end
+        RUBY
+      end
+
       it 'registers an offense for an endless method' do
         expect_offense(<<~RUBY)
           def my_method() = x
@@ -540,6 +556,22 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
           ensure
             y
           end
+        RUBY
+      end
+
+      it 'registers an offense and corrects nested method definitions' do
+        expect_offense(<<~RUBY)
+          def a
+          ^^^^^ Use endless method definitions.
+            def b
+            ^^^^^ Use endless method definitions.
+              1
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def a = def b = 1
         RUBY
       end
 
