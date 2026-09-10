@@ -230,6 +230,9 @@ Format (single line):
 - `spec/project_spec.rb` validates the format in CI.
 - Skip the changelog only for purely internal changes (refactors with no
   user-visible effect).
+- Generate the entry after committing the change, then amend it into that commit.
+  `rake changelog:*` names the file after the last commit subject, so committing first
+  gives the entry the right filename.
 
 ## PR and Commit Conventions
 
@@ -238,6 +241,9 @@ Format (single line):
   unrelated fixes (e.g. multiple cops, multiple false positives), give each one a
   separate commit with its own changelog entry rather than squashing them all
   into a single commit. Squash only commits that are part of the *same* fix.
+- A changelog entry belongs in the same commit as the change it describes.
+  Never add a changelog-only commit, including a follow-up that just fills in
+  the PR number. Amend the entry into the commit it belongs to instead.
 - Run `bundle exec rake` and ensure it passes before pushing.
 
 ## Common Mistakes
