@@ -122,17 +122,17 @@ RSpec.describe 'RuboCop Project', type: :feature do
     end
 
     it 'only overrides existing parameters in `Preview` sections' do
-      cop_names.each do |cop_name|
-        preview = config.dig(cop_name, 'Preview')
+      (cop_names + ['AllCops']).each do |name|
+        preview = config.dig(name, 'Preview')
         next if preview.nil?
 
-        expect(preview).to be_a(Hash), "`#{cop_name}: Preview` should be a section of defaults."
-        expect(preview).not_to be_empty, "`#{cop_name}: Preview` should not be empty."
+        expect(preview).to be_a(Hash), "`#{name}: Preview` should be a section of defaults."
+        expect(preview).not_to be_empty, "`#{name}: Preview` should not be empty."
 
-        unknown = preview.keys - config[cop_name].keys
+        unknown = preview.keys - config[name].keys
         expect(unknown).to be_empty,
-                           "`#{cop_name}: Preview` overrides #{unknown.join(', ')}, " \
-                           'which the cop does not have.'
+                           "`#{name}: Preview` overrides #{unknown.join(', ')}, " \
+                           "which `#{name}` does not have."
       end
     end
 

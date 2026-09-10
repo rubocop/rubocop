@@ -624,7 +624,8 @@ lifecycle a preview change follows afterwards.
 A change to a cop's *defaults* does not need `preview?` at all. Give the cop's
 entry in `config/default.yml` a `Preview` section with the values it is expected
 to adopt in the next major release, and the configuration loader applies them
-under preview:
+under preview. `AllCops` can carry such a section too, for settings like
+`FailLevel`:
 
 [source,yaml]
 ----

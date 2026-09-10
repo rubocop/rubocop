@@ -175,7 +175,6 @@ module RuboCop
     # way, so the resolved configuration only ever shows what is in effect.
     def apply_preview_defaults(default_configuration, preview)
       transform(default_configuration) do |params|
-        # `AllCops: Preview` is the switch itself, not a section of defaults.
         next params unless params['Preview'].is_a?(Hash)
 
         params = params.dup

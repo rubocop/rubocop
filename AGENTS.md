@@ -120,7 +120,8 @@ Use it when:
 
 - **A cop's default should change in the next major release** (its `Enabled`
   state, a `Max` threshold, an `EnforcedStyle`). Add a `Preview` section to the
-  cop's entry in `config/default.yml` with the new values. This needs no code:
+  cop's entry in `config/default.yml` with the new values. `AllCops` can carry
+  one too. This needs no code:
   the configuration loader applies the section under preview and drops it
   otherwise. This is the most common case.
 - **An existing cop should start reporting a case it currently misses**, and the

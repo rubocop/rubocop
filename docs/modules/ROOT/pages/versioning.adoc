@@ -76,7 +76,9 @@ It gates three things:
 * **Changes to a cop's defaults.** A cop's entry in the default configuration
   can carry a `Preview` section holding the defaults it is expected to adopt in
   the next major release. Under preview those replace the current ones; an
-  explicit setting in your own configuration still wins over both.
+  explicit setting in your own configuration still wins over both. `AllCops`
+  can carry one as well: under preview, `FailLevel` is `warning`, so style
+  offenses are reported without failing the build.
 +
 [source,yaml]
 ----
