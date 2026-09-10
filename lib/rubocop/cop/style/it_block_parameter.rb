@@ -80,6 +80,9 @@ module RuboCop
 
         def on_numblock(node)
           return if style == :disallow
+          # Under `allow_single_line`, a multi-line block must not use `it`, so
+          # converting a multi-line `_1` would only create an uncorrectable offense.
+          return if style == :allow_single_line && node.multiline?
           return unless node.children[1] == 1
 
           variables = find_block_variables(node, '_1')
@@ -112,8 +115,16 @@ module RuboCop
           return [] unless node.body
 
           node.body.each_descendant(:lvar).select do |descendant|
-            descendant.source == block_argument_name
+            descendant.source == block_argument_name && !nested_in_inner_block?(descendant, node)
           end
+        end
+
+        # A reference nested inside another block cannot be rewritten to `it`,
+        # because `it` would resolve to that inner block instead of this one.
+        def nested_in_inner_block?(descendant, node)
+          inner_block = descendant.each_ancestor(:any_block).first
+
+          inner_block && !inner_block.equal?(node)
         end
       end
     end
