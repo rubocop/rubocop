@@ -318,9 +318,7 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
       RUBY
 
-      expect_correction(<<~RUBY)
-        x = 0#{trailing_whitespace}
-      RUBY
+      expect_no_corrections
     end
 
     it 'does not register an offense for a disable directive with a justification' do
@@ -343,6 +341,8 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
         x = 0 # rubocop:todo Layout/SpaceAroundOperators
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
       RUBY
+
+      expect_no_corrections
     end
 
     context 'when AllowedDirectives exempts todo directives' do
@@ -368,6 +368,8 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
           x = 0 # rubocop:disable Layout/SpaceAroundOperators
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -388,6 +390,8 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
           x = 0 # rubocop:disable Layout/SpaceAroundOperators
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -402,6 +406,8 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
           end
           # rubocop:enable Metrics
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -413,6 +419,8 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
           foo # rubocop:disable Lint/Void
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
         RUBY
+
+        expect_no_corrections
       end
 
       it 'does not register an offense for a cop outside it' do
@@ -442,6 +450,8 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
           end
         RUBY
+
+        expect_no_corrections
       end
     end
   end

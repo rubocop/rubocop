@@ -1,0 +1,1 @@
+* [#15690](https://github.com/rubocop/rubocop/pull/15690): Fix `Style/DisableCopsWithinSourceCodeDirective` to no longer autocorrect by removing a directive that only lacks a `--` justification when `AllowWithReason` is enabled. ([@koic][])

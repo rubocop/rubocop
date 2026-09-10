@@ -4144,7 +4144,7 @@ Style/DisableCopsWithinSourceCodeDirective:
                  Forbids disabling/enabling cops within source code.
   Enabled: false
   VersionAdded: '0.82'
-  VersionChanged: '1.90'
+  VersionChanged: '<<next>>'
   # Cop or department names. A directive is exempt only when everything it
   # disables is listed here.
   AllowedCops: []
