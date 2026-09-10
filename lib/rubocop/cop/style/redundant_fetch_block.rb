@@ -74,8 +74,16 @@ module RuboCop
         def should_not_check?(send, body)
           (body&.const_type? && !check_for_constant?) ||
             (body&.str_type? && !check_for_string?) ||
-            rails_cache?(send.receiver)
+            rails_cache?(send.receiver) ||
+            splat_or_keyword_key?(send.first_argument)
         end
+
+        # A splat can stand for any number of arguments, and keyword arguments cannot be
+        # followed by a positional one, so neither form can take an appended default value.
+        # @!method splat_or_keyword_key?(node)
+        def_node_matcher :splat_or_keyword_key?, <<~PATTERN
+          {splat_type? [hash_type? !braces?]}
+        PATTERN
 
         # @!method rails_cache?(node)
         def_node_matcher :rails_cache?, <<~PATTERN
