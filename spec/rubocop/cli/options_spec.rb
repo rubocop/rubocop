@@ -1376,7 +1376,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       expect(cli.run(['--format', 'emacs', '--display-style-guide', 'example1.rb'])).to eq(1)
 
-      output = "#{file}:1:6: C: [Correctable] Security/JSONLoad: " \
+      output = "#{file}:1:6: W: [Correctable] Security/JSONLoad: " \
                "Prefer `JSON.parse` over `JSON.load`. (#{urls})"
       expect($stdout.string.lines.to_a[-1]).to eq([output, ''].join("\n"))
     end

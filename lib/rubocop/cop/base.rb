@@ -51,6 +51,11 @@ module RuboCop
       # List of methods names to restrict calls for `on_send` / `on_csend`
       RESTRICT_ON_SEND = Set[].freeze # rubocop:disable InternalAffairs/UselessRestrictOnSend -- the base class default, which cops override
 
+      # Departments whose cops report above `convention` unless a cop says
+      # otherwise. The exceptions live in `config/default.yml` as an explicit
+      # `Severity`, such as the lint-like cops in `Bundler` and `Gemspec`.
+      DEPARTMENT_SEVERITIES = { Lint: :warning, Security: :warning, Metrics: :refactor }.freeze
+
       # List of cops that should not try to autocorrect at the same
       # time as this cop
       #
@@ -568,7 +573,7 @@ module RuboCop
       end
 
       def default_severity
-        self.class.lint? ? :warning : :convention
+        DEPARTMENT_SEVERITIES.fetch(self.class.department, :convention)
       end
 
       def custom_severity

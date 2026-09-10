@@ -108,6 +108,19 @@ RSpec.describe 'RuboCop Project', type: :feature do
       raise errors.join("\n") unless errors.empty?
     end
 
+    it 'does not restate the severity its department already implies' do
+      cop_names.each do |cop_name|
+        severity = config.dig(cop_name, 'Severity')
+        next if severity.nil?
+
+        department = cop_name.split('/').first.to_sym
+        implied = RuboCop::Cop::Base::DEPARTMENT_SEVERITIES.fetch(department, :convention)
+        expect(severity.to_sym).not_to eq(implied),
+                                       "`#{cop_name}` sets `Severity: #{severity}`, " \
+                                       'which is already the default for its department.'
+      end
+    end
+
     it 'only overrides existing parameters in `Preview` sections' do
       cop_names.each do |cop_name|
         preview = config.dig(cop_name, 'Preview')

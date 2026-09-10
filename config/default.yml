@@ -487,6 +487,7 @@ Layout/BeginEndAlignment:
   SupportedStylesAlignWith:
     - start_of_line
     - begin
+  # A misaligned `end` usually means a structural mistake, so this reports as a lint would.
   Severity: warning
 
 Layout/BlockAlignment:
@@ -598,6 +599,7 @@ Layout/DefEndAlignment:
   SupportedStylesAlignWith:
     - start_of_line
     - def
+  # A misaligned `end` usually means a structural mistake, so this reports as a lint would.
   Severity: warning
 
 Layout/DotPosition:
@@ -789,6 +791,7 @@ Layout/EndAlignment:
     - keyword
     - variable
     - start_of_line
+  # A misaligned `end` usually means a structural mistake, so this reports as a lint would.
   Severity: warning
 
 Layout/EndOfLine:
