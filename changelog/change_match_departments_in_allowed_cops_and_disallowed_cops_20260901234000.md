@@ -1,1 +1,0 @@
-* [#15650](https://github.com/rubocop/rubocop/pull/15650): Make `AllowedCops` and `DisallowedCops` of `Style/DisableCopsWithinSourceCodeDirective` match department names as well as cop names. ([@bbatsov][])

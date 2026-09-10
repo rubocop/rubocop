@@ -1,1 +1,0 @@
-* [#15650](https://github.com/rubocop/rubocop/pull/15650): Add `AllowedDirectives` option to `Style/DisableCopsWithinSourceCodeDirective`, exempting directive kinds such as generated `rubocop:todo` comments. ([@bbatsov][])

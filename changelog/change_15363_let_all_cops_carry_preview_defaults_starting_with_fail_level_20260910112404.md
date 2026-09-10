@@ -1,1 +1,0 @@
-* [#15363](https://github.com/rubocop/rubocop/issues/15363): Set `AllCops: FailLevel` to `warning` under `Preview`, so that style offenses are reported without failing the build, ahead of it becoming the default in RuboCop 2.0. ([@bbatsov][])

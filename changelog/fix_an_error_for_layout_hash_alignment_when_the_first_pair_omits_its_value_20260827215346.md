@@ -1,1 +1,0 @@
-* [#15623](https://github.com/rubocop/rubocop/pull/15623): Fix an error for `Layout/HashAlignment` when the first pair of a hash omits its value, and an incorrect autocorrection when a later pair does. ([@viralpraxis][])

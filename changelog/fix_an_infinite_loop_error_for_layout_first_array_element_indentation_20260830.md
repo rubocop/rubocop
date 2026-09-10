@@ -1,1 +1,0 @@
-* [#15638](https://github.com/rubocop/rubocop/issues/15638): Fix an infinite loop error for `Layout/FirstArrayElementIndentation` with `Layout/ArrayAlignment` when `EnforcedStyle: with_fixed_indentation` is configured. ([@RedZapdos123][])

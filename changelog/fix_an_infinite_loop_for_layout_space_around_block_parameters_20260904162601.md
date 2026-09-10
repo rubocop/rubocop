@@ -1,1 +1,0 @@
-* [#15662](https://github.com/rubocop/rubocop/pull/15662): Fix an infinite loop between `Layout/SpaceAroundBlockParameters` and `Layout/SpaceInsideParens` when the two cops enforce conflicting styles for a lambda's parameter parentheses. ([@viralpraxis][])

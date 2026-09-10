@@ -1,1 +1,0 @@
-* [#15686](https://github.com/rubocop/rubocop/pull/15686): Derive a cop's default severity from its department: `Security` cops now report as `warning` and `Metrics` cops as `refactor`. ([@bbatsov][])

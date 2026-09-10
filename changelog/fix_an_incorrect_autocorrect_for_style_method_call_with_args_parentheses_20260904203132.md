@@ -1,1 +1,0 @@
-* [#15668](https://github.com/rubocop/rubocop/pull/15668): Fix an incorrect autocorrect for `Style/MethodCallWithArgsParentheses` when `EnforcedStyle: omit_parentheses` is used together with `Style/TrailingCommaInArguments`. ([@viralpraxis][])
