@@ -60,6 +60,9 @@ AllCops:
     - '.git/**/*'
   # Default formatter will be used if no `-f/--format` option is given.
   DefaultFormatter: progress
+  # The lowest severity that makes a run fail. Offenses below it are still
+  # reported. Can be overridden by the `--fail-level` command line option.
+  FailLevel: refactor
   # Cop names are displayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the `--no-display-cop-names`
   # option.

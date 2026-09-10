@@ -48,7 +48,7 @@ module RuboCop
 
       check_obsoletions
       alert_about_unrecognized_cops(invalid_cop_names)
-      validate_new_cops_parameter
+      validate_all_cops_parameters
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
       validate_syntax_cop
@@ -168,6 +168,21 @@ module RuboCop
     def validate_new_cops_parameter
       validate_all_cops_new_cops_parameter
       validate_department_new_cops_parameters
+    end
+
+    def validate_all_cops_parameters
+      validate_new_cops_parameter
+      validate_fail_level_parameter
+    end
+
+    def validate_fail_level_parameter
+      fail_level = @config.for_all_cops['FailLevel']
+      return if fail_level.nil? || Cop::Severity::NAMES.include?(fail_level.to_sym)
+
+      message = "invalid #{fail_level} for `FailLevel` found in #{smart_loaded_path}\n" \
+                "Valid choices are: #{Cop::Severity::NAMES.join(', ')}"
+
+      raise ValidationError, message
     end
 
     def validate_all_cops_new_cops_parameter

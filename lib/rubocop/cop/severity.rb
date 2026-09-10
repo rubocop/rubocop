@@ -21,6 +21,18 @@ module RuboCop
       #   any of `:info`, `:refactor`, `:convention`, `:warning`, `:error` or `:fatal`.
       attr_reader :name
 
+      # The lowest severity that makes a run fail: `--fail-level` when given,
+      # otherwise `AllCops: FailLevel`. `autocorrect` is a pseudo level on the
+      # command line that gates on corrections instead, so it leaves the
+      # threshold at the configured one.
+      def self.minimum_to_fail(options, config)
+        name = options[:fail_level]
+        if name.nil? || name == :autocorrect
+          name = (config&.for_all_cops&.[]('FailLevel') || :refactor).to_sym
+        end
+        new(name)
+      end
+
       def self.name_from_code(code)
         name = code.to_sym
         CODE_TABLE[name] || name
