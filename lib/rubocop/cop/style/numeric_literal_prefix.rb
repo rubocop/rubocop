@@ -55,7 +55,11 @@ module RuboCop
           return unless type
 
           add_offense(node) do |corrector|
-            corrector.replace(node, send(:"format_#{type}", node.source))
+            # The prefix patterns below are anchored, so correct only the digits
+            # and leave any sign the literal's source carries in place.
+            range = unsigned_range(node)
+
+            corrector.replace(range, send(:"format_#{type}", range.source))
           end
         end
 
@@ -69,6 +73,12 @@ module RuboCop
           literal = integer_part(node)
 
           octal_literal_type(literal) || hex_bin_dec_literal_type(literal)
+        end
+
+        def unsigned_range(node)
+          range = node.source_range
+
+          node.source.start_with?('+', '-') ? range.adjust(begin_pos: 1) : range
         end
 
         def octal_literal_type(literal)

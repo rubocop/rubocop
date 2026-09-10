@@ -19,6 +19,20 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
         RUBY
       end
 
+      it 'registers an offense for a signed literal' do
+        expect_offense(<<~RUBY)
+          a = -01234
+              ^^^^^^ Use 0o for octal literals.
+          b(+0O1234)
+            ^^^^^^^ Use 0o for octal literals.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a = -0o1234
+          b(+0o1234)
+        RUBY
+      end
+
       it 'does not register offense for lowercase prefix' do
         expect_no_offenses(<<~RUBY)
           a = 0o101
@@ -44,6 +58,17 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
         RUBY
       end
 
+      it 'registers an offense for a signed literal' do
+        expect_offense(<<~RUBY)
+          a = -0O1234
+              ^^^^^^^ Use 0 for octal literals.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a = -01234
+        RUBY
+      end
+
       it 'does not register offense for prefix `0`' do
         expect_no_offenses('b = 0567')
       end
@@ -62,6 +87,17 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       expect_correction(<<~RUBY)
         a = 0x1AC
         b(0xABC)
+      RUBY
+    end
+
+    it 'registers an offense for a signed literal' do
+      expect_offense(<<~RUBY)
+        a = -0X1AC
+            ^^^^^^ Use 0x for hexadecimal literals.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = -0x1AC
       RUBY
     end
 
@@ -85,6 +121,17 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       RUBY
     end
 
+    it 'registers an offense for a signed literal' do
+      expect_offense(<<~RUBY)
+        a = -0B10101
+            ^^^^^^^^ Use 0b for binary literals.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = -0b10101
+      RUBY
+    end
+
     it 'does not register offense for lowercase prefix' do
       expect_no_offenses('a = 0b101')
     end
@@ -102,6 +149,17 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       expect_correction(<<~RUBY)
         a = 1234
         b(1990)
+      RUBY
+    end
+
+    it 'registers an offense for a signed literal' do
+      expect_offense(<<~RUBY)
+        a = -0d1234
+            ^^^^^^^ Do not use prefixes for decimal literals.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = -1234
       RUBY
     end
 
