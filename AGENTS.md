@@ -175,6 +175,20 @@ end
 Preview behavior is unstable by contract: it can change or be withdrawn in any
 release. See `docs/modules/ROOT/pages/versioning.adoc` for the lifecycle.
 
+## Severity
+
+A cop's default severity comes from its department, via `DEPARTMENT_SEVERITIES`
+in `Cop::Base`: `Lint` and `Security` report as `warning`, `Metrics` as
+`refactor`, everything else as `convention`. Do not add `Severity:` to a cop in
+`config/default.yml` unless it genuinely differs from its department;
+`spec/project_spec.rb` rejects a line that restates the default. The few
+existing exceptions are lint-like cops in mixed departments
+(`Bundler/InsecureProtocolSource`) and the three `Layout` alignment cops that
+used to live in `Lint`.
+
+`AllCops: FailLevel` (default `refactor`) is the lowest severity that fails a
+run; `--fail-level` overrides it. Under `Preview` it is `warning`.
+
 ## Writing Specs
 
 ```ruby
@@ -220,6 +234,8 @@ bundle exec rake changelog:fix    # Bug fix
 bundle exec rake changelog:new    # New feature
 bundle exec rake changelog:change # Changed behavior
 ```
+
+Commit first; the task derives the entry's text from the last commit title.
 
 Format (single line):
 
@@ -272,3 +288,20 @@ Format (single line):
     `def_node_matcher` over manual `node.type == :send` checks.
 12. **Not testing both `send` and `csend`** — if you alias `on_csend`, write
     specs that cover the `&.` operator.
+13. **Spec stubs inheriting from `RuboCop::Cop::Cop`**: inheriting from the
+    deprecated class emits a warning, and CI runs specs with
+    `STRICT_WARNINGS=1`, which turns it into a failure you won't see locally.
+    Stub cops with `stub_cop_class` on `Base`, and read their offenses from
+    `cop.send(:complete_investigation).offenses`; `Base#offenses` raises by
+    design.
+14. **Using `--only` to test whether a cop is enabled**: `--only` forces the
+    named cop on regardless of `Enabled`, `pending` or preview. To test
+    enablement, run without it and count the cop's offenses in the output.
+15. **Committing regenerated cop docs**: `rake update_cops_documentation`
+    rewrites `docs/modules/ROOT/pages/cops_*.adoc` and picks up drift from
+    every cop merged since the last release. Those files are regenerated at
+    release time; don't include them in a PR.
+16. **Guessing Antora anchors**: cross-page `xref` anchors in the manual are
+    the heading lowercased with everything but letters removed
+    (`#allowmultilinefinalelement`), not Asciidoctor's `_`-prefixed default.
+    When in doubt, put an explicit `[#my-anchor]` above the heading.
