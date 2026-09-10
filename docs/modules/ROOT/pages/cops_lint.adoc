@@ -394,7 +394,9 @@ single positional hash they collapse into, matching Ruby's semantics.
 
 Constructor calls (`Foo.new`) and keyword-argument validation are out of
 scope: only positional arity of explicitly defined singleton methods is
-checked.
+checked. `new` is skipped outright, because `Class#new` is not in the
+index: any `new` the index does find sits below it in the method
+resolution order, where Ruby would never reach it.
 
 [#examples-lintargumentmismatch]
 === Examples
@@ -1090,11 +1092,11 @@ Login
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
+| Enabled
 | Yes
-| No
+| Always
 | 1.72
-| 1.90
+| 1.91
 |===
 
 Checks that `# rubocop:enable ...` and `# rubocop:disable ...` statements
@@ -1119,12 +1121,11 @@ A comment can be added to the directive by prefixing it with `--`.
 # good
 # rubocop:disable all
 
-# bad
+# bad - only the first directive takes effect
 # rubocop:disable Layout/LineLength # rubocop:disable Style/Encoding
 
 # good
-# rubocop:disable Layout/LineLength
-# rubocop:disable Style/Encoding
+# rubocop:disable Layout/LineLength, Style/Encoding
 
 # bad
 # rubocop:wrongmode Layout/LineLength
@@ -4098,6 +4099,83 @@ end
 
 * https://rubystyle.guide#loop-with-break
 
+[#lintmisplacedmagiccomment]
+== Lint/MisplacedMagicComment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always (Unsafe)
+| 1.91
+| -
+|===
+
+Checks for magic comments placed where Ruby silently ignores them.
+
+The `encoding` magic comment is only honored on the first line of a file,
+or on the second line when the first line is a shebang. Anywhere else it
+is silently ignored - even directly below another comment or a blank line.
+
+Other magic comments (such as `frozen_string_literal`) are honored
+anywhere before the first token of code, but are ignored after any code,
+with a warning emitted only when running Ruby with `-w`.
+
+A magic comment misplaced ahead of a shebang also renders the shebang
+ineffective, since a shebang is only recognized on the first line.
+
+NOTE: An `encoding` comment that is only preceded by other magic
+comments is not flagged by this cop; that case is handled by
+`Lint/OrderedMagicComments`. `shareable_constant_value` is never
+flagged, as Ruby intentionally allows it mid-file with block scoping.
+
+[#safety-lintmisplacedmagiccomment]
+=== Safety
+
+This cop's autocorrection is unsafe because moving the magic comment
+to its effective position activates it, which changes runtime
+behavior (e.g. the source encoding or string mutability).
+
+[#examples-lintmisplacedmagiccomment]
+=== Examples
+
+[source,ruby]
+----
+# bad
+# Documentation comment
+# encoding: ascii-8bit
+puts 'hello'
+
+# good
+# encoding: ascii-8bit
+# Documentation comment
+puts 'hello'
+
+# bad
+require 'foo'
+# frozen_string_literal: true
+
+# good
+# frozen_string_literal: true
+require 'foo'
+
+# bad
+# frozen_string_literal: true
+#!/usr/bin/env ruby
+puts 'hello'
+
+# good
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+puts 'hello'
+----
+
+[#references-lintmisplacedmagiccomment]
+=== References
+
+* https://rubystyle.guide#magic-comments-first
+
 [#lintmissingcopenabledirective]
 == Lint/MissingCopEnableDirective
 
@@ -5260,7 +5338,7 @@ CONST = 1
 | Yes
 | Always (Unsafe)
 | 0.53
-| 1.37
+| 1.91
 |===
 
 Checks the proper ordering of magic comments and whether

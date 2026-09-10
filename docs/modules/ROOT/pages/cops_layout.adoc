@@ -163,6 +163,19 @@ foo :bar,
 | Integer
 |===
 
+[#preview-defaults-layoutargumentalignment]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyle
+| `with_first_argument`
+| `with_fixed_indentation`
+|===
+
 [#references-layoutargumentalignment]
 === References
 
@@ -667,6 +680,19 @@ end
 | IndentationWidth
 | `<none>`
 | Integer
+|===
+
+[#preview-defaults-layoutcaseindentation]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyle
+| `case`
+| `end`
 |===
 
 [#references-layoutcaseindentation]
@@ -1524,6 +1550,19 @@ def foo
 end
 ----
 
+[#preview-defaults-layoutemptylineafterguardclause]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===
+
 [#layoutemptylineaftermagiccomment]
 == Layout/EmptyLineAfterMagicComment
 
@@ -1534,7 +1573,7 @@ end
 | Yes
 | Always
 | 0.49
-| 1.90
+| 1.91
 |===
 
 Checks for a newline after the final magic comment.
@@ -2785,6 +2824,19 @@ variable =
 | String
 |===
 
+[#preview-defaults-layoutendalignment]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyleAlignWith
+| `keyword`
+| `variable`
+|===
+
 [#layoutendofline]
 == Layout/EndOfLine
 
@@ -3244,6 +3296,19 @@ and_now_for_something = [
 | Integer
 |===
 
+[#preview-defaults-layoutfirstarrayelementindentation]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyle
+| `special_inside_parentheses`
+| `consistent`
+|===
+
 [#layoutfirstarrayelementlinebreak]
 == Layout/FirstArrayElementLineBreak
 
@@ -3500,6 +3565,19 @@ takes_multi_pairs_hash(x: {
 | IndentationWidth
 | `<none>`
 | Integer
+|===
+
+[#preview-defaults-layoutfirsthashelementindentation]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyle
+| `special_inside_parentheses`
+| `consistent`
 |===
 
 [#layoutfirsthashelementlinebreak]
@@ -6169,6 +6247,19 @@ myvariable = Thing
 | Integer
 |===
 
+[#preview-defaults-layoutmultilinemethodcallindentation]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyle
+| `aligned`
+| `indented`
+|===
+
 [#layoutmultilinemethoddefinitionbracelayout]
 == Layout/MultilineMethodDefinitionBraceLayout
 
@@ -6476,6 +6567,19 @@ end
 | Integer
 |===
 
+[#preview-defaults-layoutmultilineoperationindentation]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyle
+| `aligned`
+| `indented`
+|===
+
 [#layoutparameteralignment]
 == Layout/ParameterAlignment
 
@@ -6580,6 +6684,19 @@ end
 | IndentationWidth
 | `<none>`
 | Integer
+|===
+
+[#preview-defaults-layoutparameteralignment]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| EnforcedStyle
+| `with_first_parameter`
+| `with_fixed_indentation`
 |===
 
 [#references-layoutparameteralignment]
@@ -6920,7 +7037,8 @@ x = 1; y = 2
 
 Checks the spacing inside and after block parameters pipes. Line breaks
 inside parameter pipes are checked by `Layout/MultilineBlockLayout` and
-not by this cop.
+not by this cop. Spaces inside a lambda's parameter parentheses are left
+to `Layout/SpaceInsideParens` when that cop enforces a conflicting style.
 
 [#examples-layoutspacearoundblockparameters]
 === Examples

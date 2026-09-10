@@ -661,6 +661,19 @@ EOS
 | Array
 |===
 
+[#preview-defaults-namingheredocdelimiternaming]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===
+
 [#references-namingheredocdelimiternaming]
 === References
 
@@ -2057,6 +2070,19 @@ expect(Open3).to receive(:capture3)
 | AllowedPatterns
 | `[]`
 | Array
+|===
+
+[#preview-defaults-namingvariablenumber]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
 |===
 
 [#references-namingvariablenumber]

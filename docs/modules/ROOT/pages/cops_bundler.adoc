@@ -601,3 +601,16 @@ gem 'rspec'
 | `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`
 | Array
 |===
+
+[#preview-defaults-bundlerorderedgems]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===

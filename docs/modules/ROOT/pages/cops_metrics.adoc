@@ -82,6 +82,19 @@ end
 | Integer
 |===
 
+[#preview-defaults-metricsabcsize]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===
+
 [#references-metricsabcsize]
 === References
 
@@ -178,6 +191,19 @@ end                 # 4 points
 | Array
 |===
 
+[#preview-defaults-metricsblocklength]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===
+
 [#metricsblocknesting]
 == Metrics/BlockNesting
 
@@ -248,6 +274,19 @@ end
 | Max
 | `3`
 | Integer
+|===
+
+[#preview-defaults-metricsblocknesting]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
 |===
 
 [#references-metricsblocknesting]
@@ -326,6 +365,19 @@ end                 # 4 points
 | CountAsOne
 | `[]`
 | Array
+|===
+
+[#preview-defaults-metricsclasslength]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
 |===
 
 [#metricscollectionliterallength]
@@ -467,6 +519,19 @@ end                                       # total: 6
 | Integer
 |===
 
+[#preview-defaults-metricscyclomaticcomplexity]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===
+
 [#metricsmethodlength]
 == Metrics/MethodLength
 
@@ -551,6 +616,19 @@ end               # 4 points
 | Array
 |===
 
+[#preview-defaults-metricsmethodlength]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===
+
 [#references-metricsmethodlength]
 === References
 
@@ -625,6 +703,19 @@ end                 # 4 points
 | CountAsOne
 | `[]`
 | Array
+|===
+
+[#preview-defaults-metricsmodulelength]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
 |===
 
 [#metricsparameterlists]
@@ -756,6 +847,19 @@ end
 | Integer
 |===
 
+[#preview-defaults-metricsparameterlists]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
+|===
+
 [#references-metricsparameterlists]
 === References
 
@@ -833,4 +937,17 @@ end                             # 2 complexity points
 | Max
 | `8`
 | Integer
+|===
+
+[#preview-defaults-metricsperceivedcomplexity]
+=== Preview defaults
+
+These defaults apply under xref:versioning.adoc#preview[Preview] and are expected to become the regular defaults in the next major release.
+
+|===
+| Name | Current default | Preview default
+
+| Enabled
+| `true`
+| `false`
 |===

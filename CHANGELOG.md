@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.91.0 (2026-09-10)
+
 ### New features
 
 * [#15631](https://github.com/rubocop/rubocop/pull/15631): Add a preview channel for unstable behavior. ([@bbatsov][])
