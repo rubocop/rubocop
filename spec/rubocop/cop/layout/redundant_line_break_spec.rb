@@ -418,6 +418,19 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
+      it 'registers an offense for a nested assignment with a multiline right hand side' do
+        expect_offense(<<~RUBY)
+          a = b ||= {
+          ^^^^^^^^^^^ Redundant line break detected.
+            x: 1
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a = b ||= { x: 1 }
+        RUBY
+      end
+
       context 'method chains' do
         it 'properly corrects a method chain on multiple lines' do
           expect_offense(<<~RUBY)
