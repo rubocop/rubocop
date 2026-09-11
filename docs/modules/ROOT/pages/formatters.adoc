@@ -254,6 +254,19 @@ The JSON structure is like the following example:
             "length": 4,
             "line": 546,
             "column": 80
+          },
+          "correction": {
+            "safe": true,
+            "edits": [{
+                "start_line": 546,
+                "start_column": 80,
+                "last_line": 546,
+                "last_column": 84,
+                "begin_pos": 17046,
+                "end_pos": 17050,
+                "replacement": ""
+              }
+            ]
           }
         }, {
           "severity": "warning",
@@ -281,6 +294,32 @@ The JSON structure is like the following example:
   }
 }
 ----
+
+=== Corrections
+
+An offense that autocorrection knows how to fix carries a `correction` object
+describing the edits it would make, so a consumer can apply or review them
+without running autocorrection itself. The key is absent when there is nothing
+to apply.
+
+Each edit replaces the source between `begin_pos` and `end_pos` (byte offsets
+into the file) with `replacement`. An insertion has an empty range, a removal an
+empty replacement. The line and column fields describe the same range and follow
+the convention used by `location`.
+
+`safe` says whether a normal `rubocop -a` run would apply the correction. A cop
+marked `Safe: false` or `SafeAutoCorrect: false` still reports its edits, but
+only `-A` applies them, so a consumer applying edits itself has to make the same
+distinction.
+
+Two things to keep in mind when applying edits yourself:
+
+* The edits describe a *single* pass. Autocorrection runs repeatedly until the
+  file stops changing, so one correction can expose another. Re-run RuboCop
+  after applying a batch, the way `-a` does internally.
+* Edits from different offenses can overlap, and RuboCop resolves those
+  conflicts while correcting. Apply a batch from the end of the file backwards
+  and skip any edit that overlaps one already applied, then re-run.
 
 == JUnit Style Formatter
 
