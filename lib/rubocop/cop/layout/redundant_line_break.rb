@@ -77,7 +77,7 @@ module RuboCop
         end
 
         def check_assignment(node, _rhs)
-          return unless offense?(node)
+          return unless offense?(node) && !part_of_ignored_node?(node)
 
           register_offense(node)
         end

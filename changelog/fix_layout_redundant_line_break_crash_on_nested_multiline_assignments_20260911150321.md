@@ -1,0 +1,1 @@
+* [#15692](https://github.com/rubocop/rubocop/pull/15692): Fix `Parser::ClobberingError` for `Layout/RedundantLineBreak` when autocorrecting nested assignments with a multiline right-hand side. ([@Starlexxx][])
