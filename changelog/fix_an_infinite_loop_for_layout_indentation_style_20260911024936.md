@@ -1,0 +1,1 @@
+* [#15693](https://github.com/rubocop/rubocop/pull/15693): Fix an infinite loop for `Layout/IndentationStyle` when using `EnforcedStyle: tabs` and a line is aligned with spaces following the indenting tab. ([@viralpraxis][])

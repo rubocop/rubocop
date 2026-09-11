@@ -162,6 +162,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
       RUBY
     end
 
+    it 'accepts spaces that align a line after the indenting tab' do
+      expect_no_offenses(<<~RUBY)
+        a = {
+        \tbb: 1,
+        \t c: 2
+        }
+      RUBY
+    end
+
     it 'accepts a line a tab other than indentation' do
       expect_no_offenses("\tfoo \t bar")
     end
