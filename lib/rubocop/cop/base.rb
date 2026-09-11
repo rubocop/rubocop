@@ -216,14 +216,8 @@ module RuboCop
         message = find_message(range_to_pass, message)
 
         status, corrector = enabled_lines?(range) ? correct(range, &block) : :disabled
-        justification = suppression_reason(range) if status == :disabled
 
-        # Since this range may be generated from Ruby code embedded in some
-        # template file, we convert it to location info in the original file.
-        range = range_for_original(range)
-
-        current_offenses << Offense.new(severity, range, message, name, status, corrector,
-                                        justification: justification)
+        current_offenses << new_offense(range, severity, message, status, corrector)
       end
 
       # This method should be overridden when a cop's behavior depends
@@ -392,6 +386,16 @@ module RuboCop
 
       private_class_method def self.restrict_on_send
         @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
+      end
+
+      # @return [Offense]
+      def new_offense(range, severity, message, status, corrector)
+        justification = suppression_reason(range) if status == :disabled
+
+        # Since this range may be generated from Ruby code embedded in some
+        # template file, we convert it to location info in the original file.
+        Offense.new(severity, range_for_original(range), message, name, status, corrector,
+                    justification: justification, correction_safe: safe_autocorrect?)
       end
 
       ### Reserved for Cop::Cop

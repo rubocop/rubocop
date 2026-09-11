@@ -86,6 +86,9 @@ module RuboCop
 
       NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 0).freeze
 
+      EMPTY_CORRECTIONS = [].freeze
+      private_constant :EMPTY_CORRECTIONS
+
       # @api public
       #
       # @!attribute [r] justification
@@ -96,9 +99,43 @@ module RuboCop
       #   or the directive carries no reason
       attr_reader :justification
 
+      # @api public
+      #
+      # @!attribute [r] corrections
+      #
+      # @return [Array<Correction>]
+      #   the individual edits that autocorrecting this offense would make, in
+      #   source order. Empty when the offense has no correction. Unlike
+      #   {#corrector}, this survives serialization, so it is available on a
+      #   cache hit and in parallel runs.
+      attr_reader :corrections
+
+      # @api public
+      #
+      # @!attribute [r] correction_safe
+      #
+      # @return [Boolean]
+      #   whether autocorrection would apply {#corrections} in a normal `-a`
+      #   run. A cop marked `Safe: false` or `SafeAutoCorrect: false` still
+      #   builds its correction, but only `-A` applies it, so a consumer that
+      #   applies edits itself has to make the same distinction.
+      attr_reader :correction_safe
+
+      # A single edit of an autocorrection: the source range it replaces and
+      # the text it replaces it with. An insertion has an empty range, a
+      # removal an empty replacement.
+      #
+      # @api public
+      Correction = Struct.new(:begin_pos, :end_pos, :replacement) do
+        def length
+          end_pos - begin_pos
+        end
+      end
+
       # @api private
       def initialize(severity, location, message, cop_name, # rubocop:disable Metrics/ParameterLists
-                     status = :uncorrected, corrector = nil, justification: nil)
+                     status = :uncorrected, corrector = nil, justification: nil,
+                     corrections: nil, correction_safe: true)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
 
@@ -112,15 +149,21 @@ module RuboCop
         @status = status
         @corrector = corrector
         @justification = justification.freeze
+        @corrections = (corrections || corrections_from(corrector)).freeze
+        @correction_safe = correction_safe
         freeze
       end
 
       def marshal_dump
-        [@severity, @location, @message, @cop_name, @status, @justification]
+        [@severity, @location, @message, @cop_name, @status, @justification, @corrections,
+         @correction_safe]
       end
 
       def marshal_load(array)
-        @severity, @location, @message, @cop_name, @status, @justification = array
+        @severity, @location, @message, @cop_name, @status, @justification, @corrections,
+          @correction_safe = array
+        @corrections ||= EMPTY_CORRECTIONS
+        @correction_safe = true if @correction_safe.nil?
         @line = @location.line
         @column = @location.column
       end
@@ -275,6 +318,19 @@ module RuboCop
           return result unless result.zero?
         end
         0
+      end
+
+      private
+
+      # Extracted eagerly rather than on demand because the offense is frozen,
+      # and because a corrector cannot be serialized - the cache and parallel
+      # workers would otherwise hand back offenses that have lost their edits.
+      def corrections_from(corrector)
+        return EMPTY_CORRECTIONS unless corrector
+
+        corrector.as_replacements.map do |range, replacement|
+          Correction.new(range.begin_pos, range.end_pos, replacement.freeze).freeze
+        end
       end
     end
   end
