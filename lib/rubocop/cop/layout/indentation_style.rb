@@ -6,6 +6,9 @@ module RuboCop
       # Checks that the indentation method is consistent.
       # Either tabs only or spaces only are used for indentation.
       #
+      # With `EnforcedStyle: tabs`, spaces that follow the indenting tabs are
+      # taken to be alignment rather than indentation, and are left alone.
+      #
       # @example EnforcedStyle: spaces (default)
       #   # bad
       #   # This example uses a tab to indent bar.
@@ -67,7 +70,7 @@ module RuboCop
           match = if style == :spaces
                     line.match(/\A\s*\t+/)
                   else
-                    line.match(/\A\s* +/)
+                    line.match(/\A +/)
                   end
           return unless match
 
