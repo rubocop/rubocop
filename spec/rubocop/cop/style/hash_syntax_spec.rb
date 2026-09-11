@@ -2031,6 +2031,86 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
     end
 
+    context 'by EnforcedStyle `no_mixed_keys`' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'no_mixed_keys', 'EnforcedShorthandSyntax' => 'always' }
+      end
+
+      it 'converts to hash rockets rather than to shorthand when another key is not a symbol' do
+        expect_offense(<<~RUBY)
+          f(k => 1, b: b)
+                    ^^ Don't mix styles in the same hash.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(k => 1, :b => b)
+        RUBY
+      end
+
+      it 'converts to hash rockets rather than to shorthand when the first pair is a hash rocket' do
+        expect_offense(<<~RUBY)
+          f(:a => a, b: b)
+                     ^^ Don't mix styles in the same hash.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(:a => a, :b => b)
+        RUBY
+      end
+
+      it 'converts to hash rockets rather than to shorthand when a later key is not a symbol' do
+        expect_offense(<<~RUBY)
+          f(a: a, k => 1)
+            ^^ Don't mix styles in the same hash.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(:a => a, k => 1)
+        RUBY
+      end
+
+      it 'converts to shorthand when the first pair uses the Ruby 1.9 syntax' do
+        expect_offense(<<~RUBY)
+          f(a: a, :b => b)
+               ^ Omit the hash value.
+                  ^^^^^ Don't mix styles in the same hash.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(a:, b:)
+        RUBY
+      end
+    end
+
+    context 'by EnforcedStyle `ruby19_no_mixed_keys`' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'ruby19_no_mixed_keys', 'EnforcedShorthandSyntax' => 'always' }
+      end
+
+      it 'converts to hash rockets rather than to shorthand when another key is not a symbol' do
+        expect_offense(<<~RUBY)
+          f(k => 1, b: b)
+                    ^^ Don't mix styles in the same hash.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(k => 1, :b => b)
+        RUBY
+      end
+
+      it 'converts to shorthand when every key is a symbol' do
+        expect_offense(<<~RUBY)
+          f(:a => a, b: b)
+            ^^^^^ Use the new Ruby 1.9 hash syntax.
+                        ^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(a:, b:)
+        RUBY
+      end
+    end
+
     context 'by UseHashRocketsWithSymbolValues' do
       let(:cop_config) do
         {

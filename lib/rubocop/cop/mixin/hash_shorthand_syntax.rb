@@ -97,7 +97,16 @@ module RuboCop
       end
 
       def hash_rockets_enforced?(hash_node)
-        style == :hash_rockets || force_hash_rockets?(hash_node.pairs)
+        style == :hash_rockets || force_hash_rockets?(hash_node.pairs) ||
+          no_mixed_keys_enforces_hash_rockets?(hash_node.pairs)
+      end
+
+      def no_mixed_keys_enforces_hash_rockets?(pairs)
+        case style
+        when :no_mixed_keys then !sym_indices?(pairs) || pairs.first.delimiter == '=>'
+        when :ruby19_no_mixed_keys then !sym_indices?(pairs)
+        else false
+        end
       end
 
       def enforced_shorthand_syntax

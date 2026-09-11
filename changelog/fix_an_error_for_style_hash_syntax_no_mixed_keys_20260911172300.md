@@ -1,0 +1,1 @@
+* [#15694](https://github.com/rubocop/rubocop/pull/15694): Fix an error for `Style/HashSyntax` when a `no_mixed_keys` style forces hash rockets on a hash whose value repeats its key. ([@viralpraxis][])
