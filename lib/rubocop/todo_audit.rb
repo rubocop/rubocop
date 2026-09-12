@@ -21,8 +21,11 @@ module RuboCop
       entries = todo_exclude_entries
       return [] if entries.empty?
 
-      offending_cops = offending_cops_without_todo(entries)
-      entries.reject { |entry| offending_cops[absolute(entry.path)]&.include?(entry.cop_name) }
+      files_by_entry = entries.to_h { |entry| [entry, expand_path(entry.path)] }
+      offending_cops = offending_cops_without_todo(files_by_entry)
+      entries.reject do |entry|
+        files_by_entry[entry].any? { |file| offending_cops[file]&.include?(entry.cop_name) }
+      end
     end
 
     def todo_file
@@ -62,13 +65,30 @@ module RuboCop
     # Inspects every file the todo entries mention, with the todo exclusions
     # subtracted from the configuration, and returns the names of the cops
     # that still report offenses, keyed by absolute file path.
-    def offending_cops_without_todo(entries)
-      files = entries.map { |entry| absolute(entry.path) }.uniq.select { |file| File.file?(file) }
-
-      files.to_h do |file|
+    def offending_cops_without_todo(files_by_entry)
+      entries = files_by_entry.keys
+      files_by_entry.values.flatten.uniq.to_h do |file|
         offenses = inspect_file(file, entries)
         [file, offenses.to_set(&:cop_name)]
       end
+    end
+
+    def expand_path(path)
+      absolute_path = absolute(path)
+      files = File.file?(absolute_path) ? [absolute_path] : []
+      return files unless PathUtil.glob?(path)
+
+      files | target_files(absolute_path).select do |file|
+        PathUtil.match_path?(absolute_path, file)
+      end
+    end
+
+    def target_files(path)
+      directory = File.dirname(path)
+      directory = File.dirname(directory) while PathUtil.glob?(directory)
+      @target_files ||= {}
+      @target_files[directory] ||= TargetFinder.new(@config_store, @options)
+                                               .target_files_in_dir(directory)
     end
 
     def inspect_file(file, entries)
