@@ -246,7 +246,10 @@ module RuboCop
         end
 
         def can_be_made_endless?(node)
-          node.body && !node.body.type?(:begin, :kwbegin, :rescue, :ensure)
+          return false unless node.body
+          return false if node.body.type?(:begin, :kwbegin, :rescue, :ensure)
+
+          !ends_with_omitted_hash_value?(node.body)
         end
 
         def single_line_when_made_endless?(node)
@@ -257,6 +260,12 @@ module RuboCop
           return false unless config.cop_enabled?('Layout/LineLength')
 
           endless_replacement(node).length + node.loc.column > max_line_length
+        end
+
+        def ends_with_omitted_hash_value?(body)
+          body.each_descendant(:pair).any? do |pair|
+            pair.value_omission? && pair.source_range.end_pos == body.source_range.end_pos
+          end
         end
       end
     end
