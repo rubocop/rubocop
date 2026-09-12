@@ -173,6 +173,7 @@ module RuboCop
       end
       formatter_set.finished(@inspected_files.freeze)
       formatter_set.close_output_files
+      warn_about_elided_offenses
     end
 
     def file_iterator(files, &block)
@@ -630,7 +631,40 @@ module RuboCop
     end
 
     def offenses_to_report(offenses)
-      offenses.select { |o| offense_displayed?(o) }
+      offenses = offenses.select { |o| offense_displayed?(o) }
+      offenses = offenses.select { |o| within_offense_limit?(o) } if max_offenses_per_cop
+      offenses
+    end
+
+    def max_offenses_per_cop
+      return @max_offenses_per_cop if defined?(@max_offenses_per_cop)
+
+      @max_offenses_per_cop = @options[:max_offenses_per_cop]&.to_i
+    end
+
+    # Counted across the whole run rather than per file, since a cop that fires
+    # a handful of times in every file is exactly the one worth capping. Files
+    # are reported in order, so which offenses survive does not depend on how
+    # the run was parallelized.
+    def within_offense_limit?(offense)
+      reported = (@offenses_reported_per_cop ||= Hash.new(0))
+      count = reported[offense.cop_name] += 1
+
+      return true if count <= max_offenses_per_cop
+
+      (@offenses_elided_per_cop ||= Hash.new(0))[offense.cop_name] += 1
+      false
+    end
+
+    def warn_about_elided_offenses
+      return if @offenses_elided_per_cop.nil? || @offenses_elided_per_cop.empty?
+
+      total = @offenses_elided_per_cop.values.sum
+      cops = @offenses_elided_per_cop.keys.sort.join(', ')
+      warn Rainbow(
+        "#{total} more offenses were not reported because of " \
+        "--max-offenses-per-cop=#{max_offenses_per_cop} (#{cops})."
+      ).yellow
     end
 
     def supports_safe_autocorrect?(offense)

@@ -615,6 +615,57 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
         before { create_file('example.rb', source) }
 
+        context '--max-offenses-per-cop' do
+          let(:options) do
+            {
+              formatters: [['progress', formatter_output_path]],
+              max_offenses_per_cop: '1'
+            }
+          end
+          let(:source) { <<~RUBY }
+            # frozen_string_literal: true
+
+            x = "a"
+            y = "b"
+            z = "c"
+            puts x, y, z
+          RUBY
+
+          it 'reports only the first offense of a cop that fires repeatedly' do
+            runner.run([])
+
+            expect(formatter_output.scan('Style/StringLiterals').size).to eq(1)
+          end
+
+          it 'counts only the offenses it reported' do
+            runner.run([])
+
+            expect(formatter_output).to include('1 file inspected, 1 offense detected')
+          end
+
+          it 'still fails the run' do
+            expect(runner.run([])).to be false
+          end
+
+          it 'names the cops it held back on stderr' do
+            expect { runner.run([]) }.to output(
+              %r{2 more offenses were not reported .*max-offenses-per-cop=1.*Style/StringLiterals}m
+            ).to_stderr
+          end
+
+          context 'when no cop exceeds the limit' do
+            let(:source) { <<~RUBY }
+              # frozen_string_literal: true
+
+              puts "a"
+            RUBY
+
+            it 'says nothing on stderr' do
+              expect { runner.run([]) }.not_to output.to_stderr
+            end
+          end
+        end
+
         context '--display-only-safe-correctable' do
           let(:options) do
             {
