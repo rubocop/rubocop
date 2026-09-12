@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'io/wait'
+
 module RuboCop
   class Runner
     attr_writer :errors # Needed only for testing.
@@ -23,15 +25,12 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       Process.kill 'INT', pid
     end
 
-    def wait_for_input(io)
-      line = nil
-
-      until line
-        line = io.gets
-        sleep 0.1
+    def wait_for_input(io, timeout: 30)
+      unless io.wait_readable(timeout)
+        raise "the forked runner produced no output within #{timeout}s"
       end
 
-      line
+      io.gets or raise 'the forked runner exited without writing a line'
     end
 
     around do |example|
@@ -54,7 +53,11 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
         pid = Process.fork do
           rd.close
           wr.puts 'READY'
-          wr.puts runner.run(['example.rb'])
+          begin
+            wr.puts runner.run(['example.rb'])
+          rescue Exception => e # rubocop:disable Lint/RescueException -- all the deaths are unexpected, so we want to report it
+            wr.puts "EXCEPTION #{e.class}: #{e.message} (cause: #{e.cause.class})"
+          end
           wr.close
         end
 
@@ -70,6 +73,15 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
         # Make sure the runner returns false
         line = wait_for_input(rd)
         expect(line.chomp).to eq('false')
+      ensure
+        if pid
+          begin
+            Process.kill('KILL', pid)
+            Process.waitpid(pid)
+          rescue Errno::ESRCH, Errno::ECHILD
+            nil
+          end
+        end
       end
     end
   end
