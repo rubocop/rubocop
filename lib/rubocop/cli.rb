@@ -210,7 +210,7 @@ module RuboCop
       return unless Options::EXITING_OPTIONS.any? { |o| @options.key? o }
 
       run_command(:version) if @options[:version] || @options[:verbose_version]
-      %i[show_cops list_enabled_cops_for show_docs_url lsp mcp].each do |name|
+      %i[show_cops list_enabled_cops_for show_docs_url explain lsp mcp].each do |name|
         run_command(name) if @options[name]
       end
       raise Finished
