@@ -158,6 +158,7 @@ module RuboCop
 
     def inspect_files(files) # rubocop:disable Metrics/AbcSize
       formatter_set.started(files)
+      formatters_started = true
       file_iterator(files) do |file|
         offenses = process_file(file)
         succeeded = offenses.none? { |o| considered_failure?(o) && offense_displayed?(o) }
@@ -171,7 +172,7 @@ module RuboCop
       if files.size > 1 && cached_run?
         ResultCache.cleanup(@config_store, @options[:debug], @options[:cache_root])
       end
-      formatter_set.finished(@inspected_files.freeze)
+      formatter_set.finished(@inspected_files.freeze) if formatters_started
       formatter_set.close_output_files
     end
 
