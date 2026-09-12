@@ -7,6 +7,8 @@ module RuboCop
       # whether it corrects, and the examples from its own documentation.
       # @api private
       class Explain < Base
+        include CopNames
+
         self.command_name = :explain
 
         # Keys that describe the cop to RuboCop itself rather than something a
@@ -23,16 +25,16 @@ module RuboCop
         end
 
         def run
-          found, missing = @options[:explain].partition { |name| cop_class_for(name) }
+          names = @options[:explain]
 
-          found.each_with_index do |name, index|
+          known_cop_classes(names).each_with_index do |cop_class, index|
             puts if index.positive?
-            print_explanation(cop_class_for(name))
+            print_explanation(cop_class)
           end
 
-          # Reported after the cops that were found, so a typo in a list does
-          # not cost you the explanations you asked for alongside it.
-          raise IncorrectCopNameError, unknown_cops_message(missing) if missing.any?
+          # Checked after printing, so a typo in a list does not cost you the
+          # explanations you asked for alongside it.
+          validate_cop_names!(names)
         end
 
         private
@@ -146,35 +148,6 @@ module RuboCop
 
         def strip_blank(lines)
           lines.drop_while(&:empty?).reverse.drop_while(&:empty?).reverse
-        end
-
-        def cop_class_for(name)
-          @cop_classes ||= {}
-          @cop_classes.fetch(name) { @cop_classes[name] = Cop::Registry.global.find_by_cop_name(name) }
-        end
-
-        def unknown_cops_message(names)
-          names.map { |name| unknown_cop_message(name) }.join("\n")
-        end
-
-        def unknown_cop_message(name)
-          return department_message(name) if department?(name)
-
-          message = "Unrecognized cop: #{name}."
-          similar = NameSimilarity.find_similar_names(name, Cop::Registry.global.names)
-          return message if similar.empty?
-
-          "#{message}\nDid you mean? #{similar.join(', ')}"
-        end
-
-        def department?(name)
-          Cop::Registry.global.departments.any? { |department| department.to_s == name }
-        end
-
-        def department_message(name)
-          example = Cop::Registry.global.names.find { |cop| cop.start_with?("#{name}/") }
-
-          "#{name} is a department, not a cop. Name one of its cops, such as #{example}."
         end
       end
     end

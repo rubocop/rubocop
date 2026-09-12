@@ -7,6 +7,8 @@ module RuboCop
       # or documentation base url by default.
       # @api private
       class ShowDocsUrl < Base
+        include CopNames
+
         self.command_name = :show_docs_url
 
         def initialize(env)
@@ -17,6 +19,9 @@ module RuboCop
 
         def run
           print_documentation_url
+          # Checked after printing, so a typo alongside good names still gives
+          # you the urls you asked for.
+          validate_cop_names!(cops_array)
         end
 
         private
@@ -24,10 +29,7 @@ module RuboCop
         def print_documentation_url
           puts Cop::Documentation.default_base_url if cops_array.empty?
 
-          cops_array.each do |cop_name|
-            cop = Cop::Registry.global.find_by_cop_name(cop_name)
-            next unless cop
-
+          known_cop_classes(cops_array).each do |cop|
             url = Cop::Documentation.url_for(cop, @config)
             puts url if url
           end
