@@ -173,6 +173,50 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
     end
   end
 
+  context 'with `EnforcedStyle: fetch` and a compound assignment' do
+    let(:cop_config) { { 'EnforcedStyle' => 'fetch' } }
+
+    it 'does not register an offense when the lookup is the target of `||=`' do
+      expect_no_offenses(<<~RUBY)
+        a[:x] ||= b
+      RUBY
+    end
+
+    it 'does not register an offense when the lookup is the target of `&&=`' do
+      expect_no_offenses(<<~RUBY)
+        a[:x] &&= b
+      RUBY
+    end
+
+    it 'does not register an offense when the lookup is the target of `+=`' do
+      expect_no_offenses(<<~RUBY)
+        a[:x] += b
+      RUBY
+    end
+
+    it 'registers an offense when the lookup is the value of `||=`' do
+      expect_offense(<<~RUBY)
+        a[:x] ||= b[:y]
+                  ^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a[:x] ||= b.fetch(:y)
+      RUBY
+    end
+
+    it 'registers an offense when the lookup is the value of a plain assignment' do
+      expect_offense(<<~RUBY)
+        x = a[:y]
+            ^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = a.fetch(:y)
+      RUBY
+    end
+  end
+
   context "when `AllowedReceivers: ['Rails.cache']`" do
     let(:cop_config) { { 'AllowedReceivers' => ['Rails.cache'] } }
 

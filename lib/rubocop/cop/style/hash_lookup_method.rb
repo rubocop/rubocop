@@ -81,7 +81,12 @@ module RuboCop
         end
 
         def offense_for_fetch?(node)
-          style == :fetch && node.method?(:[]) && node.arguments.one?
+          style == :fetch && node.method?(:[]) && node.arguments.one? &&
+            !compound_assignment_target?(node)
+        end
+
+        def compound_assignment_target?(node)
+          node.parent&.type?(:op_asgn, :or_asgn, :and_asgn) && node.parent.children.first == node
         end
 
         def correct_fetch_to_brackets(corrector, node)
