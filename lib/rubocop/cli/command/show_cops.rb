@@ -7,6 +7,8 @@ module RuboCop
       # for the current directory.
       # @api private
       class ShowCops < Base
+        include CopNames
+
         self.command_name = :show_cops
 
         ExactMatcher = Struct.new(:pattern) do
@@ -38,6 +40,10 @@ module RuboCop
 
         def run
           print_available_cops
+          # Checked after printing, so a typo alongside good names still shows
+          # what was asked for. Wildcards are patterns, not names, so a pattern
+          # that matches nothing is not an error.
+          validate_cop_names!(@options[:show_cops].grep_v(/\*/))
         end
 
         private
