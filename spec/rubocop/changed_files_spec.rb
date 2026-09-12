@@ -11,6 +11,14 @@ RSpec.describe RuboCop::ChangedFiles do
     raise "git #{args.join(' ')} failed: #{stderr}" unless status.success?
   end
 
+  def git_init
+    git('init')
+    # `git commit` may spawn a detached background maintenance process whose own lock file removal
+    # races with the temporary directory cleanup and makes it raise `Errno::ENOENT`.
+    git('config', 'maintenance.auto', 'false')
+    git('config', 'gc.auto', '0')
+  end
+
   def commit_all(message)
     git('add', '-A')
     git('-c', 'user.email=test@example.com', '-c', 'user.name=Test', 'commit', '-m', message)
@@ -36,7 +44,7 @@ RSpec.describe RuboCop::ChangedFiles do
       # Symlinked temporary directories (`/tmp` on macOS) make git and
       # `File.expand_path` disagree about the repository root.
       Dir.chdir(File.realpath(tmpdir)) do
-        git('init')
+        git_init
         example.run
       end
     end
@@ -166,7 +174,7 @@ RSpec.describe RuboCop::ChangedFiles do
     around do |example|
       Dir.mktmpdir do |tmpdir|
         Dir.chdir(File.realpath(tmpdir)) do
-          git('init')
+          git_init
           example.run
         end
       end
