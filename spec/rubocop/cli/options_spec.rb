@@ -1696,9 +1696,64 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--show-cops with names it does not recognize' do
+    let(:stdout) { $stdout.string }
+    let(:stderr) { $stderr.string }
+
+    it 'reports an unrecognized cop rather than printing nothing' do
+      expect(cli.run(['--show-cops', 'Foo/Bar'])).to eq(2)
+      expect(stderr).to include('Unrecognized cop: Foo/Bar.')
+    end
+
+    it 'says so when given a department' do
+      expect(cli.run(['--show-cops', 'Layout'])).to eq(2)
+      expect(stderr).to include('Layout is a department, not a cop.')
+    end
+
+    it 'still prints the config of the cops it recognized' do
+      expect(cli.run(['--show-cops', 'Layout/LineLength,Foo/Bar'])).to eq(2)
+      expect(stdout).to include('Layout/LineLength:')
+      expect(stderr).to include('Unrecognized cop: Foo/Bar.')
+    end
+
+    it 'accepts a wildcard that matches nothing, since it is a pattern' do
+      expect(cli.run(['--show-cops', 'Foo/*'])).to eq(0)
+      expect(stderr).to be_empty
+    end
+  end
+
   describe '--show-docs-url' do
     let(:stdout) { $stdout.string }
+    let(:stderr) { $stderr.string }
     let(:cmd) { cli.run(['--show-docs-url'] + arguments) }
+
+    context 'with an unrecognized cop' do
+      let(:arguments) { ['Foo/Bar'] }
+
+      it 'reports the name rather than silently skipping it' do
+        expect(cmd).to eq(2)
+        expect(stderr).to include('Unrecognized cop: Foo/Bar.')
+      end
+    end
+
+    context 'with a department' do
+      let(:arguments) { ['Layout'] }
+
+      it 'says it is a department and names a cop in it' do
+        expect(cmd).to eq(2)
+        expect(stderr).to include('Layout is a department, not a cop.')
+      end
+    end
+
+    context 'with a good cop and a bad one' do
+      let(:arguments) { ['Layout/IndentationStyle,Foo/Bar'] }
+
+      it 'still prints the url it could resolve' do
+        expect(cmd).to eq(2)
+        expect(stdout).to include('cops_layout.html#layoutindentationstyle')
+        expect(stderr).to include('Unrecognized cop: Foo/Bar.')
+      end
+    end
 
     context 'with no args' do
       let(:arguments) { [] }
