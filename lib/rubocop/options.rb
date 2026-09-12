@@ -17,7 +17,7 @@ module RuboCop
                       'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
                       'like Naming/FileName can be checked.'
     EXITING_OPTIONS = %i[
-      version verbose_version show_cops list_enabled_cops_for show_docs_url lsp mcp
+      version verbose_version show_cops list_enabled_cops_for show_docs_url explain lsp mcp
     ].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
@@ -266,6 +266,9 @@ module RuboCop
         end
         option(opts, '--show-docs-url [COP1,COP2,...]') do |list|
           @options[:show_docs_url] = list.nil? ? [] : list.split(',')
+        end
+        option(opts, '--explain COP1,COP2,...') do |list|
+          @options[:explain] = list.split(',')
         end
       end
     end
@@ -674,6 +677,10 @@ module RuboCop
                                          'default, and their configurations for the',
                                          'current directory.',
                                          'You can use `*` as a wildcard.'],
+      explain:                          ['Explain what the given cops do: their',
+                                         'description, configuration, whether they',
+                                         'correct, and the examples from their own',
+                                         'documentation.'],
       show_docs_url:                    ['Display url to documentation for the given',
                                          'cops, or base url by default.'],
       fail_fast:                        ['Inspect files in order of modification',
