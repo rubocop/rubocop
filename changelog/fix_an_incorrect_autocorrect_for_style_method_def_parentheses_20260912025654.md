@@ -1,0 +1,1 @@
+* [#15696](https://github.com/rubocop/rubocop/pull/15696): Fix an incorrect autocorrect for `Style/MethodDefParentheses` when using `EnforcedStyle: require_no_parentheses` and the parameters begin on a line below the method name. ([@viralpraxis][])
