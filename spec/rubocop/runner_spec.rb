@@ -39,6 +39,38 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       Signal.trap('INT', old_handler)
     end
 
+    context 'when a formatter raises while starting' do
+      let(:interrupting_formatter) do
+        Class.new(RuboCop::Formatter::ProgressFormatter) do
+          def started(_target_files)
+            raise Interrupt
+          end
+        end
+      end
+
+      it 'aborts cleanly instead of raising from the formatter' do
+        runner = described_class.new({ formatters: [[interrupting_formatter]] },
+                                     RuboCop::ConfigStore.new)
+
+        expect(runner.run(['example.rb'])).to be(false)
+        expect(runner).to be_aborting
+      end
+
+      it 'does not replace an error raised by an earlier formatter' do
+        failing_formatter = Class.new(RuboCop::Formatter::ProgressFormatter) do
+          def started(_target_files)
+            raise 'formatter boom'
+          end
+        end
+        runner = described_class.new(
+          { formatters: [[failing_formatter], ['progress', formatter_output_path]] },
+          RuboCop::ConfigStore.new
+        )
+
+        expect { runner.run(['example.rb']) }.to raise_error(RuntimeError, 'formatter boom')
+      end
+    end
+
     context 'with SIGINT' do
       it 'returns false' do
         skip '`Process` does not respond to `fork` method.' unless Process.respond_to?(:fork)
