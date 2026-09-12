@@ -1,0 +1,1 @@
+* [#15697](https://github.com/rubocop/rubocop/pull/15697): Fix an incorrect autocorrect for `Layout/EmptyLinesAroundBlockBody` when using `EnforcedStyle: empty_lines` and the empty line would precede a leading dot method call. ([@viralpraxis][])

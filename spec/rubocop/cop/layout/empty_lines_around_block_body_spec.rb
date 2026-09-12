@@ -139,4 +139,31 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       end
     end
   end
+
+  context 'when `EnforcedStyle` is `empty_lines` and the body is a chained method call' do
+    let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
+
+    it 'accepts a leading dot at the beginning of the body' do
+      expect_no_offenses(<<~RUBY)
+        aa { bb { cc }
+        .dd }
+      RUBY
+    end
+
+    it 'accepts a leading safe navigation dot at the beginning of the body' do
+      expect_no_offenses(<<~RUBY)
+        aa { bb
+        &.cc }
+      RUBY
+    end
+
+    it 'accepts a leading dot at the end of the body' do
+      expect_no_offenses(<<~RUBY)
+        aa {
+
+          bb
+          .cc }
+      RUBY
+    end
+  end
 end
