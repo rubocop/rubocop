@@ -1596,6 +1596,106 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--explain' do
+    let(:stdout) { $stdout.string }
+    let(:stderr) { $stderr.string }
+
+    it 'reports the description, properties and references of a cop' do
+      cli.run(['--explain', 'Style/StringLiterals'])
+
+      expect(stdout).to include('Style/StringLiterals')
+      expect(stdout).to include('Checks if uses of quotes match the configured preference.')
+      expect(stdout).to include('Autocorrect: safe, applied by -a')
+      expect(stdout).to include('https://docs.rubocop.org/rubocop/cops_style.html#stylestringliterals')
+    end
+
+    it 'reports the configurable options with their current values' do
+      cli.run(['--explain', 'Style/StringLiterals'])
+
+      expect(stdout).to include('EnforcedStyle: single_quotes')
+      expect(stdout).to include('SupportedStyles: single_quotes, double_quotes')
+    end
+
+    it 'reports the examples from the cop documentation' do
+      cli.run(['--explain', 'Style/StringLiterals'])
+
+      expect(stdout).to include('Example: EnforcedStyle: single_quotes (default)')
+      expect(stdout).to include('# bad')
+      expect(stdout).to include('# good')
+    end
+
+    it 'reports the files a cop is scoped to' do
+      cli.run(['--explain', 'Bundler/OrderedGems'])
+
+      expect(stdout).to match(/^  Applies to:\s+.*Gemfile/)
+    end
+
+    it 'reports the files a cop is kept away from, relative to the project' do
+      create_file('.rubocop.yml', <<~YAML)
+        Style/Semicolon:
+          Exclude:
+            - 'db/schema.rb'
+      YAML
+      cli.run(['--explain', 'Style/Semicolon'])
+
+      expect(stdout).to match(%r{^  Excludes:\s+db/schema\.rb$})
+    end
+
+    it 'says nothing about scope for a cop that runs everywhere' do
+      cli.run(['--explain', 'Style/Semicolon'])
+
+      expect(stdout).not_to include('Applies to:')
+      expect(stdout).not_to include('Excludes:')
+    end
+
+    it 'reports the safety note of a cop that is unsafe to autocorrect' do
+      cli.run(['--explain', 'Style/FrozenStringLiteralComment'])
+
+      expect(stdout).to include('Autocorrect: unsafe, applied by -A only')
+      expect(stdout).to include('Safety')
+    end
+
+    it 'does not repeat the description as a details section' do
+      cli.run(['--explain', 'Style/Semicolon'])
+
+      description = 'Checks for multiple expressions placed on the same line.'
+      expect(stdout.scan(description).size).to eq(1)
+    end
+
+    it 'fails with a suggestion when the cop name is not recognized' do
+      expect(cli.run(['--explain', 'Style/StringLiteral'])).to eq(2)
+      expect(stderr).to include('Unrecognized cop: Style/StringLiteral.')
+      expect(stderr).to include('Did you mean? Style/StringLiterals')
+    end
+
+    it 'fails without a suggestion when nothing is close' do
+      expect(cli.run(['--explain', 'Totally/Made Up'])).to eq(2)
+      expect(stderr).to include('Unrecognized cop: Totally/Made Up.')
+      expect(stderr).not_to include('Did you mean?')
+    end
+
+    it 'explains every cop in a comma separated list' do
+      cli.run(['--explain', 'Style/Semicolon,Layout/LineLength'])
+
+      expect(stdout).to match(%r{^Style/Semicolon$})
+      expect(stdout).to match(%r{^Layout/LineLength$})
+    end
+
+    it 'still explains the cops it recognized when one name is wrong' do
+      expect(cli.run(['--explain', 'Style/Semicolon,Style/StringLiteral'])).to eq(2)
+
+      expect(stdout).to match(%r{^Style/Semicolon$})
+      expect(stderr).to include('Unrecognized cop: Style/StringLiteral.')
+    end
+
+    it 'says so when given a department rather than a cop' do
+      expect(cli.run(['--explain', 'Metrics'])).to eq(2)
+
+      expect(stderr).to include('Metrics is a department, not a cop.')
+      expect(stderr).to include('Metrics/')
+    end
+  end
+
   describe '--show-docs-url' do
     let(:stdout) { $stdout.string }
     let(:cmd) { cli.run(['--show-docs-url'] + arguments) }

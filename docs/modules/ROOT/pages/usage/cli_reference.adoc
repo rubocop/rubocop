@@ -180,6 +180,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--show-docs-url`
 | Shows URLs for documentation pages of supplied cops.
 
+| `--explain COP1,COP2,...`
+| Explain what the given cops do: their description, properties, configuration, the examples from their own documentation, and links to the style guide and docs. Unlike `--show-cops` and `--show-docs-url`, an unrecognized name is reported rather than skipped.
+
 | `--stderr`
 | Write all output to stderr except for the autocorrected source. This is especially useful when combined with `--autocorrect` and `--stdin`.
 

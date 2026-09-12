@@ -240,6 +240,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --show-docs-url [COP1,COP2,...]
                                                Display url to documentation for the given
                                                cops, or base url by default.
+                  --explain COP1,COP2,...      Explain what the given cops do: their
+                                               description, configuration, whether they
+                                               correct, and the examples from their own
+                                               documentation.
 
           General Options:
                   --init                       Generate a .rubocop.yml file in the current directory.
