@@ -334,6 +334,40 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
 
     it_behaves_like 'no parentheses'
     it_behaves_like 'endless methods'
+
+    it 'requires parens when the parameters begin on a line below the method name' do
+      expect_no_offenses(<<~RUBY)
+        def func(
+          a,
+          b
+        )
+        end
+      RUBY
+    end
+
+    it 'requires parens when a sole parameter begins on a line below the method name' do
+      expect_no_offenses(<<~RUBY)
+        def func(
+          a
+        )
+        end
+      RUBY
+    end
+
+    it 'reports an offense when the parameters begin on the method name line' do
+      expect_offense(<<~RUBY)
+        def func(a,
+                ^^^ Use def without parentheses.
+          b)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func a,
+          b
+        end
+      RUBY
+    end
   end
 
   context 'require_no_parentheses_except_multiline' do

@@ -137,8 +137,9 @@ module RuboCop
           # 3. Argument lists containing an anonymous rest arguments forwarding (`*`)
           # 4. Argument lists containing an anonymous keyword rest arguments forwarding (`**`)
           # 5. Argument lists containing an anonymous block forwarding (`&`)
+          # 6. Argument lists that begin on a line below the method name
           # Removing the parens would be a syntax error here.
-          node.endless? || anonymous_arguments?(node)
+          node.endless? || anonymous_arguments?(node) || arguments_on_own_line?(node)
         end
 
         def require_parentheses?(args)
@@ -175,6 +176,13 @@ module RuboCop
           return false unless (last_argument = node.last_argument)
 
           last_argument.blockarg_type? && last_argument.name.nil?
+        end
+
+        def arguments_on_own_line?(node)
+          return false unless (first_argument = node.first_argument)
+          return false unless parentheses?(node.arguments)
+
+          node.arguments.loc.begin.line != first_argument.first_line
         end
       end
     end
