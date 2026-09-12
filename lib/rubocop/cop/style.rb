@@ -79,6 +79,7 @@ module RuboCop
       register_cop :Encoding, "#{__dir__}/style/encoding"
       register_cop :EndBlock, "#{__dir__}/style/end_block"
       register_cop :EnvHome, "#{__dir__}/style/env_home"
+      register_cop :Eql, "#{__dir__}/style/eql"
       register_cop :EvalWithLocation, "#{__dir__}/style/eval_with_location"
       register_cop :EvenOdd, "#{__dir__}/style/even_odd"
       register_cop :ExactRegexpMatch, "#{__dir__}/style/exact_regexp_match"
