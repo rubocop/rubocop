@@ -75,12 +75,20 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       it 'returns false' do
         skip '`Process` does not respond to `fork` method.' unless Process.respond_to?(:fork)
 
-        # Make sure the runner works slowly and thus is interruptible
-        allow(runner).to receive(:process_file) do
-          sleep 99
-        end
-
         rd, wr = IO.pipe
+
+        # Make sure the runner works slowly and thus is interruptible, and signal when
+        # the forked child is inside `Runner#run`, whose `rescue Interrupt` turns
+        # the interrupt into an abort. An interrupt delivered before that point kills
+        # the child before it can write anything.
+        allow(runner).to receive(:process_file) do
+          wr.puts 'PROCESSING'
+          # The duration only has to outlast `wait_for_input`'s timeout, so that an interrupt
+          # that never arrives is reported there instead of letting the run finish on its own
+          # and write `true`.
+          sleep 99
+          []
+        end
 
         pid = Process.fork do
           rd.close
@@ -98,6 +106,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
         # Make sure the runner has started by waiting for a specific message
         line = wait_for_input(rd)
         expect(line.chomp).to eq('READY')
+
+        # Wait until the runner is inside its interrupt-protected region.
+        line = wait_for_input(rd)
+        expect(line.chomp).to eq('PROCESSING')
 
         # Interrupt the runner
         interrupt(pid)
