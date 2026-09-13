@@ -19,10 +19,10 @@ namespace :cut_release do
     version.split('.').take(2).join('.')
   end
 
-  def update_readme(old_version, new_version)
+  def update_readme(new_version)
     update_file('README.md') do |readme|
       readme.sub(
-        "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
+        /gem 'rubocop', '~> \d+\.\d+', require: false/,
         "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
     end
@@ -43,7 +43,7 @@ namespace :cut_release do
 
     update_file('docs/modules/ROOT/pages/installation.adoc') do |installation|
       installation.sub(
-        "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
+        /gem 'rubocop', '~> \d+\.\d+', require: false/,
         "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
     end
@@ -102,7 +102,7 @@ namespace :cut_release do
 
     update_cop_versions(old_version, new_version)
     Rake::Task['update_cops_documentation'].invoke
-    update_readme(old_version, new_version)
+    update_readme(new_version)
     update_docs(old_version, new_version)
     update_issue_template(old_version, new_version)
     update_contributing_doc(old_version, new_version)
