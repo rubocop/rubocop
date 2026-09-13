@@ -11,6 +11,14 @@ RSpec.describe 'RuboCop::CLI --changed', :isolated_environment do # rubocop:disa
     raise "git #{args.join(' ')} failed: #{stderr}" unless status.success?
   end
 
+  def git_init
+    git('init')
+    # `git commit` may spawn a detached background maintenance process whose own lock file removal
+    # races with the temporary directory cleanup and makes it raise `Errno::ENOENT`.
+    git('config', 'maintenance.auto', 'false')
+    git('config', 'gc.auto', '0')
+  end
+
   def commit_all(message)
     git('add', '-A')
     git('-c', 'user.email=test@example.com', '-c', 'user.name=Test', 'commit', '-m', message)
@@ -19,7 +27,7 @@ RSpec.describe 'RuboCop::CLI --changed', :isolated_environment do # rubocop:disa
   let(:offending_source) { "# frozen_string_literal: true\n\nputs \"offense\"\n" }
 
   before do
-    git('init')
+    git_init
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
         NewCops: disable
