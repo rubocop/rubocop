@@ -359,6 +359,27 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense when the body ends with an omitted hash value', :ruby31 do
+        expect_no_offenses(<<~RUBY)
+          def my_method(a:)
+            foo 1, a:
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when an omitted hash value is enclosed', :ruby31 do
+        expect_offense(<<~RUBY)
+          def my_method(a:)
+          ^^^^^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            foo(1, a:)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(a:) = foo(1, a:)
+        RUBY
+      end
+
       it 'does not register an offense when heredoc is used only in regular method definition' do
         expect_no_offenses(<<~RUBY)
           def my_method
@@ -624,6 +645,27 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
               foo && bar
             end
           end
+        RUBY
+      end
+
+      it 'does not register an offense when the body ends with an omitted hash value', :ruby31 do
+        expect_no_offenses(<<~RUBY)
+          def my_method(a:)
+            foo 1, a:
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when an omitted hash value is enclosed', :ruby31 do
+        expect_offense(<<~RUBY)
+          def my_method(a:)
+          ^^^^^^^^^^^^^^^^^ Use endless method definitions.
+            foo(1, a:)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(a:) = foo(1, a:)
         RUBY
       end
 
