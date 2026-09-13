@@ -68,9 +68,10 @@ module RuboCop
           # `restarg`, `kwrestarg`, `blockarg` nodes can return early.
           return unless node.first_argument.arg_type?
 
-          variables = find_block_variables(node, node.first_argument.source)
+          block_argument_name = node.first_argument.source
+          return if used_within_inner_block?(node.body, block_argument_name)
 
-          variables.each do |variable|
+          find_block_variables(node, block_argument_name).each do |variable|
             add_offense(variable, message: MSG_USE_IT_PARAMETER) do |corrector|
               corrector.remove(node.arguments)
               corrector.replace(variable, 'it')
@@ -111,7 +112,29 @@ module RuboCop
         def find_block_variables(node, block_argument_name)
           return [] unless node.body
 
-          node.body.each_descendant(:lvar).select do |descendant|
+          ranges = inner_block_ranges(node.body)
+
+          block_variables(node.body, block_argument_name).reject do |variable|
+            ranges.any? { |range| range.contains?(variable.source_range) }
+          end
+        end
+
+        def inner_block_ranges(body)
+          body.each_node(:any_block).map { |block| block.loc.begin.join(block.loc.end) }
+        end
+
+        def used_within_inner_block?(body, block_argument_name)
+          return false unless body
+
+          ranges = inner_block_ranges(body)
+
+          block_variables(body, block_argument_name).any? do |variable|
+            ranges.any? { |range| range.contains?(variable.source_range) }
+          end
+        end
+
+        def block_variables(body, block_argument_name)
+          body.each_descendant(:lvar).select do |descendant|
             descendant.source == block_argument_name
           end
         end

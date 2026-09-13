@@ -177,6 +177,52 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
         RUBY
       end
 
+      it 'does not register an offense when the parameter is used inside a nested block with parameters' do
+        expect_no_offenses(<<~RUBY)
+          block { |arg| other { |x, y| arg } }
+        RUBY
+      end
+
+      it 'does not register an offense when the parameter is used inside a nested block without parameters' do
+        expect_no_offenses(<<~RUBY)
+          block { |arg| other { arg } }
+        RUBY
+      end
+
+      it 'registers an offense for the nested block only when the parameter is used both inside ' \
+         'and outside it' do
+        expect_offense(<<~RUBY)
+          block { |arg| use(arg); other { |x| log(arg, x) } }
+                                                       ^ Use `it` block parameter.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          block { |arg| use(arg); other {  log(arg, it) } }
+        RUBY
+      end
+
+      it 'registers an offense when the parameter is the receiver of a nested block' do
+        expect_offense(<<~RUBY)
+          block { |arg| arg.other { |x| x } }
+                        ^^^ Use `it` block parameter.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          block {  it.other { |x| x } }
+        RUBY
+      end
+
+      it 'registers an offense for a numbered parameter of a nested block only' do
+        expect_offense(<<~RUBY)
+          block { |arg| other { _1 + arg } }
+                                ^^ Use `it` block parameter.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          block { |arg| other { it + arg } }
+        RUBY
+      end
+
       it 'registers an offense when using a single named block parameters' do
         expect_offense(<<~RUBY)
           block { |arg| do_something(arg) }
