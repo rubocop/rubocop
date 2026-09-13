@@ -124,6 +124,46 @@ RSpec.describe RuboCop::Cop::Registry do
     end
   end
 
+  describe '.qualified_cop?' do
+    context 'when two departments share a cop name' do
+      let(:cops) do
+        [
+          RuboCop::Cop::Rails::Output,
+          RuboCop::Cop::RSpec::Output
+        ]
+      end
+
+      before do
+        stub_const('RuboCop::Cop::Rails::Output', Class.new(RuboCop::Cop::Base))
+        stub_const('RuboCop::Cop::RSpec::Output', Class.new(RuboCop::Cop::Base))
+      end
+
+      it 'returns true for the department registered first' do
+        described_class.with_temporary_global(registry) do
+          expect(described_class).to be_qualified_cop('Rails/Output')
+        end
+      end
+
+      it 'returns true for the department registered later' do
+        described_class.with_temporary_global(registry) do
+          expect(described_class).to be_qualified_cop('RSpec/Output')
+        end
+      end
+    end
+
+    it 'returns false for an unregistered cop name' do
+      described_class.with_temporary_global(registry) do
+        expect(described_class).not_to be_qualified_cop('Style/NotReal')
+      end
+    end
+
+    it 'returns false for an unqualified cop name' do
+      described_class.with_temporary_global(registry) do
+        expect(described_class).not_to be_qualified_cop('MethodLength')
+      end
+    end
+  end
+
   describe '#qualified_cop_name' do
     let(:origin) { '/app/.rubocop.yml' }
 
