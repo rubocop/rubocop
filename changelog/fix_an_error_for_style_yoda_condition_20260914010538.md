@@ -1,0 +1,1 @@
+* [#15714](https://github.com/rubocop/rubocop/pull/15714): Fix an error for `Style/YodaCondition` when one operand of a comparison contains another comparison the cop also corrects. ([@viralpraxis][])

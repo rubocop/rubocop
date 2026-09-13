@@ -104,7 +104,7 @@ module RuboCop
                     valid_yoda?(node)
 
           add_offense(node) do |corrector|
-            corrector.replace(actual_code_range(node), corrected_code(node))
+            autocorrect(corrector, node)
           end
         end
 
@@ -138,22 +138,37 @@ module RuboCop
           format(MSG, source: node.source)
         end
 
-        def corrected_code(node)
-          lhs = node.receiver
-          rhs = node.first_argument
-
-          "#{rhs.source} #{reverse_comparison(node.method_name)} #{lhs.source}"
+        def autocorrect(corrector, node)
+          if constant_portion?(node.first_argument)
+            move_argument_to_front(corrector, node)
+          else
+            move_receiver_to_back(corrector, node)
+          end
         end
 
         def constant_portion?(node)
           node.recursive_literal? || node.const_type?
         end
 
-        def actual_code_range(node)
-          range_between(node.source_range.begin_pos, node.source_range.end_pos)
+        def move_argument_to_front(corrector, node)
+          receiver = node.receiver
+
+          replacement = "#{node.first_argument.source} #{reverse_comparison(node)} "
+
+          corrector.insert_before(receiver, replacement)
+          corrector.remove(receiver.source_range.end.join(node.source_range.end))
         end
 
-        def reverse_comparison(operator)
+        def move_receiver_to_back(corrector, node)
+          argument = node.first_argument
+
+          corrector.remove(node.source_range.begin.join(argument.source_range.begin))
+          corrector.insert_after(argument, " #{reverse_comparison(node)} #{node.receiver.source}")
+        end
+
+        def reverse_comparison(node)
+          operator = node.method_name
+
           REVERSE_COMPARISON.fetch(operator.to_s, operator)
         end
 
