@@ -217,7 +217,7 @@ module RuboCop
           return false unless (body = node.body)
           return true if body.any_str_type? && body.heredoc?
 
-          body.each_descendant(:str).any?(&:heredoc?)
+          body.each_descendant(:any_str).any?(&:heredoc?)
         end
 
         def correct_to_endless(corrector, node)
