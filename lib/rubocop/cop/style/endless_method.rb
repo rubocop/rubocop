@@ -249,7 +249,7 @@ module RuboCop
           return false unless node.body
           return false if node.body.type?(:begin, :kwbegin, :rescue, :ensure, :masgn)
 
-          !ends_with_omitted_hash_value?(node.body)
+          !ends_with_omitted_hash_value?(node.body) && !ends_with_anonymous_argument?(node.body)
         end
 
         def single_line_when_made_endless?(node)
@@ -265,6 +265,15 @@ module RuboCop
         def ends_with_omitted_hash_value?(body)
           body.each_descendant(:pair).any? do |pair|
             pair.value_omission? && pair.source_range.end_pos == body.source_range.end_pos
+          end
+        end
+
+        def ends_with_anonymous_argument?(body)
+          forwarding = %i[forwarded_restarg forwarded_kwrestarg block_pass]
+
+          body.each_descendant(*forwarding).any? do |argument|
+            argument.source_range.end_pos == body.source_range.end_pos &&
+              (!argument.block_pass_type? || argument.children.first.nil?)
           end
         end
       end

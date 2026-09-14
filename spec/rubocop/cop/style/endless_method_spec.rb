@@ -401,6 +401,54 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense when the body ends with anonymous rest forwarding', :ruby32 do
+        expect_no_offenses(<<~RUBY)
+          def my_method(*); foo bar, *; end
+        RUBY
+      end
+
+      it 'does not register an offense when the body ends with anonymous keyword rest forwarding', :ruby32 do
+        expect_no_offenses(<<~RUBY)
+          def my_method(**)
+            foo bar, **
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the body ends with anonymous block forwarding', :ruby31 do
+        expect_no_offenses(<<~RUBY)
+          def my_method(&)
+            foo bar, &
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the forwarding is not last', :ruby32 do
+        expect_offense(<<~RUBY)
+          def my_method(**)
+          ^^^^^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            foo(bar, **)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(**) = foo(bar, **)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the forwarded arguments are named', :ruby31 do
+        expect_offense(<<~RUBY)
+          def my_method(&blk)
+          ^^^^^^^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            foo bar, &blk
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(&blk) = foo bar, &blk
+        RUBY
+      end
+
       it 'does not register an offense when heredoc is used only in regular method definition' do
         expect_no_offenses(<<~RUBY)
           def my_method
@@ -728,6 +776,14 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         expect_no_offenses(<<~RUBY)
           def my_method
             foo, bar = 1, 2
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the body ends with anonymous keyword rest forwarding', :ruby32 do
+        expect_no_offenses(<<~RUBY)
+          def my_method(**)
+            foo bar, **
           end
         RUBY
       end
