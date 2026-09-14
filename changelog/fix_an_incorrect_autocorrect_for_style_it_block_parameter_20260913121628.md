@@ -1,0 +1,1 @@
+* [#15708](https://github.com/rubocop/rubocop/pull/15708): Fix an incorrect autocorrect for `Style/ItBlockParameter` when using `EnforcedStyle: always` and the block parameter is used inside a nested block. ([@viralpraxis][])
