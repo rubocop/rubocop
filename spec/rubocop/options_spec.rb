@@ -185,6 +185,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                when combined with --display-only-correctable.
                   --display-suppressed         Also output offenses suppressed by directive
                                                comments. They do not affect the exit code.
+                  --max-offenses-per-cop COUNT Report at most COUNT offenses per cop across the
+                                               whole run, so a single noisy cop cannot bury the
+                                               rest. Offenses beyond the limit are not reported
+                                               and do not count towards the totals, the same way
+                                               the other display filters work.
 
           Autocorrection:
               -a, --autocorrect                Autocorrect offenses (only when it's safe).
@@ -414,6 +419,26 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           expect { options.parse ['--display-only-fail-level-offenses', o] }
             .not_to raise_error(RuboCop::OptionArgumentError)
         end
+      end
+    end
+
+    describe '--max-offenses-per-cop' do
+      it 'accepts a positive integer' do
+        options.parse %w[--max-offenses-per-cop 3]
+
+        expect(options.instance_variable_get(:@options)[:max_offenses_per_cop]).to eq('3')
+      end
+
+      %w[0 -1 abc 1.5].each do |value|
+        it "rejects #{value.inspect}" do
+          expect { options.parse ['--max-offenses-per-cop', value] }
+            .to raise_error(OptionParser::InvalidArgument)
+        end
+      end
+
+      it 'requires an argument' do
+        expect { options.parse %w[--max-offenses-per-cop] }
+          .to raise_error(OptionParser::MissingArgument)
       end
     end
 

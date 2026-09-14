@@ -81,6 +81,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--display-suppressed`
 | Also output offenses suppressed by directive comments, tagged `[Suppressed]` (with their `--` justification in the JSON formatter). Suppressed offenses do not affect the exit code.
 
+| `--max-offenses-per-cop=COUNT`
+| Report at most `COUNT` offenses per cop across the whole run. Like the other display filters, offenses beyond the limit are not reported and do not count towards the totals; a note on stderr says how many were held back and which cops they came from.
+
 | `--enable-all-cops`
 | Run with all cops enabled, including those disabled by default. Overrides `AllCops/EnabledByDefault` and `AllCops/DisabledByDefault` in configuration files.
 

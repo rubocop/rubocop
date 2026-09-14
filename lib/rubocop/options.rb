@@ -148,6 +148,9 @@ module RuboCop
         option(opts, '--display-only-correctable')
         option(opts, '--display-only-safe-correctable')
         option(opts, '--display-suppressed')
+        option(opts, '--max-offenses-per-cop COUNT') do
+          @validator.validate_max_offenses_per_cop_option
+        end
       end
     end
 
@@ -556,6 +559,12 @@ module RuboCop
             'compare against HEAD.'
     end
 
+    def validate_max_offenses_per_cop_option
+      return if /^[1-9]\d*$/.match?(@options[:max_offenses_per_cop])
+
+      raise OptionParser::InvalidArgument, '--max-offenses-per-cop must be a positive integer'
+    end
+
     def validate_exclude_limit_option
       return if /^\d+$/.match?(@options[:exclude_limit])
 
@@ -611,6 +620,11 @@ module RuboCop
                                          'when running --auto-gen-config, except if the',
                                          'number of files with offenses is bigger than',
                                          'exclude-limit. Default is false.'],
+      max_offenses_per_cop:             ['Report at most COUNT offenses per cop across the',
+                                         'whole run, so a single noisy cop cannot bury the',
+                                         'rest. Offenses beyond the limit are not reported',
+                                         'and do not count towards the totals, the same way',
+                                         'the other display filters work.'],
       exclude_limit:                    ['Set the limit for how many files to explicitly exclude.',
                                          'If there are more files than the limit, the cop will',
                                          "be disabled instead. Default is #{MAX_EXCL}."],
