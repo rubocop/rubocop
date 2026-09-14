@@ -275,4 +275,33 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
 
   # Layout/SpaceInsideStringInterpolation
   it_behaves_like 'accepts around', '{}', '"#{begin end}"'
+
+  context 'when Layout/SpaceBeforeBlockBraces is configured with `no_space`' do
+    let(:other_cops) do
+      { 'Layout/SpaceBeforeBlockBraces' => { 'Enabled' => true, 'EnforcedStyle' => 'no_space' } }
+    end
+
+    it 'accepts a block brace right after `super`' do
+      expect_no_offenses(<<~RUBY)
+        def each
+          super{|x| yield x.foo }
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a missing space after `super` before other tokens' do
+      expect_offense(<<~RUBY)
+        def each
+          super""
+          ^^^^^ Space after keyword `super` is missing.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def each
+          super ""
+        end
+      RUBY
+    end
+  end
 end

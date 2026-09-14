@@ -1,0 +1,1 @@
+* [#15713](https://github.com/rubocop/rubocop/pull/15713): Fix an infinite loop when autocorrecting `Layout/SpaceAroundKeyword` together with `Layout/SpaceBeforeBlockBraces` with `EnforcedStyle: no_space` for a keyword followed by a brace block. ([@Starlexxx][])
