@@ -150,7 +150,8 @@ RSpec.describe 'RuboCop::CLI --report-unused-todo-entries', :isolated_environmen
   context 'when matching files are below a symlink directory' do
     before do
       create_file('external/offending.rb', File.read('offending.rb'))
-      create_link('spec/link', '../external')
+      # Use an absolute target so Windows can identify a directory symlink.
+      create_link('spec/link', File.expand_path('external'))
       create_file('.rubocop_todo.yml', <<~YAML)
         Style/ClassVars:
           Exclude:
