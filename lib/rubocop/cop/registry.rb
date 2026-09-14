@@ -43,7 +43,7 @@ module RuboCop
 
       def self.qualified_cop?(name)
         badge = Badge.parse(name)
-        global.qualify_badge(badge).first == badge
+        global.qualify_badge(badge).include?(badge)
       end
 
       attr_reader :options, :warnings
