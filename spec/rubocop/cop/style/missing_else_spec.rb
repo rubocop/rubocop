@@ -734,4 +734,50 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
 
     it_behaves_like 'pattern matching'
   end
+
+  context 'Style/GuardClause enabled' do
+    let(:config) do
+      RuboCop::Config.new('Style/MissingElse' => {
+                            'Enabled' => true,
+                            'EnforcedStyle' => 'if',
+                            'SupportedStyles' => %w[if case both]
+                          },
+                          'Style/EmptyElse' => {
+                            'Enabled' => true,
+                            'EnforcedStyle' => 'empty',
+                            'SupportedStyles' => %w[empty nil both]
+                          },
+                          'Style/GuardClause' => { 'Enabled' => true },
+                          'Style/UnlessElse' => { 'Enabled' => false })
+    end
+
+    context 'given an if-statement whose branch is a guard clause' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          if a; raise 'boom'; end
+        RUBY
+      end
+    end
+
+    context 'given an unless-statement whose branch is a guard clause' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          unless a; return foo; end
+        RUBY
+      end
+    end
+
+    context 'given an if-statement whose branch is not a guard clause' do
+      it 'registers an offense and autocorrects' do
+        expect_offense(<<~RUBY)
+          if a; foo; end
+          ^^^^^^^^^^^^^^ `if` condition requires an `else`-clause with `nil` in it.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if a; foo; else; nil; end
+        RUBY
+      end
+    end
+  end
 end

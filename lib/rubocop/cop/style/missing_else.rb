@@ -125,11 +125,17 @@ module RuboCop
         private
 
         def check(node)
-          return if node.else?
+          return if node.else? || guard_clause_cop_conflict?(node)
 
           add_offense(node, message: format(message_template, type: node.type)) do |corrector|
             autocorrect(corrector, node)
           end
+        end
+
+        def guard_clause_cop_conflict?(node)
+          return false unless node.if_type? && @config.cop_enabled?('Style/GuardClause')
+
+          [node.if_branch, node.else_branch].compact.any?(&:guard_clause?)
         end
 
         def message_template
