@@ -247,7 +247,7 @@ module RuboCop
 
         def can_be_made_endless?(node)
           return false unless node.body
-          return false if node.body.type?(:begin, :kwbegin, :rescue, :ensure)
+          return false if node.body.type?(:begin, :kwbegin, :rescue, :ensure, :masgn)
 
           !ends_with_omitted_hash_value?(node.body)
         end
