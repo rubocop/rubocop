@@ -4250,6 +4250,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/SpaceAroundKeyword` and ' \
+     '`Layout/SpaceBeforeBlockBraces` with `EnforcedStyle: no_space` for a `super` with a block' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def each
+        super {|x| yield x.foo }
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceBeforeBlockBraces:
+        EnforcedStyle: no_space
+    YAML
+
+    status = cli.run(
+      ['--autocorrect', '--only', 'Layout/SpaceAroundKeyword,Layout/SpaceBeforeBlockBraces']
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      def each
+        super{|x| yield x.foo }
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/IndentationConsistency` and `Layout/IndentationWidth`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/IndentationConsistency:

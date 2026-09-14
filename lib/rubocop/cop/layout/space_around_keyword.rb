@@ -209,6 +209,7 @@ module RuboCop
           end
 
           return unless space_after_missing?(range)
+          return if block_brace_with_no_space_style?(node, range)
 
           add_offense(range, message: format(MSG_AFTER, range: range.source)) do |corrector|
             corrector.insert_after(range, ' ')
@@ -231,6 +232,15 @@ module RuboCop
           return false if accept_namespace_operator?(range) && namespace_operator?(range, pos)
 
           !/[\s;,#\\)}\].]/.match?(char)
+        end
+
+        def block_brace_with_no_space_style?(node, range)
+          return false unless (parent = node.parent)
+          return false unless parent.any_block_type? && parent.loc.begin&.begin_pos == range.end_pos
+
+          space_before_block_braces_config = config.for_cop('Layout/SpaceBeforeBlockBraces')
+          space_before_block_braces_config.fetch('Enabled', true) &&
+            space_before_block_braces_config['EnforcedStyle'] == 'no_space'
         end
 
         def accepted_opening_delimiter?(range, char)
