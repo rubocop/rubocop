@@ -380,6 +380,27 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for a multiple assignment body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            foo, bar = 1, 2
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects a single assignment body' do
+        expect_offense(<<~RUBY)
+          def my_method
+          ^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            foo = 1
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method = foo = 1
+        RUBY
+      end
+
       it 'does not register an offense when heredoc is used only in regular method definition' do
         expect_no_offenses(<<~RUBY)
           def my_method
@@ -700,6 +721,14 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
 
         expect_correction(<<~RUBY)
           def my_method(a:) = foo(1, a:)
+        RUBY
+      end
+
+      it 'does not register an offense for a multiple assignment body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            foo, bar = 1, 2
+          end
         RUBY
       end
 
