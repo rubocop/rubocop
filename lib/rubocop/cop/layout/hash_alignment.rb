@@ -282,6 +282,7 @@ module RuboCop
         def check_delta(delta, node:, alignment:)
           offenses_by[alignment.class] ||= []
           return if good_alignment? delta
+          return if key_out_of_line?(delta[:key] || 0, node.source_range)
 
           column_deltas[alignment.class][node] = delta
           offenses_by[alignment.class].push(node)
@@ -325,16 +326,12 @@ module RuboCop
                               node.loc.operator)
           else
             delta_value = delta[:key] || 0
-            correct_no_value(corrector, delta_value, node.source_range)
+            adjust(corrector, delta_value, node.source_range)
           end
         end
 
-        def correct_no_value(corrector, key_delta, key)
-          adjust(corrector, clamped_key_delta(key_delta, key), key)
-        end
-
-        def clamped_key_delta(key_delta, key)
-          [key_delta, -key.column].max
+        def key_out_of_line?(key_delta, key)
+          key_delta < -key.column
         end
 
         def correct_key_value(corrector, delta, key, value, separator)
@@ -345,7 +342,7 @@ module RuboCop
           value_delta     = delta[:value]     || 0
           key_delta       = delta[:key]       || 0
 
-          adjust(corrector, clamped_key_delta(key_delta, key), key)
+          adjust(corrector, key_delta, key)
           adjust(corrector, separator_delta, separator)
           adjust(corrector, value_delta, value)
         end
