@@ -1,0 +1,1 @@
+* [#15718](https://github.com/rubocop/rubocop/pull/15718): Fix an incorrect autocorrect for `Style/Lambda` when a lambda literal has an argument whose default value needs parentheses between pipes. ([@viralpraxis][])
