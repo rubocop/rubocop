@@ -90,7 +90,7 @@ module RuboCop
         # `;`; joining everything with `,` would turn them into extra parameters
         # and change the lambda's arity.
         regular, shadow = arguments.children.partition { |arg| !arg.shadowarg_type? }
-        arg_string = regular.map(&:source).join(', ')
+        arg_string = regular.map { |arg| argument_source(arg) }.join(', ')
         arg_string += "; #{shadow.map(&:source).join(', ')}" unless shadow.empty?
         arg_string
       end
@@ -135,6 +135,23 @@ module RuboCop
         return false if parent.parenthesized_call?
 
         current_node.sibling_index > 1
+      end
+
+      def argument_source(argument)
+        return argument.source unless argument.type?(:optarg, :kwoptarg)
+        return argument.source unless operator_expression?(argument.default_value)
+
+        default_value = argument.default_value
+        name = argument.source_range.begin.join(default_value.source_range.begin).source
+
+        "#{name}(#{default_value.source})"
+      end
+
+      def operator_expression?(node)
+        return true if node.type?(:range, :if, :and, :or)
+        return false unless node.call_type?
+
+        node.operator_method? && !node.method?(:[])
       end
 
       def separating_space?
