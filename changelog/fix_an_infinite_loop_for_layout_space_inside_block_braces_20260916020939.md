@@ -1,0 +1,1 @@
+* [#15719](https://github.com/rubocop/rubocop/pull/15719): Fix an infinite loop for `Layout/SpaceInsideBlockBraces` when using `EnforcedStyle: no_space` and a multiline block's closing brace is not preceded by a space. ([@viralpraxis][])
