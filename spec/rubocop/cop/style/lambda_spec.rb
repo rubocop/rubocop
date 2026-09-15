@@ -24,6 +24,153 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
         end
       end
 
+      context 'with a default value that needs parentheses between pipes' do
+        it 'registers an offense and corrects a range default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = ..y) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (..y)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects an endless range default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = y..) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (y..)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects an exclusive range default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = y...z) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (y...z)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects a binary operator default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = y + z) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (y + z)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects a unary operator default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = -y) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (-y)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects a negated default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = !y) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (!y)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects a ternary default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = y ? z : w) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (y ? z : w)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects an `&&` default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = y && z) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (y && z)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects an `||` default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = y || z) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (y || z)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects a keyword argument default' do
+          expect_offense(<<~RUBY)
+            f = ->(x: ..y) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x: (..y)| x }
+          RUBY
+        end
+      end
+
+      context 'with a default value that does not need parentheses' do
+        it 'registers an offense and corrects an index default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = y[1]) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = y[1]| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects an already parenthesized default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = (..y)) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = (..y)| x }
+          RUBY
+        end
+
+        it 'registers an offense and corrects a literal default' do
+          expect_offense(<<~RUBY)
+            f = ->(x = 1) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x = 1| x }
+          RUBY
+        end
+      end
+
       context 'with block-local (shadow) arguments' do
         it 'preserves the shadow argument separator' do
           expect_offense(<<~RUBY)
