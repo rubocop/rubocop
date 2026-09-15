@@ -1854,4 +1854,51 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       end
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/HashAlignment' => default_cop_config.merge(cop_config),
+        'Layout/ArgumentAlignment' => argument_alignment_config,
+        'Layout/IndentationStyle' => { 'Enabled' => true, 'EnforcedStyle' => 'tabs' }
+      )
+    end
+
+    it 'registers an offense but does not correct a tab-indented key needing an insertion' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      h = { foo: 1,
+      \t\t\tbar: 2 }
+         ^^^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not correct a space-indented key needing an insertion' do
+      expect_offense(<<~RUBY)
+        h = { foo: 1,
+          bar: 2 }
+          ^^^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense and corrects an over-indented tab-only key' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      h = {
+      \tfoo: 1,
+      \t\t\tbar: 2
+         ^^^^^^ Align the keys of a hash literal if they span more than one line.
+      }
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      h = {
+      \tfoo: 1,
+      \tbar: 2
+      }
+      RUBY
+    end
+  end
 end
