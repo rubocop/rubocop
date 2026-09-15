@@ -21,6 +21,62 @@ RSpec.describe RuboCop::Cop::Offense do
     expect(offense.highlighted_area.source).to eq('a')
   end
 
+  describe 'corrections' do
+    let(:corrector) do
+      RuboCop::Cop::Corrector.new(location.source_buffer).tap { |c| c.replace(location, 'b') }
+    end
+
+    it 'has no corrections when the offense has no corrector' do
+      offense = described_class.new(:convention, location, 'message', 'CopName')
+
+      expect(offense.corrections).to be_empty
+      expect(offense.corrections).to be_frozen
+    end
+
+    it 'extracts the edits the corrector would make' do
+      offense = described_class.new(:convention, location, 'message', 'CopName',
+                                    :uncorrected, corrector)
+
+      expect(offense.corrections.map(&:to_a)).to eq([[0, 1, 'b']])
+    end
+
+    it 'reports a correction as safe unless told otherwise' do
+      offense = described_class.new(:convention, location, 'message', 'CopName',
+                                    :uncorrected, corrector)
+
+      expect(offense.correction_safe).to be(true)
+    end
+
+    it 'carries the unsafety of a cop that only `-A` would correct' do
+      offense = described_class.new(:convention, location, 'message', 'CopName',
+                                    :uncorrected, corrector, correction_safe: false)
+
+      expect(offense.correction_safe).to be(false)
+    end
+
+    # A corrector cannot be marshalled, so parallel workers would otherwise hand
+    # back offenses that have lost their edits.
+    it 'survives a marshal round trip' do
+      offense = described_class.new(:convention, location, 'message', 'CopName',
+                                    :uncorrected, corrector, correction_safe: false)
+
+      restored = Marshal.load(Marshal.dump(offense))
+
+      expect(restored.corrections.map(&:to_a)).to eq([[0, 1, 'b']])
+      expect(restored.correction_safe).to be(false)
+    end
+
+    it 'defaults to safe when loading an offense dumped without the flag' do
+      offense = described_class.new(:convention, location, 'message', 'CopName')
+      dumped = offense.marshal_dump[0..5]
+
+      restored = described_class.allocate.tap { |o| o.marshal_load(dumped) }
+
+      expect(restored.corrections).to be_empty
+      expect(restored.correction_safe).to be(true)
+    end
+  end
+
   it 'overrides #to_s' do
     expect(offense.to_s).to eq('C:  1:  1: message')
   end

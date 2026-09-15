@@ -145,6 +145,44 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
       end
     end
 
+    it 'does not include a :correction key when the offense has no correction' do
+      expect(hash).not_to have_key(:correction)
+    end
+
+    context 'for an offense that has a correction' do
+      let(:corrector) do
+        RuboCop::Cop::Corrector.new(location.source_buffer).tap do |c|
+          c.replace(location, 'replacement')
+        end
+      end
+      let(:offense) do
+        RuboCop::Cop::Offense.new(:convention, location, 'This is message', 'CopName',
+                                  :uncorrected, corrector)
+      end
+
+      it 'includes the edits autocorrection would make' do
+        expect(hash[:correction][:edits]).to eq(
+          [{ start_line: 2, start_column: 1, last_line: 3, last_column: 6,
+             begin_pos: 2, end_pos: 10, replacement: 'replacement' }]
+        )
+      end
+
+      it 'reports the correction as safe by default' do
+        expect(hash[:correction][:safe]).to be(true)
+      end
+
+      context 'when the cop is not safe to autocorrect' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(:convention, location, 'This is message', 'CopName',
+                                    :uncorrected, corrector, correction_safe: false)
+        end
+
+        it 'reports the correction as unsafe' do
+          expect(hash[:correction][:safe]).to be(false)
+        end
+      end
+    end
+
     it 'sets value of #hash_for_location for :location key' do
       location_hash = {
         start_line: 2,

@@ -38,7 +38,21 @@ module RuboCop
       # Only offenses suppressed by a directive can carry one, so keep the key out of the
       # common case rather than writing a null for every cached offense.
       hash[:justification] = offense.justification if offense.justification
+      add_corrections(hash, offense)
       hash
+    end
+
+    # A corrector cannot be serialized, so the edits it would make are cached
+    # separately; without this a cache hit would report no corrections.
+    def add_corrections(hash, offense)
+      return if offense.corrections.empty?
+
+      hash[:corrections] = offense.corrections.map do |correction|
+        { begin_pos: correction.begin_pos,
+          end_pos: correction.end_pos,
+          replacement: correction.replacement }
+      end
+      hash[:correction_safe] = offense.correction_safe
     end
 
     def message(offense)
@@ -52,7 +66,19 @@ module RuboCop
       offenses.map! do |o|
         location = location_from_source_buffer(o)
         Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'], o['status'].to_sym,
-                         justification: o['justification'])
+                         justification: o['justification'],
+                         corrections: corrections_from_cache(o),
+                         correction_safe: o.fetch('correction_safe', true))
+      end
+    end
+
+    def corrections_from_cache(offense)
+      cached = offense['corrections']
+      return [] unless cached
+
+      cached.map do |correction|
+        Cop::Offense::Correction.new(correction['begin_pos'], correction['end_pos'],
+                                     correction['replacement']).freeze
       end
     end
 
