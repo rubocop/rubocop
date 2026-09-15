@@ -215,7 +215,7 @@ module RuboCop
           check_pairs(node)
         end
 
-        attr_accessor :offenses_by, :column_deltas
+        attr_accessor :offenses_by, :column_deltas, :unalignable_styles
 
         private
 
@@ -240,6 +240,7 @@ module RuboCop
         def reset!
           self.offenses_by = {}
           self.column_deltas = Hash.new { |hash, key| hash[key] = {} }
+          self.unalignable_styles = []
         end
 
         def check_pairs(node)
@@ -265,7 +266,9 @@ module RuboCop
           kwsplat_offenses = offenses_by.delete(KeywordSplatAlignment)
           register_offenses_with_format(kwsplat_offenses, KeywordSplatAlignment)
 
-          format, offenses = offenses_by.min_by { |_, v| v.length }
+          candidates = offenses_by.reject { |style, _| unalignable_styles.include?(style) }
+          candidates = offenses_by if candidates.empty?
+          format, offenses = candidates.min_by { |_, v| v.length }
           register_offenses_with_format(offenses, format)
         end
 
@@ -283,8 +286,17 @@ module RuboCop
           offenses_by[alignment.class] ||= []
           return if good_alignment? delta
 
+          if key_out_of_line?(delta, node)
+            unalignable_styles << alignment.class
+            return
+          end
+
           column_deltas[alignment.class][node] = delta
           offenses_by[alignment.class].push(node)
+        end
+
+        def key_out_of_line?(delta, node)
+          (delta[:key] || 0) < -node.source_range.column
         end
 
         def ignore_hash_argument?(node)
@@ -325,16 +337,8 @@ module RuboCop
                               node.loc.operator)
           else
             delta_value = delta[:key] || 0
-            correct_no_value(corrector, delta_value, node.source_range)
+            adjust(corrector, delta_value, node.source_range)
           end
-        end
-
-        def correct_no_value(corrector, key_delta, key)
-          adjust(corrector, clamped_key_delta(key_delta, key), key)
-        end
-
-        def clamped_key_delta(key_delta, key)
-          [key_delta, -key.column].max
         end
 
         def correct_key_value(corrector, delta, key, value, separator)
@@ -345,7 +349,7 @@ module RuboCop
           value_delta     = delta[:value]     || 0
           key_delta       = delta[:key]       || 0
 
-          adjust(corrector, clamped_key_delta(key_delta, key), key)
+          adjust(corrector, key_delta, key)
           adjust(corrector, separator_delta, separator)
           adjust(corrector, value_delta, value)
         end
