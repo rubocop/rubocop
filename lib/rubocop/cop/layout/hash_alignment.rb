@@ -330,11 +330,13 @@ module RuboCop
         end
 
         def correct_no_value(corrector, key_delta, key)
-          adjust(corrector, clamped_key_delta(key_delta, key), key)
+          return if key_out_of_line?(key_delta, key)
+
+          adjust(corrector, key_delta, key)
         end
 
-        def clamped_key_delta(key_delta, key)
-          [key_delta, -key.column].max
+        def key_out_of_line?(key_delta, key)
+          key_delta < -key.column
         end
 
         def correct_key_value(corrector, delta, key, value, separator)
@@ -344,8 +346,9 @@ module RuboCop
           separator_delta = delta[:separator] || 0
           value_delta     = delta[:value]     || 0
           key_delta       = delta[:key]       || 0
+          return if key_out_of_line?(key_delta, key)
 
-          adjust(corrector, clamped_key_delta(key_delta, key), key)
+          adjust(corrector, key_delta, key)
           adjust(corrector, separator_delta, separator)
           adjust(corrector, value_delta, value)
         end
