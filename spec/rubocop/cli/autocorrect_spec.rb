@@ -4276,6 +4276,44 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Style/MissingElse` and `Style/GuardClause` ' \
+     'when the guard clause does not fit on a single line' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def type=(type)
+        if defined?(@type) && type != @type
+          raise ArgumentError, "incompatible type \#{type.inspect} (already set to \#{@type.inspect})"
+        end
+
+        @type = type
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Style/EmptyElse:
+        EnforcedStyle: empty
+      Style/MissingElse:
+        Enabled: true
+        EnforcedStyle: if
+    YAML
+
+    status = cli.run(
+      ['--autocorrect-all', '--only',
+       'Style/GuardClause,Style/MissingElse,Style/EmptyElse,Layout/LineLength']
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      def type=(type)
+        if defined?(@type) && type != @type
+          raise ArgumentError, "incompatible type \#{type.inspect} (already set to \#{@type.inspect})"
+        end
+
+        @type = type
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/IndentationConsistency` and `Layout/IndentationWidth`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/IndentationConsistency:

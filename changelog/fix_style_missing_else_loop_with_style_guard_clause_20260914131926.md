@@ -1,0 +1,1 @@
+* [#15712](https://github.com/rubocop/rubocop/pull/15712): Fix an infinite loop when autocorrecting `Style/MissingElse` together with `Style/GuardClause` when the conditional branch is a guard clause. ([@Starlexxx][])
