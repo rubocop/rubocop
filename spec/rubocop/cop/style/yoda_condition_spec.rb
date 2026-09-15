@@ -4,6 +4,18 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
   context 'enforce not yoda' do
     let(:cop_config) { { 'EnforcedStyle' => 'forbid_for_all_comparison_operators' } }
 
+    it 'registers an offense and corrects a nested comparison' do
+      expect_offense(<<~RUBY)
+        2 == foo(1 == bar)
+                 ^^^^^^^^ Reverse the order of the operands `1 == bar`.
+        ^^^^^^^^^^^^^^^^^^ Reverse the order of the operands `2 == foo(1 == bar)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(bar == 1) == 2
+      RUBY
+    end
+
     it 'accepts method call on receiver on left' do
       expect_no_offenses('b.value == 2')
     end
@@ -278,6 +290,18 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
 
   context 'enforce yoda' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_for_all_comparison_operators' } }
+
+    it 'registers an offense and corrects a nested comparison' do
+      expect_offense(<<~RUBY)
+        foo(bar == 1) == 2
+            ^^^^^^^^ Reverse the order of the operands `bar == 1`.
+        ^^^^^^^^^^^^^^^^^^ Reverse the order of the operands `foo(bar == 1) == 2`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        2 == foo(1 == bar)
+      RUBY
+    end
 
     it 'accepts method call on receiver on right' do
       expect_no_offenses('2 == b.value')
