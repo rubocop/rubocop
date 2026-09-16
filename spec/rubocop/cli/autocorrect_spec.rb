@@ -4865,4 +4865,15 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       expect(File.binread('example.rb')).to start_with('# frozen_string_literal: true')
     end
   end
+
+  if RUBY_ENGINE == 'ruby' && !RuboCop::Platform.windows?
+    it 'preserves the file permissions when autocorrecting' do
+      create_file('example.rb', 'do_something( 1 )')
+      File.chmod(0o755, 'example.rb')
+
+      expect(cli.run(['--autocorrect', '--only', 'Layout/SpaceInsideParens'])).to eq(0)
+      expect(File.read('example.rb')).to eq("do_something(1)\n")
+      expect(File.stat('example.rb').mode & 0o777).to eq(0o755)
+    end
+  end
 end

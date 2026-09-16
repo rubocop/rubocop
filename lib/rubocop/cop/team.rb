@@ -178,7 +178,7 @@ module RuboCop
         elsif defer_corrections
           @updated_source = new_source
         else
-          File.write(processed_source.file_path, new_source)
+          RuboCop::Util.replace_file_contents(processed_source.file_path, new_source)
         end
       end
 

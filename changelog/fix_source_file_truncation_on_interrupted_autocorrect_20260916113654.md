@@ -1,0 +1,1 @@
+* [#15720](https://github.com/rubocop/rubocop/issues/15720): Fix `rubocop -a` leaving the file empty when interrupted while writing the corrected source, by writing to a temporary file in the same directory and renaming it over the original. ([@koic][])
