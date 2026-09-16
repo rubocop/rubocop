@@ -339,8 +339,8 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           let(:third_fragment) { '"third"' }
 
           it 'applies all corrections with a single write' do
-            allow(File).to receive(:write).and_call_original
-            expect(File).to receive(:write)
+            allow(RuboCop::Util).to receive(:replace_file_contents).and_call_original
+            expect(RuboCop::Util).to receive(:replace_file_contents)
               .with(a_string_matching(/example\.rb\z/), anything)
               .once
               .and_call_original

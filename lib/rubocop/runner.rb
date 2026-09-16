@@ -446,7 +446,7 @@ module RuboCop
       if @options[:diff]
         record_diff(file, original_source, corrected_source)
       elsif corrected_source
-        File.write(file, corrected_source)
+        Util.replace_file_contents(file, corrected_source)
       end
     end
 
