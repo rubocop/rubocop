@@ -303,6 +303,26 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       expect_no_offenses('each {puts}')
     end
 
+    it 'accepts a multiline block whose closing brace follows the body' do
+      expect_no_offenses(<<~RUBY)
+        each { |x|
+         x}
+      RUBY
+    end
+
+    it 'registers an offense and corrects a multiline block with a space before the closing brace' do
+      expect_offense(<<~RUBY)
+        each { |x|
+         x }
+          ^ Space inside } detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        each { |x|
+         x}
+      RUBY
+    end
+
     it 'registers an offense and corrects left brace with inner space' do
       expect_offense(<<~RUBY)
         each { puts}
