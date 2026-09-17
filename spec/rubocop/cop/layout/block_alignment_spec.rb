@@ -1209,4 +1209,29 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      merged = RuboCop::ConfigLoader.default_configuration['Layout/BlockAlignment'].merge(cop_config)
+      RuboCop::Config.new(
+        'Layout/BlockAlignment' => merged,
+        'Layout/IndentationStyle' => { 'Enabled' => true, 'EnforcedStyle' => 'tabs' }
+      )
+    end
+
+    it 'registers an offense and corrects a misaligned block end with tabs' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do |v|
+      \t\tv
+      end
+      ^^^ `end` at 3, 0 is not aligned with `foo do |v|` at 1, 1.
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do |v|
+      \t\tv
+      \tend
+      RUBY
+    end
+  end
 end

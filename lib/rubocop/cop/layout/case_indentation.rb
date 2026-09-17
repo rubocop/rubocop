@@ -176,8 +176,11 @@ module RuboCop
             detect_incorrect_style(when_node)
 
             whitespace = whitespace_range(when_node)
+            replacement = replacement(when_node)
+            next unless replacement && whitespace.source.strip.empty?
+            next if whitespace.source == replacement
 
-            corrector.replace(whitespace, replacement(when_node)) if whitespace.source.strip.empty?
+            corrector.replace(whitespace, replacement)
           end
         end
 
@@ -210,10 +213,20 @@ module RuboCop
           case_node = node.each_ancestor(:case, :case_match).first
           base_type = cop_config[style_parameter_name] == 'end' ? :end : :case
 
-          column = base_column(case_node, base_type)
-          column += indentation_width
+          if using_tabs?
+            tab_replacement(case_node, base_type)
+          else
+            ' ' * (base_column(case_node, base_type) + indentation_width)
+          end
+        end
 
-          ' ' * column
+        def tab_replacement(case_node, base_type)
+          base_loc = base_type == :end ? case_node.loc.end : case_node.loc.keyword
+          return unless begins_its_line?(base_loc)
+
+          indent_steps = indent_one_step? ? 1 : 0
+
+          "#{base_loc.source_line[/\A\s*/]}#{"\t" * indent_steps}"
         end
       end
     end

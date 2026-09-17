@@ -861,4 +861,32 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
       expect_no_corrections
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:cop_config) { {} }
+    let(:config) do
+      merged = RuboCop::ConfigLoader.default_configuration['Layout/CaseIndentation'].merge(cop_config)
+      RuboCop::Config.new(
+        'Layout/CaseIndentation' => merged,
+        'Layout/IndentationStyle' => { 'Enabled' => true, 'EnforcedStyle' => 'tabs' }
+      )
+    end
+
+    it 'registers an offense and corrects a misaligned `when` using tabs' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tcase a
+      when b
+      ^^^^ Indent `when` as deep as `case`.
+      \t\tc
+      \tend
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \tcase a
+      \twhen b
+      \t\tc
+      \tend
+      RUBY
+    end
+  end
 end
