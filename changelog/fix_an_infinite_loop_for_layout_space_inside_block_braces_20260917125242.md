@@ -1,0 +1,1 @@
+* [#15722](https://github.com/rubocop/rubocop/pull/15722): Fix false positives in `Layout/SpaceInsideBlockBraces` with `EnforcedStyle: no_space` when a multiline block without block parameters has a line break after the opening brace. ([@viralpraxis][])
