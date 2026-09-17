@@ -372,6 +372,7 @@ module RuboCop
         # rubocop:disable-next Metrics/CyclomaticComplexity -- inlined special_method checks to avoid double evaluation
         def proper_block_style?(node)
           return true if require_do_end?(node)
+          return true if collection_of_for_loop?(node)
 
           method_name = node.method_name
           return true if allowed_method?(method_name) || matches_allowed_pattern?(method_name)
@@ -396,6 +397,10 @@ module RuboCop
           return false unless body.rescue_type?
 
           !modifier_rescue?(body)
+        end
+
+        def collection_of_for_loop?(node)
+          node.parent&.for_type? && node.parent.collection == node
         end
 
         def modifier_rescue?(rescue_node)
