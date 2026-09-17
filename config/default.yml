@@ -5161,7 +5161,7 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
-  VersionChanged: '1.88'
+  VersionChanged: '<<next>>'
   SafeAutoCorrect: false
   EnforcedStyle: literals
   SupportedStyles:
@@ -5171,8 +5171,10 @@ Style/MutableConstant:
     # with an exhaustive list of all methods that will produce frozen objects so
     # there is a decent chance of getting some false positives. Luckily, there is
     # no harm in freezing an already frozen object.
+    # unfrozen_literals: forbid `.freeze` on literals assigned to constants
     - literals
     - strict
+    - unfrozen_literals
   # When `true`, recursively check and freeze mutable literals nested inside
   # arrays and hashes (e.g. `[{a: []}]` becomes `[{a: [].freeze}.freeze].freeze`).
   Recursive: false

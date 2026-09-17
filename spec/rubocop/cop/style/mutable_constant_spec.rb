@@ -684,6 +684,99 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     it_behaves_like 'string literal'
   end
 
+  context 'EnforcedStyle: unfrozen_literals' do
+    let(:cop_config) { { 'EnforcedStyle' => 'unfrozen_literals' } }
+
+    shared_examples 'frozen literals' do |o|
+      it "registers an offense for #{o}.freeze assigned to a constant and removes .freeze" do
+        expect_offense(<<~RUBY, o: o)
+          CONST = %{o}.freeze
+                  ^{o}^^^^^^^ Do not freeze literals assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = #{o}
+        RUBY
+      end
+
+      it "registers an offense for #{o}.freeze ||= to a constant and removes .freeze" do
+        expect_offense(<<~RUBY, o: o)
+          CONST ||= %{o}.freeze
+                    ^{o}^^^^^^^ Do not freeze literals assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST ||= #{o}
+        RUBY
+      end
+    end
+
+    it_behaves_like 'frozen literals', '[1, 2, 3]'
+    it_behaves_like 'frozen literals', '%w(a b c)'
+    it_behaves_like 'frozen literals', '{ a: 1, b: 2 }'
+    it_behaves_like 'frozen literals', "'str'"
+    it_behaves_like 'frozen literals', '"top#{1 + 2}"'
+
+    it_behaves_like 'immutable objects', '[1, 2, 3]'
+    it_behaves_like 'immutable objects', '{ a: 1, b: 2 }'
+    it_behaves_like 'immutable objects', "'str'"
+    it_behaves_like 'immutable objects', 'Something.new'
+    it_behaves_like 'immutable objects', 'Something.new.freeze'
+    it_behaves_like 'immutable objects', 'OTHER_CONST.freeze'
+    it_behaves_like 'immutable objects', '(FOO + BAR).freeze'
+    it_behaves_like 'immutable objects', '1.freeze'
+
+    it 'registers an offense for a frozen heredoc' do
+      expect_offense(<<~RUBY)
+        CONST = <<~HERE.freeze
+                ^^^^^^^^^^^^^^ Do not freeze literals assigned to constants.
+          foo
+        HERE
+      RUBY
+
+      expect_correction(<<~RUBY)
+        CONST = <<~HERE
+          foo
+        HERE
+      RUBY
+    end
+
+    it 'does not descend into nested frozen literals by default' do
+      expect_no_offenses(<<~RUBY)
+        CONST = [{ a: [].freeze }]
+      RUBY
+    end
+
+    context 'with Recursive: true' do
+      let(:cop_config) { { 'EnforcedStyle' => 'unfrozen_literals', 'Recursive' => true } }
+
+      it 'registers an offense for every nested frozen literal' do
+        expect_offense(<<~RUBY)
+          CONST = [{ a: [].freeze, b: 'foo'.freeze }.freeze].freeze
+                                      ^^^^^^^^^^^^ Do not freeze literals assigned to constants.
+                        ^^^^^^^^^ Do not freeze literals assigned to constants.
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not freeze literals assigned to constants.
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not freeze literals assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = [{ a: [], b: 'foo' }]
+        RUBY
+      end
+
+      it 'registers an offense for a frozen literal nested in an unfrozen one' do
+        expect_offense(<<~RUBY)
+          CONST = { a: [1].freeze }
+                       ^^^^^^^^^^ Do not freeze literals assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = { a: [1] }
+        RUBY
+      end
+    end
+  end
+
   context 'with Recursive: false (default)' do
     let(:cop_config) { { 'EnforcedStyle' => 'literals' } }
 
