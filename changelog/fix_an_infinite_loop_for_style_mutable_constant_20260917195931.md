@@ -1,0 +1,1 @@
+* [#15723](https://github.com/rubocop/rubocop/pull/15723): Fix an infinite loop for `Style/MutableConstant` when a constant is assigned a method call with arguments and without parentheses. ([@viralpraxis][])

@@ -566,6 +566,41 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
     end
 
+    context 'when assigning an unparenthesized method call with arguments' do
+      it 'registers an offense and corrects a call with a receiver with parens and freeze' do
+        expect_offense(<<~RUBY)
+          CONST = foo.bar baz
+                  ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = (foo.bar baz).freeze
+        RUBY
+      end
+
+      it 'registers an offense and corrects a parenthesized call with a receiver by appending freeze' do
+        expect_offense(<<~RUBY)
+          CONST = foo.bar(baz)
+                  ^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = foo.bar(baz).freeze
+        RUBY
+      end
+
+      it 'registers an offense and corrects a safe navigation call with parens and freeze' do
+        expect_offense(<<~RUBY)
+          CONST = foo&.bar baz
+                  ^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = (foo&.bar baz).freeze
+        RUBY
+      end
+    end
+
     context 'methods and operators that produce frozen objects' do
       it 'accepts assigning to an environment variable with a fallback' do
         expect_no_offenses(<<~RUBY)
