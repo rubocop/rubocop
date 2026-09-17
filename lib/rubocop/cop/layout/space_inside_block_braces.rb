@@ -198,6 +198,8 @@ module RuboCop
             end
           else
             brace_with_space = range_with_surrounding_space(left_brace, side: :right)
+            return if brace_with_space.source.match?(/\R/)
+
             space(brace_with_space.begin_pos + 1, brace_with_space.end_pos,
                   'Space inside { detected.')
           end
