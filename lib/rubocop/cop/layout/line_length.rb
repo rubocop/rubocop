@@ -323,7 +323,16 @@ module RuboCop
 
         def breakable_dstr_begin_position(node)
           source_range = node.source_range
-          source_range.begin_pos if source_range.column < max && source_range.last_column >= max
+          return unless source_range.column < max && source_range.last_column >= max
+          return if opens_string?(node)
+
+          source_range.begin_pos
+        end
+
+        def opens_string?(begin_node)
+          quote = begin_node.parent.loc.begin
+
+          quote && quote.end_pos == begin_node.source_range.begin_pos
         end
 
         def breakable_range_by_line_index

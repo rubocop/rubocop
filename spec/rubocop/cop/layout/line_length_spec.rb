@@ -1206,6 +1206,17 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               end
             end
 
+            context 'when the string starts with the interpolation' do
+              it 'registers an offense but does not correct' do
+                expect_offense(<<~'RUBY')
+                  x = "#{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} bb"
+                                                          ^^^^^^^^^^ Line is too long. [50/40]
+                RUBY
+
+                expect_no_corrections
+              end
+            end
+
             context 'with multiple interpolations' do
               it 'breaks the string where appropriate' do
                 expect_offense(<<~'RUBY')

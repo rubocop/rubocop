@@ -5184,6 +5184,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/LineLength` with `SplitStrings: true` and ' \
+     '`Layout/LineEndStringConcatenationIndentation` when a string starts with an interpolation' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 40
+        SplitStrings: true
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      foo(Regexp.new("^#{aaaaaaaaaaaaaaaaaaaaaaaaaaaa}\s*$"))
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only
+                        Layout/LineLength,Layout/LineEndStringConcatenationIndentation])
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      foo(Regexp.new("^" \
+                     "#{aaaaaaaaaaaaaaaaaaaaaaaaaaaa}\s*$"))
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Style/IfUnlessModifier` and `Layout/EndAlignment`, `Layout/IndentationWidth`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/LineLength:
