@@ -359,6 +359,39 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     end
   end
 
+  it 'registers an offense for a void heredoc and removes its body along with it' do
+    expect_offense(<<~RUBY)
+      <<~CSS
+      ^^^^^^ Literal `<<~CSS` used in void context.
+        /* comment */
+      CSS
+      top
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      top
+    RUBY
+  end
+
+  it 'registers an offense for a void heredoc assigned nowhere in a method body and removes it' do
+    expect_offense(<<~RUBY)
+      def foo
+        <<-CSS
+        ^^^^^^ Literal `<<-CSS` used in void context.
+        /* comment */
+        CSS
+        1
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        1
+      end
+    RUBY
+  end
+
   it 'registers an offense for void `self` if not on last line' do
     expect_offense(<<~RUBY)
       self; top
