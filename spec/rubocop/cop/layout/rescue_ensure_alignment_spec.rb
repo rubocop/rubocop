@@ -1343,4 +1343,71 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      RuboCop::Config.new('Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs' })
+    end
+
+    it 'registers an offense and corrects `rescue` indented with spaces' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tbegin
+      \t\tfoo
+        rescue
+        ^^^^^^ `rescue` at 3, 2 is not aligned with `begin` at 1, 1.
+      \t\tbar
+      \tend
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \tbegin
+      \t\tfoo
+      \trescue
+      \t\tbar
+      \tend
+      RUBY
+    end
+
+    it 'registers an offense and corrects `ensure` indented with too many tabs' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tdef foo
+      \t\tbar
+      \t\tensure
+        ^^^^^^ `ensure` at 3, 2 is not aligned with `def foo` at 1, 1.
+      \t\tbaz
+      \tend
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \tdef foo
+      \t\tbar
+      \tensure
+      \t\tbaz
+      \tend
+      RUBY
+    end
+
+    it 'does not register an offense when `rescue` is aligned with tabs' do
+      expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+      \tbegin
+      \t\tfoo
+      \trescue
+      \t\tbar
+      \tend
+      RUBY
+    end
+
+    it 'registers an offense but does not correct when the alignment target does not start its line' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tx = [begin
+      \t\tfoo
+        rescue
+        ^^^^^^ `rescue` at 3, 2 is not aligned with `begin` at 1, 6.
+      \t\tbar
+      \tend]
+      RUBY
+
+      expect_no_corrections
+    end
+  end
 end
