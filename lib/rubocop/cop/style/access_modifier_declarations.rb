@@ -187,9 +187,16 @@ module RuboCop
         def allowed?(node)
           !node.access_modifier? ||
             node.parent&.type?(:pair, :any_block) ||
+            dynamic_method_list?(node) ||
             allow_modifiers_on_symbols?(node) ||
             allow_modifiers_on_attrs?(node) ||
             allow_modifiers_on_alias_method?(node)
+        end
+
+        # `private(*names)` with a list computed at runtime names no definition
+        # the modifier could be grouped with.
+        def dynamic_method_list?(node)
+          node.arguments.any?(&:splat_type?) && !access_modifier_with_symbol?(node)
         end
 
         def autocorrect(corrector, node)

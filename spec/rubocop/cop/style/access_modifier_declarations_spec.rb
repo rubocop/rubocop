@@ -566,6 +566,17 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
+      context 'when the access modifier receives a splatted local variable' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            class Test
+              names = %i[foo bar]
+              #{access_modifier}(*names)
+            end
+          RUBY
+        end
+      end
+
       %w[attr attr_reader attr_writer attr_accessor].each do |attr_method|
         context "when method is modified by inline modifier with disallowed #{attr_method}" do
           let(:cop_config) do
