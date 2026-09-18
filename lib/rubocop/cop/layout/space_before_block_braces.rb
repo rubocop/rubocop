@@ -49,8 +49,11 @@ module RuboCop
         MISSING_MSG = 'Space missing to the left of {.'
         DETECTED_MSG = 'Space detected to the left of {.'
 
+        # `Style/BlockDelimiters` decides whether to put a space before the `do`
+        # it writes by looking at the source before this cop removed the space,
+        # so the two corrections cannot be applied in the same pass.
         def self.autocorrect_incompatible_with
-          [Style::SymbolProc]
+          [Style::BlockDelimiters, Style::SymbolProc]
         end
 
         def on_block(node)

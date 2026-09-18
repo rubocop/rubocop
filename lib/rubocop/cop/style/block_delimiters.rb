@@ -177,7 +177,7 @@ module RuboCop
         BRACES_REQUIRED_MESSAGE = "Brace delimiters `{...}` required for '%<method_name>s' method."
 
         def self.autocorrect_incompatible_with
-          [Style::RedundantBegin]
+          [Layout::SpaceBeforeBlockBraces, Style::RedundantBegin]
         end
 
         def on_send(node)
