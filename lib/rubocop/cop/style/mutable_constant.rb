@@ -14,6 +14,15 @@ module RuboCop
       # option is disabled by default to preserve existing behavior; opt in to
       # get strict nested freezing.
       #
+      # The `unfrozen_literals` style inverts the check for codebases that treat
+      # the constant name itself as the immutability contract and consider
+      # `.freeze` on a literal to be noise. It registers an offense for
+      # `.freeze` called on a mutable literal assigned to a constant and
+      # removes it. Explicit freezing of non-literal values such as
+      # `Something.new.freeze` is still allowed, since that cannot be
+      # expressed any other way. This style does not overlap with
+      # `Style/RedundantFreeze`, which handles `.freeze` on immutable objects.
+      #
       # Strict mode can be used to freeze all constants, rather than
       # just literals.
       # Strict mode is considered an experimental feature. It has not been
@@ -92,6 +101,19 @@ module RuboCop
       #   # good - `Data.define` declares an immutable value type
       #   CONST = Data.define(:foo, :bar)
       #
+      # @example EnforcedStyle: unfrozen_literals
+      #   # bad
+      #   CONST = [1, 2, 3].freeze
+      #
+      #   # bad
+      #   CONST = 'str'.freeze
+      #
+      #   # good
+      #   CONST = [1, 2, 3]
+      #
+      #   # good - freezing a non-literal value is still allowed
+      #   CONST = Something.new.freeze
+      #
       # @example
       #   # Magic comment - shareable_constant_value: literal
       #
@@ -145,6 +167,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Freeze mutable objects assigned to constants.'
+        MSG_UNFROZEN_LITERALS = 'Do not freeze literals assigned to constants.'
 
         def on_casgn(node)
           if node.expression.nil? # This is only the case for `CONST += ...` or similar
@@ -160,6 +183,8 @@ module RuboCop
         private
 
         def on_assignment(value)
+          return on_unfrozen_literals_assignment(value) if style == :unfrozen_literals
+
           nodes = mutable_nodes(value) do |node|
             if style == :strict
               strict_check(node)
@@ -185,6 +210,26 @@ module RuboCop
               []
             end
           end
+        end
+
+        def on_unfrozen_literals_assignment(value)
+          frozen_literal_nodes(value).each do |node|
+            add_offense(node, message: MSG_UNFROZEN_LITERALS) do |corrector|
+              corrector.remove(node.loc.dot)
+              corrector.remove(node.loc.selector)
+            end
+          end
+        end
+
+        # Returns every `.freeze` call on a mutable literal in the assigned
+        # value. Without `Recursive`, only the value itself is inspected.
+        def frozen_literal_nodes(value)
+          frozen = explicitly_frozen_literal?(value)
+          nodes = frozen ? [value] : []
+          return nodes unless recursive?
+
+          literal = frozen ? value.receiver : value
+          nodes + literal_children(literal).flat_map { |child| frozen_literal_nodes(child) }
         end
 
         def strict_check(value)
