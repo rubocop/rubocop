@@ -866,6 +866,53 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
   end
 
+  context 'when a later key is too wide to right-align with the first key' do
+    let(:cop_config) do
+      {
+        'EnforcedHashRocketStyle' => 'separator',
+        'EnforcedColonStyle' => 'separator',
+        'EnforcedLastArgumentHashStyle' => 'always_inspect'
+      }
+    end
+
+    it 'does not register an offense for a hash rocket pair' do
+      expect_no_offenses(<<~RUBY)
+        f(
+          'short'                   => a,
+          'considerably_longer_key' => b
+        )
+      RUBY
+    end
+
+    it 'does not register an offense for a colon pair' do
+      expect_no_offenses(<<~RUBY)
+        f(
+          short: a,
+          considerably_longer_key: b
+        )
+      RUBY
+    end
+
+    it 'still corrects pairs that can be right-aligned' do
+      expect_offense(<<~RUBY)
+        f(
+          'short'                   => a,
+          'tiny'                    => b,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the separators of a hash literal if they span more than one line.
+          'considerably_longer_key' => c
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        f(
+          'short'                   => a,
+           'tiny'                   => b,
+          'considerably_longer_key' => c
+        )
+      RUBY
+    end
+  end
+
   context 'when the first pair omits its value', :ruby31 do
     let(:cop_config) { { 'EnforcedColonStyle' => 'separator' } }
 
@@ -902,19 +949,10 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
 
     it 'does not shift the key past the start of its line' do
-      expect_offense(<<~RUBY)
+      expect_no_offenses(<<~RUBY)
         f(
           a: "x",
           bbbbb:,
-          ^^^^^^ Align the separators of a hash literal if they span more than one line.
-          c: 1
-        )
-      RUBY
-
-      expect_correction(<<~RUBY)
-        f(
-          a: "x",
-        bbbbb:,
           c: 1
         )
       RUBY
@@ -1337,18 +1375,10 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
 
     it "doesn't break code by moving long keys too far left" do
       # regression test; see GH issue 2582
-      expect_offense(<<~RUBY)
+      expect_no_offenses(<<~RUBY)
         {
           sjtjo: sjtjo,
           too_ono_ilitjion_tofotono_o: too_ono_ilitjion_tofotono_o,
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the separators of a hash literal if they span more than one line.
-        }
-      RUBY
-
-      expect_correction(<<~RUBY)
-        {
-          sjtjo: sjtjo,
-        too_ono_ilitjion_tofotono_o: too_ono_ilitjion_tofotono_o,
         }
       RUBY
     end
