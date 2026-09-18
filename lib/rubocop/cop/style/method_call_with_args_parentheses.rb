@@ -242,7 +242,13 @@ module RuboCop
         extend AutoCorrector
 
         def self.autocorrect_incompatible_with
-          [Style::NestedParenthesizedCalls, Style::RescueModifier, Style::TernaryParentheses, Style::TrailingCommaInArguments]
+          [
+            Style::NestedParenthesizedCalls,
+            Style::RedundantParentheses,
+            Style::RescueModifier,
+            Style::TernaryParentheses,
+            Style::TrailingCommaInArguments
+          ]
         end
 
         def on_send(node)

@@ -5478,6 +5478,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     end
   end
 
+  it 'corrects `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: omit_parentheses` and `Style/RedundantParentheses` offenses in a logical operand' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      if foo && (bar.baz(qux))
+        do_something
+      end
+    RUBY
+
+    status = cli.run(
+      ['-A', '--only', 'Style/MethodCallWithArgsParentheses,Style/RedundantParentheses']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      if foo && (bar.baz qux)
+        do_something
+      end
+    RUBY
+  end
+
   it 'corrects `Style/MethodCallWithArgsParentheses` and `Style/TernaryParentheses` offenses for a ternary whose condition is a method call with unparenthesized arguments' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

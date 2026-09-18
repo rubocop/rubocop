@@ -1,0 +1,1 @@
+* [#15833](https://github.com/rubocop/rubocop/pull/15833): Fix an incorrect autocorrect for `Style/MethodCallWithArgsParentheses` when `Style/RedundantParentheses` removes the parentheses around a call whose own parentheses are omitted in the same pass. ([@koic][])
