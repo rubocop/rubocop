@@ -628,6 +628,59 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           do_something %r/=regexp/
         RUBY
       end
+
+      it 'does not register an offense when using a regexp starts with a newline as a method argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something %r{
+            regexp
+          }x
+        RUBY
+      end
+
+      it 'registers an offense when using a regexp starts with a newline as a parenthesized method argument' do
+        expect_offense(<<~RUBY)
+          do_something(%r{
+                       ^^^ Use `//` around regular expression.
+            regexp
+          }x)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something(/
+            regexp
+          /x)
+        RUBY
+      end
+
+      it 'registers an offense when using a regexp starts with a newline as a second method argument' do
+        expect_offense(<<~RUBY)
+          do_something foo, %r{
+                            ^^^ Use `//` around regular expression.
+            regexp
+          }x
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something foo, /
+            regexp
+          /x
+        RUBY
+      end
+
+      it 'registers an offense when using a regexp starts with a newline as an operator method argument' do
+        expect_offense(<<~RUBY)
+          foo =~ %r{
+                 ^^^ Use `//` around regular expression.
+            regexp
+          }x
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo =~ /
+            regexp
+          /x
+        RUBY
+      end
     end
 
     context 'when using `%r` regexp with `EnforcedStyle: mixed`' do

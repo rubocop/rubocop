@@ -190,10 +190,18 @@ module RuboCop
         def allowed_omit_parentheses_with_percent_r_literal?(node)
           return false unless node.parent&.call_type?
           return true if node.content.start_with?(' ', '=')
+          return true if first_argument_of_command?(node) && node.content.match?(/\A\s/)
 
           enforced_style = config.for_cop('Style/MethodCallWithArgsParentheses')['EnforcedStyle']
 
           enforced_style == 'omit_parentheses'
+        end
+
+        def first_argument_of_command?(node)
+          call = node.parent
+          return false unless call.first_argument.equal?(node)
+
+          !call.parenthesized? && !call.operator_method? && !call.setter_method?
         end
 
         def correct_delimiters(node, corrector)
