@@ -174,9 +174,8 @@ module RuboCop
           cop_config['AllowInnerSlashes']
         end
 
-        def node_body(node, include_begin_nodes: false)
-          types = include_begin_nodes ? %i[str begin] : %i[str]
-          node.each_child_node(*types).map(&:source).join
+        def node_body(node)
+          node.each_child_node(:str).map(&:source).join
         end
 
         def slash_literal?(node)
@@ -203,32 +202,16 @@ module RuboCop
         end
 
         def correct_inner_slashes(node, corrector)
-          regexp_begin = node.loc.begin.end_pos
-
-          inner_slash_indices(node).each do |index|
-            start = regexp_begin + index
-
-            corrector.replace(
-              range_between(
-                start,
-                start + inner_slash_before_correction(node).length
-              ),
-              inner_slash_after_correction(node)
-            )
-          end
-        end
-
-        def inner_slash_indices(node)
-          text    = node_body(node, include_begin_nodes: true)
           pattern = inner_slash_before_correction(node)
-          index   = -1
-          indices = []
+          replacement = inner_slash_after_correction(node)
 
-          while (index = text.index(pattern, index + 1))
-            indices << index
+          node.each_child_node(:str) do |str_node|
+            inner_slash_indices(str_node.source, pattern).each do |index|
+              start = str_node.source_range.begin_pos + index
+
+              corrector.replace(range_between(start, start + pattern.length), replacement)
+            end
           end
-
-          indices
         end
 
         def inner_slash_before_correction(node)
@@ -237,6 +220,17 @@ module RuboCop
 
         def inner_slash_after_correction(node)
           inner_slash_for(calculate_replacement(node).first)
+        end
+
+        def inner_slash_indices(text, pattern)
+          index = -1
+          indices = []
+
+          while (index = text.index(pattern, index + 1))
+            indices << index
+          end
+
+          indices
         end
 
         def inner_slash_for(opening_delimiter)

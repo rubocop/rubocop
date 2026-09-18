@@ -19,6 +19,17 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     it 'ignores the slashes that do not belong // regex' do
       expect_no_offenses('x =~ /\s{#{x[/\s+/].length}}/')
     end
+
+    it 'registers an offense and corrects a `%r` regex without escaping the slashes in interpolation' do
+      expect_offense(<<~'RUBY')
+        x =~ %r{^#{line[/^\s+/]}\s}
+             ^^^^^^^^^^^^^^^^^^^^^^ Use `//` around regular expression.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x =~ /^#{line[/^\s+/]}\s/
+      RUBY
+    end
   end
 
   describe '%r regex with other delimiters than curly braces' do
