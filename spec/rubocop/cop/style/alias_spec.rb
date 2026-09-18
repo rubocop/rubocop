@@ -188,6 +188,46 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
+    it 'does not register an offense for `alias` with a symbol that has no bareword form' do
+      expect_no_offenses(<<~RUBY)
+        alias :@type :type
+        alias :"foo bar" :baz
+      RUBY
+    end
+
+    it 'registers an offense for `alias` with a quoted symbol that has a bareword form' do
+      expect_offense(<<~RUBY)
+        alias :"ala" :bala
+              ^^^^^^^^^^^^ Use `alias ala bala` instead of `alias :"ala" :bala`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        alias ala bala
+      RUBY
+    end
+
+    it 'registers an offense for `alias_method` with a symbol that has no bareword form' do
+      expect_offense(<<~RUBY)
+        alias_method :"@type", :type
+        ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        alias :"@type" :type
+      RUBY
+    end
+
+    it 'registers an offense for `alias_method` with a quoted symbol that has a bareword form' do
+      expect_offense(<<~RUBY)
+        alias_method :"ala", :bala
+        ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        alias ala bala
+      RUBY
+    end
+
     it 'registers an offense for alias in a defs' do
       expect_offense(<<~RUBY)
         def some_obj.foo

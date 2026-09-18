@@ -60,7 +60,7 @@ module RuboCop
             add_offense(node.loc.keyword, message: MSG_ALIAS) do |corrector|
               autocorrect(corrector, node)
             end
-          elsif node.children.none? { |arg| bareword?(arg) }
+          elsif node.children.all? { |arg| !bareword?(arg) && bareword_symbol?(arg) }
             add_offense_for_args(node) { |corrector| autocorrect(corrector, node) }
           end
         end
@@ -97,7 +97,7 @@ module RuboCop
 
         def add_offense_for_args(node, &block)
           existing_args  = node.children.map(&:source).join(' ')
-          preferred_args = node.children.map { |a| a.source[1..] }.join(' ')
+          preferred_args = node.children.map { |node| bareword_for(node) }.join(' ')
           arg_ranges     = node.children.map(&:source_range)
           msg            = format(MSG_SYMBOL_ARGS, prefer: preferred_args, current: existing_args)
           add_offense(arg_ranges.reduce(&:join), message: msg, &block)
@@ -138,6 +138,15 @@ module RuboCop
           !sym_node.source.start_with?(':') || sym_node.dsym_type?
         end
 
+        def bareword_symbol?(sym_node)
+          return false unless sym_node.sym_type?
+
+          value = sym_node.value.to_s
+          return true if value.match?(/\A[A-Za-z_]\w*[?!=]?\z/)
+
+          !sym_node.source.start_with?(':"', ":'") && !value.start_with?('@', '$')
+        end
+
         def correct_alias_method_to_alias(corrector, send_node)
           new, old = *send_node.arguments
           replacement = "alias #{identifier(new)} #{identifier(old)}"
@@ -153,16 +162,20 @@ module RuboCop
         end
 
         def correct_alias_with_symbol_args(corrector, node)
-          corrector.replace(node.new_identifier, node.new_identifier.source[1..])
-          corrector.replace(node.old_identifier, node.old_identifier.source[1..])
+          corrector.replace(node.new_identifier, bareword_for(node.new_identifier))
+          corrector.replace(node.old_identifier, bareword_for(node.old_identifier))
         end
 
         def identifier(node)
-          if node.sym_type?
+          if bareword_symbol?(node)
             ":#{node.children.first}"
           else
             node.source
           end
+        end
+
+        def bareword_for(sym_node)
+          sym_node.value.to_s
         end
       end
     end
