@@ -702,6 +702,28 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
+    it 'does not register an offense for an assignment followed by one behind a comparison' do
+      expect_no_offenses(<<~RUBY)
+        transitions = self
+        if target && target != name && (target_transition = detect { |t| t.name == target })
+          transitions = transitions[index(target_transition) + 1..]
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects an assignment followed by one before a comparison' do
+      expect_offense(<<~RUBY)
+        transitions = self
+        found = target != name
+              ^ `=` is not aligned with the preceding assignment.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        transitions = self
+        found       = target != name
+      RUBY
+    end
+
     it 'registers an offense and corrects consecutive assignments that are not aligned' do
       expect_offense(<<~RUBY)
         a = 1

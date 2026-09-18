@@ -4333,6 +4333,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/ExtraSpacing` with `ForceEqualSignAlignment: true` and ' \
+     '`Layout/SpaceAroundOperators` when an assignment follows one behind a comparison' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ExtraSpacing:
+        ForceEqualSignAlignment: true
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def recently_walked?(transition)
+        transitions = self
+        if target && target != name && (target_transition = detect { |t| t.name == target })
+          transitions = transitions[index(target_transition) + 1..]
+        end
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only Layout/ExtraSpacing,Layout/SpaceAroundOperators])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      def recently_walked?(transition)
+        transitions = self
+        if target && target != name && (target_transition = detect { |t| t.name == target })
+          transitions = transitions[index(target_transition) + 1..]
+        end
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Style/MissingElse` and `Style/GuardClause` ' \
      'when the guard clause does not fit on a single line' do
     source_file = Pathname('example.rb')
