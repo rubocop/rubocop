@@ -105,6 +105,36 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'registers an offense for not having a frozen string literal comment ' \
+       'under an encoding comment that names an encoding other than UTF-8' do
+      expect_offense(<<~RUBY)
+        # encoding: BINARY
+        ^ Missing frozen string literal comment.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # encoding: BINARY
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under an Emacs-style encoding comment' do
+      expect_offense(<<~RUBY)
+        # -*- coding: binary -*-
+        ^ Missing frozen string literal comment.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # -*- coding: binary -*-
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
        'under an encoding comment separated by a newline' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
