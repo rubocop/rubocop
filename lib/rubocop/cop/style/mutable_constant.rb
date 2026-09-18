@@ -298,7 +298,13 @@ module RuboCop
         end
 
         def requires_parentheses?(node)
-          node.range_type? || (node.send_type? && node.loc.dot.nil?)
+          node.range_type? || unparenthesized_method_call?(node)
+        end
+
+        def unparenthesized_method_call?(node)
+          return false unless node.call_type?
+
+          node.loc.dot.nil? || (node.arguments.any? && !node.parenthesized?)
         end
 
         def correct_splat_expansion(corrector, expr, splat_value)
