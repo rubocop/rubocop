@@ -72,6 +72,18 @@ module RuboCop
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'
 
+        # A trailing backslash, or a trailing unicode, hex, octal, meta or control escape whose
+        # payload may be incomplete. An even run of backslashes is complete on its own.
+        # Meta and control prefixes chain (`\M-\C-x`, `\c\M-x`), so a whole chain is one escape,
+        # and a braced unicode escape may hold several space-separated codepoints.
+        ESCAPE_SEQUENCE_TAIL = /
+          (?<!\\)(?:\\\\)*
+          (
+            \\(?:(?:[MC]-|c)\\)*
+            (?:u\{[\da-f\x20]*|u[\da-f]{0,4}|x[\da-f]{0,2}|[0-7]{0,3}|[MC]-?|c)?
+          )\z
+        /xi.freeze
+
         def on_block(node)
           check_for_breakable_block(node)
         end
@@ -297,14 +309,13 @@ module RuboCop
           relevant_substr = largest_possible_string(node)
 
           if (space_pos = breakable_space_position(node, relevant_substr))
-            source_range.resize(space_pos + 1)
-          elsif (escape_pos = relevant_substr.rindex(/\\(u[\da-f]{0,4}|x[\da-f]{0,2})?\z/))
+            # A space can separate codepoints inside a braced unicode escape.
+            escape_pos = escape_sequence_start(relevant_substr[0..space_pos])
+            source_range.resize(escape_pos || (space_pos + 1))
+          elsif (escape_pos = escape_sequence_start(relevant_substr))
             source_range.resize(escape_pos)
           else
-            adjustment = max - source_range.last_column - 3
-            return if adjustment.abs > source_range.size
-
-            source_range.adjust(end_pos: adjustment)
+            breakable_string_range_at_limit(source_range)
           end
         end
 
@@ -313,6 +324,19 @@ module RuboCop
           space_pos = substr.rindex(/\s/)
           space_pos = substr[0, limit].rindex(/\s/) if space_pos && space_pos + 1 > limit
           space_pos
+        end
+
+        def escape_sequence_start(text)
+          text.match(ESCAPE_SEQUENCE_TAIL)&.begin(1)
+        end
+
+        def breakable_string_range_at_limit(source_range)
+          adjustment = max - source_range.last_column - 3
+          return if adjustment.abs > source_range.size
+
+          cut = source_range.adjust(end_pos: adjustment)
+          escape_pos = escape_sequence_start(cut.source)
+          escape_pos ? source_range.resize(escape_pos) : cut
         end
 
         def string_content_length(node)
