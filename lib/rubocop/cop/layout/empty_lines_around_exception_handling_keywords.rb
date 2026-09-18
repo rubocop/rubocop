@@ -85,8 +85,12 @@ module RuboCop
             next if line == line_of_def_or_kwbegin || last_body_and_end_on_same_line?(body)
 
             keyword = loc.source
+
             # below the keyword
-            check_line(style, line, message('after', keyword), &:empty?)
+            unless left_to_block_body_cop?(body, line)
+              check_line(style, line, message('after', keyword), &:empty?)
+            end
+
             # above the keyword
             check_line(style, line - 2, message('before', keyword), &:empty?)
           end
@@ -122,6 +126,15 @@ module RuboCop
           end
         end
 
+        def left_to_block_body_cop?(body, keyword_line)
+          return false unless body.parent.any_block_type?
+
+          cop_config = config.for_enabled_cop('Layout/EmptyLinesAroundBlockBody')
+          return false if cop_config['EnforcedStyle'] != 'empty_lines'
+
+          only_empty_lines_until_end?(body, keyword_line)
+        end
+
         def keyword_locations_in_rescue(node)
           [node.loc.else, *node.resbody_branches.map { |body| body.loc.keyword }].compact
         end
@@ -132,6 +145,15 @@ module RuboCop
             node.loc.keyword,
             *keyword_locations(rescue_body_without_ensure)
           ]
+        end
+
+        def only_empty_lines_until_end?(body, keyword_line)
+          end_line = body.parent.loc.end.line
+          next_line = (keyword_line + 1).upto(end_line).find do |line_number|
+            !processed_source.lines[line_number - 1].strip.empty?
+          end
+
+          next_line == end_line
         end
       end
     end

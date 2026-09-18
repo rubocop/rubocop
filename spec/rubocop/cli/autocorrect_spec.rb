@@ -3885,6 +3885,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/EmptyLinesAroundExceptionHandlingKeywords` and `Layout/EmptyLinesAroundBlockBody` with `EnforcedStyle: empty_lines`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundBlockBody:
+        EnforcedStyle: empty_lines
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      do_something do
+        foo
+      rescue
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only
+         Layout/EmptyLinesAroundExceptionHandlingKeywords,Layout/EmptyLinesAroundBlockBody]
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      do_something do
+
+        foo
+      rescue
+
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop error for `Style/MultilineTernaryOperator`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
