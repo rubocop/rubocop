@@ -991,6 +991,55 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo a, b(1) || c(2, d(3))')
     end
 
+    it 'accepts parens in a call assigned to a variable before the `or` keyword', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          x = bar(1) or return
+        end
+      RUBY
+    end
+
+    it 'accepts parens in a call assigned to a variable before the `and` keyword', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          x = bar(1) and baz
+        end
+      RUBY
+    end
+
+    it 'accepts parens in a call assigned to an instance variable before the `or` keyword', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          @x = bar(1) or return
+        end
+      RUBY
+    end
+
+    it 'accepts parens in a call assigned before the `or` keyword with an op-assign', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          x = 0
+          x += bar(1) or return
+        end
+      RUBY
+    end
+
+    it 'accepts parens in a call assigned with a setter before the `or` keyword', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          a.b = bar(1) or return
+        end
+      RUBY
+    end
+
+    it 'accepts parens in a call assigned with a chained assignment before the `or` keyword', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          x = y = bar(1) or return
+        end
+      RUBY
+    end
+
     it 'accepts parens in literals with unary operators as first argument' do
       expect_no_offenses('foo(-1)')
       expect_no_offenses('foo(+1)')

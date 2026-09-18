@@ -137,9 +137,13 @@ module RuboCop
             parent = node.parent&.any_block_type? ? node.parent.parent : node.parent
             return false unless parent
 
-            logical_operator?(parent) ||
-              (parent.send_type? &&
-              parent.arguments.any? { |argument| logical_operator?(argument) })
+            if logical_operator?(parent) || command_assignment_before_keyword_operator?(parent)
+              return true
+            end
+
+            parent.send_type? && parent.arguments.any? do |argument|
+              logical_operator?(argument)
+            end
           end
 
           def call_in_optional_arguments?(node)
@@ -227,6 +231,15 @@ module RuboCop
 
           def logical_operator?(node)
             node.operator_keyword? && node.logical_operator?
+          end
+
+          def command_assignment_before_keyword_operator?(node)
+            return false unless node.assignment?
+
+            node = node.parent while node.parent&.assignment?
+            return false unless (operator = node.parent)
+
+            operator.operator_keyword? && operator.semantic_operator?
           end
 
           def hash_literal?(node)
