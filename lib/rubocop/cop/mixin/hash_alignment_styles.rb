@@ -152,6 +152,17 @@ module RuboCop
           {}
         end
 
+        # Keys are right-aligned by the column their last line ends on.
+        # A key spanning several lines ends on a line other than the one it starts on,
+        # so moving its first line would never change that column and the correction
+        # would be repeated on every pass. Such pairs are left alone, and so is every pair
+        # when the first key spans several lines, since there is then no column to right-align to.
+        def deltas(first_pair, current_pair)
+          return {} if first_pair.key.multiline? || current_pair.key.multiline?
+
+          super
+        end
+
         private
 
         def key_delta(first_pair, current_pair)
