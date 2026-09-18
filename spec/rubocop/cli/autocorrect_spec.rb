@@ -5041,6 +5041,38 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/BlockAlignment` and `Layout/IndentationStyle` with tabs' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/IndentationStyle:
+        EnforcedStyle: tabs
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<-RUBY.gsub(/^    /, ''))
+    class Foo
+    \tdef bar
+    \t\tapp.files.unshift(list.reject do |file|
+    \t\t\tfile.match(exclude)
+     end)
+    \tend
+    end
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only',
+                      'Layout/BlockAlignment,Layout/IndentationStyle'])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<-RUBY.gsub(/^    /, ''))
+    class Foo
+    \tdef bar
+    \t\tapp.files.unshift(list.reject do |file|
+    \t\t\tfile.match(exclude)
+    \t\tend)
+    \tend
+    end
+    RUBY
+  end
+
   it 'does not cause infinite loop with Layout/DefEndAlignment when autocorrecting mixed tabs and spaces' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/IndentationStyle:
