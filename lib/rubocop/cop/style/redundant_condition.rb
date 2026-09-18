@@ -78,7 +78,10 @@ module RuboCop
         ].freeze
 
         def on_if(node)
-          return if node.modifier_form? || node.elsif_conditional? || !offense?(node)
+          return unless redundant_condition_offense?(node)
+          return if node.each_ancestor(:if).any? do |ancestor|
+            redundant_condition_offense?(ancestor)
+          end
 
           message = message(node)
 
@@ -88,6 +91,10 @@ module RuboCop
         end
 
         private
+
+        def redundant_condition_offense?(node)
+          !node.modifier_form? && !node.elsif_conditional? && offense?(node)
+        end
 
         def message(node)
           if redundant_condition?(node)

@@ -40,6 +40,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense for the outer condition only and corrects a redundant condition nested in an else branch assignment' do
+        expect_offense(<<~RUBY)
+          if foo.bar
+          ^^^^^^^^^^ Use double pipes `||` instead.
+            x = foo.bar
+          else
+            x = if foo.bar
+                  foo.bar
+                else
+                  baz
+                end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = foo.bar || foo.bar || baz
+        RUBY
+      end
+
       it 'registers an offense and does not autocorrect when if branch has a comment' do
         expect_offense(<<~RUBY)
           if b
