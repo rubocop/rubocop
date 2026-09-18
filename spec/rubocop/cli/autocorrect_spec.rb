@@ -5355,6 +5355,23 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     end
   end
 
+  it 'corrects `Style/MethodCallWithArgsParentheses` and `Style/TernaryParentheses` offenses for a ternary whose condition is a method call with unparenthesized arguments' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x = (a.kind_of? String) ? 1 : 2
+    RUBY
+
+    status = cli.run(
+      ['-A', '--only', 'Style/MethodCallWithArgsParentheses,Style/TernaryParentheses']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      x = a.kind_of?(String) ? 1 : 2
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 
