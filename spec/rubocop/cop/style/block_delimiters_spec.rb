@@ -11,6 +11,24 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'accepts a single-line block that is the collection of a `for` loop' do
+        expect_no_offenses(<<~RUBY)
+          for d in aa { |c| c } do
+            f
+          end
+        RUBY
+      end
+
+      it 'accepts a multi-line block that is the collection of a `for` loop' do
+        expect_no_offenses(<<~RUBY)
+          for d in aa { |c|
+            c
+          } do
+            f
+          end
+        RUBY
+      end
+
       it 'accepts a multi-line block followed by another argument' do
         expect_no_offenses(<<~RUBY)
           puts [1, 2, 3].map { |n|
@@ -568,6 +586,25 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it_behaves_like 'always accepted'
     it_behaves_like 'syntactic styles'
+
+    it 'still converts a multi-line braces block in the body of a `for` loop' do
+      expect_offense(<<~RUBY)
+        for d in x do
+          each { |y|
+               ^ Avoid using `{...}` for multi-line blocks.
+            y
+          }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for d in x do
+          each do |y|
+            y
+          end
+        end
+      RUBY
+    end
 
     it 'autocorrects do-end for single line blocks to { and }' do
       expect_offense(<<~RUBY)
