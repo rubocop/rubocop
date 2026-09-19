@@ -110,6 +110,8 @@ Key conventions:
   parses them).
 - **Cop description** — the first line of the YARD comment must be a complete
   sentence starting with a verb and ending with a period.
+- **Method definition order**: define methods in the order they are called,
+  so a new method is placed where the call flow reaches it.
 
 ## Preview: Shipping Unstable Behavior
 
