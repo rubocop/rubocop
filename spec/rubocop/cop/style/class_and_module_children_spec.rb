@@ -634,6 +634,34 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         RUBY
       end
 
+      it 'registers an offense and keeps the superclass of a one-liner child' do
+        expect_offense(<<~RUBY)
+          module A
+                 ^ Use compact module/class definition instead of nested style.
+            class C < D; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A::C < D
+          end
+        RUBY
+      end
+
+      it 'registers an offense and keeps the body of a one-liner child' do
+        expect_offense(<<~RUBY)
+          module A
+                 ^ Use compact module/class definition instead of nested style.
+            class C; x; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A::C; x
+          end
+        RUBY
+      end
+
       it 'registers an offense when one-liner class definition is 3 levels deep' do
         expect_offense(<<~RUBY)
           class A < B
