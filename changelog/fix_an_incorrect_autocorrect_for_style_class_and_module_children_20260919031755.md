@@ -1,0 +1,1 @@
+* [#15730](https://github.com/rubocop/rubocop/pull/15730): Fix an incorrect autocorrect for `Style/ClassAndModuleChildren` with `EnforcedStyle: compact` when a one-liner child class has a superclass or a body. ([@viralpraxis][])
