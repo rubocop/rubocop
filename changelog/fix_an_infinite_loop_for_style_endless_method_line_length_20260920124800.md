@@ -1,0 +1,1 @@
+* [#15738](https://github.com/rubocop/rubocop/pull/15738): Fix an infinite loop for `Style/EndlessMethod` when tab indentation or a trailing comment puts the endless method definition over `Layout/LineLength`. ([@viralpraxis][])
