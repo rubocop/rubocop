@@ -470,6 +470,36 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           RUBY
         end
 
+        it 'accepts a multiline block whose last line ends with a closing bracket' do
+          expect_no_offenses(<<~RUBY)
+            aa.each {
+              [bb]}
+          RUBY
+        end
+
+        it 'accepts a multiline block whose last line has content after a closing bracket' do
+          expect_no_offenses(<<~RUBY)
+            foo {[[
+              1
+              ]]}
+          RUBY
+        end
+
+        it 'registers an offense when a closing bracket is followed by spaces before the brace' do
+          expect_offense(<<~RUBY)
+            foo {[
+              1
+              ]  }
+               ^^ Space inside } detected.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo {[
+              1
+            ]}
+          RUBY
+        end
+
         it 'registers an offense when braces are not aligned in multiline block with bracket' do
           expect_offense(<<~RUBY)
             foo {[
