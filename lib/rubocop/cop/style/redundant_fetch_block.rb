@@ -74,7 +74,8 @@ module RuboCop
         def should_not_check?(send, body)
           (body&.const_type? && !check_for_constant?) ||
             (body&.str_type? && !check_for_string?) ||
-            rails_cache?(send.receiver)
+            rails_cache?(send.receiver) ||
+            unappendable_argument?(send)
         end
 
         # @!method rails_cache?(node)
@@ -106,6 +107,13 @@ module RuboCop
 
         def check_for_string?
           frozen_string_literals_enabled?
+        end
+
+        def unappendable_argument?(send)
+          argument = send.first_argument
+
+          argument.type?(:splat, :forwarded_restarg) ||
+            (argument.hash_type? && !argument.braces?)
         end
       end
     end

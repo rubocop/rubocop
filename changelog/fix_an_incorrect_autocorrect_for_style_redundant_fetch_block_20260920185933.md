@@ -1,0 +1,1 @@
+* [#15663](https://github.com/rubocop/rubocop/issues/15663): Fix an incorrect autocorrect for `Style/RedundantFetchBlock` when `fetch` is called with a splat, an anonymous rest argument, or keyword arguments. ([@ihamzatarar][])

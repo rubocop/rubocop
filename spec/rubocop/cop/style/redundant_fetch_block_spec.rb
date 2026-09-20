@@ -132,6 +132,57 @@ RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock, :config do
         Rails.cache.fetch(:key) { :value }
       RUBY
     end
+
+    it 'does not register an offense when using `#fetch` with a splatted argument' do
+      expect_no_offenses(<<~RUBY)
+        hash.fetch(*args) { 5 }
+      RUBY
+    end
+
+    it 'does not register an offense when using `&.fetch` with a splatted argument' do
+      expect_no_offenses(<<~RUBY)
+        hash&.fetch(*args) { 5 }
+      RUBY
+    end
+
+    it 'does not register an offense when using `#fetch` with a double splatted argument' do
+      expect_no_offenses(<<~RUBY)
+        hash.fetch(**options) { 5 }
+      RUBY
+    end
+
+    it 'does not register an offense when using `#fetch` with keyword arguments' do
+      expect_no_offenses(<<~RUBY)
+        hash.fetch(key: :value) { 5 }
+      RUBY
+    end
+
+    it 'does not register an offense when using `#fetch` with an anonymous rest argument', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def m(hash, *)
+          hash.fetch(*) { 5 }
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `#fetch` with an anonymous keyword rest argument', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def m(hash, **)
+          hash.fetch(**) { 5 }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using `#fetch` with a braced Hash argument' do
+      expect_offense(<<~RUBY)
+        hash.fetch({ key: :value }) { 5 }
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `fetch({ key: :value }, 5)` instead of `fetch({ key: :value }) { 5 }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        hash.fetch({ key: :value }, 5)
+      RUBY
+    end
   end
 
   context 'with SafeForConstants: false' do
