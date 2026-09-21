@@ -51,5 +51,54 @@ RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
         ->a,b,c { a + b + c }
       RUBY
     end
+
+    it 'registers an offense for a stabby lambda with splat and block arguments' do
+      expect_offense(<<~RUBY)
+        ->(*a, **kw, &b) { a }
+          ^^^^^^^^^^^^^^ Do not wrap stabby lambda arguments with parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ->*a, **kw, &b { a }
+      RUBY
+    end
+
+    it 'registers an offense for a stabby lambda with a plain default value' do
+      expect_offense(<<~RUBY)
+        ->(a = 1) { a }
+          ^^^^^^^ Do not wrap stabby lambda arguments with parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ->a = 1 { a }
+      RUBY
+    end
+
+    it 'registers an offense when a default value contains a hash without braces' do
+      expect_offense(<<~RUBY)
+        ->(a = foo(b: 1)) { a }
+          ^^^^^^^^^^^^^^^ Do not wrap stabby lambda arguments with parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ->a = foo(b: 1) { a }
+      RUBY
+    end
+
+    it 'does not register an offense when a default value is a hash with braces' do
+      expect_no_offenses('->(options = {}) { options }')
+    end
+
+    it 'does not register an offense when a default value contains a hash behind a method call' do
+      expect_no_offenses('->(a = {}.freeze) { a }')
+    end
+
+    it 'does not register an offense when a default value contains a `do`-`end` block' do
+      expect_no_offenses('->(a = foo do end) { a }')
+    end
+
+    it 'does not register an offense when a keyword argument default value is a hash with braces' do
+      expect_no_offenses('->(options: {}) { options }')
+    end
   end
 end

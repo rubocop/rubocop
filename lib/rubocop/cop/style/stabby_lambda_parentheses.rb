@@ -50,7 +50,15 @@ module RuboCop
         end
 
         def redundant_parentheses?(node)
-          style == :require_no_parentheses && parentheses?(node)
+          return false unless style == :require_no_parentheses && parentheses?(node)
+
+          !arguments_require_parentheses?(node.block_node.arguments)
+        end
+
+        def arguments_require_parentheses?(arguments)
+          arguments.each_descendant(:any_block, :hash).any? do |node|
+            !node.hash_type? || node.braces?
+          end
         end
 
         def message(_node)
