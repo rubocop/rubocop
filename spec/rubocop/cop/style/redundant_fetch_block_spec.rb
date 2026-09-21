@@ -132,6 +132,41 @@ RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock, :config do
         Rails.cache.fetch(:key) { :value }
       RUBY
     end
+
+    it 'does not register an offense when using `#fetch` with a splatted key' do
+      expect_no_offenses(<<~RUBY)
+        hash.fetch(*args) { 5 }
+      RUBY
+    end
+
+    it 'does not register an offense when using `&.fetch` with a splatted key' do
+      expect_no_offenses(<<~RUBY)
+        hash&.fetch(*args) { 5 }
+      RUBY
+    end
+
+    it 'does not register an offense when using `#fetch` with a keyword-splatted key' do
+      expect_no_offenses(<<~RUBY)
+        hash.fetch(**opts) { 5 }
+      RUBY
+    end
+
+    it 'does not register an offense when using `#fetch` with keyword arguments' do
+      expect_no_offenses(<<~RUBY)
+        hash.fetch(key: :value) { 5 }
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using `#fetch` with a braced Hash key' do
+      expect_offense(<<~RUBY)
+        hash.fetch({ key: :value }) { 5 }
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `fetch({ key: :value }, 5)` instead of `fetch({ key: :value }) { 5 }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        hash.fetch({ key: :value }, 5)
+      RUBY
+    end
   end
 
   context 'with SafeForConstants: false' do
