@@ -35,11 +35,31 @@ module RuboCop
         cop_name: offense.cop_name,
         status:   status || offense.status
       }
-      # Only offenses suppressed by a directive can carry one, so keep the key out of the
-      # common case rather than writing a null for every cached offense.
-      hash[:justification] = offense.justification if offense.justification
+      add_justification(hash, offense)
       add_corrections(hash, offense)
       hash
+    end
+
+    def message(offense)
+      encode_to_utf8(offense.message)
+    end
+
+    def encode_to_utf8(value)
+      string = value.to_s
+
+      if string.encoding == ::Encoding::BINARY
+        string.dup.force_encoding(::Encoding::UTF_8).scrub
+      else
+        string.encode(::Encoding::UTF_8, invalid: :replace, undef: :replace)
+      end
+    end
+
+    # Only offenses suppressed by a directive can carry one, so keep the key out of the
+    # common case rather than writing a null for every cached offense.
+    def add_justification(hash, offense)
+      return unless offense.justification
+
+      hash[:justification] = encode_to_utf8(offense.justification)
     end
 
     # A corrector cannot be serialized, so the edits it would make are cached
@@ -50,15 +70,9 @@ module RuboCop
       hash[:corrections] = offense.corrections.map do |correction|
         { begin_pos: correction.begin_pos,
           end_pos: correction.end_pos,
-          replacement: correction.replacement }
+          replacement: encode_to_utf8(correction.replacement) }
       end
       hash[:correction_safe] = offense.correction_safe
-    end
-
-    def message(offense)
-      # JSON.dump will fail if the offense message contains text which is not
-      # valid UTF-8
-      offense.message.dup.force_encoding(::Encoding::UTF_8).scrub
     end
 
     # Restore an offense object loaded from a JSON file.

@@ -48,6 +48,38 @@ RSpec.describe RuboCop::CachedData, :isolated_environment do
     expect(round_trip(offense).correction_safe).to be(false)
   end
 
+  it 'serializes a correction whose replacement is a `Symbol`' do
+    corrector = RuboCop::Cop::Corrector.new(buffer).tap { |c| c.replace(location, :$stdout) }
+    offense = RuboCop::Cop::Offense.new(:convention, location, 'message', 'CopName',
+                                        :uncorrected, corrector)
+
+    expect(round_trip(offense).corrections.map(&:to_a)).to eq([[4, 11, '$stdout']])
+  end
+
+  it 'replaces bytes a correction cannot represent as UTF-8' do
+    corrector = RuboCop::Cop::Corrector.new(buffer).tap { |c| c.replace(location, "\xAA".b) }
+    offense = RuboCop::Cop::Offense.new(:convention, location, 'message', 'CopName',
+                                        :uncorrected, corrector)
+
+    expect(round_trip(offense).corrections.map(&:to_a)).to eq([[4, 11, '�']])
+  end
+
+  it 'transcodes a correction encoded in something other than UTF-8' do
+    replacement = (+"\xAA").force_encoding(Encoding::ISO_8859_1)
+    corrector = RuboCop::Cop::Corrector.new(buffer).tap { |c| c.replace(location, replacement) }
+    offense = RuboCop::Cop::Offense.new(:convention, location, 'message', 'CopName',
+                                        :uncorrected, corrector)
+
+    expect(round_trip(offense).corrections.map(&:to_a)).to eq([[4, 11, 'ª']])
+  end
+
+  it 'replaces bytes a justification cannot represent as UTF-8' do
+    offense = RuboCop::Cop::Offense.new(:convention, location, 'message', 'CopName',
+                                        :disabled, nil, justification: "\xAA".b)
+
+    expect(round_trip(offense).justification).to eq('�')
+  end
+
   it 'restores an offense cached before corrections were stored' do
     legacy = JSON.dump(
       [{ 'severity' => 'convention',

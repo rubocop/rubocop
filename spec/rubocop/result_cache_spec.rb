@@ -373,6 +373,12 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it 'writes non UTF-8 encodable data to file with no exception' do
         expect { cache.save(offenses) }.not_to raise_error
       end
+
+      it 'reads back a binary-tagged message that holds valid UTF-8' do
+        cache.save(offenses)
+
+        expect(cache.load.map(&:message)).to eq(["unused var \uFFFD", 'unused var あ'])
+      end
     end
 
     shared_examples 'invalid cache location' do |error, message|
