@@ -107,11 +107,18 @@ module RuboCop
                                    'the same line as the last argument.'
 
         def on_send(node)
+          return if omit_parentheses_style?
+
           check_brace_layout(node)
         end
         alias on_csend on_send
 
         private
+
+        def omit_parentheses_style?
+          config.for_enabled_cop('Style/MethodCallWithArgsParentheses')['EnforcedStyle'] ==
+            'omit_parentheses'
+        end
 
         def children(node)
           node.arguments

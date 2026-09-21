@@ -1,0 +1,1 @@
+* [#15739](https://github.com/rubocop/rubocop/pull/15739): Fix an incorrect autocorrect for `Layout/MultilineMethodCallBraceLayout` producing invalid Ruby when `Style/MethodCallWithArgsParentheses` is enabled with `EnforcedStyle: omit_parentheses`, by not registering offenses for parentheses that cop removes. ([@Starlexxx][])

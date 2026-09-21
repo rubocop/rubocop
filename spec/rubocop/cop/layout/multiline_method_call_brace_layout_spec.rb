@@ -119,6 +119,24 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     end
   end
 
+  context 'when `Style/MethodCallWithArgsParentheses` is enabled with `omit_parentheses` style' do
+    let(:other_cops) do
+      {
+        'Style/MethodCallWithArgsParentheses' => {
+          'Enabled' => true, 'EnforcedStyle' => 'omit_parentheses'
+        }
+      }
+    end
+
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        foo(baz,
+          (bar if cond) # comment
+        )
+      RUBY
+    end
+  end
+
   context 'with safe navigation' do
     it 'ignores single-line calls' do
       expect_no_offenses('foo&.bar(1,2)')

@@ -346,6 +346,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Layout/MultilineMethodCallBraceLayout`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+        EnforcedStyle: omit_parentheses
+    YAML
+    source = <<~RUBY
+      foo(baz,
+        (bar if cond) # comment
+      )
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only',
+                     'Style/MethodCallWithArgsParentheses,Layout/MultilineMethodCallBraceLayout'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo baz,
+        (bar if cond) # comment
+
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
