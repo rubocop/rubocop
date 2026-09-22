@@ -334,6 +334,21 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             RUBY
           end
 
+          it 'does not register an offense when `private` names several methods' do
+            expect_no_offenses(<<~RUBY)
+              class Foo
+                def bar
+                  puts 'baz'
+                end
+
+                def baz
+                  puts 'bar'
+                end
+                private :bar, :baz
+              end
+            RUBY
+          end
+
           context 'when required for non-public methods' do
             let(:require_for_non_public_methods) { true }
 

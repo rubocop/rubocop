@@ -25,12 +25,6 @@ module RuboCop
       # via `executeCommandProvider` so it knows which commands it can invoke.
       EXECUTE_COMMANDS = %w[rubocop.formatAutocorrects rubocop.formatAutocorrectsAll].freeze
 
-      def self.handle(name, &block)
-        define_method(:"handle_#{name}", &block)
-      end
-
-      private_class_method :handle
-
       def initialize(server)
         @server = server
 
@@ -43,6 +37,29 @@ module RuboCop
 
         method(name)
       end
+
+      def handle_unsupported_method(request, method = request[:method])
+        @server.write(
+          id: request[:id],
+          error: LanguageServer::Protocol::Interface::ResponseError.new(
+            code: LanguageServer::Protocol::Constant::ErrorCodes::METHOD_NOT_FOUND,
+            message: "Unsupported Method: #{method}"
+          )
+        )
+        Logger.log("Unsupported Method: #{method}")
+      end
+
+      def handle_method_missing(request)
+        return unless request.key?(:id)
+
+        @server.write(id: request[:id], result: nil)
+      end
+
+      def self.handle(name, &block)
+        define_method(:"handle_#{name}", &block)
+      end
+
+      private_class_method :handle
 
       handle 'initialize' do |request|
         initialization_options = extract_initialization_options_from(request)
@@ -176,23 +193,6 @@ module RuboCop
 
       handle '$/setTrace' do |_request|
         # No-op, we log everything
-      end
-
-      def handle_unsupported_method(request, method = request[:method])
-        @server.write(
-          id: request[:id],
-          error: LanguageServer::Protocol::Interface::ResponseError.new(
-            code: LanguageServer::Protocol::Constant::ErrorCodes::METHOD_NOT_FOUND,
-            message: "Unsupported Method: #{method}"
-          )
-        )
-        Logger.log("Unsupported Method: #{method}")
-      end
-
-      def handle_method_missing(request)
-        return unless request.key?(:id)
-
-        @server.write(id: request[:id], result: nil)
       end
 
       private
