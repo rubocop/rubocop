@@ -511,7 +511,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         def instance_method
           'instance method'
         end
-
       end
     RUBY
   end
@@ -535,7 +534,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           end
           private def foo
           end
-
         end
       RUBY
     end
@@ -558,7 +556,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           end
           private def foo
           end
-
         end
       RUBY
     end
@@ -584,9 +581,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           def qux; end
           private def foo; end
 
-
           private def baz; end
-
         end
       RUBY
     end
@@ -609,7 +604,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           end
           private_class_method def self.do_internal_work
           end
-
         end
       RUBY
     end
@@ -648,7 +642,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           end
           def do_something
           end
-
         end
       RUBY
     end
@@ -687,7 +680,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           def foo
           end
           private :foo
-
         end
       RUBY
     end
@@ -714,7 +706,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           def initialize
           end
           attr_accessor :foo
-
         end
       RUBY
     end
@@ -893,7 +884,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           def do_something; end
 
           private
-
         end
       RUBY
     end
@@ -919,6 +909,112 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           end
         RUBY
       end
+    end
+  end
+
+  context 'when the moved element leaves blank lines behind' do
+    it 'does not leave a blank line before the closing `end`' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def bar
+            1
+          end
+
+          CONST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          CONST = 1
+          def bar
+            1
+          end
+        end
+      RUBY
+    end
+
+    it 'does not leave two consecutive blank lines mid-body' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def bar
+            1
+          end
+
+          CONST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+
+          def baz
+            2
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          CONST = 1
+          def bar
+            1
+          end
+
+          def baz
+            2
+          end
+        end
+      RUBY
+    end
+
+    it 'collapses a run of blank lines above the moved element' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def bar
+            1
+          end
+
+
+          CONST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          CONST = 1
+          def bar
+            1
+          end
+        end
+      RUBY
+    end
+
+    it 'keeps the blank line when the following line holds another element' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def bar
+            1
+          end
+
+          CONST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          def baz
+            2
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          CONST = 1
+          def bar
+            1
+          end
+
+          def baz
+            2
+          end
+        end
+      RUBY
     end
   end
 

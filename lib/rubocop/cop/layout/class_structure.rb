@@ -240,8 +240,25 @@ module RuboCop
           movable_group(node).reverse_each do |group_node|
             current_range = source_range_with_comment(group_node)
             corrector.insert_before(anchor_range, current_range.source)
-            corrector.remove(current_range)
+            corrector.remove(vacated_range(group_node, current_range))
           end
+        end
+
+        # The node's own lines, plus the blank lines above it: left behind, those blanks join
+        # whatever followed the node. A heredoc range runs past its line break already, and a
+        # following element needs the blank as its separator, so both are left alone.
+        def vacated_range(node, range)
+          return range if range.source.end_with?("\n")
+          return range unless node.right_siblings.empty? || blank_line?(range.last_line + 1)
+
+          # `begin_pos` sits on the line break above the node; the breaks running back from
+          # there are the blank lines, one per break.
+          blank_lines = buffer.source[0...range.begin_pos][/\n*\z/].length
+          range.with(begin_pos: range.begin_pos - blank_lines)
+        end
+
+        def blank_line?(line)
+          processed_source.lines[line - 1]&.strip&.empty? if line.positive?
         end
 
         # Classifies a node to match with something in the {expected_order}
