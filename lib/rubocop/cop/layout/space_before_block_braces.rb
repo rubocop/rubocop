@@ -126,7 +126,7 @@ module RuboCop
           space = range_between(space_plus_brace.begin_pos, left_brace.begin_pos)
 
           add_offense(space, message: DETECTED_MSG) do |corrector|
-            autocorrect(corrector, space)
+            corrector.replace(space.join(left_brace), left_brace.source)
             opposite_style_detected
           end
         end

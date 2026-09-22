@@ -301,6 +301,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: semantic` of `Style/BlockDelimiters` with ' \
+     '`EnforcedStyle: no_space` of `Layout/SpaceBeforeBlockBraces`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/BlockDelimiters:
+        EnforcedStyle: semantic
+      Layout/SpaceBeforeBlockBraces:
+        EnforcedStyle: no_space
+    YAML
+    source = <<~RUBY
+      mapping.each_key { |key| write_attribute(key, nil) }
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/BlockDelimiters,Layout/SpaceBeforeBlockBraces'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      mapping.each_key do |key| write_attribute(key, nil) end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: semantic` of `Style/BlockDelimiters` with `Layout/SpaceInsideBlockBraces`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/BlockDelimiters:

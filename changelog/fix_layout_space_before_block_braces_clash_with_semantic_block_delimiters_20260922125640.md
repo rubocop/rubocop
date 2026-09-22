@@ -1,0 +1,1 @@
+* [#15742](https://github.com/rubocop/rubocop/pull/15742): Fix an incorrect autocorrect for `Layout/SpaceBeforeBlockBraces` with `EnforcedStyle: no_space` producing invalid Ruby when `Style/BlockDelimiters` with `EnforcedStyle: semantic` replaces the braces in the same pass. ([@Starlexxx][])
