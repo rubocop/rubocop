@@ -591,6 +591,35 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense when a tab indent puts the endless version over `Layout/LineLength`' do
+        expect_no_offenses(<<~RUBY)
+          \tdef my_method
+          \t  'this_string_puts_the_endless_form_over_the_limit_____________'
+          \tend
+        RUBY
+      end
+
+      it 'registers an offense when a tab indent leaves the endless version within `Layout/LineLength`' do
+        expect_offense(<<~RUBY)
+          \tdef my_method
+           ^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+          \t  'this_string_keeps_the_endless_form_within_the_limit_________'
+          \tend
+        RUBY
+
+        expect_correction(<<~RUBY)
+          \tdef my_method = 'this_string_keeps_the_endless_form_within_the_limit_________'
+        RUBY
+      end
+
+      it 'does not register an offense when a trailing comment puts the endless version over `Layout/LineLength`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            'this_string_is_short'
+          end # this_trailing_comment_pushes_the_line_past_the_limit
+        RUBY
+      end
+
       it 'does not register an offense when the endless with access modifier version excess Metrics/MaxLineLength[Max]' do
         expect_no_offenses(<<~RUBY)
           private def my_method

@@ -131,6 +131,7 @@ module RuboCop
       #
       class EndlessMethod < Base
         include ConfigurableEnforcedStyle
+        include LineLengthHelp
         include EndlessMethodRewriter
         extend TargetRubyVersion
         extend AutoCorrector
@@ -259,7 +260,7 @@ module RuboCop
         def too_long_when_made_endless?(node)
           return false unless config.cop_enabled?('Layout/LineLength')
 
-          endless_replacement(node).length + node.loc.column > max_line_length
+          line_length(line_when_made_endless(node)) > max_line_length
         end
 
         def ends_with_omitted_hash_value?(body)
@@ -275,6 +276,15 @@ module RuboCop
             argument.source_range.end_pos == body.source_range.end_pos &&
               (!argument.block_pass_type? || argument.children.first.nil?)
           end
+        end
+
+        def line_when_made_endless(node)
+          keyword_element = node.loc.keyword
+          code_before = keyword_element.source_line[0...keyword_element.column]
+          end_element = node.loc.end
+          code_after = end_element.source_line[end_element.last_column..]
+
+          "#{code_before}#{endless_replacement(node)}#{code_after}"
         end
       end
     end
