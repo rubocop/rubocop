@@ -218,12 +218,16 @@ module RuboCop
             begin_pos = end_pos - (right_brace.column - column)
           end
 
-          if inner.end_with?(']')
+          if closing_bracket_on_own_line?(inner)
             end_pos -= 1
             begin_pos = end_pos - (inner_last_space_count(inner) - column)
           end
 
           space(begin_pos, end_pos, 'Space inside } detected.')
+        end
+
+        def closing_bracket_on_own_line?(inner)
+          inner[/[^\n]*\z/].match?(/\A\s*\]\z/)
         end
 
         def no_space(begin_pos, end_pos, msg)
