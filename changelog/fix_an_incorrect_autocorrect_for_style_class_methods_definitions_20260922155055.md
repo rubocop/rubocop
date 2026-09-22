@@ -1,0 +1,1 @@
+* [#15744](https://github.com/rubocop/rubocop/pull/15744): Fix an incorrect autocorrect for `Style/ClassMethodsDefinitions` when a method definition inside `class << self` is followed by other code on its last line. ([@viralpraxis][])
