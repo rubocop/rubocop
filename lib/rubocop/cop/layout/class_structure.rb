@@ -333,7 +333,19 @@ module RuboCop
 
             return "#{node_visibility(node)}_methods"
           end
+          return class_method_category(node) if node.defs_type?
+
           HUMANIZED_NODE_TYPE[node.type] || node.type
+        end
+
+        # Only `private_class_method` reaches a singleton method; a bare `private` does not.
+        # Such a call follows the definition it names, so only right siblings are searched.
+        def class_method_category(node)
+          modifier = node.right_siblings.reverse.find do |sibling|
+            class_method_visibility_modifier?(sibling, method_name: node.method_name)
+          end
+
+          modifier ? :"#{modifier.method_name}s" : HUMANIZED_NODE_TYPE[node.type]
         end
 
         def dynamic_constant?(node)
@@ -403,6 +415,11 @@ module RuboCop
 
           VISIBILITY_SCOPES.any? { |visibility| expected_order.include?("#{visibility}_#{key}") }
         end
+
+        # @!method class_method_visibility_modifier?(node, method_name:)
+        def_node_matcher :class_method_visibility_modifier?, <<~PATTERN
+          (send nil? {:private_class_method :public_class_method} <(sym %method_name) ...>)
+        PATTERN
 
         def private_constant?(node)
           return false unless node.casgn_type? && node.namespace.nil?

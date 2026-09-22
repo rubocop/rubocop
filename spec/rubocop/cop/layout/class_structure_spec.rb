@@ -691,6 +691,147 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         end
       RUBY
     end
+
+    it 'registers an offense and corrects public method after private method named in a list' do
+      expect_offense(<<~RUBY)
+        class A
+          def foo
+          end
+
+          def baz
+          end
+          private :foo, :baz
+
+          def bar
+          ^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          def bar
+          end
+          def foo
+          end
+
+          def baz
+          end
+          private :foo, :baz
+
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a method named in a list is declared after a public method' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def bar
+          end
+
+          def foo
+          end
+          private :foo, :baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects public class method after class method named by `private_class_method`' do
+      expect_offense(<<~RUBY)
+        class A
+          def self.do_internal_work
+          end
+          private_class_method :do_internal_work
+
+          def self.do_something
+          ^^^^^^^^^^^^^^^^^^^^^ `public_class_methods` is supposed to appear before `private_class_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          def self.do_something
+          end
+          def self.do_internal_work
+          end
+          private_class_method :do_internal_work
+
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects public class method after class methods named in a list' do
+      expect_offense(<<~RUBY)
+        class A
+          def self.first_internal
+          end
+
+          def self.second_internal
+          end
+          private_class_method :first_internal, :second_internal
+
+          def self.do_something
+          ^^^^^^^^^^^^^^^^^^^^^ `public_class_methods` is supposed to appear before `private_class_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          def self.do_something
+          end
+          def self.first_internal
+          end
+
+          def self.second_internal
+          end
+          private_class_method :first_internal, :second_internal
+
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the public class method precedes the named private one' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def self.do_something
+          end
+
+          def self.do_internal_work
+          end
+          private_class_method :do_internal_work
+        end
+      RUBY
+    end
+
+    it 'treats a class method named by `public_class_method` as public' do
+      expect_offense(<<~RUBY)
+        class A
+          private_class_method def self.do_internal_work
+          end
+
+          def self.do_something
+          ^^^^^^^^^^^^^^^^^^^^^ `public_class_methods` is supposed to appear before `private_class_methods`.
+          end
+          public_class_method :do_something
+        end
+      RUBY
+    end
+
+    it 'does not treat a bare `private` as reaching a singleton method' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          private
+
+          def self.still_public
+          end
+
+          def instance_method
+          end
+        end
+      RUBY
+    end
   end
 
   context 'initializer is private and comes after attribute macro' do

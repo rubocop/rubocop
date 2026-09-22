@@ -78,6 +78,12 @@ Layout/EndOfLine:
 
 Layout/ClassStructure:
   Enabled: true
+  Exclude:
+    # `handle` is a private class method that defines the request handlers, and every
+    # `handle '...' do` call in the class body needs it already defined. `ExpectedOrder`
+    # puts `private_class_methods` after the public instance methods, which would place
+    # the definition below its own call sites.
+    - 'lib/rubocop/lsp/routes.rb'
 
 Layout/RedundantLineBreak:
   Enabled: true
