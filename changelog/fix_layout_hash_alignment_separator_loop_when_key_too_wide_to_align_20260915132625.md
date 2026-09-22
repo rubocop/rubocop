@@ -1,0 +1,1 @@
+* [#15717](https://github.com/rubocop/rubocop/pull/15717): Fix an infinite loop when autocorrecting `Layout/HashAlignment` with `EnforcedHashRocketStyle: separator` together with `Layout/SpaceAroundOperators` by skipping offenses for keys that are too wide to right-align with the first key. ([@Starlexxx][])

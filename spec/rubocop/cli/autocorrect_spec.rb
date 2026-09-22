@@ -4314,6 +4314,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/HashAlignment` with `EnforcedHashRocketStyle: separator` ' \
+     'and `Layout/SpaceAroundOperators` when a key is too wide to right-align' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      request(
+        'Action'                   => a,
+        'RoleName'                 => b,
+        'AssumeRolePolicyDocument' => c
+      )
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/HashAlignment:
+        EnforcedHashRocketStyle: separator
+    YAML
+
+    status = cli.run(
+      ['--autocorrect', '--only', 'Layout/HashAlignment,Layout/SpaceAroundOperators']
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      request(
+        'Action'                   => a,
+      'RoleName'                   => b,
+        'AssumeRolePolicyDocument' => c
+      )
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/IndentationConsistency` and `Layout/IndentationWidth`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/IndentationConsistency:
