@@ -214,14 +214,17 @@ module RuboCop
         # Consecutive elements of the same category are reported only once,
         # on the first element of the group.
         def on_class(class_node)
+          out_of_order = out_of_order_elements(class_node)
+          collapsing_nodes = collapsing_nodes(out_of_order.map(&:first))
+
           # Corrections are registered in reverse source order because an insertion at
           # a given position lands before any insertion already made there;
           # this keeps the source order of nodes moved before the same anchor.
-          out_of_order_elements(class_node).reverse_each do |node, category, previous|
+          out_of_order.reverse_each do |node, category, previous|
             message = format(MSG, category: category, previous: previous)
 
             add_offense(node, message: message) do |corrector|
-              autocorrect(corrector, node)
+              autocorrect(corrector, node, collapsing_nodes)
             end
           end
         end
@@ -244,22 +247,87 @@ module RuboCop
           out_of_order
         end
 
+        # The moved elements whose removal takes the blank lines above them. An offense disabled
+        # by a directive moves nothing. An element that is another's insertion anchor keeps its
+        # blanks, as the insertion would otherwise land inside the removal.
+        def collapsing_nodes(nodes)
+          moving = nodes.select do |node|
+            enabled_lines?(node.source_range) && moved_group(node).any?
+          end
+          moved = moving.flat_map { |node| moved_group(node) }.to_set
+          anchors = moving.map { |node| insertion_anchor(node) }
+
+          moved - anchors - separators(moved)
+        end
+
         # Autocorrect by moving the node, together with the contiguous group of
         # same-category elements that follows it, to its expected position.
-        def autocorrect(corrector, node)
-          return if dynamic_constant?(node)
+        def autocorrect(corrector, node, collapsing_nodes)
+          group = moved_group(node)
+          return if group.empty?
 
-          anchor = insertion_anchor(node)
-          return unless anchor
-
-          anchor_range = source_range_with_comment(anchor)
+          anchor_range = source_range_with_comment(insertion_anchor(node))
           # Reversed for the same reason offenses are registered in reverse source order:
           # the last insertion at a position comes first.
-          movable_group(node).reverse_each do |group_node|
+          group.reverse_each do |group_node|
             current_range = source_range_with_comment(group_node)
             corrector.insert_before(anchor_range, current_range.source)
-            corrector.remove(current_range)
+            corrector.remove(vacated_range(group_node, current_range, collapsing_nodes))
           end
+        end
+
+        # The node's movable group, or none when the node itself cannot be moved.
+        def moved_group(node)
+          return [] if dynamic_constant?(node) || !insertion_anchor(node)
+
+          movable_group(node)
+        end
+
+        # The node's own lines together with the blank lines above it, which would otherwise
+        # join whatever follows.
+        def vacated_range(node, range, collapsing_nodes)
+          return range unless collapsing_nodes.include?(node)
+
+          # The range starts on the line break that ends the line above the node.
+          line = range.first_line
+          line -= 1 while buffer.source_line(line).blank?
+          range.with(begin_pos: buffer.line_range(line).end_pos)
+        end
+
+        # The moved elements whose blank lines above them are all that would separate the code
+        # around their run: in each run that a remaining element or a comment directly follows,
+        # the first one with blank lines above it.
+        def separators(moved_nodes)
+          moved_runs(moved_nodes).filter_map do |run|
+            run.find { |node| blank_line_above?(node) } if directly_followed?(run.last)
+          end
+        end
+
+        # The moved elements in runs of siblings with only blank lines between them, since a
+        # comment between two of them stays behind.
+        def moved_runs(moved_nodes)
+          moved_nodes.sort_by { |node| node.source_range.begin_pos }.chunk_while do |first, second|
+            first.right_sibling.equal?(second) && blank_between?(first, second)
+          end
+        end
+
+        def blank_between?(first, second)
+          from = buffer.line_for_position(end_position_for(first)) + 1
+          to = buffer.line_for_position(begin_pos_with_comment(second) + 1) - 1
+          (from..to).all? { |line| buffer.source_line(line).blank? }
+        end
+
+        # Whether the line after the node holds a remaining element or a comment.
+        def directly_followed?(node)
+          line = buffer.line_for_position(end_position_for(node)) + 1
+          return false if buffer.source_line(line).blank?
+
+          !node.right_sibling.nil? || whole_line_comment_at_line?(line)
+        end
+
+        # Whether the line above the node, or above the comment attached to it, is blank.
+        def blank_line_above?(node)
+          buffer.source_line(source_range_with_comment(node).first_line).blank?
         end
 
         # Classifies a node to match with something in the {expected_order}
