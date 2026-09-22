@@ -31,6 +31,7 @@ module RuboCop
 
           first_line = adjusted_first_line || node.source_range.first_line
           last_line = node.source_range.last_line
+          return if first_line >= last_line
 
           case style
           when :empty_lines_except_namespace

@@ -1,0 +1,1 @@
+* [#15740](https://github.com/rubocop/rubocop/pull/15740): Fix an error for `Layout/EmptyLinesAroundMethodBody` when a method's arguments span multiple lines and the method ends on the last argument's line. ([@viralpraxis][])

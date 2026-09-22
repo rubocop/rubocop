@@ -124,6 +124,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody, :config do
     RUBY
   end
 
+  it 'does not register an offense when the arguments span multiple lines and `end` is on the last argument line' do
+    expect_no_offenses(<<~RUBY)
+      def some_method(bar,
+        baz); end
+    RUBY
+  end
+
   context 'endless methods', :ruby30 do
     it 'does not register an offense for a single-line endless method' do
       expect_no_offenses(<<~RUBY)
