@@ -85,6 +85,46 @@ RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects a multiline argument list' do
+      expect_offense(<<~RUBY)
+        y = ->(
+              ^ Do not wrap stabby lambda arguments with parentheses.
+          a
+        ) { a }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        y = ->a { a }
+      RUBY
+    end
+
+    it 'registers an offense and keeps a line break that follows a comma' do
+      expect_offense(<<~RUBY)
+        y = ->(a,
+              ^^^ Do not wrap stabby lambda arguments with parentheses.
+          b) { a }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        y = ->a,
+          b { a }
+      RUBY
+    end
+
+    it 'does not register an offense when a comment follows the opening parenthesis' do
+      expect_no_offenses(<<~RUBY)
+        y = ->( # comment
+          a) { a }
+      RUBY
+    end
+
+    it 'does not register an offense when a comment precedes the closing parenthesis' do
+      expect_no_offenses(<<~RUBY)
+        y = ->(a # comment
+        ) { a }
+      RUBY
+    end
+
     it 'does not register an offense when a default value is a hash with braces' do
       expect_no_offenses('->(options = {}) { options }')
     end

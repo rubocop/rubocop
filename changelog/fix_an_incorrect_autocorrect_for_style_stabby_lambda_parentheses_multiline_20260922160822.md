@@ -1,0 +1,1 @@
+* [#15744](https://github.com/rubocop/rubocop/pull/15744): Fix an incorrect autocorrect for `Style/StabbyLambdaParentheses` when using `EnforcedStyle: require_no_parentheses` and a line break or comment separates the parentheses from the arguments. ([@viralpraxis][])
