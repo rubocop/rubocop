@@ -72,6 +72,7 @@ module RuboCop
           return unless def_self_style?
           return unless node.identifier.self_type?
           return unless all_methods_public?(node)
+          return unless def_nodes(node).all? { |def_node| no_code_after?(def_node.source_range) }
 
           add_offense(node, message: MSG_SCLASS) do |corrector|
             autocorrect_sclass(node, corrector)
@@ -110,6 +111,13 @@ module RuboCop
           else
             []
           end
+        end
+
+        def no_code_after?(range)
+          trailing = processed_source.lines[range.last_line - 1][range.last_column..].to_s.strip
+          trailing = trailing.sub(/\A;+\s*/, '')
+
+          trailing.empty? || trailing.start_with?('#')
         end
 
         def autocorrect_sclass(node, corrector)
