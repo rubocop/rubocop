@@ -112,6 +112,116 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
+    it 'registers an offense and keeps the parens of a grouped `and` expression argument' do
+      expect_offense(<<~RUBY)
+        top.test (a and b)
+        ^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a and b))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped `or` expression argument' do
+      expect_offense(<<~RUBY)
+        top.test (a or b)
+        ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a or b))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped `not` expression argument' do
+      expect_offense(<<~RUBY)
+        top.test (not a)
+        ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((not a))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped modifier `if` argument' do
+      expect_offense(<<~RUBY)
+        top.test (a if b)
+        ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a if b))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped modifier `while` argument' do
+      expect_offense(<<~RUBY)
+        top.test (a while b)
+        ^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a while b))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped `rescue` modifier argument' do
+      expect_offense(<<~RUBY)
+        top.test (a rescue b)
+        ^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a rescue b))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped pattern match argument', :ruby30 do
+      expect_offense(<<~RUBY)
+        top.test (a in b)
+        ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a in b))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped multiple assignment argument' do
+      expect_offense(<<~RUBY)
+        top.test (a, b = 1, 2)
+        ^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a, b = 1, 2))
+      RUBY
+    end
+
+    it 'registers an offense and keeps the parens of a grouped multi-statement argument', :ruby33 do
+      expect_offense(<<~RUBY)
+        top.test (a; b)
+        ^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a; b))
+      RUBY
+    end
+
+    it 'registers an offense and merges the parens of a grouped ternary argument' do
+      expect_offense(<<~RUBY)
+        top.test (a ? b : c)
+        ^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test(a ? b : c)
+      RUBY
+    end
+
     it 'registers an offense for non-receiver method call without parens' do
       expect_offense(<<~RUBY)
         def foo

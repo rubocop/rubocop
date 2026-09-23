@@ -1,0 +1,1 @@
+* [#15741](https://github.com/rubocop/rubocop/pull/15741): Fix an incorrect autocorrect for `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: require_parentheses` when the argument is a grouped expression containing a keyword operator, modifier, or multiple statements. ([@Starlexxx][])
