@@ -52,13 +52,31 @@ module RuboCop
         def redundant_parentheses?(node)
           return false unless style == :require_no_parentheses && parentheses?(node)
 
-          !arguments_require_parentheses?(node.block_node.arguments)
+          arguments = node.block_node.arguments
+          !arguments_require_parentheses?(arguments) && !comment_inside_parentheses?(arguments)
         end
 
         def arguments_require_parentheses?(arguments)
           arguments.each_descendant(:any_block, :hash).any? do |node|
             !node.hash_type? || node.braces?
           end
+        end
+
+        def comment_inside_parentheses?(arguments)
+          !leading_padding(arguments).source.strip.empty? ||
+            !trailing_padding(arguments).source.strip.empty?
+        end
+
+        def leading_padding(arguments)
+          first_argument = arguments.children.first
+
+          arguments.loc.begin.end.join(first_argument.source_range.begin)
+        end
+
+        def trailing_padding(arguments)
+          last_argument = arguments.children.last
+
+          last_argument.source_range.end.join(arguments.loc.end.begin)
         end
 
         def message(_node)
@@ -70,10 +88,8 @@ module RuboCop
         end
 
         def unwanted_parentheses_corrector(corrector, node)
-          args_loc = node.loc
-
-          corrector.replace(args_loc.begin, '')
-          corrector.remove(args_loc.end)
+          corrector.remove(node.loc.begin.join(leading_padding(node)))
+          corrector.remove(trailing_padding(node).join(node.loc.end))
         end
 
         def stabby_lambda_with_args?(node)
