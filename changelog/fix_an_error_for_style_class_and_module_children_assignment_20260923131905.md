@@ -1,0 +1,1 @@
+* [#15749](https://github.com/rubocop/rubocop/pull/15749): Fix an error for `Style/ClassAndModuleChildren` when a compact class or module definition appears in an expression, such as an assignment value or a method argument. ([@viralpraxis][])

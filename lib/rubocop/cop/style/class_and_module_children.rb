@@ -117,7 +117,10 @@ module RuboCop
         end
 
         def heuristic_namespace_keyword(node)
-          class_definition = node.left_sibling&.each_node(:class)&.find do |class_node|
+          left_sibling = node.left_sibling
+          return 'module' unless left_sibling.is_a?(AST::Node)
+
+          class_definition = left_sibling.each_node(:class).find do |class_node|
             class_node.identifier == node.identifier.namespace
           end
 

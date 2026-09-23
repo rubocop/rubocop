@@ -239,6 +239,23 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         end
       RUBY
     end
+
+    it 'registers an offense and corrects a compact definition assigned to a constant' do
+      expect_offense(<<~RUBY)
+        X =
+        class FooClass::BarClass
+              ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        X =
+        module FooClass
+          class BarClass
+          end
+        end
+      RUBY
+    end
   end
 
   context 'compact style' do
