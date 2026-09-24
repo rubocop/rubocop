@@ -1,0 +1,1 @@
+* [#15748](https://github.com/rubocop/rubocop/pull/15748): Fix an incorrect autocorrect for `Layout/MultilineMethodCallBraceLayout` when `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` removes the parentheses the layout cop is moving. ([@koic][])

@@ -106,6 +106,12 @@ module RuboCop
         ALWAYS_SAME_LINE_MESSAGE = 'Closing method call brace must be on ' \
                                    'the same line as the last argument.'
 
+        # Moving the closing parenthesis and removing it under `omit_parentheses` in the same pass
+        # leaves the moved parenthesis behind.
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_send(node)
           check_brace_layout(node)
         end

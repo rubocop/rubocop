@@ -4840,6 +4840,31 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` and `Style/MethodCallWithArgsParentheses` ' \
+     'with `EnforcedStyle: omit_parentheses` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo(:a,
+        b: 1
+      )
+    RUBY
+
+    status = cli.run(
+      ['-A', '--only', 'Layout/MultilineMethodCallBraceLayout,Style/MethodCallWithArgsParentheses']
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo :a,
+        b: 1
+    RUBY
+  end
+
   context 'when a custom ruby extractor returns multiple processed sources for one file' do
     def with_ruby_extractor(ruby_extractor)
       RuboCop::Runner.ruby_extractors.unshift(ruby_extractor)
