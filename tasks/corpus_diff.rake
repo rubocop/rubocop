@@ -63,7 +63,7 @@ class CorpusDiff
     @manifest = {}
     corpus_dir = File.join(tmp, 'corpus')
     FileUtils.mkdir_p(corpus_dir)
-    @corpus_files.each_with_index do |file, index|
+    @corpus_files.each.with_index do |file, index|
       staged = format('f%05d.rb', index)
       @manifest[staged] = file
       FileUtils.cp(file, File.join(corpus_dir, staged))
