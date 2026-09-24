@@ -34,6 +34,23 @@ its standard file-local behavior.
 The integration requires Ruby 3.2 or later. On Ruby 3.1 and older, `AllCops/UseProjectIndex`
 has no effect even if set to `true`.
 
+=== Core and standard library definitions
+
+The index always includes the RBS signature files of Ruby's core and standard library,
+taken from the newest `rbs` gem installed on the system (`rbs` does not have to be part of
+the bundle). Without them the index knows that `Object`, `Module` and `Class` exist but not
+what they define, so it cannot tell an unknown name from a core one: `Foo.new` would find no
+`Class#new` and keep walking into `Object`'s instance methods, where any top-level `def new`
+in the project would answer the lookup. When no `rbs` installation can be found, indexing
+proceeds without them.
+
+A signature declares a method or a constant, it does not define one, so cops that report a
+definition living in another file (`Lint/DuplicateMethods`, `Lint/ConstantReassignment`)
+never point at an `.rbs` file: monkey patching a core method is not a duplicate definition.
+For the same reason `Lint/NameTypo` does not spell-check against a namespace it only knows
+through signatures - they are curated rather than derived, so a name missing from them is
+not evidence of a typo.
+
 === Indexing gem sources
 
 By default the index covers only the project's own files, so ancestry chains and members
