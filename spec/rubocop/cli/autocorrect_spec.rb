@@ -184,6 +184,40 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedHashRocketStyle: separator` of `Layout/HashAlignment` with ' \
+     '`Layout/SpaceAroundOperators` when the first pair has extra spacing after its separator' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/HashAlignment:
+        EnforcedHashRocketStyle: separator
+    YAML
+    source = <<~RUBY
+      def f(policy_name, data, request_id)
+        { 'Policy' =>  {
+            'PolicyName' => policy_name,
+            'PolicyDocument' => data
+          },
+          'IsTruncated' => false,
+          'RequestId'   => request_id
+        }
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(
+      cli.run(['--autocorrect-all', '--only', 'Layout/HashAlignment,Layout/SpaceAroundOperators'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def f(policy_name, data, request_id)
+        { 'Policy' =>  {
+            'PolicyName' => policy_name,
+        'PolicyDocument' => data
+          },
+          'IsTruncated' => false,
+       'RequestId' => request_id
+        }
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: hash_rockets` of `Style/HashSyntax` with `Layout/HashAlignment`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/HashSyntax:

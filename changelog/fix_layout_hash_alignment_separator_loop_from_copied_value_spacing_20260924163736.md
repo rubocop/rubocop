@@ -1,0 +1,1 @@
+* [#15751](https://github.com/rubocop/rubocop/pull/15751): Fix an infinite loop when autocorrecting `Layout/HashAlignment` with `EnforcedHashRocketStyle: separator` together with `Layout/SpaceAroundOperators` by aligning values one space after the separator instead of copying the first pair's value spacing. ([@Starlexxx][])

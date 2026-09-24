@@ -912,6 +912,42 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
+    context 'when the first pair has extra spacing after its separator' do
+      it 'aligns the value one space after the separator instead of copying the extra spacing' do
+        expect_offense(<<~RUBY)
+          f(
+            'a' =>  1,
+            'bb' => 2
+            ^^^^^^^^^ Align the separators of a hash literal if they span more than one line.
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(
+            'a' =>  1,
+           'bb' => 2
+          )
+        RUBY
+      end
+
+      it 'aligns a colon pair value one space after the colon' do
+        expect_offense(<<~RUBY)
+          f(
+            a:  1,
+            bb: 2
+            ^^^^^ Align the separators of a hash literal if they span more than one line.
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          f(
+            a:  1,
+           bb: 2
+          )
+        RUBY
+      end
+    end
+
     context 'with multiple preferred(key and separator) alignment configuration' do
       let(:cop_config) do
         {
@@ -1340,19 +1376,12 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_no_offenses('h = {}')
     end
 
-    it 'registers an offense and corrects misaligned hash values' do
-      expect_offense(<<~RUBY)
+    it 'accepts values one space after aligned separators even when the first pair has extra ' \
+       'spacing' do
+      expect_no_offenses(<<~RUBY)
         hash = {
             'a' =>  0,
           'bbb' => 1
-          ^^^^^^^^^^ Align the separators of a hash literal if they span more than one line.
-        }
-      RUBY
-
-      expect_correction(<<~RUBY)
-        hash = {
-            'a' =>  0,
-          'bbb' =>  1
         }
       RUBY
     end
@@ -1687,7 +1716,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_correction(<<~RUBY)
         hash1 = {
           a:   0,
-        bbb:   1
+        bbb: 1
         }
         hash2 = {
             'a' => 0,

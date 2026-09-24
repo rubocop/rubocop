@@ -163,7 +163,10 @@ module RuboCop
         end
 
         def value_delta(first_pair, current_pair)
-          current_pair.value_omission? ? 0 : first_pair.value_delta(current_pair)
+          return 0 if first_pair.equal?(current_pair) || current_pair.value_omission?
+
+          expected_value_column = first_pair.loc.operator.end.column + 1
+          expected_value_column - current_pair.value.loc.column
         end
       end
 
