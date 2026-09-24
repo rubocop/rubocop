@@ -102,13 +102,24 @@ module RuboCop
         RESTRICT_ON_SEND = %i[positive? > != zero? ==].freeze
 
         REPLACEMENTS = {
-          [:positive?, nil] => :any?,
-          [:>, 0] => :any?,
-          [:!=, 0] => :any?,
-          [:zero?, nil] => :none?,
-          [:==, 0] => :none?,
-          [:==, 1] => :one?,
-          [:>, 1] => :many?
+          with_block: {
+            [:positive?, nil] => 'any?',
+            [:>, 0] => 'any?',
+            [:!=, 0] => 'any?',
+            [:zero?, nil] => 'none?',
+            [:==, 0] => 'none?',
+            [:==, 1] => 'one?',
+            [:>, 1] => 'many?'
+          },
+          without_block: {
+            [:positive?, nil] => '!empty?',
+            [:>, 0] => '!empty?',
+            [:!=, 0] => '!empty?',
+            [:zero?, nil] => 'empty?',
+            [:==, 0] => 'empty?',
+            [:==, 1] => 'one?',
+            [:>, 1] => 'many?'
+          }
         }.freeze
 
         # @!method count_predicate(node)
@@ -132,28 +143,42 @@ module RuboCop
         def on_send(node)
           return unless (count_node = count_predicate(node))
 
-          replacement_method = replacement_method(node)
-
+          replacement_method = replacement_method(node, count_node)
           return unless replacement_supported?(replacement_method)
 
           offense_range = count_node.loc.selector.join(node.source_range.end)
           add_offense(offense_range,
                       message: format(MSG, prefer: replacement_method)) do |corrector|
-            corrector.replace(count_node.loc.selector, replacement_method)
-            corrector.remove(removal_range(node))
+            autocorrect(corrector, node, count_node, replacement_method)
           end
         end
 
         private
 
-        def replacement_method(node)
-          REPLACEMENTS.fetch([node.method_name, node.first_argument&.value])
+        def autocorrect(corrector, node, count_node, replacement_method)
+          if replacement_method.start_with?('!')
+            corrector.insert_before(count_node, '!')
+            corrector.replace(count_node.loc.selector, replacement_method.delete_prefix('!'))
+          else
+            corrector.replace(count_node.loc.selector, replacement_method)
+          end
+          corrector.remove(removal_range(node))
+        end
+
+        def replacement_method(node, count_node)
+          replacement_type = count_with_block?(count_node) ? :with_block : :without_block
+
+          REPLACEMENTS.fetch(replacement_type).fetch([node.method_name, node.first_argument&.value])
+        end
+
+        def count_with_block?(count_node)
+          count_node.parent&.any_block_type? || count_node.arguments.any?(&:block_pass_type?)
         end
 
         def replacement_supported?(method_name)
           return true if active_support_extensions_enabled?
 
-          method_name != :many?
+          method_name != 'many?'
         end
 
         def removal_range(node)

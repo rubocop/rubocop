@@ -4,11 +4,11 @@ RSpec.describe RuboCop::Cop::Style::CollectionQuerying, :config do
   it 'registers an offense for `.count.positive?`' do
     expect_offense(<<~RUBY)
       x.count.positive?
-        ^^^^^^^^^^^^^^^ Use `any?` instead.
+        ^^^^^^^^^^^^^^^ Use `!empty?` instead.
     RUBY
 
     expect_correction(<<~RUBY)
-      x.any?
+      !x.empty?
     RUBY
   end
 
@@ -16,13 +16,13 @@ RSpec.describe RuboCop::Cop::Style::CollectionQuerying, :config do
     expect_offense(<<~RUBY)
       x
         .count
-         ^^^^^ Use `any?` instead.
+         ^^^^^ Use `!empty?` instead.
         .positive?
     RUBY
 
     expect_correction(<<~RUBY)
-      x
-        .any?
+      !x
+        .empty?
     RUBY
   end
 
@@ -84,11 +84,11 @@ RSpec.describe RuboCop::Cop::Style::CollectionQuerying, :config do
   it 'registers an offense for `&.count.positive?`' do
     expect_offense(<<~RUBY)
       x&.count.positive?
-         ^^^^^^^^^^^^^^^ Use `any?` instead.
+         ^^^^^^^^^^^^^^^ Use `!empty?` instead.
     RUBY
 
     expect_correction(<<~RUBY)
-      x&.any?
+      !x&.empty?
     RUBY
   end
 
