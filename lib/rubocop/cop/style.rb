@@ -154,6 +154,7 @@ module RuboCop
       register_cop :RedundantCurrentDirectoryInPath, "#{__dir__}/style/redundant_current_directory_in_path"
       register_cop :RedundantDoubleSplatHashBraces, "#{__dir__}/style/redundant_double_splat_hash_braces"
       register_cop :RedundantEach, "#{__dir__}/style/redundant_each"
+      register_cop :RedundantElse, "#{__dir__}/style/redundant_else"
       register_cop :RedundantFetchBlock, "#{__dir__}/style/redundant_fetch_block"
       register_cop :RedundantFileExtensionInRequire, "#{__dir__}/style/redundant_file_extension_in_require"
       register_cop :RedundantFilterChain, "#{__dir__}/style/redundant_filter_chain"
