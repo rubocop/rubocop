@@ -276,6 +276,23 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when the body is indented less than the configured width' do
+      expect_offense(<<~RUBY)
+        module FooModule
+               ^^^^^^^^^ Use compact module/class definition instead of nested style.
+          class BarClass
+         do_something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class FooModule::BarClass
+         do_something
+        end
+      RUBY
+    end
+
     it 'registers an offense for modules with nested children' do
       expect_offense(<<~RUBY)
         module FooModule

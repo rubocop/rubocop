@@ -228,7 +228,7 @@ module RuboCop
           return if spaces_size(leading_spaces(node)) == spaces_size(last_child_leading_spaces)
 
           column_delta = configured_indentation_width - spaces_size(last_child_leading_spaces)
-          return if column_delta.zero?
+          return unless column_delta.negative?
 
           AlignmentCorrector.correct(
             corrector, processed_source, node, column_delta, tab_indentation: true
