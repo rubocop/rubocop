@@ -50,6 +50,7 @@ module RuboCop
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
         CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
+        CLASS_HIERARCHY_VALUE_METHODS = %i[class superclass singleton_class].freeze
 
         RESTRICT_ON_SEND = [:!].freeze
 
@@ -171,14 +172,27 @@ module RuboCop
         end
 
         # When comparing classes, `!(Integer < Numeric)` is not the same as
-        # `Integer > Numeric`.
+        # `Integer > Numeric`. The same holds when either operand is a call
+        # that yields a class/module (e.g. `foo.class`, `foo.superclass`)
+        # rather than a literal constant, since `Module#<=` and friends are a
+        # partial order and can return `nil` for unrelated operands.
         def possible_class_hierarchy_check?(lhs, rhs, method)
           CLASS_COMPARISON_METHODS.include?(method) &&
-            (camel_case_constant?(lhs) || (rhs.size == 1 && camel_case_constant?(rhs.first)))
+            (class_hierarchy_operand?(lhs) ||
+              (rhs.size == 1 && class_hierarchy_operand?(rhs.first)))
+        end
+
+        def class_hierarchy_operand?(node)
+          camel_case_constant?(node) || class_hierarchy_value_method?(node)
         end
 
         def camel_case_constant?(node)
           node.const_type? && CAMEL_CASE.match?(node.source)
+        end
+
+        def class_hierarchy_value_method?(node)
+          node.type?(:call) && node.arguments.empty? &&
+            CLASS_HIERARCHY_VALUE_METHODS.include?(node.method_name)
         end
 
         def dot_range(loc)
