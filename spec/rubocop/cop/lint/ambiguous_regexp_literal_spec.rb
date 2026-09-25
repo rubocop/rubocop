@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# FIXME: https://github.com/ruby/prism/issues/2513
 RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral, :config do
   shared_examples 'with a regexp literal in the first argument' do
     context 'without parentheses' do
