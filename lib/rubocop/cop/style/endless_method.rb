@@ -144,8 +144,10 @@ module RuboCop
         MSG_REQUIRE_SINGLE = 'Use endless method definitions for single line methods.'
         MSG_REQUIRE_ALWAYS = 'Use endless method definitions.'
 
+        # `Style/MethodDefParentheses` adds the same parentheses a parameter list needs in
+        # an endless definition, so letting both correct in the same pass would double them.
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses]
         end
 
         def on_def(node)
@@ -222,8 +224,22 @@ module RuboCop
         end
 
         def correct_to_endless(corrector, node)
-          corrector.replace(signature_to_body_range(node), ' = ')
+          if unparenthesized_arguments?(node)
+            corrector.replace(name_to_arguments_range(node), '(')
+            corrector.replace(signature_to_body_range(node), ') = ')
+          else
+            corrector.replace(signature_to_body_range(node), ' = ')
+          end
+
           corrector.remove(node.body.source_range.end.join(node.loc.end.end))
+        end
+
+        def unparenthesized_arguments?(node)
+          node.arguments.any? && !node.arguments.loc.begin
+        end
+
+        def name_to_arguments_range(node)
+          node.loc.name.end.join(node.arguments.source_range.begin)
         end
 
         def signature_to_body_range(node)
@@ -243,7 +259,10 @@ module RuboCop
         end
 
         def arguments(node, missing = '')
-          node.arguments.any? ? node.arguments.source : missing
+          return missing unless node.arguments.any?
+          return "(#{node.arguments.source})" if unparenthesized_arguments?(node)
+
+          node.arguments.source
         end
 
         def can_be_made_endless?(node)
