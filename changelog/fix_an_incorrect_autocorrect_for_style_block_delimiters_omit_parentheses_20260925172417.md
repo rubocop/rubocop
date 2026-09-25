@@ -1,0 +1,1 @@
+* [#15758](https://github.com/rubocop/rubocop/pull/15758): Fix an incorrect autocorrect for `Style/BlockDelimiters` when `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: omit_parentheses` removes the call's parentheses in the same pass, producing invalid code such as `foo :bar { baz }`. ([@viralpraxis][])
