@@ -380,6 +380,54 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'keeps parentheses when `Style/BlockDelimiters` converts the block to braces in the same pass' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+      Style/BlockDelimiters:
+        EnforcedStyle: semantic
+    YAML
+    source = <<~RUBY
+      A = B.c(:d) do
+        e
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/BlockDelimiters'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      A = B.c(:d) {
+        e
+      }
+    RUBY
+  end
+
+  it 'adds parentheses and braces when `EnforcedStyle: require_parentheses` meets `Style/BlockDelimiters`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+      Style/BlockDelimiters:
+        EnforcedStyle: semantic
+    YAML
+    source = <<~RUBY
+      A = B.c :d do
+        e
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/BlockDelimiters'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      A = B.c(:d) {
+        e
+      }
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
