@@ -145,6 +145,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` instead of a block.'
+        MSG_LAMBDA_LITERAL = 'Use `lambda(&:%<method>s)` instead of %<original>s.'
         SUPER_TYPES = %i[super zsuper].freeze
         LAMBDA_OR_PROC = %i[lambda proc].freeze
 
@@ -207,12 +208,26 @@ module RuboCop
         end
 
         def register_offense(node, method_name, block_method_name)
-          block_start = node.loc.begin.begin_pos
-          block_end = node.loc.end.end_pos
-          range = range_between(block_start, block_end)
-          message = format(MSG, method: method_name, block_method: block_method_name)
+          range = if node.send_node.lambda_literal?
+                    node.source_range
+                  else
+                    node.loc.begin.begin.join(node.loc.end.end)
+                  end
+          message = message(node, method_name, block_method_name)
 
-          add_offense(range, message: message) { |corrector| autocorrect(corrector, node) }
+          add_offense(range, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def message(node, method_name, block_method_name)
+          if node.send_node.lambda_literal?
+            original = node.single_line? ? "`#{node.source}`" : 'a lambda literal with a block'
+
+            format(MSG_LAMBDA_LITERAL, method: method_name, original: original)
+          else
+            format(MSG, method: method_name, block_method: block_method_name)
+          end
         end
 
         def autocorrect(corrector, node)

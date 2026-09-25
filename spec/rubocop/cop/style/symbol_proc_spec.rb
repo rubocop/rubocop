@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     it 'registers lambda `->` with 1 argument' do
       expect_offense(<<~RUBY)
         ->(x) { x.method }
-              ^^^^^^^^^^^^ Pass `&:method` as an argument to `lambda` instead of a block.
+        ^^^^^^^^^^^^^^^^^^ Use `lambda(&:method)` instead of `->(x) { x.method }`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -90,13 +90,24 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     it 'registers lambda `->` with 1 argument and multiline `do`...`end` block' do
       expect_offense(<<~RUBY)
         ->(arg) do
-                ^^ Pass `&:do_something` as an argument to `lambda` instead of a block.
+        ^^^^^^^^^^ Use `lambda(&:do_something)` instead of a lambda literal with a block.
           arg.do_something
         end
       RUBY
 
       expect_correction(<<~RUBY)
         lambda(&:do_something)
+      RUBY
+    end
+
+    it 'registers `lambda` with 1 argument' do
+      expect_offense(<<~RUBY)
+        lambda { |x| x.method }
+               ^^^^^^^^^^^^^^^^ Pass `&:method` as an argument to `lambda` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        lambda(&:method)
       RUBY
     end
 
@@ -558,7 +569,18 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       it 'registers lambda with 1 numbered parameter' do
         expect_offense(<<~RUBY)
           -> { _1.method }
-             ^^^^^^^^^^^^^ Pass `&:method` as an argument to `lambda` instead of a block.
+          ^^^^^^^^^^^^^^^^ Use `lambda(&:method)` instead of `-> { _1.method }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lambda(&:method)
+        RUBY
+      end
+
+      it 'registers lambda with an `it` parameter' do
+        expect_offense(<<~RUBY)
+          -> { it.method }
+          ^^^^^^^^^^^^^^^^ Use `lambda(&:method)` instead of `-> { it.method }`.
         RUBY
 
         expect_correction(<<~RUBY)
