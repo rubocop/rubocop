@@ -1,0 +1,1 @@
+* [#15755](https://github.com/rubocop/rubocop/pull/15755): Fix an infinite loop for `Style/MultilineMethodSignature` when a method definition is preceded by other code on the same line, such as `private def`, and joining the signature would exceed `Layout/LineLength`. ([@viralpraxis][])

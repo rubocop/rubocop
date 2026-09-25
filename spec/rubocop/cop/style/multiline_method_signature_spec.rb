@@ -260,6 +260,44 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
     end
 
+    context 'when the definition is preceded by an access modifier on the same line' do
+      context 'when the modifier pushes the correction over the maximum line length' do
+        let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 20 } } }
+
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            class Foo
+              private def bar(baz,
+                              qux)
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when the correction still fits within the maximum line length' do
+        let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 30 } } }
+
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            class Foo
+              private def bar(baz,
+                      ^^^^^^^^^^^^ Avoid multi-line method signatures.
+                              qux)
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Foo
+              private def bar(baz, qux)
+              end
+            end
+          RUBY
+        end
+      end
+    end
+
     context 'when the collapsed signature fits but the multi-line source is longer than the maximum' do
       let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 20 } } }
 
