@@ -73,12 +73,26 @@ module RuboCop
         end
 
         def find_pair_ancestor(node)
+          child = node
           node.each_ancestor do |ancestor|
             return ancestor if ancestor.pair_type?
             break if grouped_expression?(ancestor) || inside_arg_list_parentheses?(node, ancestor)
+            break if inside_body?(ancestor, child)
+
+            child = ancestor
           end
 
           nil
+        end
+
+        # A block, `begin`, `if` or loop body is a separate set of statements, so
+        # a method chain in it is not the value of a hash pair the body is nested in.
+        # The send node of a block is still part of the value.
+        def inside_body?(ancestor, child)
+          return !child.equal?(ancestor.send_node) if ancestor.any_block_type?
+          return !ancestor.ternary? if ancestor.if_type?
+
+          ancestor.type?(:kwbegin, :while, :until, :for)
         end
 
         def unwrap_block_node(node)
