@@ -1,0 +1,1 @@
+* [#15754](https://github.com/rubocop/rubocop/pull/15754): Fix an infinite loop between `Layout/EmptyLinesAroundBlockBody`, `Layout/EmptyLinesAroundClassBody` or `Layout/EmptyLinesAroundModuleBody` with `EnforcedStyle: empty_lines` and a cop indenting the same `end`, such as `Layout/BlockAlignment` or `Layout/EndAlignment`. ([@viralpraxis][])

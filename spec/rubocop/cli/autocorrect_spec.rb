@@ -4401,6 +4401,76 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/EmptyLinesAroundBlockBody` and `Layout/BlockAlignment`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundBlockBody:
+        EnforcedStyle: empty_lines
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      outer do
+        inner do
+          baz
+      end
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      outer do
+
+        inner do
+
+          baz
+
+        end
+
+      end
+    RUBY
+  end
+
+  it 'does not cause an infinite loop between `Layout/EmptyLinesAroundClassBody` and `Layout/EndAlignment`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundClassBody:
+        EnforcedStyle: empty_lines
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      module Outer
+        # Doc.
+        class Foo
+          baz
+      end
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      module Outer
+        # Doc.
+        class Foo
+
+          baz
+
+        end
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/IndentationConsistency` and `Layout/IndentationWidth`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/IndentationConsistency:
