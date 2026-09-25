@@ -115,13 +115,15 @@ module RuboCop
         line_range = processed_source.buffer.line_range(lineno)
         return false unless line_range
 
-        # Find the specific token to avoid matching up to operators inside strings
-        operator_token = processed_source.tokens_within(line_range).detect do |token|
+        # Find the specific tokens to avoid matching up to operators inside strings
+        operator_tokens = processed_source.tokens_within(line_range).select do |token|
           ASSIGNMENT_OR_COMPARISON_TOKENS.include?(token.type)
         end
 
-        aligned_with_preceding_equals?(range, operator_token) ||
-          aligned_with_append_operator?(range, operator_token)
+        operator_tokens.any? do |operator_token|
+          aligned_with_preceding_equals?(range, operator_token) ||
+            aligned_with_append_operator?(range, operator_token)
+        end
       end
 
       def aligned_with_preceding_equals?(range, token)

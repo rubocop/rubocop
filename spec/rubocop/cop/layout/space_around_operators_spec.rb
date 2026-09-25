@@ -1318,5 +1318,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         b   += 2
       RUBY
     end
+
+    it 'allows alignment with an assignment preceded by a comparison on its line' do
+      expect_no_offenses(<<~RUBY)
+        transitions                                            = self
+        if @target && @target != to_name && (target_transition = detect { |t| t.to_name == b })
+          transitions = transitions[index(target_transition) + 1..]
+        end
+      RUBY
+    end
   end
 end
