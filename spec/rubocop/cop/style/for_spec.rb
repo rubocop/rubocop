@@ -494,6 +494,36 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects a multiline `each` with braces' do
+      expect_offense(<<~RUBY)
+        c.each { |d|
+        ^^^^^^^^^^^^ Prefer `for` over `each`.
+          e
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for d in c do
+          e
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects a multiline `each` with braces and without an item' do
+      expect_offense(<<~RUBY)
+        c.each {
+        ^^^^^^^^ Prefer `for` over `each`.
+          e
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for _ in c do
+          e
+        end
+      RUBY
+    end
+
     context 'Ruby 2.7', :ruby27 do
       it 'registers an offense for each without an item and uses _ as the item' do
         expect_offense(<<~RUBY)

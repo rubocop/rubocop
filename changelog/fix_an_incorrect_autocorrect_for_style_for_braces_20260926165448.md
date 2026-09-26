@@ -1,0 +1,1 @@
+* [#15765](https://github.com/rubocop/rubocop/pull/15765): Fix an incorrect autocorrect for `Style/For` when `EnforcedStyle: for` and the multiline `each` block is delimited by braces. ([@viralpraxis][])
