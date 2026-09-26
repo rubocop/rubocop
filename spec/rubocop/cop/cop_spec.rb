@@ -591,6 +591,73 @@ RSpec.describe RuboCop::Cop::Cop, :config do
           it { is_expected.to be(true) }
         end
       end
+
+      context 'for a cop that overrides `target_gem_version` with an `AllCops` setting' do
+        let(:cop_class) do
+          stub_cop_class('CopSpec::CopWithGemReqs') do
+            requires_gem 'gem1', '>= 1.2.3'
+
+            def target_gem_version(gem_name)
+              return super unless gem_name == 'gem1'
+
+              version = config.for_all_cops['TargetGem1Version']
+              version ? Gem::Version.new(version.to_s) : super
+            end
+          end
+        end
+
+        let(:all_cops_config) { super().merge('TargetGem1Version' => target_gem1_version) }
+
+        context 'the setting satisfies the requirement although the locked version does not' do
+          let(:gem_versions_in_target) { { 'gem1' => Gem::Version.new('1.2.2') } }
+          let(:target_gem1_version) { 1.3 }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'the setting satisfies the requirement and there is no lockfile' do
+          let(:gem_versions_in_target) { nil }
+          let(:target_gem1_version) { 1.3 }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'the setting does not satisfy the requirement although the locked version does' do
+          let(:gem_versions_in_target) { { 'gem1' => Gem::Version.new('1.2.3') } }
+          let(:target_gem1_version) { 1.2 }
+
+          it { is_expected.to be(false) }
+        end
+
+        context 'the setting is absent and the locked version satisfies the requirement' do
+          let(:gem_versions_in_target) { { 'gem1' => Gem::Version.new('1.2.3') } }
+          let(:target_gem1_version) { nil }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'the cop also requires a gem that the override leaves to the lockfile' do
+          let(:cop_class) do
+            stub_cop_class('CopSpec::CopWithTwoGemReqs', inherit: super()) do
+              requires_gem 'gem2', '>= 4.5.6'
+            end
+          end
+
+          let(:target_gem1_version) { 1.3 }
+
+          context 'the other gem is locked in a supported version' do
+            let(:gem_versions_in_target) { { 'gem2' => Gem::Version.new('4.5.6') } }
+
+            it { is_expected.to be(true) }
+          end
+
+          context 'there is no lockfile' do
+            let(:gem_versions_in_target) { nil }
+
+            it { is_expected.to be(false) }
+          end
+        end
+      end
     end
   end
 

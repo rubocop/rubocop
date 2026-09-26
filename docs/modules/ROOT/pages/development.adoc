@@ -531,22 +531,72 @@ describe RuboCop::Cop::Style::MyCop, :config do
 end
 ----
 
-==== Special case: Rails
+[[honoring-a-target-version-setting]]
+==== Honoring a target version setting
 
-Historically, many cops in `rubocop-rails` aren't actually specific to Rails itself, but some of its components (e.g., Active Support). These dependencies are declared with https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/TargetRailsVersion#minimum_target_rails_version-instance_method[`TargetRailsVersion.minimum_target_rails_version`].
+`requires_gem` reads the gem version from the bundle. An extension can also let users state the version of the gem that the inspected code targets, the way `rubocop-rails` does with `AllCops: TargetRailsVersion`, so that the gate works without a lockfile and an explicit setting takes precedence over the locked version.
 
-For example, the `Rails/Pluck` cop requires Active Support 6.0, which introduces `Enumerable#pluck`:
+First declare the setting in the plugin's own configuration, so that it passes configuration validation (see xref:plugins.adoc#custom-allcops-settings[Custom `AllCops` Settings]):
+
+[source,yaml]
+----
+# config/default.yml in the plugin gem.
+AllCops:
+  TargetFrameworkVersion: ~
+----
+
+Then override `target_gem_version` for the gem. The requirements declared with `requires_gem` are checked against the version it returns, so the setting takes effect for every cop that carries the override:
 
 [source,ruby]
 ----
-class RuboCop::Cop::Rails::Pluck < Base
-  extend TargetRailsVersion
+module RuboCop::Cop::TargetFrameworkVersion
+  TARGET_GEM_NAME = 'framework'
 
-  minimum_target_rails_version 6.0
+  def self.extended(cop_class)
+    cop_class.include(InstanceMethods)
+  end
 
-  #...
+  def minimum_target_framework_version(version)
+    requires_gem(TARGET_GEM_NAME, ">= #{version}")
+  end
+
+  module InstanceMethods
+    def target_gem_version(gem_name)
+      return super unless gem_name == TARGET_GEM_NAME
+
+      version = config.for_all_cops['TargetFrameworkVersion']
+      version ? Gem::Version.new(version.to_s) : super
+    end
+  end
+end
+
+class RuboCop::Cop::Framework::MyCop < RuboCop::Cop::Base
+  extend RuboCop::Cop::TargetFrameworkVersion
+
+  minimum_target_framework_version 6.0
+
+  # ...
 end
 ----
+
+In specs, set the version through `all_cops_config`, or through `gem_versions` when the lockfile fallback is what you test:
+
+[source,ruby]
+----
+describe RuboCop::Cop::Framework::MyCop, :config do
+  context 'when the target framework version is 5.0' do
+    let(:all_cops_config) { super().merge('TargetFrameworkVersion' => 5.0) }
+
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        Framework.foo
+      RUBY
+    end
+  end
+end
+----
+
+`rubocop-rails` resolves `TargetRailsVersion` the same way in https://github.com/rubocop/rubocop-rails/blob/master/lib/rubocop/cop/mixin/target_rails_version.rb[`RuboCop::Cop::TargetRailsVersion`].
 
 === Configuration
 
