@@ -282,6 +282,19 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects a method with unparenthesized parameters' do
+        expect_offense(<<~RUBY)
+          def my_method foo, bar
+          ^^^^^^^^^^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            foo + bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(foo, bar) = foo + bar
+        RUBY
+      end
+
       it 'registers an offense and corrects for a multiline endless method' do
         expect_offense(<<~RUBY)
           def my_method() = x.foo
@@ -725,6 +738,32 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
 
         expect_correction(<<~RUBY)
           def a = def b = 1
+        RUBY
+      end
+
+      it 'registers an offense and corrects a method with unparenthesized parameters' do
+        expect_offense(<<~RUBY)
+          def my_method foo, bar
+          ^^^^^^^^^^^^^^^^^^^^^^ Use endless method definitions.
+            foo + bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(foo, bar) = foo + bar
+        RUBY
+      end
+
+      it 'registers an offense and corrects a singleton method with unparenthesized parameters' do
+        expect_offense(<<~RUBY)
+          def self.my_method foo
+          ^^^^^^^^^^^^^^^^^^^^^^ Use endless method definitions.
+            foo
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.my_method(foo) = foo
         RUBY
       end
 
