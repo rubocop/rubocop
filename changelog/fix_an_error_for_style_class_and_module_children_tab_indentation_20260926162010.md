@@ -1,0 +1,1 @@
+* [#15764](https://github.com/rubocop/rubocop/pull/15764): Fix an error for `Style/ClassAndModuleChildren` when `EnforcedStyle: compact` compacts an irregularly indented definition and `Layout/IndentationStyle` enforces tabs. ([@viralpraxis][])

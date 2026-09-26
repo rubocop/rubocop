@@ -98,6 +98,33 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
       end
     end
 
+    context 'when given a source range instead of a node' do
+      it 'does not change indentation of heredoc bodies and end markers' do
+        source = <<~RUBY
+          begin
+            c = <<~X
+          a
+          b
+          X
+          end
+        RUBY
+        processed_source = parse_source(source)
+        corrector = RuboCop::Cop::Corrector.new(processed_source.buffer)
+
+        described_class.correct(corrector, processed_source,
+                                processed_source.buffer.source_range, 2)
+
+        expect(corrector.rewrite).to eq(<<~RUBY)
+            begin
+              c = <<~X
+          a
+          b
+          X
+            end
+        RUBY
+      end
+    end
+
     context 'within string literals' do
       it 'does not insert whitespace' do
         expect_offense(<<~RUBY)
