@@ -109,8 +109,20 @@ module RuboCop
         end
 
         def inside_string_ranges(node)
-          return [] unless node.is_a?(Parser::AST::Node)
+          return source_string_ranges unless node.is_a?(Parser::AST::Node)
 
+          string_ranges(node)
+        end
+
+        def source_string_ranges
+          return [] unless processed_source.ast
+          return @source_string_ranges if @source_string_ranges_source.equal?(processed_source)
+
+          @source_string_ranges_source = processed_source
+          @source_string_ranges = string_ranges(processed_source.ast)
+        end
+
+        def string_ranges(node)
           node.each_node(:any_str).filter_map { |n| inside_string_range(n) }
         end
 

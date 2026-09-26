@@ -514,6 +514,37 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects a child whose body starts on the definition line' do
+        expect_offense(<<~RUBY)
+          module A
+                 ^ Use compact module/class definition instead of nested style.
+             class B; c; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A::B; c
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the body continues past the definition line' do
+        expect_offense(<<~RUBY)
+          module A
+                 ^ Use compact module/class definition instead of nested style.
+             class B; c
+               d
+             end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A::B; c
+          \t\td
+          end
+        RUBY
+      end
+
       context "when `Layout/IndentationStyle` has a different `IndentationWidth` than `Layout/IndentationWidth`'s `Width`" do
         let(:other_cops) do
           {

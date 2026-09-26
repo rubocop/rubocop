@@ -222,17 +222,35 @@ module RuboCop
         end
 
         def unindent(corrector, node)
-          return unless node.body.children.last
+          column_delta = unindent_column_delta(node)
+          return unless column_delta&.negative?
 
-          last_child_leading_spaces = leading_spaces(node.body.children.last)
-          return if spaces_size(leading_spaces(node)) == spaces_size(last_child_leading_spaces)
-
-          column_delta = configured_indentation_width - spaces_size(last_child_leading_spaces)
-          return unless column_delta.negative?
+          range = unindentable_range(node.body)
+          return unless range
 
           AlignmentCorrector.correct(
-            corrector, processed_source, node, column_delta, tab_indentation: true
+            corrector, processed_source, range, column_delta, tab_indentation: true
           )
+        end
+
+        def unindent_column_delta(node)
+          body = node.body.children.last
+          return unless body
+
+          last_child_leading_spaces = leading_spaces(body)
+          return if spaces_size(leading_spaces(node)) == spaces_size(last_child_leading_spaces)
+
+          configured_indentation_width - spaces_size(last_child_leading_spaces)
+        end
+
+        def unindentable_range(body)
+          first_line = body.loc.name.line + 1
+          last_line = body.loc.end.line - 1
+          return if first_line > last_line
+
+          buffer = processed_source.buffer
+          range_between(buffer.line_range(first_line).begin_pos,
+                        buffer.line_range(last_line).end_pos)
         end
 
         def leading_spaces(node)
