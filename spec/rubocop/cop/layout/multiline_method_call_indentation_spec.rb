@@ -175,6 +175,67 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         )
       RUBY
     end
+
+    it 'accepts a method chain inside a lambda body within a hash pair value' do
+      expect_no_offenses(<<~RUBY)
+        {
+          key: -> do
+            client
+              .beta
+              .messages
+          end
+        }
+      RUBY
+    end
+
+    it 'accepts a method chain inside a block body within a hash pair value' do
+      expect_no_offenses(<<~RUBY)
+        {
+          key: proc { |request|
+            request
+              .params
+              .fetch(:page)
+          }
+        }
+      RUBY
+    end
+
+    it 'accepts a method chain inside a `begin` body within a hash pair value' do
+      expect_no_offenses(<<~RUBY)
+        {
+          key: begin
+            settings
+              .fetch(:connection)
+              .fetch(:retries)
+          end
+        }
+      RUBY
+    end
+
+    it 'accepts a method chain inside an `if` body within a hash pair value' do
+      expect_no_offenses(<<~RUBY)
+        {
+          key: if condition
+            client
+              .beta
+          else
+            other
+              .beta
+          end
+        }
+      RUBY
+    end
+
+    it 'accepts a method chain inside a `while` body within a hash pair value' do
+      expect_no_offenses(<<~RUBY)
+        {
+          key: while condition
+            client
+              .beta
+          end
+        }
+      RUBY
+    end
   end
 
   shared_examples 'common for aligned and indented' do
@@ -454,6 +515,27 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
 
     it_behaves_like 'common'
     it_behaves_like 'common for aligned and indented'
+
+    it 'registers an offense for a misindented method chain inside a lambda body within a hash pair value' do
+      expect_offense(<<~RUBY)
+        {
+          key: -> do
+            client
+            .beta
+            ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+          end
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {
+          key: -> do
+            client
+              .beta
+          end
+        }
+      RUBY
+    end
 
     it "doesn't fail on unary operators" do
       expect_offense(<<~RUBY)

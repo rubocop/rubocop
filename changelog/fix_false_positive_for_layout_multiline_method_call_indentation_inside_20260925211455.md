@@ -1,0 +1,1 @@
+* [#15761](https://github.com/rubocop/rubocop/issues/15761): Fix false positive for `Layout/MultilineMethodCallIndentation` when a method chain is inside a block, `begin`, `if` or loop body in a hash pair value. ([@amritk][])
