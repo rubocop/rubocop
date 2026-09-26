@@ -174,8 +174,13 @@ module RuboCop
           #                ^
           tokens = remove_equals_in_def(tokens, processed_source)
 
-          # Only attempt to align the first = on each line
-          Set.new(tokens.uniq(&:line))
+          # Only attempt to align the first = on each line. An `=` that comes after a comparison
+          # on its line is left out as well: whether a line is aligned is judged by its first
+          # assignment or comparison operator, so such an `=` could never be found aligned
+          # and `Layout/SpaceAroundOperators` would keep undoing the padding added for it.
+          Set.new(tokens.uniq(&:line).select do |token|
+            first_operator_on_line(token.line).equal?(token)
+          end)
         end
       end
 
@@ -269,6 +274,16 @@ module RuboCop
         end
 
         asgn_tokens.reject { |t| eqls_to_ignore.include?(t.begin_pos) }
+      end
+
+      def first_operator_on_line(line)
+        @first_operator_by_line ||= processed_source.tokens.each_with_object({}) do |token, by_line|
+          next unless ASSIGNMENT_OR_COMPARISON_TOKENS.include?(token.type)
+
+          by_line[token.line] ||= token
+        end
+
+        @first_operator_by_line[line]
       end
     end
   end
