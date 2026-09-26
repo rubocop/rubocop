@@ -1,0 +1,1 @@
+* [#15763](https://github.com/rubocop/rubocop/pull/15763): Fix an infinite loop between `Layout/SpaceAroundBlockParameters`, `Layout/SpaceInsideParens` and `Layout/ExtraSpacing` when both cops require a space inside a lambda's parameter parentheses. ([@viralpraxis][])
