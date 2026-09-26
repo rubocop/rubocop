@@ -182,5 +182,7 @@ GraphQL-specific analysis
 Reduced CI time by analyzing only changed files
 * https://github.com/SketchUp/rubocop-sketchup[rubocop-sketchup] -
 SketchUp Ruby API specific analysis
+* https://github.com/dblock/rubocop-exception_messages[rubocop-exception_messages] -
+Standardizes the style of raised exception messages (casing, punctuation, quoting of interpolated values)
 
 Any plugins missing? Send us a Pull Request!
