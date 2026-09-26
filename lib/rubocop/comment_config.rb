@@ -76,6 +76,15 @@ module RuboCop
       non_comment_token_line_numbers.none?(line_number)
     end
 
+    # Whether a file directive is on its own line before any Ruby code. Comments,
+    # including shebangs and magic comments, and blank lines may precede it.
+    #
+    # @api private
+    def file_directive_valid_placement?(directive)
+      comment_only_line?(directive.line_number) &&
+        non_comment_token_line_numbers.none? { |line| line < directive.line_number }
+    end
+
     # The names of the cops that are opted in by an `enable` comment directive
     # or a `+` argument of a `push`/`next` directive, used to mobilize cops
     # disabled in the config on demand.
@@ -127,6 +136,8 @@ module RuboCop
           apply_push(analyses, resolve_push_cops(directive), directive)
         elsif directive.pop?
           pop_state(analyses, directive.line_number) if @stack.any?
+        elsif directive.disable_file?
+          apply_disable_file(analyses, directive)
         elsif directive.disable_next?
           apply_disable_next(analyses, directive)
         elsif directive.next?
@@ -155,6 +166,17 @@ module RuboCop
           analyses[cop_name],
           DirectiveComment.new(ConfigDisabledCopDirectiveComment.new(cop_name))
         )
+      end
+    end
+
+    def apply_disable_file(analyses, directive)
+      range = DirectiveRange.new(1, Float::INFINITY, directive)
+      directive.cop_names.each do |cop_name|
+        cop_name = qualified_cop_name(cop_name)
+        analysis = analyses[cop_name]
+        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges + [range],
+                                             analysis.start_line_number,
+                                             analysis.start_directive)
       end
     end
 
@@ -199,10 +221,10 @@ module RuboCop
       end
     end
 
-    # Push/pop and next-statement directives close themselves, so they
+    # Push/pop, file, and next-statement directives close themselves, so they
     # play no part in the disable/enable pairing.
     def self_closing_directive?(directive)
-      directive.push? || directive.pop? || directive.disable_next? ||
+      directive.push? || directive.pop? || directive.disable_file? || directive.disable_next? ||
         directive.next? || directive.enable_next?
     end
 

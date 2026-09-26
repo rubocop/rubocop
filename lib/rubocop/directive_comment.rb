@@ -27,7 +27,7 @@ module RuboCop
     PUSH_POP_ARGS_PATTERN = "([+\\-]#{COP_NAME_PATTERN_NC}(?:\\s+[+\\-]#{COP_NAME_PATTERN_NC})*)"
     # @api private
     AVAILABLE_MODES = %w[disable enable todo push pop disable-next todo-next enable-next
-                         next].freeze
+                         disable-file todo-file next].freeze
     # @api private
     # Longest first, so a `-next` mode is not matched as its prefix
     # (`-` is a word boundary).
@@ -153,7 +153,12 @@ module RuboCop
 
     # Checks if this directive disables cops
     def disabled?
-      %w[disable todo].include?(mode) || disable_next?
+      %w[disable todo].include?(mode) || disable_next? || disable_file?
+    end
+
+    # Checks if this directive disables cops for the whole file
+    def disable_file?
+      %w[disable-file todo-file].include?(mode)
     end
 
     # Checks if this directive disables cops for the next statement only

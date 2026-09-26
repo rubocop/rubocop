@@ -52,6 +52,12 @@ module RuboCop
       #   # Including this, that's 3 lines on which the cop is disabled.
       #   # rubocop:enable Layout/SpaceAroundOperators
       #
+      # @example Whole-file scopes do not need a matching enable
+      #
+      #   # good
+      #   # rubocop:disable-file Layout/SpaceAroundOperators
+      #   x= 0
+      #
       class MissingCopEnableDirective < Base
         include RangeHelp
 
@@ -62,7 +68,7 @@ module RuboCop
           each_missing_enable do |cop, line_range|
             next if acceptable_range?(cop, line_range)
 
-            comment = processed_source.comment_at_line(line_range.begin)
+            comment = directive_comment(line_range)
 
             add_offense(comment, message: message(cop, comment))
           end
@@ -73,12 +79,21 @@ module RuboCop
         def each_missing_enable
           processed_source.disabled_line_ranges.each do |cop, line_ranges|
             line_ranges.each do |line_range|
-              # A `disable-next` scope closes itself with its statement.
-              next if line_range.respond_to?(:directive) && line_range.directive.disable_next?
+              # Next-statement and file scopes close themselves.
+              if line_range.respond_to?(:directive)
+                directive = line_range.directive
+                next if directive.disable_next? || directive.disable_file?
+              end
 
               yield cop, line_range
             end
           end
+        end
+
+        def directive_comment(line_range)
+          return line_range.directive.comment if line_range.respond_to?(:directive)
+
+          processed_source.comment_at_line(line_range.begin)
         end
 
         def acceptable_range?(cop, line_range)

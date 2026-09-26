@@ -93,7 +93,7 @@ module RuboCop
         end
 
         def plain_disable?(directive)
-          directive.disabled? && !directive.disable_next?
+          directive.disabled? && !directive.disable_next? && !directive.disable_file?
         end
 
         def plain_enable?(directive)
@@ -217,7 +217,7 @@ module RuboCop
           return nil unless comment
 
           closing = DirectiveComment.new(comment)
-          return nil unless closing.disabled? && !closing.disable_next?
+          return nil unless closing.disabled? && !closing.disable_next? && !closing.disable_file?
           return nil unless closing.raw_cop_names.sort == directive.raw_cop_names.sort
 
           closing
