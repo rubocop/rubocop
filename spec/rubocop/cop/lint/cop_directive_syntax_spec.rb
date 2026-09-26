@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
   it 'registers an offense for incorrect mode' do
     expect_offense(<<~RUBY)
       # rubocop:disabled Layout/LineLength
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `disable-next`, `enable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `disable-file`, `disable-next`, `enable-next`, `todo`, `todo-file`, `todo-next`, `next`, `push`, or `pop`.
     RUBY
   end
 
@@ -393,6 +393,63 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
       expect_no_offenses(<<~RUBY)
         x = 1 # rubocop:disable Style/For, Metrics/AbcSize
       RUBY
+    end
+  end
+
+  context 'with file directives' do
+    it 'accepts a file directive in the file header after shebangs, magic comments, and blanks' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        # explanatory header comment
+
+        # rubocop:disable-file Metrics/AbcSize, Metrics/MethodLength -- generated file
+        foo
+      RUBY
+    end
+
+    it 'validates missing cop names normally' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable-file
+        ^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The cop name is missing.
+      RUBY
+    end
+
+    it 'registers a placement offense without correction at the end of a code line' do
+      expect_offense(<<~RUBY)
+        foo # rubocop:disable-file Layout/LineLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ A file directive must be on its own line before any Ruby code.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers a placement offense without correction on its own line after Ruby code' do
+      expect_offense(<<~RUBY)
+        foo
+        # rubocop:disable-file Layout/LineLength -- generated below
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ A file directive must be on its own line before any Ruby code.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'accepts a `todo-file` directive in the file header' do
+      expect_no_offenses(<<~RUBY)
+        # frozen_string_literal: true
+
+        # rubocop:todo-file Metrics/AbcSize -- revisit later
+        foo
+      RUBY
+    end
+
+    it 'registers a placement offense without correction for a misplaced `todo-file`' do
+      expect_offense(<<~RUBY)
+        foo # rubocop:todo-file Layout/LineLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ A file directive must be on its own line before any Ruby code.
+      RUBY
+
+      expect_no_corrections
     end
   end
 end

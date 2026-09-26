@@ -57,7 +57,7 @@ module RuboCop
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
-        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `enable-next`, `todo`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength -- the message lists every mode and does not wrap
+        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-file`, `disable-next`, `enable-next`, `todo`, `todo-file`, `todo-next`, `next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength -- the message lists every mode and does not wrap
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MULTIPLE_DIRECTIVES_MSG = 'Only the first directive on a line takes effect. ' \
                                   'List the cop names in a single directive instead.'
@@ -67,6 +67,8 @@ module RuboCop
                                   'cop names, and `pop` takes no arguments.'
         NEXT_DIRECTIVE_AT_EOL_MSG = 'A `-next` directive must be on its own line, above the ' \
                                     'statement it applies to.'
+        FILE_DIRECTIVE_PLACEMENT_MSG = 'A file directive must be on its own line before any ' \
+                                       'Ruby code.'
         INVALID_KEYWORD_MSG = 'The directive keyword must be `rubocop`, not `%<keyword>s`.'
         UNKNOWN_COP_MSG = 'Unknown cop name `%<name>s`%<suggestion>s.'
 
@@ -100,6 +102,8 @@ module RuboCop
             add_offense(comment, message: offense_message(directive_comment))
           elsif misplaced_next_directive?(directive_comment)
             add_offense(comment, message: NEXT_DIRECTIVE_AT_EOL_MSG)
+          elsif misplaced_file_directive?(directive_comment)
+            add_offense(comment, message: FILE_DIRECTIVE_PLACEMENT_MSG)
           elsif (name = unknown_cop_name(directive_comment))
             add_offense(comment, message: unknown_cop_message(directive_comment, name))
           end
@@ -164,6 +168,11 @@ module RuboCop
         def misplaced_next_directive?(directive_comment)
           next_statement_directive?(directive_comment) &&
             !processed_source.comment_config.comment_only_line?(directive_comment.line_number)
+        end
+
+        def misplaced_file_directive?(directive_comment)
+          directive_comment.disable_file? &&
+            !processed_source.comment_config.file_directive_valid_placement?(directive_comment)
         end
 
         def next_statement_directive?(directive_comment)

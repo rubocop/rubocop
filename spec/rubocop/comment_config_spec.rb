@@ -1324,4 +1324,106 @@ RSpec.describe RuboCop::CommentConfig do
       end
     end
   end
+
+  describe 'file directives' do
+    context 'with a misplaced file directive' do
+      let(:source) do
+        <<~RUBY
+          for x in [1, 2] do x end
+          for y in [3, 4] do y end # rubocop:disable-file Style/For -- legacy file
+        RUBY
+      end
+
+      it 'suppresses the whole physical file and preserves directive provenance when misplaced' do
+        range = comment_config.cop_disabled_line_ranges['Style/For'].first
+
+        expect(range).to eq(1..Float::INFINITY)
+        expect(range.directive.line_number).to eq(2)
+        expect(range.directive.reason).to eq('legacy file')
+        expect(comment_config).not_to be_file_directive_valid_placement(range.directive)
+        expect(comment_config).not_to be_cop_enabled_at_line('Style/For', 1)
+      end
+    end
+
+    context 'with later directives for the same cop' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-file Style/For
+          # rubocop:enable Style/For
+          # rubocop:push +Style/For
+          # rubocop:enable-next Style/For
+          for x in [1, 2] do x end
+          # rubocop:pop
+          for y in [3, 4] do y end
+        RUBY
+      end
+
+      it 'does not let enable, push/pop, or enable-next narrow the file scope' do
+        expect(comment_config.cop_disabled_line_ranges['Style/For']).to include(1..Float::INFINITY)
+        expect(comment_config).not_to be_cop_enabled_at_line('Style/For', 5)
+        expect(comment_config).not_to be_cop_enabled_at_line('Style/For', 7)
+      end
+    end
+
+    context 'with duplicate and different-cop file directives' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-file Style/For -- first
+          # rubocop:disable-file Style/Not -- other cop
+          # rubocop:disable-file Style/For -- second
+          for x in [1, 2] do not x.nil? end
+        RUBY
+      end
+
+      it 'keeps distinct provenance for duplicate and different-cop file directives' do
+        for_ranges = comment_config.cop_disabled_line_ranges['Style/For']
+        not_range = comment_config.cop_disabled_line_ranges['Style/Not'].first
+
+        expect(for_ranges).to eq([1..Float::INFINITY, 1..Float::INFINITY])
+        expect(for_ranges.map { |range| range.directive.line_number }).to eq([1, 3])
+        expect(for_ranges.map { |range| range.directive.reason }).to eq(%w[first second])
+        expect(not_range.directive.line_number).to eq(2)
+      end
+    end
+
+    context 'with a file directive after header comments' do
+      let(:source) do
+        <<~RUBY
+          #!/usr/bin/env ruby
+          # frozen_string_literal: true
+          # an ordinary comment
+
+          # rubocop:disable-file Style/For
+          for x in [1, 2] do x end
+        RUBY
+      end
+
+      it 'accepts header placement after a shebang, magic comments, comments, and blank lines' do
+        directive = comment_config.cop_disabled_line_ranges['Style/For'].first.directive
+
+        expect(comment_config).to be_file_directive_valid_placement(directive)
+      end
+    end
+
+    context 'with a misplaced `todo-file` directive' do
+      let(:source) do
+        <<~RUBY
+          for x in [1, 2] do x end
+          # rubocop:todo-file Style/For -- revisit later
+          # rubocop:enable Style/For
+          for y in [3, 4] do y end
+        RUBY
+      end
+
+      it 'treats `todo-file` as an alias of `disable-file`' do
+        range = comment_config.cop_disabled_line_ranges['Style/For'].first
+
+        expect(range).to eq(1..Float::INFINITY)
+        expect(range.directive.mode).to eq('todo-file')
+        expect(range.directive.reason).to eq('revisit later')
+        expect(comment_config).not_to be_cop_enabled_at_line('Style/For', 1)
+        expect(comment_config).not_to be_cop_enabled_at_line('Style/For', 4)
+      end
+    end
+  end
 end

@@ -221,4 +221,26 @@ RSpec.describe RuboCop::Cop::Style::DirectiveScope, :config do
       # rubocop:enable Layout/LineLength
     RUBY
   end
+
+  context 'with file directives' do
+    it 'does not treat a file directive as an ordinary disable' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable-file Metrics/AbcSize
+        def foo
+        end
+        # rubocop:enable Metrics/AbcSize
+      RUBY
+    end
+
+    it 'does not treat a file directive as the re-disable half of an enable pair' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize
+        def foo
+        end
+        # rubocop:disable-file Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize
+      RUBY
+    end
+  end
 end

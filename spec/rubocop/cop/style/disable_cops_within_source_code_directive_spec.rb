@@ -455,4 +455,63 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       end
     end
   end
+
+  context 'with file directives' do
+    it 'forbids a file directive by default' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable-file Metrics/AbcSize
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        def foo; end
+      RUBY
+    end
+
+    context 'when AllowedDirectives exempts `disable-file`' do
+      let(:cop_config) { { 'AllowedDirectives' => ['disable-file'] } }
+
+      it 'allows the file directive' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable-file Metrics/AbcSize
+          def foo; end
+        RUBY
+      end
+
+      it 'still forbids a `todo-file` directive' do
+        expect_offense(<<~RUBY)
+          # rubocop:todo-file Metrics/AbcSize
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+          def foo; end
+        RUBY
+      end
+    end
+
+    context 'when AllowedDirectives exempts `todo-file`' do
+      let(:cop_config) { { 'AllowedDirectives' => ['todo-file'] } }
+
+      it 'allows the `todo-file` directive' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:todo-file Metrics/AbcSize
+          def foo; end
+        RUBY
+      end
+    end
+
+    context 'when AllowWithReason is true' do
+      let(:cop_config) { { 'AllowWithReason' => true } }
+
+      it 'allows a justified file directive' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable-file Metrics/AbcSize -- generated file
+          def foo; end
+        RUBY
+      end
+
+      it 'forbids a file directive without a reason' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable-file Metrics/AbcSize
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+          def foo; end
+        RUBY
+      end
+    end
+  end
 end
