@@ -17,6 +17,7 @@ module RuboCop
 
       def call(corrector)
         corrector.replace(offending_range, correction)
+        corrector.replace(block_node.loc.end, 'end') if block_node.braces?
       end
 
       private
