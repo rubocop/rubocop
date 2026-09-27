@@ -22,6 +22,7 @@ module RuboCop
       #     puts 'error'
       #   end
       class RescueEnsureAlignment < Base
+        include Alignment
         include RangeHelp
         include EndKeywordAlignment
         extend AutoCorrector
@@ -74,9 +75,10 @@ module RuboCop
           # Some inline node is sitting before current node.
           return nil unless whitespace.source.strip.empty?
 
-          new_column = alignment_location.column
+          indentation = alignment_indentation(alignment_location)
+          return nil if indentation.nil?
 
-          corrector.replace(whitespace, ' ' * new_column)
+          corrector.replace(whitespace, indentation)
         end
 
         def format_message(alignment_node, alignment_loc, kw_loc)
@@ -89,6 +91,17 @@ module RuboCop
             begin_loc_line: alignment_loc.line,
             begin_loc_column: alignment_loc.column
           )
+        end
+
+        # A run of spaces sized to the target column would be turned back into tabs by
+        # `Layout/IndentationStyle`, generally landing on a different column, so under
+        # tabs the target line's own indentation is reused. There is nothing to reuse
+        # when the target does not start its line.
+        def alignment_indentation(location)
+          return ' ' * location.column unless using_tabs?
+          return unless begins_its_line?(location)
+
+          location.source_line[/\A\s*/]
         end
 
         # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
