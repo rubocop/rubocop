@@ -810,6 +810,63 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:other_cops) do
+      { 'Layout/IndentationStyle' => { 'Enabled' => true, 'EnforcedStyle' => 'tabs' } }
+    end
+
+    it 'registers an offense but does not correct alignment to a nonzero column' do
+      expect_offense(<<~RUBY)
+        a = begin
+        rescue
+        ^^^^^^ `rescue` at 2, 0 is not aligned with `begin` at 1, 4.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    context 'with an indentation width of 1' do
+      let(:other_cops) do
+        {
+          'Layout/IndentationStyle' => {
+            'Enabled' => true, 'EnforcedStyle' => 'tabs', 'IndentationWidth' => 1
+          }
+        }
+      end
+
+      it 'registers an offense and corrects, since tabs can express the column' do
+        expect_offense(<<~RUBY)
+          a = begin
+          rescue
+          ^^^^^^ `rescue` at 2, 0 is not aligned with `begin` at 1, 4.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a = begin
+              rescue
+          end
+        RUBY
+      end
+    end
+
+    it 'registers an offense and corrects alignment to column zero' do
+      expect_offense(<<~RUBY)
+        begin
+          rescue
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `begin` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+        rescue
+        end
+      RUBY
+    end
+  end
+
   context 'rescue with do-end block' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

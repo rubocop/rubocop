@@ -75,8 +75,22 @@ module RuboCop
           return nil unless whitespace.source.strip.empty?
 
           new_column = alignment_location.column
+          return nil if unreachable_with_tabs?(new_column)
 
           corrector.replace(whitespace, ' ' * new_column)
+        end
+
+        def unreachable_with_tabs?(column)
+          column.positive? && using_tabs? && tab_indentation_width > 1
+        end
+
+        def using_tabs?
+          config.for_enabled_cop('Layout/IndentationStyle')['EnforcedStyle'] == 'tabs'
+        end
+
+        def tab_indentation_width
+          config.for_enabled_cop('Layout/IndentationStyle')['IndentationWidth'] ||
+            config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def format_message(alignment_node, alignment_loc, kw_loc)

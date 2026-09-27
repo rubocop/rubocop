@@ -1,0 +1,1 @@
+* [#15766](https://github.com/rubocop/rubocop/pull/15766): Fix an infinite loop between `Layout/RescueEnsureAlignment` and `Layout/IndentationStyle` when the latter enforces tabs and the keyword has to be aligned with a column other than zero. ([@viralpraxis][])
