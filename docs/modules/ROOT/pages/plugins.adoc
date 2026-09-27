@@ -68,6 +68,7 @@ If a path containing `-` is given, it will be used as is, but if we
 cannot find the file to load, we will replace `-` with `/` and try it
 again as when Bundler loads gems.
 
+[[custom-allcops-settings]]
 == Custom `AllCops` Settings
 
 A plugin can introduce its own settings under `AllCops` (for example, `rubocop-rails` provides `AllCops: TargetRailsVersion`)
@@ -94,6 +95,9 @@ plugins:
 AllCops:
   TargetFrameworkVersion: 7.1
 ----
+
+To skip cops that need a newer version of the gem than the one the setting names,
+see xref:development.adoc#honoring-a-target-version-setting[Honoring a target version setting].
 
 == Plugin Suggestions
 

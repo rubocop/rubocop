@@ -265,10 +265,21 @@ module RuboCop
         @config.target_ruby_version
       end
 
-      # Returns a gems locked versions (i.e. from Gemfile.lock or gems.locked)
-      # @returns [Gem::Version | nil] The locked gem version, or nil if the gem is not present.
+      # Returns the version of a gem in the target, by default its locked version
+      # (i.e. from Gemfile.lock or gems.locked).
+      #
+      # The requirements declared with `requires_gem` are checked against the version
+      # this method returns, so an extension that lets users state the version of its
+      # gem in `AllCops` (e.g. `TargetFrameworkVersion`) can override it for that gem,
+      # returning a `Gem::Version`, and fall back to `super` for any other gem.
+      #
+      # @param [String] gem_name
+      # @return [Gem::Version, nil] The gem version, or nil if the gem is not present.
+      #
+      # @api public
       def target_gem_version(gem_name)
-        @config.gem_versions_in_target && @config.gem_versions_in_target[gem_name]
+        gem_versions = @config.gem_versions_in_target
+        gem_versions && gem_versions[gem_name]
       end
 
       def parser_engine
@@ -605,17 +616,10 @@ module RuboCop
       end
 
       def target_satisfies_all_gem_version_requirements?
-        gem_requirements = self.class.gem_requirements
-        return true if gem_requirements.empty?
+        self.class.gem_requirements.all? do |gem_name, version_requirement|
+          gem_version = target_gem_version(gem_name)
 
-        gem_requirements.all? do |gem_name, version_req|
-          all_gem_versions_in_target = @config.gem_versions_in_target
-          next false unless all_gem_versions_in_target
-
-          gem_version_in_target = all_gem_versions_in_target[gem_name]
-          next false unless gem_version_in_target
-
-          version_req.satisfied_by?(gem_version_in_target)
+          gem_version && version_requirement.satisfied_by?(gem_version)
         end
       end
     end

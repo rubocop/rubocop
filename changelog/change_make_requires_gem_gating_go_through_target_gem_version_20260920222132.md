@@ -1,0 +1,1 @@
+* [#15732](https://github.com/rubocop/rubocop/issues/15732): Check `requires_gem` requirements against `target_gem_version`, so that an extension can honor its own target version setting under `AllCops`, like `TargetRailsVersion`, by overriding it. ([@koic][])
