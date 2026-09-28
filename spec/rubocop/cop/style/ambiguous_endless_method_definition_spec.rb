@@ -52,6 +52,19 @@ RSpec.describe RuboCop::Cop::Style::AmbiguousEndlessMethodDefinition, :config do
             end #{operator} bar
           RUBY
         end
+
+        it "registers an offense and corrects a singleton endless method followed by `#{operator}`" do
+          expect_offense(<<~RUBY, operator: operator)
+            def self.foo = true #{operator} bar
+            ^^^^^^^^^^^^^^^^^^^^^{operator}^^^^ Avoid using `#{operator}` statements with endless methods.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def self.foo
+              true
+            end #{operator} bar
+          RUBY
+        end
       end
     end
 

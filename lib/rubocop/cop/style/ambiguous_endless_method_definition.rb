@@ -39,9 +39,9 @@ module RuboCop
         # @!method ambiguous_endless_method_body(node)
         def_node_matcher :ambiguous_endless_method_body, <<~PATTERN
           ^${
-            (if _ <def _>)
-            ({and or} def _)
-            ({while until} _ def)
+            (if _ <any_def _>)
+            ({and or} any_def _)
+            ({while until} _ any_def)
           }
         PATTERN
 
@@ -57,6 +57,7 @@ module RuboCop
             correct_to_multiline(corrector, node)
           end
         end
+        alias on_defs on_def
 
         private
 
