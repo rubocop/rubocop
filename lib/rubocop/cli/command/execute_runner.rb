@@ -9,7 +9,7 @@ module RuboCop
         include Formatter::TextUtil
 
         # Combination of short and long formatter names.
-        INTEGRATION_FORMATTERS = %w[h html j json ju junit].freeze
+        INTEGRATION_FORMATTERS = %w[h html j json ju junit sa sarif].freeze
 
         self.command_name = :execute_runner
 
@@ -141,7 +141,7 @@ module RuboCop
 
         def maybe_print_corrected_source
           # Integration tools (like RubyMine) expect to have only the JSON result
-          # when specifying JSON format. Similar HTML and JUnit are targeted as well.
+          # when specifying JSON format. Similar HTML, JUnit and SARIF are targeted as well.
           # See: https://github.com/rubocop/rubocop/issues/8673
           return if INTEGRATION_FORMATTERS.include?(@options[:format])
 

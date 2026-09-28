@@ -113,4 +113,10 @@ RSpec.describe 'RuboCop::CLI --diff', :isolated_environment do # rubocop:disable
     expect(output).not_to include('--- a/example.rb')
     expect { JSON.parse($stdout.string) }.not_to raise_error
   end
+
+  it 'omits the diff when SARIF was requested' do
+    expect(cli.run(['--diff', '--format', 'sarif', 'example.rb'])).to eq(1)
+    expect(output).not_to include('--- a/example.rb')
+    expect { JSON.parse($stdout.string) }.not_to raise_error
+  end
 end
