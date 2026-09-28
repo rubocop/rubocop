@@ -428,6 +428,59 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'keeps parentheses when `Style/ConditionalAssignment` moves the operator into the branches ' \
+     'in the same pass' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+      Style/ConditionalAssignment:
+        EnforcedStyle: assign_inside_condition
+    YAML
+    source = <<~RUBY
+      a << if b
+        c(:d)
+      else
+        c(:e)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/ConditionalAssignment'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if b
+        a << c(:d)
+      else
+        a << c(:e)
+      end
+    RUBY
+  end
+
+  it 'omits parentheses inside a branch that `Style/ConditionalAssignment` does not rewrite' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+      Style/ConditionalAssignment:
+        EnforcedStyle: assign_inside_condition
+    YAML
+    source = <<~RUBY
+      if b
+        c(:d)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/ConditionalAssignment'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if b
+        c :d
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

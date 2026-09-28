@@ -1,0 +1,1 @@
+* [#15773](https://github.com/rubocop/rubocop/pull/15773): Fix an incorrect autocorrect for `Style/ConditionalAssignment` with `EnforcedStyle: assign_inside_condition` when `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: omit_parentheses` removes a branch body's parentheses in the same pass, producing invalid code such as `foo << bar :baz`. ([@viralpraxis][])
