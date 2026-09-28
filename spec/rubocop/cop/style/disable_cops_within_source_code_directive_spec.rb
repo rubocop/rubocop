@@ -523,4 +523,19 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       end
     end
   end
+
+  context 'when the obsolete AllowTrailingComment is true' do
+    let(:cop_config) { { 'AllowTrailingComment' => true } }
+
+    it 'behaves like AllowWithReason' do
+      expect_no_offenses(<<~RUBY)
+        x = 0 # rubocop:disable Layout/SpaceAroundOperators -- would misalign the table
+      RUBY
+
+      expect_offense(<<~RUBY)
+        x = 0 # rubocop:disable Layout/SpaceAroundOperators
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+      RUBY
+    end
+  end
 end
