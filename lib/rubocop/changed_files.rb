@@ -35,26 +35,31 @@ module RuboCop
       filesystem_path(git('rev-parse', '--show-toplevel').b.chomp)
     end
 
-    def modified_paths
+    def modified_paths(revision = @revision)
       # `diff.relative` would make git report paths relative to the current
       # directory rather than to the repository root.
       split_paths(
-        git('-c', 'diff.relative=false', 'diff', '--name-only', '--diff-filter=d', '-z', @revision)
+        git('-c', 'diff.relative=false', 'diff', '--name-only', '--diff-filter=d', '-z', revision)
       )
     rescue Error
-      raise unless unborn_head?
+      raise unless revision == DEFAULT_REVISION && unborn_head?
 
-      # A repository without commits has nothing to diff against, and
-      # everything in it is untracked - which is what the caller wants to hear
-      # rather than an error about `HEAD` not resolving.
-      []
+      # A repository without commits has no `HEAD` to diff against, but files
+      # can already be staged in it. Against the empty tree every one of them
+      # counts as changed, which is what the caller wants to hear rather than
+      # an error about `HEAD` not resolving.
+      modified_paths(empty_tree)
     end
 
     def unborn_head?
-      return false unless @revision == DEFAULT_REVISION
-
       _stdout, _stderr, status = Open3.capture3('git', 'rev-parse', '--verify', '--quiet', 'HEAD')
       !status.success?
+    end
+
+    # Hashed rather than hardcoded, since its id depends on the repository's
+    # object format (SHA-1 or SHA-256).
+    def empty_tree
+      git('hash-object', '-t', 'tree', '--stdin').chomp
     end
 
     def untracked_paths
