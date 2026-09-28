@@ -509,6 +509,32 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when the body abuts the opening brace' do
+      expect_offense(<<~RUBY)
+        c.each {d
+        ^^^^^^^^^ Prefer `for` over `each`.
+          f }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for _ in c do d
+          f end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when the body abuts the closing brace' do
+      expect_offense(<<~RUBY)
+        c.each { d
+        ^^^^^^^^^^ Prefer `for` over `each`.
+          f}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for _ in c do d
+          f end
+      RUBY
+    end
+
     it 'registers an offense and corrects a multiline `each` with braces and without an item' do
       expect_offense(<<~RUBY)
         c.each {

@@ -17,7 +17,7 @@ module RuboCop
 
       def call(corrector)
         corrector.replace(offending_range, correction)
-        corrector.replace(block_node.loc.end, 'end') if block_node.braces?
+        corrector.replace(block_node.loc.end, closing_keyword) if block_node.braces?
       end
 
       private
@@ -25,13 +25,27 @@ module RuboCop
       attr_reader :block_node, :collection_node, :argument_node
 
       def correction
-        if block_node.arguments?
-          format(CORRECTION_WITH_ARGUMENTS,
-                 collection: collection_node.source,
-                 variables: argument_node.children.map(&:source).join(', '))
-        else
-          format(CORRECTION_WITHOUT_ARGUMENTS, enumerable: collection_node.source)
-        end
+        keyword = if block_node.arguments?
+                    format(
+                      CORRECTION_WITH_ARGUMENTS,
+                      collection: collection_node.source,
+                      variables: argument_node.children.map(&:source).join(', ')
+                    )
+                  else
+                    format(CORRECTION_WITHOUT_ARGUMENTS, enumerable: collection_node.source)
+                  end
+
+        padding_needed?(offending_range.end_pos) ? "#{keyword} " : keyword
+      end
+
+      def closing_keyword
+        padding_needed?(block_node.loc.end.begin_pos - 1) ? ' end' : 'end'
+      end
+
+      def padding_needed?(position)
+        character = block_node.source_range.source_buffer.source[position]
+
+        !character.nil? && !character.match?(/\s/)
       end
 
       def offending_range
