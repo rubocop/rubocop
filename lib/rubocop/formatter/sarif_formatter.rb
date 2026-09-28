@@ -163,7 +163,7 @@ module RuboCop
 
       def default_level_for(file, offense, cop_class)
         severity = cop_config(file, offense)['Severity'] ||
-                   (cop_class&.lint? ? :warning : :convention)
+                   Cop::Base::DEPARTMENT_SEVERITIES.fetch(cop_class&.department, :convention)
 
         SEVERITY_LEVELS.fetch(severity.to_sym, 'warning')
       end

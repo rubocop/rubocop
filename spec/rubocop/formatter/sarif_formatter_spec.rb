@@ -185,6 +185,15 @@ RSpec.describe RuboCop::Formatter::SARIFFormatter do
         rules = run['tool']['driver']['rules']
         expect(rules.first['defaultConfiguration']['level']).to eq('note')
       end
+
+      it 'derives the rule default from the department severity' do
+        offense = RuboCop::Cop::Offense.new(:warning, location, 'Message', 'Security/Eval')
+        finish('/path/to/file.rb', [offense])
+
+        rule = run['tool']['driver']['rules'].first
+        expect(rule['defaultConfiguration']['level']).to eq('warning')
+        expect(run['results'].first['level']).to eq('warning')
+      end
     end
   end
 
