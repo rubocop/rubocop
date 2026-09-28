@@ -535,6 +535,33 @@ RSpec.describe RuboCop::CommentConfig do
       end
     end
 
+    context 'with a department' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:enable-next Style
+          for y in [3, 4] do y end
+        RUBY
+      end
+
+      it 'opts in every cop of the department' do
+        expect(comment_config.opt_in_cops).to include('Style/For', 'Style/Not')
+      end
+    end
+
+    context 'with a plain `enable` of a department' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style
+          for x in [1, 2] do x end
+          # rubocop:enable Style
+        RUBY
+      end
+
+      it 'does not opt in the cops of the department' do
+        expect(comment_config.opt_in_cops).to contain_exactly('Style')
+      end
+    end
+
     context 'with `all`' do
       let(:source) do
         <<~RUBY
@@ -711,6 +738,20 @@ RSpec.describe RuboCop::CommentConfig do
 
       it 'includes the `+` arguments, so config-disabled cops get mobilized' do
         expect(comment_config.opt_in_cops).to contain_exactly('Style/For')
+      end
+    end
+
+    describe '#opt_in_cops with a department' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:push +Style
+          for y in [3, 4] do y end
+          # rubocop:pop
+        RUBY
+      end
+
+      it 'includes every cop of the department' do
+        expect(comment_config.opt_in_cops).to include('Style/For', 'Style/Not')
       end
     end
 

@@ -1,0 +1,1 @@
+* [#15784](https://github.com/rubocop/rubocop/pull/15784): Fix `rubocop:enable-next`, `rubocop:push` and `rubocop:next` directives not running cops disabled in the configuration when given a department name. ([@bbatsov][])
