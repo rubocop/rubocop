@@ -33,6 +33,7 @@ module RuboCop
 
       define_options.parse!(args)
 
+      return_path_given_to_changed(args)
       imply_autocorrect_for_diff
 
       @validator.validate_compatibility
@@ -52,6 +53,12 @@ module RuboCop
     end
 
     private
+
+    # `--changed lib` hands the path to `--changed` as its optional argument,
+    # so it goes back among the paths to inspect.
+    def return_path_given_to_changed(args)
+      args.unshift(@path_given_to_changed) if @path_given_to_changed
+    end
 
     # `--diff` is a dry run of autocorrection, so it turns autocorrection on
     # unless the user already picked a mode with `-a`, `-A` or `-x`.
@@ -111,8 +118,11 @@ module RuboCop
         option(opts, '--ignore-unrecognized-cops')
         option(opts, '--force-default-config')
         option(opts, '--changed [REVISION]') do |revision|
+          if @validator.path_given_to_changed?(revision)
+            @path_given_to_changed = revision
+            revision = nil
+          end
           @options[:changed] = revision || ChangedFiles::DEFAULT_REVISION
-          @validator.validate_changed_revision(revision)
         end
         option(opts, '-s', '--stdin FILE')
         option(opts, '--editor-mode')
@@ -554,14 +564,16 @@ module RuboCop
     end
 
     # OptionParser hands `--changed lib/` the path as the revision, which is a
-    # natural thing to type, so point at the fix rather than at git's error.
-    def validate_changed_revision(revision)
-      return unless revision && File.exist?(revision)
+    # natural thing to type, so an argument that names an existing path is
+    # taken as one. When it also names a revision there is no telling which
+    # was meant, and git itself refuses such an argument as ambiguous.
+    def path_given_to_changed?(revision)
+      return false unless revision && File.exist?(revision)
+      return true unless ChangedFiles.revision?(revision)
 
       raise OptionArgumentError,
-            "--changed takes a git revision, but `#{revision}` is a path. Write the revision " \
-            "as `--changed=#{revision}` if that is really what you meant, or drop it to " \
-            'compare against HEAD.'
+            "--changed got `#{revision}`, which is both a path and a git revision. Write " \
+            "`./#{revision}` for the path, or `--changed=#{revision}^0` for the revision."
     end
 
     def validate_max_offenses_per_cop_option
