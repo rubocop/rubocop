@@ -123,7 +123,7 @@ module RuboCop
           return unless misplaced_encoding_position?(comment)
 
           add_offense(comment, message: MSG_ENCODING) do |corrector|
-            move_comment(corrector, comment, effective_encoding_line)
+            correct_encoding_comment(corrector, comment)
           end
         end
 
@@ -134,6 +134,25 @@ module RuboCop
           # Leave `# frozen_string_literal: true` + `# encoding: x` runs at the
           # very top to Lint/OrderedMagicComments, which already reorders them.
           !preceded_only_by_magic_comments?(comment)
+        end
+
+        # With an effective encoding comment already in place, moving another
+        # one in would override it. Drop an identical duplicate and leave a
+        # conflicting one for a human to resolve.
+        def correct_encoding_comment(corrector, comment)
+          effective_comment = effective_encoding_comment
+
+          if effective_comment.nil?
+            move_comment(corrector, comment, effective_encoding_line)
+          elsif comment_encoding(effective_comment) == comment_encoding(comment)
+            corrector.remove(comment_removal_range(comment))
+          end
+        end
+
+        def comment_encoding(comment)
+          Encoding.find(MagicComment.parse(comment.text).encoding)
+        rescue ArgumentError
+          nil
         end
 
         def check_top_block_comment(comment, directive)
@@ -204,17 +223,20 @@ module RuboCop
         end
 
         def move_comment(corrector, comment, target_line)
-          removal_range = if comment_starts_line?(comment)
-                            range_by_whole_lines(comment.source_range, include_final_newline: true)
-                          else
-                            range_with_surrounding_space(comment.source_range, side: :left)
-                          end
-          corrector.remove(removal_range)
+          corrector.remove(comment_removal_range(comment))
           target_range = processed_source.buffer.line_range(target_line)
           if comment.source_range.line < target_line
             corrector.insert_after(target_range, "\n#{comment.text}")
           else
             corrector.insert_before(target_range, "#{comment.text}\n")
+          end
+        end
+
+        def comment_removal_range(comment)
+          if comment_starts_line?(comment)
+            range_by_whole_lines(comment.source_range, include_final_newline: true)
+          else
+            range_with_surrounding_space(comment.source_range, side: :left)
           end
         end
       end
