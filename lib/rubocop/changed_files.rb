@@ -69,9 +69,12 @@ module RuboCop
     end
 
     def untracked_paths
-      # `--full-name` anchors the paths to the repository root, the way the
-      # paths from `git diff` already are.
-      split_paths(git('ls-files', '--others', '--exclude-standard', '--full-name', '-z'))
+      # Unlike `git diff`, `ls-files` only looks under the current directory, so
+      # the `:/` pathspec widens it to the whole repository, and `--full-name`
+      # anchors the paths to the repository root the way `git diff` does.
+      split_paths(
+        git('ls-files', '--others', '--exclude-standard', '--full-name', '-z', '--', ':/')
+      )
     end
 
     # The `-z` above is what makes these usable: without it git wraps any path

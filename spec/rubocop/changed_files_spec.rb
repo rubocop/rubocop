@@ -178,6 +178,12 @@ RSpec.describe RuboCop::ChangedFiles do
     Dir.chdir('lib') { expect(basenames).to eq(['modified.rb']) }
   end
 
+  it 'reports untracked files outside the current directory' do
+    write('spec/untracked_spec.rb')
+
+    Dir.chdir('lib') { expect(basenames).to eq(['untracked_spec.rb']) }
+  end
+
   context 'in a repository without any commits' do
     # The outer `before` has already committed, so start the repository over.
     before do
