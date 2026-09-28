@@ -53,7 +53,7 @@ module RuboCop
       Lint/RedundantCopDisableDirective RedundantCopDisableDirective Lint
     ].freeze
 
-    attr_reader :errors, :warnings, :diffs
+    attr_reader :errors, :warnings
     attr_writer :aborting
 
     def initialize(options, config_store)
@@ -63,8 +63,18 @@ module RuboCop
       @warnings = []
       @aborting = false
       @inspected_files = []
-      @diffs = []
+      @diff_sources = {}
       @report_queue = {}
+    end
+
+    # The `--diff` patches, one per file, from the source on disk (or stdin) to
+    # the source once every correction, redundant directive removal included,
+    # has been applied.
+    def diffs
+      @diffs ||= @diff_sources.filter_map do |file, (original_source, corrected_source)|
+        diff = UnifiedDiff.new(PathUtil.smart_path(file), original_source, corrected_source).to_s
+        diff unless diff.empty?
+      end
     end
 
     def run(paths)
@@ -324,7 +334,7 @@ module RuboCop
           # Do one extra inspection loop if any redundant disables were
           # removed. This is done in order to find rubocop:enable directives that
           # have now become useless.
-          _source, new_offenses = do_inspection_loop(file)
+          _source, new_offenses = do_inspection_loop(file, team.updated_source)
           offenses |= new_offenses
         end
       end
@@ -337,6 +347,8 @@ module RuboCop
       config = @config_store.for_file(file)
       team = Cop::Team.mobilize([Cop::Lint::RedundantCopDisableDirective], config, @options)
       return if team.cops.empty?
+
+      team.defer_corrections = @options[:diff]
 
       team.cops.first.offenses_to_check = offenses
       yield team
@@ -395,9 +407,8 @@ module RuboCop
       cache.save(offenses)
     end
 
-    def do_inspection_loop(file)
-      # We can reuse the prism result since the source did not change yet.
-      processed_source = get_processed_source(file, @prism_result)
+    def do_inspection_loop(file, source = nil)
+      processed_source = initial_processed_source(file, source)
       original_source = processed_source.raw_source
       # This variable is 2d array used to track corrected offenses after each
       # inspection iteration. This is used to output meaningful infinite loop
@@ -430,6 +441,15 @@ module RuboCop
       finalize_corrections(file, original_source, corrected_source)
     end
 
+    # `source` is the corrected source to continue from when the corrections
+    # are kept in memory rather than written to the file (`--diff`).
+    def initial_processed_source(file, source)
+      return get_processed_source(file, nil, source: source) if source
+
+      # We can reuse the prism result since the source did not change yet.
+      get_processed_source(file, @prism_result)
+    end
+
     def inspect_and_correct(processed_source, offenses_by_iteration)
       # The offenses that couldn't be corrected will be found again so we
       # only keep the corrected ones in order to avoid duplicate reporting.
@@ -453,18 +473,20 @@ module RuboCop
 
     # `--diff` reports what autocorrection would do instead of doing it. With
     # `--stdin` the corrected source is handed back through the options rather
-    # than deferred, so that is where the new source comes from.
+    # than deferred, so that is where the new source comes from. A file can go
+    # through more than one inspection loop, so the diff runs from the source
+    # the first loop started with to the one the last loop ended with.
     def record_diff(file, original_source, corrected_source)
-      new_source = @options[:stdin] || corrected_source
-      return unless original_source && new_source
+      return unless original_source
 
+      new_source = @options[:stdin] || corrected_source
       # The original source is the file as it is on disk, so the corrected one
       # has to go through the same line ending conversion `File.write` would
       # apply, or on Windows every single line reads as changed.
-      new_source = emulate_write_read_cycle(new_source)
+      new_source = new_source ? emulate_write_read_cycle(new_source) : original_source
 
-      diff = UnifiedDiff.new(PathUtil.smart_path(file), original_source, new_source).to_s
-      @diffs << diff unless diff.empty?
+      sources = (@diff_sources[file] ||= [original_source])
+      sources[1] = new_source
     end
 
     def inspect_iteration(processed_source)
