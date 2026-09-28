@@ -1139,6 +1139,20 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               end
             end
 
+            context 'when the interpolation contains a block' do
+              it 'breaks the string before the interpolation' do
+                expect_offense(<<~'RUBY')
+                  "aaaaaaaaaaaaaaaaaaaaaaaa#{bbbb.map { |c| cc(c) }}"
+                                                          ^^^^^^^^^^^ Line is too long. [51/40]
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  "aaaaaaaaaaaaaaaaaaaaaaaa" \
+                  "#{bbbb.map { |c| cc(c) }}"
+                RUBY
+              end
+            end
+
             context 'when the interpolation comes after the limit' do
               it 'breaks the string but not the interpolation' do
                 expect_offense(<<~'RUBY')

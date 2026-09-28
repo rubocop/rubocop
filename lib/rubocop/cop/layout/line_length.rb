@@ -214,6 +214,8 @@ module RuboCop
           return if receiver_contains_heredoc?(block_node)
 
           line_index = block_node.loc.line - 1
+          return if breakable_string_delimiters[line_index]
+
           range = breakable_block_range(block_node)
           pos = range.begin_pos + 1
 
