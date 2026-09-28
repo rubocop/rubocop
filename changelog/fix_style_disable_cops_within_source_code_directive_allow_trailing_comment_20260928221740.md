@@ -1,0 +1,1 @@
+* [#15784](https://github.com/rubocop/rubocop/pull/15784): Fix `Style/DisableCopsWithinSourceCodeDirective` ignoring the obsolete `AllowTrailingComment` setting instead of treating it as `AllowWithReason`. ([@bbatsov][])

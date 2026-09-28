@@ -220,6 +220,11 @@ module RuboCop
         end
 
         def allow_with_reason?
+          # TODO: The obsolete `AllowTrailingComment` is honored for backward compatibility
+          # and will be removed in RuboCop 2.0.
+          allow_trailing_comment = cop_config['AllowTrailingComment'] # rubocop:disable InternalAffairs/UndefinedConfig -- obsolete key, gone from default.yml on purpose
+          return allow_trailing_comment unless allow_trailing_comment.nil?
+
           cop_config['AllowWithReason']
         end
 
