@@ -3,9 +3,13 @@
 RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
   let(:config) do
     merged = RuboCop::ConfigLoader.default_configuration['Layout/CaseIndentation'].merge(cop_config)
-    RuboCop::Config.new('Layout/CaseIndentation' => merged,
-                        'Layout/IndentationWidth' => { 'Width' => 2 })
+    cops = { 'Layout/CaseIndentation' => merged,
+             'Layout/IndentationWidth' => { 'Width' => indentation_width } }
+
+    RuboCop::Config.new(cops.merge(other_cops))
   end
+  let(:indentation_width) { 2 }
+  let(:other_cops) { {} }
 
   context 'with EnforcedStyle: case' do
     context 'with IndentOneStep: false' do
@@ -859,6 +863,81 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
       RUBY
 
       expect_no_corrections
+    end
+  end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:other_cops) { { 'Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs' } } }
+
+    context 'with `EnforcedStyle: case` and `IndentOneStep: false`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'case', 'IndentOneStep' => false } }
+
+      it 'registers an offense and corrects `when` to the tab indentation of `case`' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        \tcase a
+        \t\twhen b
+          ^^^^ Indent `when` as deep as `case`.
+        \t\t\tc
+        \tend
+        RUBY
+
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        \tcase a
+        \twhen b
+        \t\t\tc
+        \tend
+        RUBY
+      end
+
+      it 'registers an offense but does not correct when `case` does not begin its line' do
+        expect_offense(<<~RUBY)
+          a = case b
+            when c
+            ^^^^ Indent `when` as deep as `case`.
+              d
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+    end
+
+    context 'with `IndentOneStep: true` and an indentation width of 1' do
+      let(:indentation_width) { 1 }
+      let(:cop_config) { { 'EnforcedStyle' => 'case', 'IndentOneStep' => true } }
+
+      it 'registers an offense and corrects `when` one tab past `case`' do
+        expect_offense(<<~RUBY)
+          case a
+          when b
+          ^^^^ Indent `when` one step more than `case`.
+            c
+          end
+        RUBY
+
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        case a
+        \twhen b
+          c
+        end
+        RUBY
+      end
+    end
+
+    context 'with `IndentOneStep: true`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'case', 'IndentOneStep' => true } }
+
+      it 'registers an offense but does not correct' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        \tcase a
+        \twhen b
+         ^^^^ Indent `when` one step more than `case`.
+        \t\tc
+        \tend
+        RUBY
+
+        expect_no_corrections
+      end
     end
   end
 end
