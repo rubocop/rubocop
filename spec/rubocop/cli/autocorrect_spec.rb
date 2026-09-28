@@ -491,6 +491,52 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: require_always` of `Style/EndlessMethod` with ' \
+     '`Naming/BlockForwarding`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/EndlessMethod:
+        Enabled: true
+        EnforcedStyle: require_always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo &block
+        bar(&block)
+      end
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/EndlessMethod,Naming/BlockForwarding'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(&) = bar(&)
+    RUBY
+  end
+
+  it 'corrects `EnforcedStyle: require_always` of `Style/EndlessMethod` with ' \
+     '`Style/ArgumentsForwarding`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/EndlessMethod:
+        Enabled: true
+        EnforcedStyle: require_always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo *args
+        bar(*args)
+      end
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/EndlessMethod,Style/ArgumentsForwarding'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(*) = bar(*)
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/TrailingCommaInArguments`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
