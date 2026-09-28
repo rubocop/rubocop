@@ -110,7 +110,7 @@ module RuboCop
             # A pending cop that is not enabled in this run produces no
             # offenses, so its directives cannot be judged - they typically
             # prepare the code for the moment the cop gets enabled.
-            next if pending_cop_not_run?(cop)
+            next if pending_cop_not_run?(cop) || disabled_by_preview?(cop)
 
             each_already_disabled(cop, line_ranges, &block)
             each_line_range(cop, line_ranges, &block)
@@ -126,6 +126,17 @@ module RuboCop
           cop_cfg = config.for_cop(cop)
           cop_cfg['Enabled'] == 'pending' &&
             !processed_source.registry.enabled_pending_cop?(cop_cfg, config, cop)
+        end
+
+        # A cop that only the `Preview` defaults disable runs again as soon as
+        # preview is turned off, so its directives are still needed.
+        def disabled_by_preview?(cop)
+          return false unless preview? && all_cop_names.include?(cop)
+
+          preview_defaults = ConfigLoader.default_configuration[cop]&.fetch('Preview', nil)
+          return false unless preview_defaults.is_a?(Hash) && preview_defaults['Enabled'] == false
+
+          !config.cop_enabled?(cop)
         end
 
         def each_line_range(cop, line_ranges)
