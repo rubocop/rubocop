@@ -37,8 +37,9 @@ module RuboCop
 
     def resolve_inheritance(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       inherited_files = Array(hash['inherit_from'])
-      base_configs(path, inherited_files, file)
-        .each_with_index.reverse_each do |base_config, index|
+      base_configs = base_configs(path, inherited_files, file)
+      preview = inherited_preview?(hash, base_configs)
+      base_configs.each_with_index.reverse_each do |base_config, index|
         override_department_setting_for_cops(base_config, hash)
         override_enabled_for_disabled_departments(base_config, hash)
 
@@ -50,7 +51,7 @@ module RuboCop
             v = merge(v, hash[k],
                       cop_name: k, file: file, debug: debug,
                       inherited_file: inherited_files[index],
-                      inherit_mode: determine_inherit_mode(hash, k))
+                      inherit_mode: determine_inherit_mode(hash, k, preview))
           end
           hash[k] = v
           fix_include_paths(base_config.loaded_path, hash, path, k, v) if only_base_has_include
@@ -262,10 +263,21 @@ module RuboCop
         "the same parameter in #{opts[:inherited_file]}"
     end
 
-    def determine_inherit_mode(hash, key)
+    # The `AllCops: Preview` in effect once inheritance is resolved: the file
+    # itself wins, then the files it inherits from, last one first. It has to be
+    # known before merging, since the keys are merged in whatever order they
+    # appear and `AllCops` may well come after the cops whose `Exclude` it affects.
+    def inherited_preview?(hash, base_configs)
+      all_cops = [hash, *base_configs.reverse].map { |config| config['AllCops'] }.find do |params|
+        params.is_a?(Hash) && params.key?('Preview')
+      end
+      preview?('AllCops' => all_cops)
+    end
+
+    def determine_inherit_mode(hash, key, preview)
       cop_cfg = hash[key]
       local_inherit = cop_cfg['inherit_mode'] if cop_cfg.is_a?(Hash)
-      with_preview_exclude_merge(local_inherit || hash['inherit_mode'] || {}, preview?(hash))
+      with_preview_exclude_merge(local_inherit || hash['inherit_mode'] || {}, preview)
     end
 
     def should_union?(derived_hash, base_hash, root_mode, key)

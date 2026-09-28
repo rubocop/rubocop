@@ -1,0 +1,1 @@
+* [#9325](https://github.com/rubocop/rubocop/issues/9325): Fix preview not merging an inherited `Exclude` when `AllCops: Preview` comes after the cop in an inherited file, or from an earlier file in `inherit_from`. ([@bbatsov][])
