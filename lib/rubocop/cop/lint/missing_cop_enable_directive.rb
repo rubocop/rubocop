@@ -62,7 +62,7 @@ module RuboCop
           each_missing_enable do |cop, line_range|
             next if acceptable_range?(cop, line_range)
 
-            comment = processed_source.comment_at_line(line_range.begin)
+            comment = opening_comment(line_range)
 
             add_offense(comment, message: message(cop, comment))
           end
@@ -73,12 +73,27 @@ module RuboCop
         def each_missing_enable
           processed_source.disabled_line_ranges.each do |cop, line_ranges|
             line_ranges.each do |line_range|
-              # A `disable-next` scope closes itself with its statement.
-              next if line_range.respond_to?(:directive) && line_range.directive.disable_next?
+              # A `disable-next` or `next` scope closes itself with its statement.
+              next if statement_scoped?(line_range)
 
               yield cop, line_range
             end
           end
+        end
+
+        def statement_scoped?(line_range)
+          directive = line_range.respond_to?(:directive) && line_range.directive
+          directive && (directive.disable_next? || directive.next?)
+        end
+
+        # A disable suspended by `enable-next` or `next +Cop` reopens below the
+        # statement, on a code line, so the comment that opened it has to come
+        # from the range rather than from its first line.
+        def opening_comment(line_range)
+          directive = line_range.respond_to?(:directive) && line_range.directive
+          return directive.comment if directive
+
+          processed_source.comment_at_line(line_range.begin)
         end
 
         def acceptable_range?(cop, line_range)
