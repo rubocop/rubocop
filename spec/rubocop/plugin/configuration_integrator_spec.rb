@@ -60,6 +60,24 @@ RSpec.describe RuboCop::Plugin::ConfigurationIntegrator, :isolated_environment d
         expect(all_cops_exclude.count).to eq 5
         expect(all_cops_exclude.last).to end_with('/db/*schema.rb')
       end
+
+      context 'with --preview' do
+        before { RuboCop::ConfigLoader.preview = true }
+
+        after do
+          RuboCop::ConfigLoader.preview = nil
+          RuboCop::ConfigLoader.default_configuration = nil
+        end
+
+        it 'leaves the preview defaults to be applied at resolution time' do
+          integrated_config
+          default_configuration = RuboCop::ConfigLoader.default_configuration
+
+          expect(default_configuration['AllCops']['FailLevel']).to eq('refactor')
+          expect(default_configuration['Style/Documentation']['Enabled']).to be(true)
+          expect(default_configuration['Style/Documentation']['Preview']).to eq('Enabled' => false)
+        end
+      end
     end
 
     context 'when a plugin declares a custom `AllCops` key alongside another plugin' do

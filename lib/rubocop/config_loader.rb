@@ -173,7 +173,8 @@ module RuboCop
         hash = ConfigLoader.load_yaml_configuration(path)
         config = Config.new(hash, path).tap(&:make_excludes_absolute)
 
-        @default_configuration = ConfigLoader.merge_with_default(config, path)
+        @default_configuration =
+          ConfigLoader.merge_with_default(config, path, resolve_preview: false)
       end
 
       # Returns the path RuboCop inferred as the root of the project. No file
@@ -189,8 +190,10 @@ module RuboCop
       end
 
       # Merges the given configuration with the default one.
-      def merge_with_default(config, config_file, unset_nil: true)
-        resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
+      def merge_with_default(config, config_file, unset_nil: true, resolve_preview: true)
+        resolver.merge_with_default(
+          config, config_file, unset_nil: unset_nil, resolve_preview: resolve_preview
+        )
       end
 
       # Applies CLI overrides for `AllCops/EnabledByDefault` and
