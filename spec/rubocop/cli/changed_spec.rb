@@ -65,11 +65,30 @@ RSpec.describe 'RuboCop::CLI --changed', :isolated_environment do # rubocop:disa
     expect($stdout.string.split("\n").map { |path| File.basename(path) }).to eq(['modified.rb'])
   end
 
-  it 'explains what to do when given a path instead of a revision' do
+  # OptionParser hands `lib` to `--changed` as its optional argument.
+  it 'takes a path that follows it as a path rather than a revision' do
     create_file('lib/modified.rb', offending_source)
+    create_file('spec/modified_spec.rb', offending_source)
+
+    expect(cli.run(['--changed', 'lib', '--format', 'files'])).to eq(1)
+    expect($stdout.string.split("\n").map { |path| File.basename(path) }).to eq(['modified.rb'])
+  end
+
+  it 'refuses an argument that is both a path and a revision' do
+    create_file('lib/modified.rb', offending_source)
+    git('branch', 'lib')
 
     expect(cli.run(['--changed', 'lib'])).to eq(2)
-    expect($stderr.string).to include('--changed takes a git revision, but `lib` is a path.')
+    expect($stderr.string)
+      .to include('--changed got `lib`, which is both a path and a git revision.')
+  end
+
+  it 'accepts either spelling it suggests for an ambiguous argument' do
+    create_file('lib/modified.rb', offending_source)
+    git('branch', 'lib')
+
+    expect(cli.run(['--changed', './lib', '--format', 'files'])).to eq(1)
+    expect(cli.run(['--changed=lib^0', '--format', 'files'])).to eq(1)
   end
 
   it 'cannot be combined with --stdin' do

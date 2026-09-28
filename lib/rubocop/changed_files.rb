@@ -13,6 +13,15 @@ module RuboCop
     DEFAULT_REVISION = 'HEAD'
     FILESYSTEM_ENCODING = Encoding.find('filesystem')
 
+    # Whether git can resolve `name` to a commit in the current repository.
+    def self.revision?(name)
+      _stdout, _stderr, status =
+        Open3.capture3('git', 'rev-parse', '--verify', '--quiet', "#{name}^{commit}")
+      status.success?
+    rescue Errno::ENOENT
+      false
+    end
+
     def initialize(revision = nil)
       @revision = revision || DEFAULT_REVISION
     end
@@ -52,8 +61,7 @@ module RuboCop
     end
 
     def unborn_head?
-      _stdout, _stderr, status = Open3.capture3('git', 'rev-parse', '--verify', '--quiet', 'HEAD')
-      !status.success?
+      !self.class.revision?(DEFAULT_REVISION)
     end
 
     # Hashed rather than hardcoded, since its id depends on the repository's
