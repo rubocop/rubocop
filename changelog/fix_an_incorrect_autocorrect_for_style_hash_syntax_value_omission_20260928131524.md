@@ -1,0 +1,1 @@
+* [#15772](https://github.com/rubocop/rubocop/pull/15772): Fix an incorrect autocorrect for `Style/HashSyntax` with `EnforcedStyle: hash_rockets` where expanding an omitted hash value also removed the line break that followed it. ([@viralpraxis][])

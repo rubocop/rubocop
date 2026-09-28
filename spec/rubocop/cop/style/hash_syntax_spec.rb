@@ -519,6 +519,39 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         method(:puts).(:a => 0)
       RUBY
     end
+
+    it 'registers an offense and joins a value written on the following line' do
+      expect_offense(<<~RUBY)
+        x = {
+          bb:
+          ^^^ Use hash rockets syntax.
+            cc
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = {
+          :bb =>     cc
+        }
+      RUBY
+    end
+
+    context 'Ruby >= 3.1', :ruby31 do
+      it 'registers an offense and keeps the line break following an omitted value' do
+        expect_offense(<<~RUBY)
+          cc(
+            bb:
+            ^^^ Use hash rockets syntax.
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          cc(
+            :bb => bb
+          )
+        RUBY
+      end
+    end
   end
 
   context 'configured to enforce ruby 1.9 style with no mixed keys' do
