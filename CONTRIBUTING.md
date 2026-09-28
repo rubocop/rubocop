@@ -30,6 +30,10 @@ $ rubocop -V
 * If you're adding or making changes to cops, read the [Development docs](https://docs.rubocop.org/rubocop/development.html)
 * Use a topic/feature branch to easily amend a pull request later, if necessary.
 * Write [good commit messages][3].
+* Keep AI attribution out of commit messages and pull request descriptions. That
+  means trailers like `Co-authored-by: Claude` or `Assisted-by: Codex`, and
+  "generated with" footers. Which tools you use is up to you; the history should
+  read as your work.
 * Use the same coding conventions as the rest of the project.
 * Commit and push until you are happy with your contribution.
 * If your change has a corresponding open GitHub issue, prefix the commit message with `[Fix #github-issue-number]`.
