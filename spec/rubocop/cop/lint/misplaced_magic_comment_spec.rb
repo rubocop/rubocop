@@ -42,6 +42,33 @@ RSpec.describe RuboCop::Cop::Lint::MisplacedMagicComment, :config do
     RUBY
   end
 
+  it 'registers an offense but does not autocorrect a conflicting encoding comment when an effective one exists' do
+    expect_offense(<<~RUBY)
+      # encoding: ascii-8bit
+      require 'foo'
+      # encoding: utf-8
+      ^^^^^^^^^^^^^^^^^ The `encoding` magic comment is ignored unless placed on the first line (or below a shebang on the first line).
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'removes a duplicate encoding comment when an identical effective one exists' do
+    expect_offense(<<~RUBY)
+      #!/usr/bin/env ruby
+      # -*- coding: binary -*-
+      require 'foo'
+      # encoding: ascii-8bit
+      ^^^^^^^^^^^^^^^^^^^^^^ The `encoding` magic comment is ignored unless placed on the first line (or below a shebang on the first line).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #!/usr/bin/env ruby
+      # -*- coding: binary -*-
+      require 'foo'
+    RUBY
+  end
+
   it 'registers an offense for a `frozen_string_literal` comment after code' do
     expect_offense(<<~RUBY)
       require 'foo'
