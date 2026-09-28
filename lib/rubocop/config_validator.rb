@@ -173,6 +173,7 @@ module RuboCop
     def validate_all_cops_parameters
       validate_new_cops_parameter
       validate_fail_level_parameter
+      validate_preview_parameter
     end
 
     def validate_fail_level_parameter
@@ -181,6 +182,16 @@ module RuboCop
 
       message = "invalid #{fail_level} for `FailLevel` found in #{smart_loaded_path}\n" \
                 "Valid choices are: #{Cop::Severity::NAMES.join(', ')}"
+
+      raise ValidationError, message
+    end
+
+    def validate_preview_parameter
+      preview = @config.for_all_cops['Preview']
+      return if [nil, true, false].include?(preview)
+
+      message = "invalid #{preview} for `Preview` found in #{smart_loaded_path}\n" \
+                'Valid choices are: true, false'
 
       raise ValidationError, message
     end

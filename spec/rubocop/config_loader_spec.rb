@@ -2109,6 +2109,24 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'sets a non-boolean value to `Preview`' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          AllCops:
+            Preview: enabled
+        YAML
+      end
+
+      it 'raises an error instead of treating it as off' do
+        expect do
+          load_file
+        end.to raise_error(
+          RuboCop::ValidationError,
+          /invalid enabled for `Preview` found in .*\nValid choices are: true, false/
+        )
+      end
+    end
+
     context 'sets a version to `NewCops` for `AllCops`' do
       before do
         create_file(configuration_path, <<~YAML)
