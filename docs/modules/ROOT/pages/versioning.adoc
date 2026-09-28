@@ -78,7 +78,9 @@ It gates three things:
   the next major release. Under preview those replace the current ones; an
   explicit setting in your own configuration still wins over both. `AllCops`
   can carry one as well: under preview, `FailLevel` is `warning`, so style
-  offenses are reported without failing the build.
+  offenses are reported without failing the build. Directives disabling a cop
+  that only the preview defaults turn off are not reported as redundant, since
+  they are needed again as soon as preview is off.
 +
 [source,yaml]
 ----
