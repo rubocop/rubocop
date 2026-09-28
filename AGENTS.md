@@ -263,6 +263,9 @@ Format (single line):
 - A changelog entry belongs in the same commit as the change it describes.
   Never add a changelog-only commit, including a follow-up that just fills in
   the PR number. Amend the entry into the commit it belongs to instead.
+- Never add AI attribution to a commit or a PR description: no `Co-authored-by`
+  or `Assisted-by` trailers naming a tool or model, and no "generated with"
+  footers. CONTRIBUTING.md asks the same of human contributors.
 - Run `bundle exec rake` and ensure it passes before pushing.
 
 ## Common Mistakes
