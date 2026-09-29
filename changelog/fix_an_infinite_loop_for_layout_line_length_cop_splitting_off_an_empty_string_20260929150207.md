@@ -1,0 +1,1 @@
+* [#15787](https://github.com/rubocop/rubocop/pull/15787): Fix an infinite loop for `Layout/LineLength` cop with `SplitStrings: true` when the limit falls right after a string's opening quote. ([@Starlexxx][])

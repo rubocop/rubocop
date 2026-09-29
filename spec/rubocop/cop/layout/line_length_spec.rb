@@ -1112,6 +1112,18 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             end
           end
 
+          context 'when the limit falls right after the opening quote' do
+            it 'does not split off an empty string' do
+              expect_offense(<<~RUBY)
+                foo(1,
+                       'aaa bbb ccc', dddddddddddd, '_self')
+                                                        ^^^^ Line is too long. [44/40]
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
           context 'with interpolation' do
             it 'breaks the string before the interpolation' do
               expect_offense(<<~'RUBY')
