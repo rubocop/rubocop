@@ -42,6 +42,8 @@ module RuboCop
       #     break if some_condition
       #   end
       class Loop < Base
+        include Alignment
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).'
@@ -62,7 +64,8 @@ module RuboCop
           add_offense(node.loc.keyword) do |corrector|
             corrector.replace(body.loc.begin, 'loop do')
             corrector.remove(keyword_and_condition_range(node))
-            corrector.insert_before(body.loc.end, build_break_line(node))
+
+            insert_break_line(corrector, node, body)
           end
         end
 
@@ -70,9 +73,28 @@ module RuboCop
           node.body.loc.end.end.join(node.source_range.end)
         end
 
+        def insert_break_line(corrector, node, body)
+          if body.single_line?
+            corrector.replace(space_before_end(body), build_break_line(node))
+          else
+            corrector.insert_before(body.loc.end, build_break_line(node))
+          end
+        end
+
+        def space_before_end(body)
+          range = range_with_surrounding_space(range: body.loc.end, side: :left, newlines: false)
+
+          range.with(end_pos: body.loc.end.begin_pos)
+        end
+
         def build_break_line(node)
           conditional_keyword = node.while_post_type? ? 'unless' : 'if'
-          "break #{conditional_keyword} #{node.condition.source}\n#{indent(node)}"
+          break_line = "break #{conditional_keyword} #{node.condition.source}\n#{indent(node)}"
+          return break_line unless node.body.single_line?
+
+          # A single-line `begin ... end` keeps its body and `end` on one line,
+          # so the `break` has to start a line of its own.
+          "\n#{indent(node, offset: configured_indentation_width)}#{break_line}"
         end
       end
     end

@@ -33,6 +33,32 @@ RSpec.describe RuboCop::Cop::Lint::Loop, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects for a single-line begin/end/while' do
+    expect_offense(<<~RUBY)
+      begin something end while test
+                          ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      loop do something
+        break unless test
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for a single-line begin/end/until' do
+    expect_offense(<<~RUBY)
+      begin something end until test
+                          ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      loop do something
+        break if test
+      end
+    RUBY
+  end
+
   it 'accepts loop/break unless' do
     expect_no_offenses('loop do; one; two; break unless test; end')
   end
