@@ -19,6 +19,20 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         RUBY
       end
 
+      it 'registers an offense with a unary operation' do
+        expect_offense(<<~RUBY)
+          -foo == 0
+          ^^^^^^^^^ Use `(-foo).zero?` instead of `-foo == 0`.
+          ~foo == 0
+          ^^^^^^^^^ Use `(~foo).zero?` instead of `~foo == 0`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (-foo).zero?
+          (~foo).zero?
+        RUBY
+      end
+
       it 'registers an offense with a complex expression' do
         expect_offense(<<~RUBY)
           foo - 1 == 0

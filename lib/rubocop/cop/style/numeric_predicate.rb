@@ -147,7 +147,7 @@ module RuboCop
         end
 
         def require_parentheses?(node)
-          node.send_type? && node.binary_operation? && !node.parenthesized?
+          node.send_type? && node.operator_method? && !node.parenthesized?
         end
 
         def replacement_supported?(operator)
