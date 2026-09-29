@@ -111,6 +111,12 @@ module RuboCop
           comments.map(&:source_range)
         end
 
+        def output_record_separator_ranges(ast)
+          return [] if ast.nil?
+
+          ast.each_node(:gvar).select { |gvar| gvar.source == '$\\' }.map(&:source_range)
+        end
+
         def last_line(processed_source)
           last_token = processed_source.tokens.last
 
@@ -123,7 +129,8 @@ module RuboCop
 
         def ignored_ranges
           @ignored_ranges ||= ignored_literal_ranges(processed_source.ast) +
-                              comment_ranges(processed_source.comments)
+                              comment_ranges(processed_source.comments) +
+                              output_record_separator_ranges(processed_source.ast)
         end
 
         def ignored_parent?(node)
