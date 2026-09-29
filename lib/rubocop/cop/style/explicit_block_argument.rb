@@ -74,6 +74,8 @@ module RuboCop
             block_name = extract_block_name(def_node)
 
             add_offense(block_node) do |corrector|
+              next if block_name_taken?(def_node, block_name)
+
               corrector.remove(block_body_range(block_node, send_node))
 
               add_block_argument(send_node, corrector, block_name)
@@ -90,6 +92,12 @@ module RuboCop
           else
             'block'
           end
+        end
+
+        def block_name_taken?(def_node, block_name)
+          return false if def_node.block_argument?
+
+          def_node.each_descendant(:argument, :lvasgn).any? { |node| node.name.to_s == block_name }
         end
 
         def yielding_arguments?(block_args, yield_args)

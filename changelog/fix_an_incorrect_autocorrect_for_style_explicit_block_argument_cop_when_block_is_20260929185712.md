@@ -1,0 +1,1 @@
+* [#15790](https://github.com/rubocop/rubocop/pull/15790): Fix an incorrect autocorrect for `Style/ExplicitBlockArgument` cop when the method already has an argument or local variable named `block`. ([@Starlexxx][])

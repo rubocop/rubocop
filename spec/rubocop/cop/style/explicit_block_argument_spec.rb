@@ -142,6 +142,29 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     RUBY
   end
 
+  it 'registers an offense but does not correct when the method already has an argument named `block`' do
+    expect_offense(<<~RUBY)
+      def m(scope, block = nil)
+        constraints(scope, block) { yield }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense but does not correct when the method assigns a local variable named `block`' do
+    expect_offense(<<~RUBY)
+      def m
+        block = build
+        3.times { yield }
+        ^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'registers an offense and corrects when `yield` is inside block of `super`' do
     expect_offense(<<~RUBY)
       def do_something
