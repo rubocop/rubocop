@@ -1209,4 +1209,103 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
   end
+
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      merged = RuboCop::ConfigLoader.default_configuration['Layout/BlockAlignment'].merge(cop_config)
+      RuboCop::Config.new('Layout/BlockAlignment' => merged,
+                          'Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs' })
+    end
+
+    it 'registers an offense and corrects `end` indented with spaces' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do |v|
+      \t\tv
+        end
+        ^^^ `end` at 3, 2 is not aligned with `foo do |v|` at 1, 1.
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do |v|
+      \t\tv
+      \tend
+      RUBY
+    end
+
+    it 'registers an offense and corrects `end` indented with too many tabs' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tx = foo.map do |v|
+      \t\tv
+      \t\tend
+        ^^^ `end` at 3, 2 is not aligned with `x = foo.map do |v|` at 1, 1.
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \tx = foo.map do |v|
+      \t\tv
+      \tend
+      RUBY
+    end
+
+    it 'does not register an offense when `end` is aligned with tabs' do
+      expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do |v|
+      \t\tv
+      \tend
+      RUBY
+    end
+
+    it 'registers an offense and corrects `end` with the tabs and spaces of the anchor line' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \t  foo do |v|
+      \t\tv
+      end
+      ^^^ `end` at 3, 0 is not aligned with `foo do |v|` at 1, 3.
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \t  foo do |v|
+      \t\tv
+      \t  end
+      RUBY
+    end
+
+    it 'registers an offense and corrects `end` with spaces when the anchor does not start its line' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      foo(
+      \t1, bar do |v|
+      \t\tv
+      end)
+      ^^^ `end` at 4, 0 is not aligned with `bar do |v|` at 2, 4 or `1, bar do |v|` at 2, 1.
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      foo(
+      \t1, bar do |v|
+      \t\tv
+          end)
+      RUBY
+    end
+
+    context 'when `EnforcedStyleAlignWith` is `start_of_block`' do
+      let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_block' } }
+
+      it 'registers an offense and corrects `end` with the indentation of the `do` line' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        \tx = foo
+        \t\t.map do |v|
+        \t\tv
+        \tend
+         ^^^ `end` at 4, 1 is not aligned with `.map do |v|` at 2, 2.
+        RUBY
+
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        \tx = foo
+        \t\t.map do |v|
+        \t\tv
+        \t\tend
+        RUBY
+      end
+    end
+  end
 end
