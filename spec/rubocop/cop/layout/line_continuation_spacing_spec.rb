@@ -103,6 +103,13 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationSpacing, :config do
       RUBY
     end
 
+    it 'ignores the `$\\` global variable at the end of a line' do
+      expect_no_offenses(<<~'RUBY')
+        write($\) if $\
+        nil
+      RUBY
+    end
+
     it 'ignores when too much space in front of backslash after `__END__`' do
       expect_no_offenses(<<~'RUBY')
         foo
