@@ -56,10 +56,6 @@ module RuboCop
             deprecated_config = @for_cop[deprecated_cop_name]
             next if deprecated_config.empty?
 
-            warn Rainbow(<<~WARNING).yellow
-              Warning: Using `#{deprecated_cop_name}` configuration in #{loaded_path} for `#{cop}`.
-            WARNING
-
             cop_options.merge!(@for_cop[deprecated_cop_name])
           end
         end
