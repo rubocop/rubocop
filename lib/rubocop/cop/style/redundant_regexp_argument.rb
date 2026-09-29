@@ -90,6 +90,8 @@ module RuboCop
             quote = enforce_double_quotes? ? '"' : "'"
           end
 
+          new_argument = escape_interpolation_like_text(new_argument) if quote == '"'
+
           "#{quote}#{new_argument}#{quote}"
         end
 
@@ -108,6 +110,11 @@ module RuboCop
             char.delete!('\\') unless STR_SPECIAL_CHARS.include?(char)
             char
           end.join
+        end
+
+        # `#{`, `#$` and `#@` would start an interpolation in a double-quoted string.
+        def escape_interpolation_like_text(string)
+          string.gsub(/#(?=[{$@])/) { '\#' }
         end
       end
     end

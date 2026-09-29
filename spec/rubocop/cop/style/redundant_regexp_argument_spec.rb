@@ -159,6 +159,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using an escaped `#{` after a backslash' do
+    expect_offense(<<~'RUBY')
+      'foo'.gsub(/\\\#\{/, 'x')
+                 ^^^^^^^^ Use string `"\\\#{"` as argument instead of regexp `/\\\#\{/`.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      'foo'.gsub("\\\#{", 'x')
+    RUBY
+  end
+
   it 'registers an offense and corrects when using consecutive special string chars' do
     expect_offense(<<~'RUBY')
       "foo\n\nbar\n\nbaz\n\n".split(/\n\n/)
@@ -285,6 +296,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
 
       expect_correction(<<~RUBY)
         'foo'.split("f")
+      RUBY
+    end
+
+    it 'registers an offense and corrects to double quoted string with an escaped `#{`' do
+      expect_offense(<<~'RUBY')
+        'foo'.split(/\#\{/)
+                    ^^^^^^ Use string `"\#{"` as argument instead of regexp `/\#\{/`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        'foo'.split("\#{")
+      RUBY
+    end
+
+    it 'registers an offense and corrects to double quoted string with an escaped `#$`' do
+      expect_offense(<<~'RUBY')
+        'foo'.split(/\#\$/)
+                    ^^^^^^ Use string `"\#$"` as argument instead of regexp `/\#\$/`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        'foo'.split("\#$")
       RUBY
     end
   end
