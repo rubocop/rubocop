@@ -284,7 +284,8 @@ module RuboCop
           return if source_range.last_column < max
           return unless (pos = breakable_string_range(node))
 
-          pos.end_pos unless pos.end_pos == source_range.begin_pos
+          content_begin_pos = node.loc?(:begin) ? node.loc.begin.end_pos : source_range.begin_pos
+          pos.end_pos if pos.end_pos > content_begin_pos
         end
 
         # Locate where to break a string that is too long, ensuring that escape characters
