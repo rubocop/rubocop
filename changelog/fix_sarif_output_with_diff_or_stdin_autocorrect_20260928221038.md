@@ -1,0 +1,1 @@
+* [#15782](https://github.com/rubocop/rubocop/pull/15782): Fix `--format sarif` output being followed by the diff under `--diff` or the corrected source under `--stdin --autocorrect`, which made it invalid JSON. ([@bbatsov][])

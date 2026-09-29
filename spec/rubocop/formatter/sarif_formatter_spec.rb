@@ -81,6 +81,30 @@ RSpec.describe RuboCop::Formatter::SARIFFormatter do
       )
     end
 
+    it 'gives repeated offenses of a cop on the same line text distinct fingerprints' do
+      buffer = Parser::Source::Buffer.new('/path/to/file.rb', source: "puts( 1 )\nputs( 1 )\n")
+      offenses = [[5, 6], [7, 8], [15, 16]].map do |begin_pos, end_pos|
+        range = Parser::Source::Range.new(buffer, begin_pos, end_pos)
+        RuboCop::Cop::Offense.new(:convention, range, 'Space inside parentheses detected.',
+                                  'Layout/SpaceInsideParens')
+      end
+      finish('/path/to/file.rb', offenses)
+
+      line_hash = Digest::SHA256.hexdigest('Layout/SpaceInsideParensputs( 1 )')
+      fingerprints = run['results'].map { |result| result['partialFingerprints'] }
+      expect(fingerprints.map { |fingerprint| fingerprint['primaryLocationLineHash'] })
+        .to eq([line_hash, "#{line_hash}:2", "#{line_hash}:3"])
+    end
+
+    it 'restarts the numbering in each file' do
+      formatter.file_finished('/path/to/file.rb', [offense])
+      formatter.file_finished('/path/to/other.rb', [offense])
+      formatter.finished(['/path/to/file.rb', '/path/to/other.rb'])
+
+      fingerprints = run['results'].map { |result| result['partialFingerprints'] }
+      expect(fingerprints.uniq.size).to eq(1)
+    end
+
     it 'does not mark ordinary offenses as suppressed' do
       finish
 
@@ -160,6 +184,15 @@ RSpec.describe RuboCop::Formatter::SARIFFormatter do
 
         rules = run['tool']['driver']['rules']
         expect(rules.first['defaultConfiguration']['level']).to eq('note')
+      end
+
+      it 'derives the rule default from the department severity' do
+        offense = RuboCop::Cop::Offense.new(:warning, location, 'Message', 'Security/Eval')
+        finish('/path/to/file.rb', [offense])
+
+        rule = run['tool']['driver']['rules'].first
+        expect(rule['defaultConfiguration']['level']).to eq('warning')
+        expect(run['results'].first['level']).to eq('warning')
       end
     end
   end

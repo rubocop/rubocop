@@ -2700,6 +2700,19 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       $stdin = STDIN
     end
 
+    it 'can parse SARIF result when specifying `--format=sarif` and `--stdin` options' do
+      $stdin = StringIO.new('p $/')
+      argv   = ['--autocorrect-all',
+                '--only=Style/SpecialGlobalVars',
+                '--format=sarif',
+                '--stdin',
+                'fake.rb']
+      expect(cli.run(argv)).to eq(0)
+      expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
+    ensure
+      $stdin = STDIN
+    end
+
     it 'detects CR at end of line' do
       create_file('example.rb', "puts 'hello world'\r")
       # Make Style/EndOfLine give same output regardless of platform.

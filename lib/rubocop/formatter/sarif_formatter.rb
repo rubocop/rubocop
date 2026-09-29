@@ -38,8 +38,9 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
+        line_hash_counts = Hash.new(0)
         offenses.each do |offense|
-          @results << result_for(file, offense)
+          @results << result_for(file, offense, line_hash_counts)
         end
       end
 
@@ -67,14 +68,14 @@ module RuboCop
         }
       end
 
-      def result_for(file, offense)
+      def result_for(file, offense, line_hash_counts)
         result = {
           ruleId: offense.cop_name,
           ruleIndex: rule_index_for(file, offense),
           level: SEVERITY_LEVELS.fetch(offense.severity.name, 'warning'),
           message: { text: offense.message },
           locations: [location_for(file, offense)],
-          partialFingerprints: fingerprints_for(offense)
+          partialFingerprints: fingerprints_for(offense, line_hash_counts)
         }
 
         # Suppressed offenses are only reported under `--display-suppressed`.
@@ -110,9 +111,13 @@ module RuboCop
 
       # GitHub uses these to match an alert across runs. Without them it falls
       # back to the file path, which makes alerts churn whenever a file moves.
-      def fingerprints_for(offense)
-        source_line = offense.location.source_line
-        { primaryLocationLineHash: Digest::SHA256.hexdigest("#{offense.cop_name}#{source_line}") }
+      # Repeats of the same hash within a file get a `:N` suffix, like GitHub's
+      # own fingerprints, so two offenses on one line don't merge into one alert.
+      # The first occurrence keeps the bare hash to match earlier reports.
+      def fingerprints_for(offense, line_hash_counts)
+        line_hash = Digest::SHA256.hexdigest("#{offense.cop_name}#{offense.location.source_line}")
+        count = line_hash_counts[line_hash] += 1
+        { primaryLocationLineHash: count == 1 ? line_hash : "#{line_hash}:#{count}" }
       end
 
       def suppression_for(offense)
@@ -158,7 +163,7 @@ module RuboCop
 
       def default_level_for(file, offense, cop_class)
         severity = cop_config(file, offense)['Severity'] ||
-                   (cop_class&.lint? ? :warning : :convention)
+                   Cop::Base::DEPARTMENT_SEVERITIES.fetch(cop_class&.department, :convention)
 
         SEVERITY_LEVELS.fetch(severity.to_sym, 'warning')
       end
