@@ -330,6 +330,22 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
+  it 'does not add a trailing comma when the only positional argument is followed by keyword arguments' do
+    expect_offense(<<~RUBY)
+      foo { |key,
+            ^^^^^ Block argument expression is not on the same line as the block start.
+        bar:, **|
+        baz
+      }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo { |key, bar:, **|
+        baz
+      }
+    RUBY
+  end
+
   it 'autocorrects nested parens correctly' do
     expect_offense(<<~RUBY)
       def f
