@@ -1768,6 +1768,194 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is reassigned multiple times in a conditional ' \
+          'in main body of begin then referenced in rescue' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(items)
+          step = :load
+          begin
+            unless items.empty?
+              step = :prepare
+              prepare(items)
+              step = :process
+              process(items)
+            end
+          rescue StandardError => e
+            puts "failed during \#{step}: \#{e.message}"
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is reassigned multiple times in a nested conditional ' \
+          'in main body of begin then referenced in rescue' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(items, flag)
+          step = :load
+          begin
+            unless items.empty?
+              if flag
+                step = :prepare
+                prepare(items)
+                step = :process
+                process(items)
+              end
+            end
+          rescue StandardError
+            puts step
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is reassigned multiple times in a conditional ' \
+          'in main body of begin with ensure then referenced in an outer rescue' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(flag)
+          status = :initial
+          begin
+            begin
+              if flag
+                status = :connected
+                fetch_sometimes_fails!
+                status = :fetched
+              end
+            ensure
+              cleanup
+            end
+          rescue StandardError
+            puts status
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is reassigned multiple times in a conditional ' \
+          'in main body of begin then referenced after the begin' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(flag)
+          status = :initial
+          begin
+            if flag
+              status = :connected
+              fetch_sometimes_fails!
+              status = :fetched
+            end
+          rescue StandardError
+            do_something
+          end
+
+          puts status
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is reassigned multiple times in a conditional ' \
+          'in main body of begin then referenced in ensure' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(flag)
+          status = :initial
+          begin
+            if flag
+              status = :connected
+              fetch_sometimes_fails!
+              status = :fetched
+            end
+          ensure
+            puts status
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is reassigned multiple times in a conditional ' \
+          'in main body of begin then referenced later in the main body' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method(flag)
+          begin
+            if flag
+              status = :connected
+              ^^^^^^ Useless assignment to variable - `status`.
+              fetch_sometimes_fails!
+              status = :fetched
+            end
+            puts status
+          rescue StandardError
+            do_something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag)
+          begin
+            if flag
+              :connected
+              fetch_sometimes_fails!
+              status = :fetched
+            end
+            puts status
+          rescue StandardError
+            do_something
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is reassigned multiple times in a conditional in a block ' \
+          'and the block is in main body of begin in the outer scope' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method(items, flag)
+          begin
+            items.each do
+              status = :initial
+              if flag
+                status = :connected
+                ^^^^^^ Useless assignment to variable - `status`.
+                fetch_sometimes_fails!
+                status = :fetched
+              end
+              puts status
+            end
+          rescue StandardError
+            do_something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(items, flag)
+          begin
+            items.each do
+              status = :initial
+              if flag
+                :connected
+                fetch_sometimes_fails!
+                status = :fetched
+              end
+              puts status
+            end
+          rescue StandardError
+            do_something
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is reassigned multiple times in rescue and referenced after the begin' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
