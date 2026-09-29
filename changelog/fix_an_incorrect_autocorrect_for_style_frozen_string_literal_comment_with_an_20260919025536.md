@@ -1,0 +1,1 @@
+* [#15799](https://github.com/rubocop/rubocop/pull/15799): Fix an incorrect autocorrect for `Style/FrozenStringLiteralComment` when an encoding magic comment names an encoding other than UTF-8, so that the frozen string literal comment is inserted below it. ([@koic][])

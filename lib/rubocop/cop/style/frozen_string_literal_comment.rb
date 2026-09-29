@@ -142,7 +142,8 @@ module RuboCop
           end
 
           next_token = processed_source.tokens[token_number]
-          if next_token&.text&.valid_encoding? && Encoding::ENCODING_PATTERN.match?(next_token.text)
+          if next_token&.text&.valid_encoding? &&
+             MagicComment.parse(next_token.text).encoding_specified?
             token = next_token
           end
 
