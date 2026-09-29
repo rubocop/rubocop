@@ -105,16 +105,37 @@ module RuboCop
 
           case rules.type
           when :path
-            [ConfigLoader.load_file(rules.value, check: false), rules.value]
+            config = ConfigLoader.load_file(rules.value, check: false)
+            warn_about_obsolete_config(plugin, config)
+            [config, rules.value]
           when :object
             path = plugin.method(:rules).source_location[0]
             [Config.create(rules.value, path, check: true), path]
           when :error
-            plugin_name = plugin.about&.name || plugin.inspect
             error_message = rules.value.respond_to?(:message) ? rules.value.message : rules.value
 
-            raise "Plugin `#{plugin_name}' failed to load with error: #{error_message}"
+            raise "Plugin `#{plugin_name(plugin)}' failed to load with error: #{error_message}"
           end
+        end
+
+        # Plugin configuration is loaded without validation, so an obsolete key in a plugin's
+        # defaults used to surface only later, against the user's own file, once the two had
+        # been merged. Report it here, while the path is still the plugin's, and name the
+        # plugin: the file lives inside an installed gem, so the fix is to report it upstream.
+        # It is a warning whatever the rule's severity: a stale plugin is not the user's
+        # mistake and must not stop the run.
+        def warn_about_obsolete_config(plugin, config)
+          messages = ConfigObsoletion.new(config).messages
+          return if messages.empty?
+
+          warn Rainbow(<<~WARNING).yellow
+            Warning: obsolete configuration found in the `#{plugin_name(plugin)}` plugin:
+            #{messages.join("\n")}
+          WARNING
+        end
+
+        def plugin_name(plugin)
+          plugin.about&.name || plugin.inspect
         end
 
         # This is how we ensure "first-in wins": plugins can override AllCops settings that are

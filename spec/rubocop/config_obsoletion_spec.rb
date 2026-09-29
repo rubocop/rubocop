@@ -792,4 +792,53 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
     end
   end
+
+  describe '#messages', :isolated_environment, :mock_obsoletion do
+    let(:hash) do
+      { 'Lint/ErrorCop' => { 'Enabled' => true }, 'Lint/WarningCop' => { 'Enabled' => true } }
+    end
+
+    before do
+      create_file(obsoletion_configuration_path, <<~YAML)
+        renamed:
+          Lint/ErrorCop: Lint/NewErrorCop
+          Lint/WarningCop:
+            new_name: Lint/NewWarningCop
+            severity: warning
+      YAML
+    end
+
+    it 'returns the message for every violated rule, whatever its severity, without raising' do
+      expect(config_obsoletion.messages).to contain_exactly(
+        "The `Lint/ErrorCop` cop has been renamed to `Lint/NewErrorCop`.\n" \
+        '(obsolete configuration found in example/.rubocop.yml, please update it)',
+        "The `Lint/WarningCop` cop has been renamed to `Lint/NewWarningCop`.\n" \
+        '(obsolete configuration found in example/.rubocop.yml, please update it)'
+      )
+    end
+
+    context 'when nothing is obsolete' do
+      let(:hash) { { 'Lint/NewErrorCop' => { 'Enabled' => true } } }
+
+      it 'is empty' do
+        expect(config_obsoletion.messages).to be_empty
+      end
+    end
+
+    context 'when a cop has been extracted to a gem' do
+      let(:hash) { { 'Foo/Bar' => { 'Enabled' => true } } }
+
+      before do
+        create_file(obsoletion_configuration_path, <<~YAML)
+          extracted:
+            Foo/*: rubocop-foo
+        YAML
+      end
+
+      it 'leaves it out, since the gem may be a plugin that has not loaded yet' do
+        expect { config_obsoletion.reject_obsolete! }.to raise_error(RuboCop::ValidationError)
+        expect(config_obsoletion.messages).to be_empty
+      end
+    end
+  end
 end

@@ -76,6 +76,15 @@ module RuboCop
       raise ValidationError, messages.join("\n")
     end
 
+    # Messages for every violated rule, regardless of severity, without raising.
+    # Used for configuration the user does not own (a plugin's defaults), where an
+    # obsolete key should be reported but must not stop the run. Extracted cops are
+    # left out: whether their gem is loaded is only known once every plugin has been
+    # integrated, and this is called while plugins are still loading.
+    def messages
+      rules.grep_v(ExtractedCop).select(&:violated?).map(&:message)
+    end
+
     def legacy_cop_names
       # Used by DepartmentName#qualified_legacy_cop_name
       cop_rules.map(&:old_name)
