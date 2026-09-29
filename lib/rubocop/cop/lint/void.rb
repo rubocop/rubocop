@@ -271,7 +271,14 @@ module RuboCop
           return if node.parent.type?(:if, :case, :when, :case_match, :in_pattern)
           return if (def_node = node.each_ancestor(:any_def).first) && def_node.assignment_method?
 
-          corrector.remove(range_with_surrounding_space(range: node.source_range, side: :left))
+          range = range_with_surrounding_space(range: void_expression_range(node), side: :left)
+          corrector.remove(range)
+        end
+
+        def void_expression_range(node)
+          return node.source_range unless node.respond_to?(:heredoc?) && node.heredoc?
+
+          node.source_range.join(node.loc.heredoc_end)
         end
 
         def autocorrect_nonmutating_send(corrector, node, suggestion)

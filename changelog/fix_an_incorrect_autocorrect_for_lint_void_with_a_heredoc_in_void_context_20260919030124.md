@@ -1,0 +1,1 @@
+* [#15796](https://github.com/rubocop/rubocop/pull/15796): Fix an incorrect autocorrect for `Lint/Void` when removing a heredoc in void context, so that its body and terminator are removed with it. ([@koic][])
