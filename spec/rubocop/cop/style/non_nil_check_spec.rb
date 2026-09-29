@@ -26,6 +26,23 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       RUBY
     end
 
+    it 'parenthesizes a unary-operation receiver' do
+      expect_offense(<<~RUBY)
+        !a != nil
+        ^^^^^^^^^ Prefer `!(!a).nil?` over `!a != nil`.
+        -a != nil
+        ^^^^^^^^^ Prefer `!(-a).nil?` over `-a != nil`.
+        ~a != nil
+        ^^^^^^^^^ Prefer `!(~a).nil?` over `~a != nil`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        !(!a).nil?
+        !(-a).nil?
+        !(~a).nil?
+      RUBY
+    end
+
     it 'does not register an offense for != 0' do
       expect_no_offenses('x != 0')
     end
