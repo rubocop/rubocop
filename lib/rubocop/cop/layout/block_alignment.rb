@@ -159,7 +159,7 @@ module RuboCop
           delta = start_col - loc_end.column
 
           if delta.positive?
-            add_space_before(corrector, loc_end, delta)
+            add_space_before(corrector, loc_end, delta, ancestor_node || node)
           elsif delta.negative?
             remove_space_before(corrector, loc_end.begin_pos, -delta)
           end
@@ -260,14 +260,26 @@ module RuboCop
           (ancestor_node || node).source_range.column
         end
 
-        def add_space_before(corrector, loc, delta)
-          corrector.insert_before(loc, ' ' * delta)
+        def add_space_before(corrector, loc, delta, anchor_node)
+          corrector.insert_before(loc, indentation_character(anchor_node) * delta)
         end
 
         def remove_space_before(corrector, end_pos, delta)
           range = range_between(end_pos - delta, end_pos)
 
           corrector.remove(range)
+        end
+
+        def indentation_character(anchor_node)
+          using_tabs? && aligns_with_indentation?(anchor_node) ? "\t" : ' '
+        end
+
+        def using_tabs?
+          config.for_cop('Layout/IndentationStyle')['EnforcedStyle'] == 'tabs'
+        end
+
+        def aligns_with_indentation?(anchor_node)
+          style == :start_of_block || begins_its_line?(anchor_node.source_range)
         end
 
         # When the `do` or `{` is on a continuation line of multiline method

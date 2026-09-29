@@ -1175,6 +1175,46 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     end
   end
 
+  context 'when `Layout/IndentationStyle` enforces tabs' do
+    let(:config) do
+      merged =
+        RuboCop::ConfigLoader.default_configuration['Layout/BlockAlignment'].merge(cop_config)
+      RuboCop::Config.new('Layout/BlockAlignment' => merged,
+                          'Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs' })
+    end
+
+    it 'registers an offense and indents `end` with spaces when the alignment target ' \
+       'is not at the start of its line' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      foo(
+      \t1, bar do
+      \t\tbaz
+      end)
+      ^^^ `end` at 4, 0 is not aligned with `bar do` at 2, 4 or `1, bar do` at 2, 1.
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      foo(
+      \t1, bar do
+      \t\tbaz
+          end)
+      RUBY
+    end
+
+    it 'registers an offense and indents `end` with tabs' do
+      expect_offense(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do
+      end
+      ^^^ `end` at 2, 0 is not aligned with `foo do` at 1, 1.
+      RUBY
+
+      expect_correction(<<-RUBY.gsub(/^      /, ''))
+      \tfoo do
+      \tend
+      RUBY
+    end
+  end
+
   context 'Ruby 2.7', :ruby27 do
     it 'accepts end aligned with a call chain left hand side' do
       expect_no_offenses(<<~RUBY)
