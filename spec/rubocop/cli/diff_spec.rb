@@ -97,6 +97,41 @@ RSpec.describe 'RuboCop::CLI --diff', :isolated_environment do # rubocop:disable
     $stdin = STDIN
   end
 
+  context 'with a redundant disable directive' do
+    let(:source) { <<~RUBY }
+      # frozen_string_literal: true
+
+      x = "foo" # rubocop:disable Style/Documentation
+      puts x
+    RUBY
+
+    it 'includes the directive removal in the diff without writing the file' do
+      expect(cli.run(['--diff', '--format', 'quiet', 'example.rb'])).to eq(1)
+      expect(File.read('example.rb')).to eq(source)
+      expect(output).to include(<<~DIFF)
+        --- a/example.rb
+        +++ b/example.rb
+        @@ -1,4 +1,4 @@
+         # frozen_string_literal: true
+        #{' '}
+        -x = "foo" # rubocop:disable Style/Documentation
+        +x = 'foo'
+         puts x
+      DIFF
+      expect(output.scan('--- a/example.rb').size).to eq(1)
+    end
+
+    it 'includes the directive removal in the diff of the source read from stdin' do
+      $stdin = StringIO.new(source)
+
+      expect(cli.run(['--diff', '--format', 'quiet', '--stdin', 'example.rb'])).to eq(1)
+      expect(output).to include('-x = "foo" # rubocop:disable Style/Documentation')
+      expect(output).to include("+x = 'foo'\n")
+    ensure
+      $stdin = STDIN
+    end
+  end
+
   it 'fails whatever the fail level says, since a patch means work is left' do
     expect(cli.run(['--diff', '--fail-level', 'error', '--format', 'quiet', 'example.rb'])).to eq(1)
     expect(output).to include('--- a/example.rb')
