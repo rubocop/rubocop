@@ -155,7 +155,7 @@ module RuboCop
         end
 
         def include_trailing_comma?(args)
-          arg_count = args.each_descendant(:arg).to_a.size
+          arg_count = args.each_descendant.count(&:argument_type?)
           arg_count == 1 && args.source.include?(',')
         end
       end
