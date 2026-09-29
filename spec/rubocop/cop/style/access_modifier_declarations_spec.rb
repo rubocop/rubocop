@@ -290,6 +290,18 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
 
         expect_no_corrections
       end
+
+      it "registers an offense when argument to #{access_modifier} is splat with a local variable" do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class Foo
+            method_names = %i[bar baz]
+            %{access_modifier} *method_names
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+          end
+        RUBY
+
+        expect_no_corrections
+      end
     end
 
     context 'allow access modifiers on attrs' do

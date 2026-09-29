@@ -1,0 +1,1 @@
+* [#15802](https://github.com/rubocop/rubocop/pull/15802): Fix an incorrect autocorrect for `Style/AccessModifierDeclarations` cop when the access modifier argument is a splatted local variable. ([@Starlexxx][])

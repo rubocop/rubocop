@@ -303,8 +303,12 @@ module RuboCop
             # If there isn't a `def` node for each symbol, we will skip autocorrection.
             def_nodes.size == method_names.size ? def_nodes : []
           else
-            [node.first_argument]
+            inline_definition_nodes(node)
           end
+        end
+
+        def inline_definition_nodes(node)
+          node.first_argument.splat_type? ? [] : [node.first_argument]
         end
 
         def find_argument_less_modifier_node(node)
