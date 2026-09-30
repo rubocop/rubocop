@@ -130,7 +130,7 @@ module RuboCop
 
         def operator_expression?(node)
           node.operator_keyword? ||
-            (node.send_type? && node.binary_operation?) ||
+            (node.send_type? && node.operator_method?) ||
             (node.if_type? && node.ternary?) ||
             node.type?(:range, :iflipflop, :eflipflop) ||
             node.assignment?
