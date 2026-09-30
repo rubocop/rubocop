@@ -1,0 +1,1 @@
+* [#15808](https://github.com/rubocop/rubocop/pull/15808): Fix an incorrect autocorrect for `Style/RegexpLiteral` cop escaping slashes inside an interpolation when converting `%r` to slashes. ([@Starlexxx][])

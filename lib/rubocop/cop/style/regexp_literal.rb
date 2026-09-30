@@ -174,9 +174,8 @@ module RuboCop
           cop_config['AllowInnerSlashes']
         end
 
-        def node_body(node, include_begin_nodes: false)
-          types = include_begin_nodes ? %i[str begin] : %i[str]
-          node.each_child_node(*types).map(&:source).join
+        def node_body(node)
+          node.each_child_node(:str).map(&:source).join
         end
 
         def slash_literal?(node)
@@ -219,7 +218,9 @@ module RuboCop
         end
 
         def inner_slash_indices(node)
-          text    = node_body(node, include_begin_nodes: true)
+          text = node.each_child_node(:str, :begin).map do |child|
+            child.str_type? ? child.source : ' ' * child.source.length
+          end.join
           pattern = inner_slash_before_correction(node)
           index   = -1
           indices = []
