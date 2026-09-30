@@ -2019,6 +2019,51 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects a heredoc with a method chained on the line where it is opened' do
+    expect_offense(<<~RUBY)
+      x = (<<-STRING).strip
+          ^^^^^^^^^^^ Don't use parentheses around a literal.
+        foo
+      STRING
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<-STRING.strip
+        foo
+      STRING
+    RUBY
+  end
+
+  it 'registers an offense and corrects a heredoc with a safe navigation call on the line where it is opened' do
+    expect_offense(<<~RUBY)
+      x = (<<-STRING)&.strip
+          ^^^^^^^^^^^ Don't use parentheses around a literal.
+        foo
+      STRING
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<-STRING&.strip
+        foo
+      STRING
+    RUBY
+  end
+
+  it 'registers an offense and corrects a heredoc followed by a binary operator on the line where it is opened' do
+    expect_offense(<<~RUBY)
+      x = (<<-STRING) + 'bar'
+          ^^^^^^^^^^^ Don't use parentheses around a literal.
+        foo
+      STRING
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<-STRING + 'bar'
+        foo
+      STRING
+    RUBY
+  end
+
   context 'when the reparse check is skipped for a large scope' do
     before { stub_const('RuboCop::Cop::ReparsedEquivalence::MAX_VERIFICATION_FRAGMENT_SIZE', 0) }
 
@@ -2054,6 +2099,51 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
           foo
         STRING
         )[0]
+      RUBY
+    end
+
+    it 'registers an offense and corrects a heredoc with a method chained on the line where it is opened' do
+      expect_offense(<<~RUBY)
+        x = (<<-STRING).strip
+            ^^^^^^^^^^^ Don't use parentheses around a literal.
+          foo
+        STRING
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<-STRING.strip
+          foo
+        STRING
+      RUBY
+    end
+
+    it 'registers an offense and corrects a heredoc followed by a binary operator on the line where it is opened' do
+      expect_offense(<<~RUBY)
+        x = (<<-STRING) + 'bar'
+            ^^^^^^^^^^^ Don't use parentheses around a literal.
+          foo
+        STRING
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<-STRING + 'bar'
+          foo
+        STRING
+      RUBY
+    end
+
+    it 'registers an offense and corrects a heredoc followed by an index on the line where it is opened' do
+      expect_offense(<<~RUBY)
+        x = (<<-STRING)[0]
+            ^^^^^^^^^^^ Don't use parentheses around a literal.
+          foo
+        STRING
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<-STRING[0]
+          foo
+        STRING
       RUBY
     end
   end
