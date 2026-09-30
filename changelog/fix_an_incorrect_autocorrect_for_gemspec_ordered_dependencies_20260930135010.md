@@ -1,0 +1,1 @@
+* [#15818](https://github.com/rubocop/rubocop/pull/15818): Fix an incorrect autocorrect for `Gemspec/OrderedDependencies` when the same dependency declaration appears more than once in the gemspec. ([@viralpraxis][])

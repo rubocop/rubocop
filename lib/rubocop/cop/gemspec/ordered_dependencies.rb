@@ -80,12 +80,6 @@ module RuboCop
 
         private
 
-        def previous_declaration(node)
-          declarations = dependency_declarations(processed_source.ast)
-          node_index = declarations.find_index(node)
-          declarations.to_a[node_index - 1]
-        end
-
         def get_dependency_name(node)
           node.method_name
         end

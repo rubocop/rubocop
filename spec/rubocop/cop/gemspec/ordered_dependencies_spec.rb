@@ -131,4 +131,34 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
       RUBY
     end
   end
+
+  context 'when both branches of a conditional declare the same dependencies' do
+    it 'sorts each branch independently' do
+      expect_offense(<<~RUBY)
+        Gem::Specification.new do |spec|
+          if spec.respond_to?(:specification_version)
+            spec.add_dependency('rubocop', '>= 1.0')
+            spec.add_dependency('rspec', '>= 3.0')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Dependencies should be sorted in an alphabetical order within their section of the gemspec. Dependency `rspec` should appear before `rubocop`.
+          else
+            spec.add_dependency('rubocop', '>= 1.0')
+            spec.add_dependency('rspec', '>= 3.0')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Dependencies should be sorted in an alphabetical order within their section of the gemspec. Dependency `rspec` should appear before `rubocop`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Gem::Specification.new do |spec|
+          if spec.respond_to?(:specification_version)
+            spec.add_dependency('rspec', '>= 3.0')
+            spec.add_dependency('rubocop', '>= 1.0')
+          else
+            spec.add_dependency('rspec', '>= 3.0')
+            spec.add_dependency('rubocop', '>= 1.0')
+          end
+        end
+      RUBY
+    end
+  end
 end
