@@ -331,6 +331,31 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       RUBY
     end
 
+    it 'accepts a closing brace aligned with the line the opening brace is on' do
+      expect_no_offenses(<<~RUBY)
+        foo
+          .bar {
+        baz
+          }
+      RUBY
+    end
+
+    it 'registers an offense when a closing brace sharing its line with the body ' \
+       'sits at the opening brace line indentation' do
+      expect_offense(<<~RUBY)
+        foo
+          .c {
+        b }
+         ^ Space inside } detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+          .c {
+        b}
+      RUBY
+    end
+
     it 'registers an offense and corrects a multiline block without block parameters ' \
        'and a space before the closing brace' do
       expect_offense(<<~RUBY)

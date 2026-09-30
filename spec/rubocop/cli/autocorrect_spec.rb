@@ -4658,6 +4658,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/SpaceInsideBlockBraces` and ' \
+     '`Layout/BlockAlignment` when the block is a leading-dot chain' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/BlockAlignment:
+        EnforcedStyleAlignWith: start_of_block
+      Layout/SpaceInsideBlockBraces:
+        EnforcedStyle: no_space
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      a
+        .c {
+      d
+      }
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only',
+                      'Layout/BlockAlignment,Layout/SpaceInsideBlockBraces'])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      a
+        .c {
+      d
+        }
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/EmptyLinesAroundBlockBody` and `Layout/BlockAlignment`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/EmptyLinesAroundBlockBody:
