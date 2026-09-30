@@ -123,16 +123,8 @@ module RuboCop
           AlignmentCorrector.align_end(corrector, processed_source, node, alignment_node(node))
         end
 
-        # rubocop:disable-next Metrics/CyclomaticComplexity
         def check_assignment(node, rhs)
-          # If there are method calls chained to the right hand side of the
-          # assignment, we let rhs be the receiver of those method calls before
-          # we check if it's an if/unless/while/until.
-          return unless (rhs = first_part_of_call_chain(rhs))
-
-          # If `rhs` is a `begin` node or a logical operator,
-          # unwrap to find the leading conditional.
-          rhs = rhs.child_nodes.first while rhs&.type?(:begin, :or, :and)
+          rhs = leading_node(rhs)
 
           return unless rhs&.conditional?
           return if rhs.if_type? && rhs.ternary?
@@ -149,6 +141,16 @@ module RuboCop
 
           check_end_kw_alignment(inner_node, align_with)
           ignore_node(inner_node)
+        end
+
+        def leading_node(rhs)
+          # If there are method calls chained to the right hand side of the assignment,
+          # we let rhs be the receiver of those method calls.
+          rhs = first_part_of_call_chain(rhs)
+
+          # If `rhs` is a `begin` node or a logical operator, unwrap to find the leading node.
+          rhs = rhs.child_nodes.first while rhs&.type?(:begin, :or, :and)
+          rhs
         end
 
         def asgn_variable_align_with(outer_node, inner_node)
@@ -207,7 +209,11 @@ module RuboCop
 
         def assignment_or_operator_method(node)
           node.ancestors.find do |ancestor|
-            ancestor.assignment_or_similar? || (ancestor.send_type? && ancestor.operator_method?)
+            if ancestor.assignment_or_similar?
+              leading_node(extract_rhs(ancestor)).equal?(node)
+            elsif ancestor.send_type? && ancestor.operator_method?
+              !leading_node(ancestor).equal?(node)
+            end
           end
         end
       end
