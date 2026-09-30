@@ -1403,6 +1403,57 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
+    it 'does not register an offense for a key spanning multiple lines' do
+      expect_no_offenses(<<~RUBY)
+        {
+          foo => 1,
+          [
+            bar,
+            baz
+          ] => 2,
+          qux => 3
+        }
+      RUBY
+    end
+
+    it 'registers an offense and corrects single line keys when another key spans multiple lines' do
+      expect_offense(<<~RUBY)
+        {
+          foo => 1,
+          [
+            bar,
+            baz
+          ] => 2,
+          quux => 3
+          ^^^^^^^^^ Align the separators of a hash literal if they span more than one line.
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {
+          foo => 1,
+          [
+            bar,
+            baz
+          ] => 2,
+         quux => 3
+        }
+      RUBY
+    end
+
+    it 'does not register an offense when the first key spans multiple lines' do
+      expect_no_offenses(<<~RUBY)
+        {
+          [
+            bar,
+            baz
+          ] => 2,
+          foo => 1,
+          quux => 3
+        }
+      RUBY
+    end
+
     it 'accepts hashes with different separators' do
       expect_no_offenses(<<~RUBY)
         {a: 1,
