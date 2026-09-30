@@ -31,5 +31,6 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout, :conf
     let(:open) { '(' }
     let(:close) { ')' }
     let(:multi_prefix) { 'b: ' }
+    let(:after_heredoc) { 'c: 1' }
   end
 end

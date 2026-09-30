@@ -15,6 +15,7 @@ module RuboCop
         # If the last node is or contains a conflicting HEREDOC, we don't want
         # to adjust the brace layout because this will result in invalid code.
         return if last_line_heredoc?(node.children.last)
+        return if heredoc_opened_on_closing_brace_line?(node)
 
         check(node)
       end
@@ -135,6 +136,14 @@ module RuboCop
         return false unless node.respond_to?(:children)
 
         node.children.any? { |child| last_line_heredoc?(child, parent) }
+      end
+
+      def heredoc_opened_on_closing_brace_line?(node)
+        closing_brace_line = node.loc.end.line
+
+        node.each_descendant(:any_str).any? do |str|
+          str.heredoc? && str.first_line == closing_brace_line
+        end
       end
     end
   end

@@ -24,6 +24,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     let(:a) { 'a: 1' }
     let(:b) { 'b: 2' }
     let(:multi_prefix) { 'b: ' }
+    let(:after_heredoc) { 'c: 2' }
     let(:multi) do
       <<~RUBY.chomp
         [
