@@ -114,4 +114,26 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       !(a || b)
     RUBY
   end
+
+  it 'parenthesizes when `not` is applied to a unary `~`' do
+    expect_offense(<<~RUBY)
+      x = (not ~a)
+           ^^^ Use `!` instead of `not`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = (!(~a))
+    RUBY
+  end
+
+  it 'does not parenthesize when `not` is applied to a method call on a unary `~`' do
+    expect_offense(<<~RUBY)
+      not (~a).zero?
+      ^^^ Use `!` instead of `not`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(~a).zero?
+    RUBY
+  end
 end
