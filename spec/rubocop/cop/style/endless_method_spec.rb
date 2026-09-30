@@ -1045,4 +1045,118 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       RUBY
     end
   end
+
+  context 'when the body is a command that an endless method body cannot hold', :ruby30 do
+    let(:cop_config) { { 'EnforcedStyle' => 'require_always' } }
+
+    it 'does not register an offense for an assignment whose value is a command call' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          @foo ||= bar baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a chained assignment whose value is a command call' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          foo = @foo = bar baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for an assignment whose value is a command call with a `rescue` modifier' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          @foo = bar baz rescue nil
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for an assignment whose value is a `yield` with arguments' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          @foo = yield baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a setter whose value is a command call' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          obj.foo = bar baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for an assignment whose value is a command call with a block' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          @foo = bar baz { qux }
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a command call with a `do` block' do
+      expect_no_offenses(<<~RUBY)
+        def foo(x)
+          bar x do
+            baz
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a method call on a command call with a `do` block' do
+      expect_no_offenses(<<~RUBY)
+        def foo(x)
+          bar x do
+            baz
+          end.qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense for an assignment whose value is a parenthesized call' do
+      expect_offense(<<~RUBY)
+        def foo
+        ^^^^^^^ Use endless method definitions.
+          @foo ||= bar(baz)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo = @foo ||= bar(baz)
+      RUBY
+    end
+
+    it 'registers an offense for a parenthesized call with a `do` block' do
+      expect_offense(<<~RUBY)
+        def foo(x)
+        ^^^^^^^^^^ Use endless method definitions.
+          bar(x) do
+            baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(x) = bar(x) do
+            baz
+          end
+      RUBY
+    end
+
+    context 'with `EnforcedStyle: require_single_line`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'require_single_line' } }
+
+      it 'does not register an offense for an assignment whose value is a command call' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            @foo ||= bar baz
+          end
+        RUBY
+      end
+    end
+  end
 end
