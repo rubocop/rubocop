@@ -40,7 +40,7 @@ module RuboCop
           OrderedGemCorrector.correct(
             processed_source,
             current,
-            previous_declaration(current),
+            previous,
             treat_comments_as_separators
           ).call(corrector)
         end

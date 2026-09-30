@@ -51,14 +51,6 @@ module RuboCop
           end
         end
 
-        private
-
-        def previous_declaration(node)
-          declarations = gem_declarations(processed_source.ast)
-          node_index = declarations.map(&:location).find_index(node.location)
-          declarations.to_a[node_index - 1]
-        end
-
         # @!method gem_declarations(node)
         def_node_search :gem_declarations, <<~PATTERN
           (:send nil? :gem str ...)
