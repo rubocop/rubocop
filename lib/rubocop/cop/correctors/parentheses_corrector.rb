@@ -21,14 +21,53 @@ module RuboCop
           corrector.insert_after(node.loc.end, ' ')
         end
 
+        def heredoc_strands_code_after_close_paren?(node)
+          return false unless heredoc_body_before_close_paren?(node)
+
+          after_paren = text_after_close_paren(node)
+
+          !after_paren.empty? && !after_paren.start_with?('.', '&.', ',')
+        end
+
         private
 
         # When the line above `)` ends with a comment and a chained call follows `)`,
         # crossing the newline would pull the chain into the comment. Preserve the newline.
+        # When a heredoc body comes before `)`, a chained call has to start on the line
+        # after the terminator instead, since the terminator must stay alone on its line.
         def remove_close_paren(corrector, node, buffer)
-          newlines = !comment_above_close_paren_swallows_chain?(node, buffer)
-          corrector.remove(range_with_surrounding_space(range: node.loc.end, buffer: buffer,
-                                                        side: :left, newlines: newlines))
+          if heredoc_above_close_paren_swallows_chain?(node)
+            range = range_with_surrounding_space(range: node.loc.end, buffer: buffer, side: :left)
+
+            corrector.replace(range, "\n")
+          else
+            newlines = !comment_above_close_paren_swallows_chain?(node, buffer)
+            range = range_with_surrounding_space(
+              range: node.loc.end, buffer: buffer, side: :left, newlines: newlines
+            )
+
+            corrector.remove(range)
+          end
+        end
+
+        def heredoc_above_close_paren_swallows_chain?(node)
+          return false unless heredoc_body_before_close_paren?(node)
+
+          text_after_close_paren(node).start_with?('.', '&.')
+        end
+
+        def heredoc_body_before_close_paren?(node)
+          return false unless (last_child = node.children.last)
+
+          last_child.each_node(:any_str).any? do |str_node|
+            str_node.heredoc? && str_node.loc.heredoc_end.end_pos > last_child.source_range.end_pos
+          end
+        end
+
+        def text_after_close_paren(node)
+          close_paren = node.loc.end
+
+          close_paren.source_line[(close_paren.column + 1)..].to_s.lstrip
         end
 
         def comment_above_close_paren_swallows_chain?(node, buffer)
@@ -46,12 +85,8 @@ module RuboCop
         end
 
         def chained_after_close_paren?(node)
-          close_paren = node.loc.end
-          line_text = close_paren.source_line
-          after_paren = line_text[(close_paren.column + 1)..]
-          return false if after_paren.nil?
+          trimmed = text_after_close_paren(node)
 
-          trimmed = after_paren.lstrip
           !trimmed.empty? && !trimmed.start_with?('#')
         end
 

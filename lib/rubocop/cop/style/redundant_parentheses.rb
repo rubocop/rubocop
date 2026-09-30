@@ -66,7 +66,8 @@ module RuboCop
             rescue?(node) ||
             in_pattern_matching_in_method_argument?(node) ||
             allowed_pin_operator?(node) ||
-            allowed_expression?(node)
+            allowed_expression?(node) ||
+            ParenthesesCorrector.heredoc_strands_code_after_close_paren?(node)
         end
 
         def ignore_syntax?(node)

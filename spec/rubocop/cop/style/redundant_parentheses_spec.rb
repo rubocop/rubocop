@@ -1984,6 +1984,80 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects a heredoc with a method chained after its terminator' do
+    expect_offense(<<~RUBY)
+      x = (<<-STRING
+          ^^^^^^^^^^ Don't use parentheses around a literal.
+        foo
+      STRING
+      ).strip
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<-STRING
+        foo
+      STRING
+      .strip
+    RUBY
+  end
+
+  it 'registers an offense and corrects a heredoc with a method chained after a blank line below its terminator' do
+    expect_offense(<<~RUBY)
+      x = (<<-STRING
+          ^^^^^^^^^^ Don't use parentheses around a literal.
+        foo
+      STRING
+
+      ).strip
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<-STRING
+        foo
+      STRING
+      .strip
+    RUBY
+  end
+
+  context 'when the reparse check is skipped for a large scope' do
+    before { stub_const('RuboCop::Cop::ReparsedEquivalence::MAX_VERIFICATION_FRAGMENT_SIZE', 0) }
+
+    it 'registers an offense and corrects a heredoc with a method chained after its terminator' do
+      expect_offense(<<~RUBY)
+        x = (<<-STRING
+            ^^^^^^^^^^ Don't use parentheses around a literal.
+          foo
+        STRING
+        ).strip
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<-STRING
+          foo
+        STRING
+        .strip
+      RUBY
+    end
+
+    it 'does not register an offense for a heredoc followed by a binary operator after its terminator' do
+      expect_no_offenses(<<~RUBY)
+        x = (<<-STRING
+          foo
+        STRING
+        ) + 'bar'
+      RUBY
+    end
+
+    it 'does not register an offense for a heredoc followed by an index after its terminator' do
+      expect_no_offenses(<<~RUBY)
+        x = (<<-STRING
+          foo
+        STRING
+        )[0]
+      RUBY
+    end
+  end
+
   it 'registers an offense and corrects an array of multiple heredocs' do
     expect_offense(<<~RUBY)
       [
