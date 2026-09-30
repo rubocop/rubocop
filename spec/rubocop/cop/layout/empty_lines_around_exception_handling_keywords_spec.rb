@@ -315,6 +315,74 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, 
     else foo end
   RUBY
 
+  it 'registers an offense for an empty line between an empty `rescue` and `end` in a block' do
+    expect_offense(<<~RUBY)
+      do_something do
+        foo
+      rescue
+
+      #{message} after the `rescue`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something do
+        foo
+      rescue
+      end
+    RUBY
+  end
+
+  context 'when `Layout/EmptyLinesAroundBlockBody` is `EnforcedStyle: empty_lines`' do
+    let(:other_cops) do
+      { 'Layout/EmptyLinesAroundBlockBody' => { 'EnforcedStyle' => 'empty_lines' } }
+    end
+
+    it_behaves_like 'accepts', 'an empty line between an empty `rescue` and `end` in a block', <<~RUBY
+      do_something do
+        foo
+      rescue
+
+      end
+    RUBY
+
+    it 'registers an offense for an empty line between an empty `ensure` and `end` in a method definition' do
+      expect_offense(<<~RUBY)
+        def do_something
+          foo
+        ensure
+
+        #{message} after the `ensure`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def do_something
+          foo
+        ensure
+        end
+      RUBY
+    end
+
+    it 'registers an offense for an empty line between an empty `rescue` and `end` in a `begin` block' do
+      expect_offense(<<~RUBY)
+        begin
+          foo
+        rescue
+
+        #{message} after the `rescue`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          foo
+        rescue
+        end
+      RUBY
+    end
+  end
+
   it 'with complex begin-end - registers many offenses' do
     expect_offense(<<~RUBY)
       begin
