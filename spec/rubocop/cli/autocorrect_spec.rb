@@ -4931,6 +4931,19 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RedundantRegexpEscape` with `Style/RegexpLiteral` changing the delimiters' do
+    create_file('example.rb', <<~'RUBY')
+      RE = /a([^\}]*)<\/b/
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/RedundantRegexpEscape,Style/RegexpLiteral'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~'RUBY')
+      RE = /a([^}]*)<\/b/
+    RUBY
+  end
+
   it 'handles `Lint/LiteralInInterpolation`, `Lint/ArrayLiteralInRegexp`, `Style/RedundantRegexpCharacterClass`' \
      'and `Style/RedundantRegexpEscape` together' do
     source_file = Pathname('example.rb')
