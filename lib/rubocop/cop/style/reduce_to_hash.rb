@@ -183,7 +183,7 @@ module RuboCop
         end
 
         def adjusted_source(expr_node, block_node)
-          source = expr_node.source
+          source = element_source(expr_node)
           return source unless block_node.numblock_type?
           return source if block_node.method?(:each_with_object)
 
@@ -193,6 +193,22 @@ module RuboCop
 
         def indent(node)
           ' ' * node.source_range.column
+        end
+
+        def element_source(expr_node)
+          if command_call?(expr_node) || expr_node.assignment? || expr_node.rescue_type?
+            return "(#{expr_node.source})"
+          end
+          return "[#{expr_node.source}]" if expr_node.array_type? && !expr_node.bracketed?
+
+          expr_node.source
+        end
+
+        def command_call?(node)
+          node = node.send_node if node.any_block_type?
+          return false unless node.type?(:call, :super, :yield)
+
+          node.arguments? && !node.parenthesized? && !node.operator_method? && !node.setter_method?
         end
       end
     end

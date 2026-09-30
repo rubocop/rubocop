@@ -203,6 +203,96 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
       end
     end
 
+    context 'when the key or the value cannot be an array element as it is' do
+      it 'parenthesizes a value that is a command call' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) { |elem, hash| hash[elem.id] = do_something elem }
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem.id, (do_something elem)] }
+        RUBY
+      end
+
+      it 'parenthesizes a key that is a command call with a receiver' do
+        expect_offense(<<~RUBY)
+          array.reduce({}) { |hash, elem| hash[obj.do_something elem] = elem.name; hash }
+                ^^^^^^ Use `to_h { ... }` instead of `reduce`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [(obj.do_something elem), elem.name] }
+        RUBY
+      end
+
+      it 'parenthesizes a value that is a `yield` with arguments' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) { |elem, hash| hash[elem.id] = yield elem }
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem.id, (yield elem)] }
+        RUBY
+      end
+
+      it 'wraps a value that is an array without brackets in brackets' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) { |elem, hash| hash[elem.id] = elem.name, elem.value }
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem.id, [elem.name, elem.value]] }
+        RUBY
+      end
+
+      it 'wraps a value that is a splat without brackets in brackets' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) { |elem, hash| hash[elem.id] = *elem }
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem.id, [*elem]] }
+        RUBY
+      end
+
+      it 'parenthesizes a value that is an assignment' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) { |elem, hash| hash[elem.id] = x = do_something elem }
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem.id, (x = do_something elem)] }
+        RUBY
+      end
+
+      it 'parenthesizes a value that has a `rescue` modifier' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) { |elem, hash| hash[elem.id] = do_something(elem) rescue nil }
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem.id, (do_something(elem) rescue nil)] }
+        RUBY
+      end
+
+      it 'does not parenthesize a key that is an operator method call or a value that is a parenthesized call' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) { |elem, hash| hash[elem.id + 1] = do_something(elem) }
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem.id + 1, do_something(elem)] }
+        RUBY
+      end
+    end
+
     context 'with numbered parameters', :ruby27 do
       it 'registers an offense and corrects each_with_object with numbered params' do
         expect_offense(<<~RUBY)
