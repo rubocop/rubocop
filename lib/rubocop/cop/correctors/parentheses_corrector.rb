@@ -59,8 +59,10 @@ module RuboCop
         def heredoc_body_before_close_paren?(node)
           return false unless (last_child = node.children.last)
 
+          close_paren_pos = node.loc.end.begin_pos
+
           last_child.each_node(:any_str).any? do |str_node|
-            str_node.heredoc? && str_node.loc.heredoc_end.end_pos > last_child.source_range.end_pos
+            str_node.heredoc? && str_node.loc.heredoc_end.end_pos <= close_paren_pos
           end
         end
 
