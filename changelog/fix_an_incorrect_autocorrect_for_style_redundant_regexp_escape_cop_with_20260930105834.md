@@ -1,0 +1,1 @@
+* [#15810](https://github.com/rubocop/rubocop/pull/15810): Fix an incorrect autocorrect for `Style/RedundantRegexpEscape` cop when `Style/RegexpLiteral` changes the delimiters of the same regexp in the same pass. ([@Starlexxx][])

@@ -43,6 +43,10 @@ module RuboCop
         ALLOWED_OUTSIDE_CHAR_CLASS_METACHAR_ESCAPES = '.*+?{}()|$'.chars.freeze
         INTERPOLATION_SIGILS = %w[@ $].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::RegexpLiteral]
+        end
+
         def on_regexp(node)
           each_escape(node) do |char, index, within_character_class|
             next if char.valid_encoding? && allowed_escape?(node, char, index,
