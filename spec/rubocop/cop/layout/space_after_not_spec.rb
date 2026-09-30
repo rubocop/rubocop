@@ -43,6 +43,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot, :config do
     expect_no_offenses('not something')
   end
 
+  it 'accepts space after ! when the argument is a unary `~`' do
+    expect_no_offenses('! ~something')
+  end
+
+  it 'registers an offense and corrects space after ! when the argument is a method call on a parenthesized unary `~`' do
+    expect_offense(<<~RUBY)
+      ! (~something).zero?
+      ^^^^^^^^^^^^^^^^^^^^ Do not leave space between `!` and its argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(~something).zero?
+    RUBY
+  end
+
   it 'registers an offense and corrects space after ! with ' \
      'the negated receiver wrapped in parentheses' do
     expect_offense(<<~RUBY)
