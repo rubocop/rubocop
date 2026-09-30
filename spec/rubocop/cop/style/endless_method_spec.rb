@@ -700,6 +700,53 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when a comment follows the signature' do
+        expect_no_offenses(<<~RUBY)
+          def my_method # comment
+            x
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when a comment precedes the body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            # comment
+            x
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when a comment follows the body' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x # comment
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when a comment sits between the body and `end`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+            # comment
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when a comment follows `end`' do
+        expect_offense(<<~RUBY)
+          def my_method
+          ^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            x
+          end # comment
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method = x # comment
+        RUBY
+      end
     end
 
     context 'EnforcedStyle: require_always' do
@@ -1015,6 +1062,29 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
           def my_method(a, b) = x.foo
              .bar
              .baz
+        RUBY
+      end
+
+      it 'registers an offense and corrects when a comment sits inside the body' do
+        expect_offense(<<~RUBY)
+          def my_method
+          ^^^^^^^^^^^^^ Use endless method definitions.
+            x( # comment
+              1)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method = x( # comment
+              1)
+        RUBY
+      end
+
+      it 'does not register an offense when a comment follows unparenthesized arguments' do
+        expect_no_offenses(<<~RUBY)
+          def my_method a # comment
+            x
+          end
         RUBY
       end
     end

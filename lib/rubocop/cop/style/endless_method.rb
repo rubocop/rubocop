@@ -231,7 +231,7 @@ module RuboCop
             corrector.replace(signature_to_body_range(node), ' = ')
           end
 
-          corrector.remove(node.body.source_range.end.join(node.loc.end.end))
+          corrector.remove(body_to_end_range(node))
         end
 
         def unparenthesized_arguments?(node)
@@ -246,6 +246,10 @@ module RuboCop
           signature_end = node.arguments.any? ? node.arguments.source_range.end : node.loc.name.end
 
           signature_end.join(node.body.source_range.begin)
+        end
+
+        def body_to_end_range(node)
+          node.body.source_range.end.join(node.loc.end.end)
         end
 
         def endless_replacement(node)
@@ -267,6 +271,7 @@ module RuboCop
 
         def can_be_made_endless?(node)
           return false unless node.body
+          return false if comment_in_discarded_range?(node)
           return false if node.body.type?(:begin, :kwbegin, :rescue, :ensure, :masgn)
 
           !ends_with_omitted_hash_value?(node.body) && !ends_with_anonymous_argument?(node.body)
@@ -280,6 +285,14 @@ module RuboCop
           return false unless config.cop_enabled?('Layout/LineLength')
 
           line_length(line_when_made_endless(node)) > max_line_length
+        end
+
+        def comment_in_discarded_range?(node)
+          discarded_ranges = [signature_to_body_range(node), body_to_end_range(node)]
+
+          processed_source.each_comment_in_lines(node.first_line..node.last_line).any? do |comment|
+            discarded_ranges.any? { |range| range.contains?(comment.source_range) }
+          end
         end
 
         def ends_with_omitted_hash_value?(body)
