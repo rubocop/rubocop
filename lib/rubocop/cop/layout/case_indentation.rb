@@ -164,8 +164,12 @@ module RuboCop
           cop_config['IndentOneStep']
         end
 
+        # Under tabs one step is a single tab character, which counts as one column
+        # regardless of the configured indentation width.
         def indentation_width
-          indent_one_step? ? configured_indentation_width : 0
+          return 0 unless indent_one_step?
+
+          using_tabs? ? 1 : configured_indentation_width
         end
 
         def incorrect_style(when_node, branch_type)
@@ -209,7 +213,7 @@ module RuboCop
           base_loc = configured_base_location(node)
 
           return ' ' * (base_loc.column + indentation_width) unless using_tabs?
-          return if indentation_width > 1 || !begins_its_line?(base_loc)
+          return unless begins_its_line?(base_loc)
 
           base_loc.source_line[/\A\s*/] + ("\t" * indentation_width)
         end

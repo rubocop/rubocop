@@ -927,7 +927,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
     context 'with `IndentOneStep: true`' do
       let(:cop_config) { { 'EnforcedStyle' => 'case', 'IndentOneStep' => true } }
 
-      it 'registers an offense but does not correct' do
+      it 'registers an offense and corrects `when` to one tab past `case`' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         \tcase a
         \twhen b
@@ -936,7 +936,51 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
         \tend
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        \tcase a
+        \t\twhen b
+        \t\tc
+        \tend
+        RUBY
+      end
+
+      it 'does not register an offense when `when` is one tab past `case`' do
+        expect_no_offenses(<<-RUBY.gsub(/^        /, ''))
+        \tcase a
+        \t\twhen b
+        \t\t\tc
+        \tend
+        RUBY
+      end
+    end
+
+    context 'with `EnforcedStyle: end` and `IndentOneStep: true`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'end', 'IndentOneStep' => true } }
+
+      it 'registers an offense and corrects `when` to one tab past `end`' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        \tx = case a
+            when b
+            ^^^^ Indent `when` one step more than `end`.
+        \t\t\tc
+        \tend
+        RUBY
+
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        \tx = case a
+        \t\twhen b
+        \t\t\tc
+        \tend
+        RUBY
+      end
+
+      it 'does not register an offense when `when` is one tab past `end`' do
+        expect_no_offenses(<<-RUBY.gsub(/^        /, ''))
+        \tx = case a
+        \t\twhen b
+        \t\t\tc
+        \tend
+        RUBY
       end
     end
   end
