@@ -36,6 +36,10 @@ module RuboCop
         MSG_UNNECESSARY = 'Unnecessary spacing detected.'
         MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s assignment.'
 
+        def self.autocorrect_incompatible_with
+          [Style::SelfAssignment]
+        end
+
         def on_new_investigation
           return if processed_source.blank?
 

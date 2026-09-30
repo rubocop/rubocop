@@ -112,6 +112,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/SelfAssignment` with `Layout/ExtraSpacing` ' \
+     'when using `ForceEqualSignAlignment: true`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ExtraSpacing:
+        ForceEqualSignAlignment: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def f(max_keys, contents)
+        max_keys = max_keys || 1000
+        truncated_contents = contents[0...max_keys]
+      end
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Layout/ExtraSpacing,Style/SelfAssignment'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def f(max_keys, contents)
+        max_keys         ||= 1000
+        truncated_contents = contents[0...max_keys]
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/SpaceAroundOperators` and `Layout/ExtraSpacing` ' \
      'offenses when using `ForceEqualSignAlignment: true`' do
     create_file('.rubocop.yml', <<~YAML)
