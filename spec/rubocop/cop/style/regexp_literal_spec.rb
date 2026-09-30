@@ -195,6 +195,85 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
     end
 
+    describe 'a single-line `%r` regex with an escaped delimiter' do
+      it 'registers an offense and unescapes the delimiter' do
+        expect_offense(<<~'RUBY')
+          foo = %r!(?\!x)!
+                ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = /(?!x)/
+        RUBY
+      end
+
+      it 'registers an offense and keeps an escaped backslash before the delimiter' do
+        expect_offense(<<~'RUBY')
+          foo = %r!a\\\!b!
+                ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo = /a\\!b/
+        RUBY
+      end
+
+      it 'registers an offense and unescapes a hyphen delimiter inside a character class' do
+        expect_offense(<<~'RUBY')
+          foo = %r-[a\-z]-
+                ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = /[a-z]/
+        RUBY
+      end
+
+      it 'registers an offense and unescapes a hash delimiter' do
+        expect_offense(<<~'RUBY')
+          foo = %r#a\#b#x
+                ^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = /a#b/x
+        RUBY
+      end
+
+      it 'registers an offense and keeps the escape of a hash delimiter that would start an interpolation' do
+        expect_offense(<<~'RUBY')
+          foo = %r#a\#{b}#
+                ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo = /a\#{b}/
+        RUBY
+      end
+
+      it 'registers an offense and moves the escape after a hash delimiter that would start an interpolation in extended mode' do
+        expect_offense(<<~'RUBY')
+          foo = %r#a\#{b}#x
+                ^^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo = /a#\{b}/x
+        RUBY
+      end
+
+      it 'registers an offense and keeps the escape of a delimiter that is a regexp metacharacter' do
+        expect_offense(<<~'RUBY')
+          foo = %r{a\{b}
+                ^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo = /a\{b/
+        RUBY
+      end
+    end
+
     describe 'a single-line `%r//` regex with slashes' do
       it 'is accepted' do
         expect_no_offenses('foo = %r/\\//')

@@ -104,6 +104,7 @@ module RuboCop
           ['{', '}'] => /\\.|[{}]/,
           ['<', '>'] => /\\.|[<>]/
         }.freeze
+        DELIMITERS_KEEPING_ESCAPE = %w[$ * + . ? ^ | ( ) [ ] { } < >].freeze
 
         def on_regexp(node)
           return if slash_literal?(node) && percent_r_delimiters_conflict?(node)
@@ -119,6 +120,7 @@ module RuboCop
           add_offense(node, message: message) do |corrector|
             correct_delimiters(node, corrector)
             correct_inner_slashes(node, corrector)
+            correct_escaped_delimiters(node, corrector)
           end
         end
 
@@ -255,6 +257,51 @@ module RuboCop
           else
             %w[/ /]
           end
+        end
+
+        def correct_escaped_delimiters(node, corrector)
+          return unless (delimiter = delimiter_to_unescape(node))
+
+          node.each_child_node(:str) do |str_node|
+            text = str_node.source
+
+            escaped_delimiter_indices(text, delimiter).each do |index|
+              start = str_node.source_range.begin_pos + index
+              replacement = escaped_delimiter_replacement(node, delimiter, text[index + 2])
+
+              corrector.replace(range_between(start, start + 2), replacement)
+            end
+          end
+        end
+
+        def delimiter_to_unescape(node)
+          return if slash_literal?(node)
+
+          delimiter = node.delimiters.first
+
+          delimiter unless delimiter == '/' || DELIMITERS_KEEPING_ESCAPE.include?(delimiter)
+        end
+
+        def escaped_delimiter_indices(text, delimiter)
+          indices = []
+          index = 0
+
+          while (index = text.index('\\', index))
+            indices << index if text[index + 1] == delimiter
+            index += 2
+          end
+
+          indices
+        end
+
+        # A bare `#` before `{`, `@` or `$` would start an interpolation between slashes.
+        # `\#` still reads as a literal `#` there, except in extended mode, where `%r#a\#{b}#x`
+        # reads `#{b}` as a comment; `#\{` keeps both that comment and a `#` inside
+        # a character class.
+        def escaped_delimiter_replacement(node, delimiter, next_char)
+          return delimiter unless delimiter == '#' && next_char&.match?(/[{@$]/)
+
+          node.extended? ? '#\\' : '\\#'
         end
       end
     end
