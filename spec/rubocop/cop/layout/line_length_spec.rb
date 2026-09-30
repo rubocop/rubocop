@@ -1061,6 +1061,76 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             end
           end
 
+          context 'when there is an octal escape character at the limit' do
+            it 'breaks the string before the escape character' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\000bbbb"
+                                                        ^^ Line is too long. [42/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "\000bbbb"
+              RUBY
+            end
+          end
+
+          context 'when there is an escaped backslash followed by digits at the limit' do
+            it 'breaks the string after the escaped backslash' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\000bbbb"
+                                                        ^^^^^ Line is too long. [45/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\" \
+                "000bbbb"
+              RUBY
+            end
+          end
+
+          context 'when there is a chained meta and control escape character at the limit' do
+            it 'breaks the string before the escape character' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\M-\C-xbbbb"
+                                                        ^^^^^ Line is too long. [45/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "\M-\C-xbbbb"
+              RUBY
+            end
+          end
+
+          context 'when there is a braced \u escape character at the limit' do
+            it 'breaks the string before the escape character' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\u{1F600}bbbb"
+                                                        ^^^^^ Line is too long. [45/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "\u{1F600}bbbb"
+              RUBY
+            end
+          end
+
+          context 'when there is a braced \u escape character with several codepoints at the limit' do
+            it 'breaks the string before the escape character' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaa\u{1F600 1F601}bbbb"
+                                                        ^^^^^^^^^ Line is too long. [49/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "\u{1F600 1F601}bbbb"
+              RUBY
+            end
+          end
+
           context 'when there is a multibyte character at the limit' do
             it 'breaks the string at the limit' do
               expect_offense(<<~RUBY)
