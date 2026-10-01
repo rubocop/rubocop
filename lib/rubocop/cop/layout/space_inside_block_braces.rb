@@ -153,7 +153,7 @@ module RuboCop
           else
             column = node.source_range.column
             return if multiline_block?(left_brace, right_brace) &&
-                      aligned_braces?(inner, right_brace, column)
+                      aligned_braces?(inner, right_brace, column, left_brace)
 
             space_inside_right_brace(inner, right_brace, column)
           end
@@ -163,12 +163,19 @@ module RuboCop
           left_brace.first_line != right_brace.first_line
         end
 
-        def aligned_braces?(inner, right_brace, column)
-          column == right_brace.column || column == inner_last_space_count(inner)
+        def aligned_braces?(inner, right_brace, column, left_brace)
+          column == right_brace.column ||
+            column == inner_last_space_count(inner) ||
+            aligned_with_opening_brace_line?(left_brace, right_brace)
         end
 
         def inner_last_space_count(inner)
           inner.split("\n").last.count(' ')
+        end
+
+        def aligned_with_opening_brace_line?(left_brace, right_brace)
+          begins_its_line?(right_brace) &&
+            right_brace.column == left_brace.source_line[/\A\s*/].length
         end
 
         def no_space_inside_left_brace(left_brace, args_delimiter)
