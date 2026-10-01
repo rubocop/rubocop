@@ -29,9 +29,15 @@ module RuboCop
       class MethodCallWithoutArgsParentheses < Base
         include AllowedMethods
         include AllowedPattern
+        include ReparsedEquivalence
         extend AutoCorrector
 
         MSG = 'Do not use parentheses for method calls with no arguments.'
+
+        def on_new_investigation
+          @pending_ranges = []
+          super
+        end
 
         # rubocop:disable-next Metrics/CyclomaticComplexity
         def on_send(node)
@@ -46,15 +52,32 @@ module RuboCop
         end
         alias on_csend on_send
 
+        # The parentheses are significant when removing them changes how the
+        # code parses, e.g. when a local variable with the same name is in
+        # scope (`foo = 1; foo()`) or an operator follows (`foo() -1`). The
+        # candidates are verified together, since outside a method definition
+        # each one would otherwise reparse the whole file.
+        def on_investigation_end
+          verified_by_reparse(@pending_ranges).each do |range|
+            add_offense(range) do |corrector|
+              apply_reparse_correction(corrector, range)
+            end
+          end
+
+          super
+        end
+
         private
 
         def register_offense(node)
           range = offense_range(node)
           return if processed_source.contains_comment?(range)
 
-          add_offense(range) do |corrector|
-            corrector.remove(range)
-          end
+          @pending_ranges << range
+        end
+
+        def apply_reparse_correction(corrector, range)
+          corrector.remove(range)
         end
 
         def ineligible_node?(node)

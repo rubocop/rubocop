@@ -51,13 +51,23 @@ module RuboCop
       # regardless of size (for cops where verification is the offense logic).
       def verified_by_reparse(items, oversized: :report)
         scope_groups(items).flat_map do |scope, group|
-          if (oversized == :report && verification_too_large?(scope)) ||
-             (group.size > 1 && corrections_verify?(scope, group))
+          if oversized == :report && verification_too_large?(scope)
             group
           else
-            group.select { |item| corrections_verify?(scope, [item]) }
+            verified_subset(scope, group)
           end
         end
+      end
+
+      # Verifies a group with a single reparse and bisects it when that fails,
+      # so a few significant items among many cost a logarithmic number of
+      # reparses rather than one each.
+      def verified_subset(scope, group)
+        return group if corrections_verify?(scope, group)
+        return [] if group.one?
+
+        half = group.size / 2
+        verified_subset(scope, group.take(half)) + verified_subset(scope, group.drop(half))
       end
 
       # Whether the exact correction for `item` produces source that still
