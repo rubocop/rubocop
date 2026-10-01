@@ -187,6 +187,41 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      %w[return next break yield super].each do |keyword|
+        it "registers an offense and corrects when `#{keyword}` with an argument is in `else`" do
+          expect_offense(<<~RUBY, keyword: keyword)
+            x = if b then b else %{keyword} 1 end
+                ^^^^^^^^^^^^^^^^^^{keyword}^^^^^^ Use double pipes `||` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x = b || (#{keyword} 1)
+          RUBY
+        end
+      end
+
+      it 'registers an offense and corrects when `yield` with parenthesized arguments is in `else`' do
+        expect_offense(<<~RUBY)
+          x = if b then b else yield(1) end
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = b || yield(1)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `not` is in `else`' do
+        expect_offense(<<~RUBY)
+          x = if b then b else not c end
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = b || (not c)
+        RUBY
+      end
+
       it 'registers an offense and corrects modifier nodes offense' do
         expect_offense(<<~RUBY)
           if b
