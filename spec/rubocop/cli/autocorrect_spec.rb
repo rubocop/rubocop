@@ -505,6 +505,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/LineLength` with `EnforcedStyle: omit_parentheses` of ' \
+     '`Style/MethodCallWithArgsParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 40
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+        EnforcedStyle: omit_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      raise Error, 'xxxxx' unless obj.respond_to?(name, true)
+    RUBY
+    cli.run([
+              '--autocorrect-all',
+              '--only', 'Layout/LineLength,Style/MethodCallWithArgsParentheses'
+            ])
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      raise Error,#{trailing_whitespace}
+      'xxxxx' unless obj.respond_to? \\
+      name, true
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
