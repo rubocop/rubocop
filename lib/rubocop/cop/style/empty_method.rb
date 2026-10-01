@@ -102,8 +102,10 @@ module RuboCop
           compact_style? ? '; ' : "\n#{indent}"
         end
 
+        # A method with an argument spanning multiple lines (e.g. a hash default
+        # value) can't be put on a single line, so it's as compact as it gets.
         def compact?(node)
-          node.single_line?
+          node.single_line? || node.arguments.any?(&:multiline?)
         end
 
         def expanded?(node)

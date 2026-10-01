@@ -5549,6 +5549,126 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Lint/AssignmentInCondition` and ' \
+     '`Style/RedundantParentheses` with a setter in an empty `if`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      if a[3] = 10
+      end
+    RUBY
+
+    cli.run(%w[--autocorrect-all])
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      if (a[3] = 10)
+      end
+    RUBY
+  end
+
+  it 'does not cause an infinite loop between `Style/EmptyMethod` and `Layout/DefEndAlignment` ' \
+     'with a multiline argument' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      def foo(bar = {
+        baz: 1
+      })
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      def foo(bar = {
+        baz: 1
+      })
+      end
+    RUBY
+  end
+
+  it 'does not cause an infinite loop between `Style/EmptyMethod` and `Layout/DefEndAlignment` ' \
+     'with a `def` modifier after a line continuation' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      # frozen_string_literal: true
+
+      # Foo.
+      class Foo
+        memoize \
+        def do_something
+        end
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      # frozen_string_literal: true
+
+      # Foo.
+      class Foo
+        memoize \
+          def do_something; end
+      end
+    RUBY
+  end
+
+  it 'does not cause an infinite loop between `Layout/TrailingWhitespace` and ' \
+     '`Lint/LiteralInInterpolation` with an ideographic space in a heredoc' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      <<~X
+        foo\u3000
+      X
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read(encoding: Encoding::UTF_8)).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      <<~X
+        foo\#{'\u3000'}
+      X
+    RUBY
+  end
+
+  it 'does not cause an infinite loop between `Lint/AmbiguousOperatorPrecedence` and ' \
+     '`Style/RedundantParentheses` with an operator method called with a dot' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        NewCops: enable
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      1 + CONST.*
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      1 + CONST.*
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 
