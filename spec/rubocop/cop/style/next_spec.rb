@@ -581,6 +581,54 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     RUBY
   end
 
+  it "doesn't reindent indented heredoc bodies without interpolation when autocorrecting" do
+    expect_offense(<<~RUBY)
+      loop do
+        if test
+        ^^^^^^^ Use `next` to skip iteration.
+          str = <<-BLAH
+            this is a heredoc
+          BLAH
+          something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      loop do
+        next unless test
+        str = <<-BLAH
+            this is a heredoc
+        BLAH
+        something
+      end
+    RUBY
+  end
+
+  it "doesn't reindent the inner lines of multiline string literals when autocorrecting" do
+    expect_offense(<<~RUBY)
+      loop do
+        if test
+        ^^^^^^^ Use `next` to skip iteration.
+          puts "first
+          second \#{third}
+          fourth"
+          something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      loop do
+        next unless test
+        puts "first
+          second \#{third}
+          fourth"
+        something
+      end
+    RUBY
+  end
+
   it 'handles nested autocorrections' do
     expect_offense(<<~RUBY)
       loop do
