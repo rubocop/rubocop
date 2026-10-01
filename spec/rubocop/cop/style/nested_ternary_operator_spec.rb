@@ -145,6 +145,51 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when the ternary is the operand of `not`' do
+    expect_offense(<<~RUBY)
+      not a ? (b ? 1 : 2) : 3
+               ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      not (if a
+      b ? 1 : 2
+      else
+      3
+      end)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the ternary is the operand of `defined?`' do
+    expect_offense(<<~RUBY)
+      defined? a ? (b ? 1 : 2) : 3
+                    ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      defined? (if a
+      b ? 1 : 2
+      else
+      3
+      end)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the ternary is the parenthesized operand of `not`' do
+    expect_offense(<<~RUBY)
+      not(a ? (b ? 1 : 2) : 3)
+               ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      not(if a
+      b ? 1 : 2
+      else
+      3
+      end)
+    RUBY
+  end
+
   it 'registers an offense and corrects when the ternary is a later unparenthesized argument of a method call' do
     expect_offense(<<~RUBY)
       puts x, a ? (b ? 1 : 2) : 3

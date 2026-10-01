@@ -55,14 +55,14 @@ module RuboCop
           corrector.remove(node.loc.end)
         end
 
-        # An `if` right after `return` or as the first argument of a call without
-        # parentheses would be parsed as a modifier.
+        # An `if` right after `return`, as the operand of `not` or `defined?`, or as
+        # the first argument of a call without parentheses would be parsed as a modifier.
         def modifier_position?(node)
           return false unless (parent = node.parent)
           return true if parent.type?(:return, :break, :next)
+          return false if !parent.type?(:call, :super, :yield, :defined?) || parent.parenthesized?
 
-          parent.type?(:call, :super, :yield) && !parent.parenthesized? &&
-            parent.first_argument.equal?(node)
+          parent.prefix_not? || parent.first_argument.equal?(node)
         end
 
         def replace_loc_and_whitespace(corrector, range, replacement)

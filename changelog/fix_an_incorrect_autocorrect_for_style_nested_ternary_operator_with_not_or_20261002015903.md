@@ -1,0 +1,1 @@
+* [#15847](https://github.com/rubocop/rubocop/pull/15847): Fix an incorrect autocorrect for `Style/NestedTernaryOperator` when the ternary is the operand of `not` or `defined?` without parentheses. ([@koic][])
