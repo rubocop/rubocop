@@ -967,6 +967,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/ArgumentsForwarding` with `Lint/AmbiguousOperator`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(*args, &block)
+        bar *args, &block
+      end
+    RUBY
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/ArgumentsForwarding,Lint/AmbiguousOperator'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(*, &)
+        bar(*, &)
+      end
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Style/ExplicitBlockArgument`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
