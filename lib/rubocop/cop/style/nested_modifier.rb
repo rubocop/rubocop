@@ -19,6 +19,19 @@ module RuboCop
 
         MSG = 'Avoid using nested modifiers.'
 
+        # Operands that would otherwise bind differently next to `&&`/`||`, or
+        # not parse at all.
+        # @!method low_precedence?(node)
+        def_node_matcher :low_precedence?, <<~PATTERN
+          {
+            [{and or} semantic_operator?]
+            [send prefix_not?]
+            [if ternary?]
+            assignment?
+            [{csend yield super} arguments? !parenthesized? !operator_method?]
+          }
+        PATTERN
+
         def on_while(node)
           check(node)
         end
@@ -63,8 +76,10 @@ module RuboCop
         end
 
         def left_hand_operand(node, operator)
-          expr = node.condition.source
-          expr = "(#{expr})" if node.condition.or_type? && operator == '&&'
+          expr = operand_source(node.condition)
+          if (node.condition.or_type? && operator == '&&') || low_precedence?(node.condition)
+            expr = "(#{expr})"
+          end
           expr
         end
 
@@ -72,15 +87,18 @@ module RuboCop
           condition = node.condition
           negated = left_hand_keyword != node.keyword
 
-          expr = if condition.send_type? && !condition.arguments.empty? &&
-                    !condition.operator_method?
-                   add_parentheses_to_method_arguments(condition)
-                 else
-                   condition.source
-                 end
+          expr = operand_source(condition)
           expr = "(#{expr})" if requires_parens?(condition, negated)
           expr = "!#{expr}" if negated
           expr
+        end
+
+        def operand_source(condition)
+          if condition.send_type? && !condition.arguments.empty? && !condition.operator_method?
+            add_parentheses_to_method_arguments(condition)
+          else
+            condition.source
+          end
         end
 
         def add_parentheses_to_method_arguments(send_node)
@@ -97,6 +115,7 @@ module RuboCop
           # whole expression (e.g. `!(a && b)`, not `!a && b`).
           (negated && node.operator_keyword?) ||
             node.or_type? ||
+            low_precedence?(node) ||
             !(RuboCop::AST::Node::COMPARISON_OPERATORS & node.children).empty?
         end
       end

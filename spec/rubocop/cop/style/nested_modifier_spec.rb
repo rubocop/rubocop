@@ -120,6 +120,113 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
+  it 'parenthesizes an `and` operand in the outer condition' do
+    expect_offense(<<~RUBY)
+      something if b unless c and d
+                ^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something unless (c and d) || !b
+    RUBY
+  end
+
+  it 'parenthesizes a `not` operand in the outer condition' do
+    expect_offense(<<~RUBY)
+      something if b unless not c
+                ^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something unless (not c) || !b
+    RUBY
+  end
+
+  it 'parenthesizes a `not` operand in the inner condition' do
+    expect_offense(<<~RUBY)
+      something if not b if d
+                ^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something if d && (not b)
+    RUBY
+  end
+
+  it 'parenthesizes a negated `not` operand in the inner condition' do
+    expect_offense(<<~RUBY)
+      something unless not b if d
+                ^^^^^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something if d && !(not b)
+    RUBY
+  end
+
+  it 'parenthesizes a `yield` with unparenthesized arguments in the inner condition' do
+    expect_offense(<<~RUBY)
+      def foo
+        something if yield 1 if c
+                  ^^ Avoid using nested modifiers.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        something if c && (yield 1)
+      end
+    RUBY
+  end
+
+  it 'parenthesizes a `super` with unparenthesized arguments in the outer condition' do
+    expect_offense(<<~RUBY)
+      def foo
+        something if c if super 1
+                  ^^ Avoid using nested modifiers.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        something if (super 1) && c
+      end
+    RUBY
+  end
+
+  it 'adds parentheses to method arguments in the outer condition' do
+    expect_offense(<<~RUBY)
+      something if c if foo 1
+                ^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something if foo(1) && c
+    RUBY
+  end
+
+  it 'parenthesizes a safe navigation call with unparenthesized arguments in the inner condition' do
+    expect_offense(<<~RUBY)
+      something if a&.foo 1 if c
+                ^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something if c && (a&.foo 1)
+    RUBY
+  end
+
+  it 'parenthesizes a ternary operand' do
+    expect_offense(<<~RUBY)
+      something if b if a ? c : d
+                ^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something if (a ? c : d) && b
+    RUBY
+  end
+
   context 'while' do
     it_behaves_like 'not correctable', 'while'
   end
