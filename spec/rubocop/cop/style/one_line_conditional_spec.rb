@@ -135,6 +135,41 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'a or b'
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'a = b'
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'a ? b : c'
+    it_behaves_like 'if/then/else/end with constructs changing precedence', 'a&.b c'
+
+    context 'Ruby >= 3.0', :ruby30 do
+      it_behaves_like 'if/then/else/end with constructs changing precedence', 'a in b'
+    end
+
+    it 'registers and corrects an offense with ternary operator and adding parentheses for ' \
+       'if/then/else/end with modifiers and rightward pattern matching in the branches', :ruby30 do
+      expect_offense(<<~RUBY)
+        if cond then a += 1 while a < 3 else a => b end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+        if cond then a rescue b else c until d end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? (a += 1 while a < 3) : (a => b)
+        cond ? (a rescue b) : (c until d)
+      RUBY
+    end
+
+    it 'registers and corrects an offense with ternary operator and adding parentheses ' \
+       'when if/then/else/end is the receiver of a method call' do
+      expect_offense(<<~RUBY)
+        x = if cond then 1 else 2 end.to_s
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+        y = if cond then 1 else 2 end&.to_s
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = (cond ? 1 : 2).to_s
+        y = (cond ? 1 : 2)&.to_s
+      RUBY
+    end
 
     it 'registers and corrects an offense with ternary operator and adding parentheses for ' \
        'if/then/else/end that contains method calls with unparenthesized arguments' do
