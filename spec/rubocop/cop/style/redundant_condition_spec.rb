@@ -465,6 +465,53 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      %w[<< == < =~].each do |operator|
+        it "registers an offense and corrects when the branches contain the `#{operator}` operator" do
+          expect_offense(<<~RUBY)
+            if foo
+            ^^^^^^ Use double pipes `||` instead.
+              stack #{operator} foo
+            else
+              stack #{operator} :new
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            stack #{operator} (foo || :new)
+          RUBY
+        end
+      end
+
+      it 'registers an offense and corrects when the branches contain an operator method called with a dot' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            @value.-(foo)
+          else
+            @value.-('bar')
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          @value.-(foo || 'bar')
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the condition is an arithmetic operation' do
+        expect_offense(<<~RUBY)
+          if a + b
+          ^^^^^^^^ Use double pipes `||` instead.
+            a + b
+          else
+            c
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a + b || c
+        RUBY
+      end
+
       it 'registers an offense and corrects when the branches contains method call' do
         expect_offense(<<~RUBY)
           if foo

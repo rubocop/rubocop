@@ -247,10 +247,10 @@ module RuboCop
         end
 
         # rubocop:disable-next Metrics/AbcSize
-        def if_source(if_branch, arithmetic_operation)
+        def if_source(if_branch, binary_operator)
           if branches_have_method?(if_branch.parent) && if_branch.parenthesized?
             if_branch.source.delete_suffix(')')
-          elsif arithmetic_operation
+          elsif binary_operator
             argument_source = if_branch.first_argument.source
 
             "#{if_branch.receiver.source} #{if_branch.method_name} (#{argument_source}"
@@ -264,8 +264,8 @@ module RuboCop
           end
         end
 
-        def else_source(else_branch, arithmetic_operation) # rubocop:disable Metrics/AbcSize
-          if arithmetic_operation
+        def else_source(else_branch, binary_operator) # rubocop:disable Metrics/AbcSize
+          if binary_operator
             "#{else_branch.first_argument.source})"
           elsif branches_have_method?(else_branch.parent)
             else_source_if_has_method(else_branch)
@@ -302,11 +302,11 @@ module RuboCop
 
         def make_ternary_form(node)
           _condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring -- takes all three branches in one step
-          arithmetic_operation = use_arithmetic_operation?(if_branch)
+          binary_operator = branches_have_method?(node) && binary_operator?(if_branch)
 
           ternary_form = [
-            if_source(if_branch, arithmetic_operation),
-            else_source(else_branch, arithmetic_operation)
+            if_source(if_branch, binary_operator),
+            else_source(else_branch, binary_operator)
           ].join(' || ')
           ternary_form += ')' if branches_have_method?(node) && if_branch.parenthesized?
 
@@ -344,8 +344,10 @@ module RuboCop
           node.hash_type? && !node.braces?
         end
 
-        def use_arithmetic_operation?(node)
-          node.respond_to?(:arithmetic_operation?) && node.arithmetic_operation?
+        # Any binary operator binds tighter than `||`, so the fallback must be
+        # parenthesized as its argument, e.g. `stack << (foo || :new)`.
+        def binary_operator?(node)
+          node.binary_operation? && !node.dot?
         end
 
         def without_argument_parentheses_method?(node)
