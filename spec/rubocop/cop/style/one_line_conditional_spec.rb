@@ -156,6 +156,20 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
+    it 'registers and corrects an offense with ternary operator and adding parentheses for if/then/else/end with post-condition loops in the branches' do
+      expect_offense(<<~RUBY)
+        if cond then begin foo end while bar else baz end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+        if cond then baz else begin foo end until bar end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? (begin foo end while bar) : baz
+        cond ? baz : (begin foo end until bar)
+      RUBY
+    end
+
     it 'registers and corrects an offense with ternary operator and adding parentheses ' \
        'when if/then/else/end is the receiver of a method call' do
       expect_offense(<<~RUBY)
