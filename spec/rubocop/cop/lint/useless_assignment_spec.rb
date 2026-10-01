@@ -394,6 +394,43 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned a list of values without brackets and unreferenced' do
+    it 'registers an offense and corrects to an array literal' do
+      expect_offense(<<~RUBY)
+        foo = 1,
+        ^^^ Useless assignment to variable - `foo`.
+              2
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1,
+              2]
+      RUBY
+    end
+
+    it 'registers an offense and corrects a splat to an array literal' do
+      expect_offense(<<~RUBY)
+        foo = *bar
+        ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [*bar]
+      RUBY
+    end
+
+    it 'registers an offense and keeps an array literal as is' do
+      expect_offense(<<~RUBY)
+        foo = [1, 2]
+        ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2]
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned with operator assignment in top level' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
