@@ -10,8 +10,14 @@ module RuboCop
       def endless_method_body?(body)
         return false if body.type?(:begin, :kwbegin, :rescue, :ensure, :masgn)
         return false if ends_with_omitted_hash_value?(body) || ends_with_anonymous_argument?(body)
+        return false if body.assignment? && multiple_values?(assigned_value(body))
 
         !command_disallowed_in_endless_body?(body)
+      end
+
+      # `foo = 1, 2` and `foo = *bar` assign an array without brackets.
+      def multiple_values?(node)
+        node.array_type? && !node.bracketed?
       end
 
       def ends_with_omitted_hash_value?(body)

@@ -308,6 +308,28 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to multiline method definition when the body assigns multiple values' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; @foo = 1, 2; end')
+          def foo;#{trailing_whitespace}
+            @foo = 1, 2;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body assigns a splat' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; @foo = *bar; end')
+          def foo;#{trailing_whitespace}
+            @foo = *bar;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to an endless method definition when the body assigns an array literal' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; @foo = [1, 2]; end')
+          def foo() = @foo = [1, 2]
+        RUBY
+      end
+
       it 'corrects to multiline method definition when the body assigns a command call' do
         expect_correction(<<~RUBY.strip, source: 'def foo; @foo = bar baz; end')
           def foo;#{trailing_whitespace}
