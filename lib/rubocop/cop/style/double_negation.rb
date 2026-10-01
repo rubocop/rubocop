@@ -69,7 +69,8 @@ module RuboCop
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
         def on_send(node)
-          return unless double_negative?(node) && node.prefix_bang?
+          return unless double_negative?(node)
+          return if !bang_operator?(node) || !bang_operator?(node.receiver)
           return if part_of_longer_negation?(node)
           return if style == :allowed_in_returns && allowed_in_returns?(node)
 
@@ -81,6 +82,10 @@ module RuboCop
         end
 
         private
+
+        def bang_operator?(node)
+          node.prefix_bang? && !node.dot?
+        end
 
         def part_of_longer_negation?(node)
           return true if negation?(node.parent) && node.parent.receiver.equal?(node)

@@ -68,6 +68,14 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
         foo.!(!test.something.nil?)
       RUBY
     end
+
+    it 'does not register an offense for `!` called with a dot on a negation called with a dot' do
+      expect_no_offenses('test.something.!.!')
+    end
+
+    it 'does not register an offense for `!` applied to a negation called with a dot' do
+      expect_no_offenses('!test.something.!')
+    end
   end
 
   context 'when `EnforcedStyle: allowed_in_returns`' do
