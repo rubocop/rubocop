@@ -395,6 +395,34 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
+  context 'when the `if` is the body of an endless method', :ruby30 do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def func(c) = if c
+          work
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a branch is a guard clause' do
+      expect_no_offenses(<<~RUBY)
+        def func(c) = if c
+          raise 'error'
+        else
+          work
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a singleton method' do
+      expect_no_offenses(<<~RUBY)
+        def self.func(c) = if c
+          work
+        end
+      RUBY
+    end
+  end
+
   it 'accepts a method with empty parentheses as its body' do
     expect_no_offenses(<<~RUBY)
       def func
