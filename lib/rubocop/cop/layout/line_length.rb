@@ -84,6 +84,10 @@ module RuboCop
           )\z
         /xi.freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_block(node)
           check_for_breakable_block(node)
         end
