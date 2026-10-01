@@ -185,6 +185,42 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
+    it 'registers and corrects an offense with ternary operator and adding parentheses when if/then/else/end is the scope of a constant' do
+      expect_offense(<<~RUBY)
+        x = if cond then Foo else Bar end::Baz
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+        if cond then Foo else Bar end::Baz = 1
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = (cond ? Foo : Bar)::Baz
+        (cond ? Foo : Bar)::Baz = 1
+      RUBY
+    end
+
+    it 'registers and corrects an offense with ternary operator without adding parentheses when if/then/else/end is the value of a constant assignment' do
+      expect_offense(<<~RUBY)
+        Foo::Baz = if cond then foo else bar end
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Foo::Baz = cond ? foo : bar
+      RUBY
+    end
+
+    it 'registers and corrects an offense with ternary operator and adding parentheses when if/then/else/end is the condition of a ternary operator' do
+      expect_offense(<<~RUBY)
+        x = if cond then foo else bar end ? baz : qux
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = (cond ? foo : bar) ? baz : qux
+      RUBY
+    end
+
     it 'registers and corrects an offense with ternary operator and adding parentheses for ' \
        'if/then/else/end that contains method calls with unparenthesized arguments' do
       expect_offense(<<~RUBY)
