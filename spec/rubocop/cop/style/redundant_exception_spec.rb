@@ -137,4 +137,59 @@ RSpec.describe RuboCop::Cop::Style::RedundantException, :config do
       raise variable.to_s
     RUBY
   end
+
+  it 'registers an offense for raise with RuntimeError and an operator message' do
+    expect_offense(<<~RUBY)
+      raise RuntimeError, 1 + 2
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError` argument can be removed.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise (1 + 2).to_s
+    RUBY
+  end
+
+  it 'registers an offense for raise with RuntimeError.new and an operator message' do
+    expect_offense(<<~RUBY)
+      raise RuntimeError.new(a || b)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise (a || b).to_s
+    RUBY
+  end
+
+  it 'registers an offense for raise with RuntimeError.new and a command call message' do
+    expect_offense(<<~RUBY)
+      raise RuntimeError.new(foo.bar baz)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise (foo.bar baz).to_s
+    RUBY
+  end
+
+  it 'registers an offense for raise with RuntimeError and a negated message' do
+    expect_offense(<<~RUBY)
+      raise RuntimeError, !foo
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError` argument can be removed.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise (!foo).to_s
+    RUBY
+  end
+
+  it 'registers an offense for raise with RuntimeError and an element reference message' do
+    expect_offense(<<~RUBY)
+      raise RuntimeError, foo[1]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError` argument can be removed.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise foo[1].to_s
+    RUBY
+  end
 end

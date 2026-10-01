@@ -49,7 +49,7 @@ module RuboCop
         end
 
         def replaced_exploded(node, command, message)
-          arg = string_message?(message) ? message.source : "#{message.source}.to_s"
+          arg = message_source(message)
           arg = node.parenthesized? ? "(#{arg})" : " #{arg}"
           "#{command}#{arg}"
         end
@@ -63,16 +63,28 @@ module RuboCop
             next if message.nil_type?
 
             add_offense(node, message: MSG_2) do |corrector|
-              corrector.replace(new_call, replaced_compact(message))
+              corrector.replace(new_call, message_source(message))
             end
           end
         end
 
-        def replaced_compact(message)
+        def message_source(message)
           if string_message?(message)
             message.source
+          elsif require_parentheses?(message)
+            "(#{message.source}).to_s"
           else
             "#{message.source}.to_s"
+          end
+        end
+
+        def require_parentheses?(message)
+          if message.call_type?
+            !message.method?(:[]) &&
+              (message.operator_method? || (message.arguments? && !message.parenthesized?))
+          else
+            !(message.basic_literal? || message.variable? ||
+              message.type?(:const, :self, :begin, :array))
           end
         end
 
