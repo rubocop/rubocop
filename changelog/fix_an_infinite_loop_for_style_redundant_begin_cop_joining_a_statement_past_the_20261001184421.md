@@ -1,0 +1,1 @@
+* [#15846](https://github.com/rubocop/rubocop/pull/15846): Fix an infinite loop for `Style/RedundantBegin` cop when joining a single statement onto the assignment line would exceed `Layout/LineLength`. ([@Starlexxx][])

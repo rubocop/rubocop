@@ -260,6 +260,32 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  context 'when the statement would not fit on the assignment line' do
+    let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => true, 'Max' => 30 } } }
+
+    it 'does not register an offense for a modifier `if` single statement' do
+      expect_no_offenses(<<~RUBY)
+        var ||= begin
+          foo_bar_baz if condition
+        end
+      RUBY
+    end
+
+    it 'still registers an offense when the statement fits' do
+      expect_offense(<<~RUBY)
+        var ||= begin
+                ^^^^^ Redundant `begin` block detected.
+          foo if condition
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var ||= (foo if condition)
+
+      RUBY
+    end
+  end
+
   it 'registers and corrects an offense when using multi-line `if` in `begin` block' do
     expect_offense(<<~RUBY)
       var ||= begin
