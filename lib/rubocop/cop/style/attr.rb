@@ -50,10 +50,9 @@ module RuboCop
         def autocorrect(corrector, node)
           attr_name, setter = *node.arguments
 
-          node_expr = node.source_range
-          attr_expr = attr_name.source_range
-
-          remove = range_between(attr_expr.end_pos, node_expr.end_pos) if setter&.boolean_type?
+          if setter&.boolean_type?
+            remove = range_between(attr_name.source_range.end_pos, setter.source_range.end_pos)
+          end
 
           corrector.replace(node.loc.selector, replacement_method(node))
           corrector.remove(remove) if remove
