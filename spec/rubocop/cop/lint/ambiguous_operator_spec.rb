@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator, :config do
+  describe '.autocorrect_incompatible_with' do
+    it 'declares `Style::ArgumentsForwarding` as incompatible to avoid adding parentheses twice' do
+      expect(described_class.autocorrect_incompatible_with).to include(RuboCop::Cop::Style::ArgumentsForwarding)
+    end
+  end
+
   context 'with `+` unary operator in the first argument' do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
