@@ -54,11 +54,10 @@ module RuboCop
         end
 
         def requires_parens?(child)
-          child.operator_keyword? ||
-            (child.send_type? && child.binary_operation?) ||
-            (child.if_type? && child.ternary?) ||
-            child.type?(:range, :iflipflop, :eflipflop) ||
-            child.assignment?
+          return true if child.operator_keyword? || operator_method_requiring_parens?(child)
+          return true if child.if_type? && child.ternary?
+
+          child.type?(:range, :iflipflop, :eflipflop) || child.assignment?
         end
 
         def correct_opposite_method(corrector, range, child)
@@ -73,6 +72,12 @@ module RuboCop
 
         def correct_without_parens(corrector, range)
           corrector.replace(range, '!')
+        end
+
+        def operator_method_requiring_parens?(child)
+          return false unless child.send_type?
+
+          child.binary_operation? || (child.unary_operation? && child.method?(:~))
         end
       end
     end
