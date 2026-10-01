@@ -22,6 +22,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   it_behaves_like 'immutable objects', ':""'
   it_behaves_like 'immutable objects', "'foo'.count"
   it_behaves_like 'immutable objects', '(1 + 2)'
+  it_behaves_like 'immutable objects', '(2 * 3 + 4)'
+  it_behaves_like 'immutable objects', '((1 + 2) * 3)'
   it_behaves_like 'immutable objects', '(2 > 1)'
   it_behaves_like 'immutable objects', "('a' > 'b')"
   it_behaves_like 'immutable objects', '(a > b)'
@@ -47,6 +49,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   it_behaves_like 'mutable objects', "('a' * 20)"
   it_behaves_like 'mutable objects', '(a + b)'
   it_behaves_like 'mutable objects', '([42] * 42)'
+  it_behaves_like 'mutable objects', '(SEP * 80)'
+  it_behaves_like 'mutable objects', '(list * 2)'
+  it_behaves_like 'mutable objects', '(Time.at(0) + 1)'
+  it_behaves_like 'mutable objects', '(foo.bar * 2 + 1)'
   it_behaves_like 'mutable objects', "ENV['foo']"
   it_behaves_like 'mutable objects', "::ENV['foo']"
 
