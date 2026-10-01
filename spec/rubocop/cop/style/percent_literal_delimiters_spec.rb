@@ -471,5 +471,76 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it_behaves_like('escape characters', '%x')
     it_behaves_like('escape characters', '%r')
     it_behaves_like('escape characters', '%i')
+
+    shared_examples 'escaped delimiters' do |percent_literal|
+      it "does not register an offense for #{percent_literal} enclosing an escaped delimiter" do
+        expect_no_offenses("#{percent_literal}!a\\!b!")
+      end
+
+      it "does not register an offense for #{percent_literal} enclosing an escaped paired delimiter" do
+        expect_no_offenses("#{percent_literal}(a\\)b)")
+      end
+    end
+
+    shared_examples 'changeable delimiters' do |percent_literal|
+      it "corrects #{percent_literal} ending with an escaped backslash" do
+        expect_offense(<<~RUBY, percent_literal: percent_literal)
+          %{percent_literal}(a\\\\)
+          ^{percent_literal}^^^^^ `#{percent_literal}`-literals should be delimited by `[` and `]`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{percent_literal}[a\\\\]
+        RUBY
+      end
+
+      it "corrects #{percent_literal} enclosing nested delimiters" do
+        expect_offense(<<~RUBY, percent_literal: percent_literal)
+          %{percent_literal}(a(b)c)
+          ^{percent_literal}^^^^^^^ `#{percent_literal}`-literals should be delimited by `[` and `]`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{percent_literal}[a(b)c]
+        RUBY
+      end
+    end
+
+    shared_examples 'escaped delimiters in an interpolating literal' do |percent_literal|
+      it "corrects #{percent_literal} enclosing an escaped delimiter" do
+        expect_offense(<<~'RUBY', percent_literal: percent_literal)
+          %{percent_literal}!a\!b!
+          ^{percent_literal}^^^^^^ `%{percent_literal}`-literals should be delimited by `[` and `]`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{percent_literal}[a\\!b]
+        RUBY
+      end
+
+      it "corrects #{percent_literal} enclosing an escaped paired delimiter" do
+        expect_offense(<<~'RUBY', percent_literal: percent_literal)
+          %{percent_literal}(a\)b)
+          ^{percent_literal}^^^^^^ `%{percent_literal}`-literals should be delimited by `[` and `]`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{percent_literal}[a\\)b]
+        RUBY
+      end
+    end
+
+    %w[% %q %Q %s %W %x %r %I].each do |percent_literal|
+      it_behaves_like('changeable delimiters', percent_literal)
+    end
+
+    it_behaves_like('escaped delimiters', '%q')
+    it_behaves_like('escaped delimiters', '%s')
+    it_behaves_like('escaped delimiters', '%r')
+    it_behaves_like('escaped delimiters in an interpolating literal', '%')
+    it_behaves_like('escaped delimiters in an interpolating literal', '%Q')
+    it_behaves_like('escaped delimiters in an interpolating literal', '%W')
+    it_behaves_like('escaped delimiters in an interpolating literal', '%x')
+    it_behaves_like('escaped delimiters in an interpolating literal', '%I')
   end
 end

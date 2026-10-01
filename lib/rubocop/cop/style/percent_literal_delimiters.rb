@@ -86,10 +86,21 @@ module RuboCop
         end
 
         def include_same_character_as_used_for_delimiter?(node, type)
-          return false unless %w[%w %i].include?(type)
-
           used_delimiters = matchpairs(begin_source(node)[-1])
-          contains_delimiter?(node, used_delimiters)
+          return contains_delimiter?(node, used_delimiters) if %w[%w %i].include?(type)
+          return false unless %w[%q %s %r].include?(type)
+
+          contains_escaped_delimiter?(node, used_delimiters)
+        end
+
+        # Without interpolation an escaped delimiter means something different
+        # once the delimiters change (`%q!it\!s!` is `"it!s"`, but `%q(it\!s)`
+        # is `"it\\!s"`). For a regexp the match stays the same, but its source
+        # changes. Interpolating literals read `\!` as `!` with any delimiter.
+        def contains_escaped_delimiter?(node, delimiters)
+          body = node.loc.begin.end.join(node.loc.end.begin).source
+
+          body.scan(/\\./m).any? { |escape| delimiters.include?(escape[1]) }
         end
 
         def contains_delimiter?(node, delimiters)
