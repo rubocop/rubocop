@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
           RUBY
 
           expect_correction(<<~RUBY)
-            a,  = foo
+            a, = foo
           RUBY
         end
 
@@ -219,7 +219,87 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
           RUBY
 
           expect_correction(<<~RUBY)
-            a, (b, ) = foo
+            a, (b,) = foo
+          RUBY
+        end
+
+        it 'collapses a group followed by another variable into `_`' do
+          expect_offense(<<~RUBY)
+            a, (_, (_, _), b) = foo
+                   ^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, (_, _, b) = foo`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a, (_, _, b) = foo
+          RUBY
+        end
+
+        it 'collapses a group followed by a trailing comma into `_`' do
+          expect_offense(<<~RUBY)
+            a, (_, (_,),) = foo
+                   ^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, (_, _,) = foo`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a, = foo
+          RUBY
+        end
+
+        it 'collapses a group preceded by a splat into `_`' do
+          expect_offense(<<~RUBY)
+            a, *b, (_, _) = foo
+                   ^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, *b, _ = foo`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a, *b, _ = foo
+          RUBY
+        end
+      end
+
+      context 'when every variable is `_` and the right-hand side is a list of values' do
+        it 'turns the values into an array literal' do
+          expect_offense(<<~RUBY)
+            _, _ = 1, 2, 3
+            ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `[1, 2, 3]`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [1, 2, 3]
+          RUBY
+        end
+
+        it 'turns a splatted value into an array literal' do
+          expect_offense(<<~RUBY)
+            _, _ = *foo
+            ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `[*foo]`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [*foo]
+          RUBY
+        end
+
+        it 'turns the values into an array literal when they contain another such assignment' do
+          expect_offense(<<~RUBY)
+            _, _ = x, -> { _, _ = y, z }
+                           ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `[y, z]`.
+            ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `[x, -> { _, _ = y, z }]`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [x, -> { [y, z] }]
+          RUBY
+        end
+
+        it 'keeps an array literal as is' do
+          expect_offense(<<~RUBY)
+            _, _ = [1, 2]
+            ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `[1, 2]`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [1, 2]
           RUBY
         end
       end
