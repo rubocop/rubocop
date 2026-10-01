@@ -11,6 +11,13 @@ module RuboCop
       # and their combinations, allowing safe replacement when the receiver matches.
       # It works with variables, instance variables, class variables, and constants.
       #
+      # @safety
+      #   This cop is unsafe because the receiver may not be an Array. For a Hash,
+      #   `hash[hash.size - 1]` looks up the key `hash.size - 1`, which `hash[-1]`
+      #   does not. Even for an Array, `arr[arr.length - n]` wraps around to an
+      #   element from the end when `n` exceeds the length, while `arr[-n]`
+      #   returns `nil`.
+      #
       # @example
       #   # bad
       #   arr[arr.count - 2]

@@ -5231,7 +5231,9 @@ Style/NegativeArrayIndex:
     Also handles range patterns with length calculations. Recognizes preserving methods
     and their combinations, allowing safe replacement when the receiver matches.
   Enabled: pending
+  Safe: false
   VersionAdded: '1.84'
+  VersionChanged: '<<next>>'
 
 Style/NestedFileDirname:
   Description: 'Checks for nested `File.dirname`.'
