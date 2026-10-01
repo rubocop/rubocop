@@ -212,7 +212,16 @@ module RuboCop
         end
 
         def remove_local_variable_assignment_part(corrector, node)
-          corrector.remove(node.loc.name.begin.join(node.expression.source_range.begin))
+          expression = node.expression
+          assignment_part = node.loc.name.begin.join(expression.source_range.begin)
+
+          # `x = 1, 2` cannot become `1, 2`, so the values become an array literal.
+          if expression.array_type? && !expression.bracketed?
+            corrector.replace(assignment_part, '[')
+            corrector.insert_after(expression, ']')
+          else
+            corrector.remove(assignment_part)
+          end
         end
 
         def variable_in_loop_condition?(assignment_node, variable)

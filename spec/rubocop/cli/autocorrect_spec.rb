@@ -5549,6 +5549,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/UselessAssignment`, `Layout/ArrayAlignment` and `Layout/AssignmentIndentation` offenses for a list of values without brackets' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      var =
+           first,
+          second
+    RUBY
+
+    status = cli.run(
+      ['-A', '--only', 'Lint/UselessAssignment,Layout/ArrayAlignment,Layout/AssignmentIndentation']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      [first,
+       second]
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 
