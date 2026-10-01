@@ -5549,6 +5549,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Lint/AssignmentInCondition` and ' \
+     '`Style/RedundantParentheses` with a setter in an empty `if`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      if a[3] = 10
+      end
+    RUBY
+
+    cli.run(%w[--autocorrect-all])
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      if (a[3] = 10)
+      end
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 
