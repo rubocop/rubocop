@@ -1287,6 +1287,18 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense but does not correct `end` already indented like the anchor line' do
+      expect_offense(<<~RUBY)
+        a(
+          **b(
+            c).d do
+          end)
+          ^^^ `end` at 4, 2 is not aligned with `b(` at 2, 4 or `c).d do` at 3, 4.
+      RUBY
+
+      expect_no_corrections
+    end
+
     context 'when `EnforcedStyleAlignWith` is `start_of_block`' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_block' } }
 
