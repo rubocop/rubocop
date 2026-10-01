@@ -61,9 +61,10 @@ module RuboCop
         def autocorrect_to_comparison(corrector, node)
           range = node.loc.dot.join(node.loc.selector.end)
           corrector.replace(range, ' == nil')
-          # The new `== nil` binds looser than an enclosing operator (e.g. `<<`,
-          # `!`), so wrap it to keep the original precedence.
-          corrector.wrap(node, '(', ')') if operator_expression?(node.parent)
+
+          return if !operator_expression?(node.parent) && !receiver_of_parent?(node)
+
+          corrector.wrap(node, '(', ')')
         end
 
         def autocorrect_to_predicate(corrector, node)
@@ -86,6 +87,10 @@ module RuboCop
             (node.if_type? && node.ternary?) ||
             node.type?(:range, :iflipflop, :eflipflop) ||
             node.assignment?
+        end
+
+        def receiver_of_parent?(node)
+          node.parent&.call_type? && node.parent.receiver.equal?(node)
         end
 
         def operator_send?(node)
