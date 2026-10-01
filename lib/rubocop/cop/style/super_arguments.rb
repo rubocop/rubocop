@@ -76,6 +76,9 @@ module RuboCop
 
         def on_super(super_node)
           return unless (def_node = find_def_node(super_node))
+          # Zsuper passes a destructured argument as the original value, while
+          # `argument_list` flattens it into its parts.
+          return if def_node.arguments.any?(&:mlhs_type?)
 
           def_node_args = def_node.arguments.argument_list
           super_args = preprocess_super_args(super_node.arguments)
