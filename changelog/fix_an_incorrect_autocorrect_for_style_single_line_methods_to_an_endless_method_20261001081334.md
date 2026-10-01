@@ -1,0 +1,1 @@
+* [#15842](https://github.com/rubocop/rubocop/pull/15842): Fix an incorrect autocorrect for `Style/SingleLineMethods` with `Style/EndlessMethod` when the method body is an `and`/`or` operation, a multiple assignment or an assignment of a command call. ([@bbatsov][])
