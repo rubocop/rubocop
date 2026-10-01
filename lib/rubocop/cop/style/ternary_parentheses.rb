@@ -58,6 +58,7 @@ module RuboCop
         include SafeAssignment
         include ConfigurableEnforcedStyle
         include SurroundingSpace
+        include ReparsedEquivalence
         extend AutoCorrector
 
         VARIABLE_TYPES = AST::Node::VARIABLES
@@ -101,7 +102,8 @@ module RuboCop
           condition = node.condition
 
           return nil if parenthesized?(condition) &&
-                        (safe_assignment?(condition) || unsafe_autocorrect?(condition))
+                        (safe_assignment?(condition) || unsafe_autocorrect?(condition) ||
+                         verified_by_reparse([condition]).empty?)
 
           if parenthesized?(condition)
             correct_parenthesized(corrector, condition)
@@ -215,6 +217,26 @@ module RuboCop
 
           if (send_node = condition.child_nodes.last) && node_args_need_parens?(send_node)
             parenthesize_condition_arguments(corrector, send_node)
+          end
+        end
+
+        # Whatever binds looser than the ternary operator (`n += 1`, `a rescue b`,
+        # a nested ternary, `yield a`, several statements, ...) changes
+        # meaning without the parentheses, so their removal is verified by
+        # reparsing.
+        def apply_reparse_correction(corrector, condition)
+          correct_parenthesized(corrector, condition)
+        end
+
+        # The removed parentheses are the only expected difference.
+        def normalize_reparsed_ast(node)
+          return node unless node.is_a?(::Parser::AST::Node)
+
+          children = node.children.map { |child| normalize_reparsed_ast(child) }
+          if node.begin_type? && children.one? && children.first.is_a?(::Parser::AST::Node)
+            children.first
+          else
+            node.updated(nil, children)
           end
         end
 

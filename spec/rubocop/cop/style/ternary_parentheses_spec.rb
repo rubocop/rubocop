@@ -359,6 +359,69 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         expect_no_corrections
       end
 
+      it 'registers an offense but does not autocorrect an operator assignment condition' do
+        expect_offense(<<~RUBY)
+          foo = (n += 1) ? a : b
+                ^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense but does not autocorrect an assignment inside a boolean condition' do
+        expect_offense(<<~RUBY)
+          foo = (bar || n = 3) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense but does not autocorrect a nested ternary condition' do
+        expect_offense(<<~RUBY)
+          foo = (x ? y : z) ? a : b
+                ^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense but does not autocorrect `yield` with unparenthesized arguments' do
+        expect_offense(<<~RUBY)
+          foo = (yield 1) ? a : b
+                ^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense but does not autocorrect a multi-statement condition' do
+        expect_offense(<<~RUBY)
+          foo = (bar; baz) ? a : b
+                ^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense but does not autocorrect a `rescue` modifier condition' do
+        expect_offense(<<~RUBY)
+          foo = (bar rescue baz) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense but does not autocorrect a negated command call' do
+        expect_offense(<<~RUBY)
+          foo = (!bar baz) ? a : b
+                ^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
       it 'does not register an offense for a modifier `if` condition' do
         expect_no_offenses(<<~RUBY)
           foo = (a if b) ? a : b
