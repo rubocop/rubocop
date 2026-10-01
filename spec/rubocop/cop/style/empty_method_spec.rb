@@ -69,6 +69,15 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
       it 'allows single line method' do
         expect_no_offenses('def foo; end')
       end
+
+      it 'does not register an offense when an argument spans multiple lines' do
+        expect_no_offenses(<<~RUBY)
+          def foo(bar, baz = {
+            qux: 1
+          })
+          end
+        RUBY
+      end
     end
 
     context 'with a non-empty instance method definition' do
