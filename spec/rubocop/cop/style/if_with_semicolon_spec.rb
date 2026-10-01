@@ -63,6 +63,39 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when the condition is `!` applied to a method call with unparenthesized arguments' do
+    expect_offense(<<~RUBY)
+      x = if !foo a; run else dont end
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if !foo a;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = (!foo a) ? run : dont
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a branch is `!` applied to a method call with unparenthesized arguments' do
+    expect_offense(<<~RUBY)
+      if cond; !foo a else !bar.baz b end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? (!foo a) : (!bar.baz b)
+    RUBY
+  end
+
+  it 'does not parenthesize `!` applied to a method call with parenthesized arguments' do
+    expect_offense(<<~RUBY)
+      if !foo(a); !bar[b] else dont end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if !foo(a);` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !foo(a) ? !bar[b] : dont
+    RUBY
+  end
+
   it 'registers an offense and corrects for one line if/;/end without then body' do
     expect_offense(<<~RUBY)
       if cond; else dont end

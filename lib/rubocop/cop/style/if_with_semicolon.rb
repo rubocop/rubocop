@@ -119,7 +119,7 @@ module RuboCop
         # inside it) would otherwise absorb or break the ternary.
         def lower_precedence_than_ternary?(node)
           return true if node.type?(:and, :or, :if, :rescue, :while, :until, :any_match_pattern)
-          return true if node.send_type? && node.prefix_not?
+          return true if node.send_type? && (node.prefix_not? || prefix_bang_on_command?(node))
 
           node.type?(:yield, :super, :defined?) && node.arguments.any? && !node.parenthesized?
         end
@@ -142,6 +142,16 @@ module RuboCop
           end
 
           result
+        end
+
+        # `!foo a` leaves the arguments of `foo` unparenthesized at the end of the operand,
+        # where they would absorb the rest of the ternary.
+        def prefix_bang_on_command?(node)
+          return false unless node.prefix_bang?
+
+          receiver = node.receiver
+
+          require_argument_parentheses?(receiver) || lower_precedence_than_ternary?(receiver)
         end
 
         def require_argument_parentheses?(node)
