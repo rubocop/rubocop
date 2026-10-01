@@ -6421,6 +6421,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/ParenthesesAroundCondition` without turning a multi-line brace block in a `while` condition into `do`...`end`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      while (foo {
+      })
+        bar
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '-A', '--only',
+        'Style/BlockDelimiters,Style/ParenthesesAroundCondition,Style/RedundantParentheses'
+      ]
+    )
+
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      while foo {
+      }
+        bar
+      end
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 
