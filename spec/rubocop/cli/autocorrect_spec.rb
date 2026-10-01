@@ -1381,6 +1381,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects `Style/CaseLikeIf` with `Style/IfInsideElse` when the `else` branch holds a modifier `if`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      if x == 1
+        :one
+      elsif x == 2
+        :two
+      elsif x == 4
+        :four
+      else
+        :three if x == 3
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only Style/CaseLikeIf,Style/IfInsideElse])
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      case x
+      when 1
+        :one
+      when 2
+        :two
+      when 4
+        :four
+      else
+        :three if x == 3
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/SpaceAroundKeyword` with `Layout/SpaceInsideRangeLiteral`' do
     source = <<~RUBY
       def method

@@ -457,8 +457,98 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf, :config do
     end
   end
 
+  it 'does not turn an `if` inside the `else` branch into a `when` branch' do
+    expect_offense(<<~RUBY)
+      if x == 1
+      ^^^^^^^^^ Convert `if-elsif` to `case-when`.
+        :one
+      elsif x == 2
+        :two
+      else
+        if x == 3
+          :three
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case x
+      when 1
+        :one
+      when 2
+        :two
+      else
+        if x == 3
+          :three
+        end
+      end
+    RUBY
+  end
+
+  it 'does not turn a modifier `if` in the `else` branch into a `when` branch' do
+    expect_offense(<<~RUBY)
+      if x == 1
+      ^^^^^^^^^ Convert `if-elsif` to `case-when`.
+        :one
+      elsif x == 2
+        :two
+      else
+        :three if x == 3
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case x
+      when 1
+        :one
+      when 2
+        :two
+      else
+        :three if x == 3
+      end
+    RUBY
+  end
+
+  it 'does not turn an `unless` in the `else` branch into a `when` branch' do
+    expect_offense(<<~RUBY)
+      if x == 1
+      ^^^^^^^^^ Convert `if-elsif` to `case-when`.
+        :one
+      elsif x == 2
+        :two
+      else
+        unless x == 3
+          :three
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case x
+      when 1
+        :one
+      when 2
+        :two
+      else
+        unless x == 3
+          :three
+        end
+      end
+    RUBY
+  end
+
   context 'MinBranchesCount: 3' do
     let(:cop_config) { { 'MinBranchesCount' => 3 } }
+
+    it 'does not count an `if` inside the `else` branch as a branch' do
+      expect_no_offenses(<<~RUBY)
+        if x == 1
+        elsif x == 2
+        else
+          foo if x == 3
+        end
+      RUBY
+    end
 
     it 'does not register an offense when branches count is less than required' do
       expect_no_offenses(<<~RUBY)
