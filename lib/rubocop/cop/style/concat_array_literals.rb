@@ -30,6 +30,12 @@ module RuboCop
           'Use `push` with elements as arguments without array brackets instead of `%<current>s`.'
         RESTRICT_ON_SEND = %i[concat].freeze
 
+        # `Style/MethodCallWithArgsParentheses` removing the parentheses of the `push(...)`
+        # this cop writes in the same pass drops the line continuation a multiline call needs.
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         # rubocop:disable-next Metrics
         def on_send(node)
           return if node.arguments.empty?
