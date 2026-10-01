@@ -139,7 +139,7 @@ module RuboCop
           offense_range = node.loc.begin
 
           add_offense(offense_range) do |corrector|
-            if node.parent&.assignment?
+            if node.parent&.assignment? || node.parent&.type?(:return, :next, :break)
               replace_begin_with_statement(corrector, offense_range, node)
             else
               remove_begin(corrector, offense_range, node)
@@ -156,12 +156,18 @@ module RuboCop
           first_child = node.children.first
 
           source = first_child.source
-          source = "(#{source})" if first_child.if_type? && first_child.modifier_form?
+          source = "(#{source})" if low_precedence_statement?(first_child)
 
           corrector.replace(offense_range, source)
           corrector.remove(range_between(offense_range.end_pos, first_child.source_range.end_pos))
 
           restore_removed_comments(corrector, offense_range, node, first_child)
+        end
+
+        def low_precedence_statement?(node)
+          return node.modifier_form? if node.basic_conditional?
+
+          node.operator_keyword? && node.semantic_operator?
         end
 
         def remove_begin(corrector, offense_range, node)
