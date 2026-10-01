@@ -70,6 +70,7 @@ module RuboCop
 
         def on_send(node)
           return unless double_negative?(node) && node.prefix_bang?
+          return if part_of_longer_negation?(node)
           return if style == :allowed_in_returns && allowed_in_returns?(node)
 
           location = node.loc.selector
@@ -81,8 +82,18 @@ module RuboCop
 
         private
 
+        def part_of_longer_negation?(node)
+          return true if negation?(node.parent) && node.parent.receiver.equal?(node)
+
+          negation?(node.receiver.receiver)
+        end
+
         def allowed_in_returns?(node)
           node.parent&.return_type? || end_of_method_definition?(node)
+        end
+
+        def negation?(node)
+          node&.send_type? && node.method?(:!)
         end
 
         def end_of_method_definition?(node)

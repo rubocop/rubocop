@@ -41,6 +41,33 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
     it 'does not register an offense for `not not`' do
       expect_no_offenses('not not test.something')
     end
+
+    it 'does not register an offense for `!!!`' do
+      expect_no_offenses('foo(!!!test.something)')
+    end
+
+    it 'does not register an offense for `!!!!`' do
+      expect_no_offenses('foo(!!!!test.something)')
+    end
+
+    it 'does not register an offense for `!!` negated by `not`' do
+      expect_no_offenses('not !!test.something')
+    end
+
+    it 'does not register an offense for `!!` applied to `not`' do
+      expect_no_offenses('foo(!!not(test.something))')
+    end
+
+    it 'registers an offense and corrects for `!!` passed as an argument of `!`' do
+      expect_offense(<<~RUBY)
+        foo.!(!!test.something)
+              ^ Avoid the use of double negation (`!!`).
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.!(!test.something.nil?)
+      RUBY
+    end
   end
 
   context 'when `EnforcedStyle: allowed_in_returns`' do
