@@ -37,7 +37,7 @@ module RuboCop
                      'should be %<possible>s.'
 
         def self.autocorrect_incompatible_with
-          [Naming::BlockForwarding]
+          [Naming::BlockForwarding, Style::ArgumentsForwarding]
         end
 
         def on_new_investigation
