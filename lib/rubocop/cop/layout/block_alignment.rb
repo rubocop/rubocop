@@ -175,6 +175,7 @@ module RuboCop
         def replace_end_indentation(corrector, node, indentation)
           loc_end = node.loc.end
           whitespace = range_between(loc_end.begin_pos - loc_end.column, loc_end.begin_pos)
+          return if whitespace.source == indentation
 
           corrector.replace(whitespace, indentation)
         end

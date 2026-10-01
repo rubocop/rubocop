@@ -1,0 +1,1 @@
+* [#15845](https://github.com/rubocop/rubocop/pull/15845): Fix an infinite loop for `Layout/BlockAlignment` with `Layout/IndentationStyle` enforcing tabs when `end` is already indented like the line the block starts on. ([@viralpraxis][])
