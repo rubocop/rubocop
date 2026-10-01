@@ -305,6 +305,22 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     RUBY
   end
 
+  it 'does not register an offense when the method uses argument forwarding', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      def my_method(...)
+        bar { |x| yield x }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the method uses argument forwarding with zsuper', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      def my_method(a, ...)
+        super { yield }
+      end
+    RUBY
+  end
+
   it 'registers an offense when using a no keywords argument with zsuper', :ruby27 do
     expect_offense(<<~RUBY)
       def my_method(x, **nil)

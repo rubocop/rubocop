@@ -70,6 +70,7 @@ module RuboCop
             # this is not a valid ruby pattern, but can happen in haml or erb,
             # so this can cause crashes in haml_lint
             return unless def_node
+            return if argument_forwarding?(def_node)
 
             block_name = extract_block_name(def_node)
 
@@ -85,6 +86,11 @@ module RuboCop
         end
 
         private
+
+        # A block parameter can't be added next to `...`.
+        def argument_forwarding?(def_node)
+          def_node.arguments.any?(&:forward_arg_type?)
+        end
 
         def extract_block_name(def_node)
           if def_node.block_argument?
