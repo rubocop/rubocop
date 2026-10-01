@@ -98,6 +98,8 @@ module RuboCop
             end
           elsif node.condition.falsey_literal?
             add_offense(node.condition) do |corrector|
+              next if orphans_loop_control_keyword?(node)
+
               corrector.replace(node, node.body.child_nodes.map(&:source).join("\n"))
             end
           end
@@ -127,6 +129,8 @@ module RuboCop
             end
           elsif node.condition.truthy_literal?
             add_offense(node.condition) do |corrector|
+              next if orphans_loop_control_keyword?(node)
+
               corrector.replace(node, node.body.child_nodes.map(&:source).join("\n"))
             end
           end
@@ -174,6 +178,15 @@ module RuboCop
         end
 
         private
+
+        # Unwrapping the body of a loop that runs once would leave a `break`,
+        # `next` or `redo` that belongs to it outside of any loop.
+        def orphans_loop_control_keyword?(node)
+          node.body.each_node(:next, :break, :redo).any? do |control|
+            inner = control.each_ancestor.take_while { |ancestor| !ancestor.equal?(node) }
+            inner.none? { |ancestor| ancestor.any_block_type? || ancestor.loop_keyword? }
+          end
+        end
 
         def void_value_expression?(node)
           node = node.children.last while node&.begin_type?
@@ -273,6 +286,8 @@ module RuboCop
                        "#{node.else_branch.source.sub('elsif', 'if')}\nend"
                      elsif node.else? || node.ternary?
                        node.else_branch.source
+                     elsif node.value_used?
+                       'nil'
                      else
                        '' # Equivalent to removing the node
                      end
