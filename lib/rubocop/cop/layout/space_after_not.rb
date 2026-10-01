@@ -20,6 +20,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.prefix_bang? && whitespace_after_operator?(node)
+          return if unary_tilde?(node.receiver)
 
           add_offense(node) do |corrector|
             corrector.remove(
@@ -32,6 +33,10 @@ module RuboCop
 
         def whitespace_after_operator?(node)
           node.receiver.source_range.begin_pos - node.source_range.begin_pos > 1
+        end
+
+        def unary_tilde?(receiver)
+          receiver.send_type? && receiver.unary_operation? && receiver.method?(:~)
         end
       end
     end
