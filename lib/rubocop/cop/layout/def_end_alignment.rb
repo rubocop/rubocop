@@ -49,6 +49,10 @@ module RuboCop
           return unless node.def_modifier?
 
           method_def = node.each_descendant(:any_def).first
+          # A single-line `def` has nothing to align, even when a line
+          # continuation puts it on a later line than the modifier.
+          return if method_def.single_line?
+
           expr = node.source_range
 
           line_start = range_between(expr.begin_pos, method_def.loc.keyword.end_pos)

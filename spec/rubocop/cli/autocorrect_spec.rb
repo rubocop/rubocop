@@ -5594,6 +5594,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Style/EmptyMethod` and `Layout/DefEndAlignment` ' \
+     'with a `def` modifier after a line continuation' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      # frozen_string_literal: true
+
+      # Foo.
+      class Foo
+        memoize \
+        def do_something
+        end
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      # frozen_string_literal: true
+
+      # Foo.
+      class Foo
+        memoize \
+          def do_something; end
+      end
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 

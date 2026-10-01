@@ -78,6 +78,13 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
         RUBY
       end
     end
+
+    it 'does not register an offense for a single-line `def` after a line continuation' do
+      expect_no_offenses(<<~RUBY)
+        foo \\
+          def test; end
+      RUBY
+    end
   end
 
   context 'when EnforcedStyleAlignWith is def' do
