@@ -188,8 +188,9 @@ module RuboCop
             return false
           end
           return true if length_receiver.source == array_receiver.source
+          return false unless (base_receiver = extract_base_receiver(array_receiver))
 
-          !extract_base_receiver(array_receiver).nil?
+          base_receiver.source == (extract_base_receiver(length_receiver) || length_receiver).source
         end
 
         def receivers_match_strict?(length_receiver, array_receiver)

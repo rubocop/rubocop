@@ -106,6 +106,8 @@ RSpec.describe RuboCop::Cop::Style::NegativeArrayIndex, :config do
     it_behaves_like 'does not register an offense', "arr.flatten[arr.flatten.map(&:to_s).#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "arr[#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "arr[other.#{method_name} - 2]"
+    it_behaves_like 'does not register an offense', "arr.sort[other.#{method_name} - 2]"
+    it_behaves_like 'does not register an offense', "arr.reverse[other.sort.#{method_name} - 1]"
     it_behaves_like 'does not register an offense', "@arr[@other.#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "CONST[OTHER.#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "arr.compact[arr.compact.uniq.#{method_name} - 2]"
