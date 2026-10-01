@@ -222,7 +222,17 @@ module RuboCop
         end
 
         def valid_begin_assignment?(node)
-          node.parent&.assignment? && !node.children.one?
+          node.parent&.assignment? && (!node.children.one? || too_long_when_joined?(node))
+        end
+
+        def too_long_when_joined?(node)
+          statement = node.children.first
+          max = config.for_enabled_cop('Layout/LineLength')['Max']
+          return false unless max && statement.single_line?
+
+          length = statement.source.length
+          length += 2 if statement.if_type? && statement.modifier_form?
+          node.loc.column + length > max
         end
 
         def inspect_branches(node)
