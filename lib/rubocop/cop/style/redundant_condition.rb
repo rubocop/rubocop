@@ -327,9 +327,17 @@ module RuboCop
 
         def require_parentheses?(node)
           (node.basic_conditional? && node.modifier_form?) ||
-            node.range_type? ||
-            node.rescue_type? ||
-            (node.respond_to?(:semantic_operator?) && node.semantic_operator?)
+            node.range_type? || node.rescue_type? ||
+            (node.respond_to?(:semantic_operator?) && node.semantic_operator?) ||
+            low_precedence_keyword?(node)
+        end
+
+        # e.g. `not foo`, `return foo`, and `yield foo`
+        def low_precedence_keyword?(node)
+          return node.prefix_not? if node.send_type?
+
+          node.type?(:return, :next, :break, :yield, :super) &&
+            node.arguments? && !node.parenthesized?
         end
 
         def require_braces?(node)
