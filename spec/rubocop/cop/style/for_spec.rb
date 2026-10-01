@@ -77,6 +77,105 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     context 'autocorrect' do
+      it 'does not autocorrect when the body uses a numbered parameter' do
+        expect_offense(<<~RUBY)
+          for _ in [1, 2, 3] do
+          ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts _1
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not autocorrect when the body uses `it`', :ruby34 do
+        expect_offense(<<~RUBY)
+          for _ in [1, 2, 3] do
+          ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts it
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not autocorrect when the body uses the numbered parameter of an enclosing block' do
+        expect_offense(<<~RUBY)
+          [[9]].each do
+            for x in [1]
+            ^^^^^^^^^^^^ Prefer `each` over `for`.
+              p _1, x
+            end
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not autocorrect when the body uses `it` of an enclosing block', :ruby34 do
+        expect_offense(<<~RUBY)
+          [[9]].each do
+            for x in [1]
+            ^^^^^^^^^^^^ Prefer `each` over `for`.
+              p it, x
+            end
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'corrects when a numbered parameter belongs to an inner block' do
+        expect_offense(<<~RUBY)
+          for x in [1, 2, 3] do
+          ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            [x].each { puts _1 }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].each do |x|
+            [x].each { puts _1 }
+          end
+        RUBY
+      end
+
+      it 'does not autocorrect when the loop variable is not a local variable' do
+        expect_offense(<<~RUBY)
+          for @item in items do
+          ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts @item
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not autocorrect when the loop variable is an attribute' do
+        expect_offense(<<~RUBY)
+          for foo.bar in items do
+          ^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'corrects nested destructuring of local variables' do
+        expect_offense(<<~RUBY)
+          for a, (b, *c) in items do
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts a, b, c
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each do |a, (b, *c)|
+            puts a, b, c
+          end
+        RUBY
+      end
+
       context 'with range' do
         let(:expected_each_with_range) do
           <<~RUBY
