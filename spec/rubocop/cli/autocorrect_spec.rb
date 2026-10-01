@@ -864,6 +864,22 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/IfUnlessModifierOfIfUnless` with `Style/SoleNestedConditional` ' \
+     'without duplicating the outer condition' do
+    create_file('example.rb', <<~RUBY)
+      do_something if a unless b.shift
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/IfUnlessModifierOfIfUnless,Style/SoleNestedConditional'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if !b.shift && a
+      do_something
+      end
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifier` with `Style/Next`' do
     source = <<~RUBY
       [1, 2, 3].each do |i|
