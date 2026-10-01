@@ -77,8 +77,8 @@ module RuboCop
         def replacement(node)
           return correct_elsif(node) if node.else_branch&.if_type?
 
-          then_code = node.if_branch ? build_expression(node.if_branch) : 'nil'
-          else_code = node.else_branch ? build_expression(node.else_branch) : 'nil'
+          then_code = node.if_branch ? ternary_operand(node.if_branch) : 'nil'
+          else_code = node.else_branch ? ternary_operand(node.else_branch) : 'nil'
 
           then_code, else_code = else_code, then_code if node.unless?
 
@@ -108,7 +108,20 @@ module RuboCop
         # `(a = b) ? c : d`), changing what gets assigned.
         def ternary_condition(node)
           condition = node.condition
-          condition.assignment? ? "(#{condition.source})" : condition.source
+          condition.assignment? ? "(#{condition.source})" : ternary_operand(condition)
+        end
+
+        def ternary_operand(expr)
+          lower_precedence_than_ternary?(expr) ? "(#{expr.source})" : build_expression(expr)
+        end
+
+        # Expressions that bind looser than `?:` (or cannot appear unparenthesized
+        # inside it) would otherwise absorb or break the ternary.
+        def lower_precedence_than_ternary?(node)
+          return true if node.type?(:and, :or, :if, :rescue, :while, :until, :any_match_pattern)
+          return true if node.send_type? && node.prefix_not?
+
+          node.type?(:yield, :super, :defined?) && node.arguments.any? && !node.parenthesized?
         end
 
         def build_else_branch(second_condition)

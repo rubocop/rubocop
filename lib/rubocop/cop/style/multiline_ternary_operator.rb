@@ -7,7 +7,7 @@ module RuboCop
       #
       # NOTE: `return if ... else ... end` is syntax error. If `return` is used before
       # multiline ternary operator expression, it will be autocorrected to single-line
-      # ternary operator. The same is true for `break`, `next`, and method call.
+      # ternary operator. The same is true for `break`, `next`, `yield`, `super`, and method call.
       #
       # @example
       #   # bad
@@ -39,7 +39,7 @@ module RuboCop
 
         MSG_IF = 'Avoid multi-line ternary operators, use `if` or `unless` instead.'
         MSG_SINGLE_LINE = 'Avoid multi-line ternary operators, use single-line instead.'
-        SINGLE_LINE_TYPES = %i[return break next send csend].freeze
+        SINGLE_LINE_TYPES = %i[return break next send csend super yield].freeze
 
         def on_if(node)
           return unless offense?(node)

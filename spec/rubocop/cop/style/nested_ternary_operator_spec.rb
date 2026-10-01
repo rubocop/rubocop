@@ -114,4 +114,64 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
       end
     RUBY
   end
+
+  it 'registers an offense and corrects when the ternary is the unparenthesized argument of a method call' do
+    expect_offense(<<~RUBY)
+      puts a ? (b ? 1 : 2) : 3
+                ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      puts (if a
+      b ? 1 : 2
+      else
+      3
+      end)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the ternary is the value of `return`' do
+    expect_offense(<<~RUBY)
+      return a ? (b ? 1 : 2) : 3
+                  ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      return (if a
+      b ? 1 : 2
+      else
+      3
+      end)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the ternary is a later unparenthesized argument of a method call' do
+    expect_offense(<<~RUBY)
+      puts x, a ? (b ? 1 : 2) : 3
+                   ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      puts x, if a
+      b ? 1 : 2
+      else
+      3
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects without touching parentheses that do not wrap the whole branch' do
+    expect_offense(<<~RUBY)
+      p(a ? (b ? 1 : 2) + (c) : 3)
+             ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      p(if a
+      (b ? 1 : 2) + (c)
+      else
+      3
+      end)
+    RUBY
+  end
 end

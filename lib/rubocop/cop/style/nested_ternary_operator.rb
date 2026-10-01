@@ -39,16 +39,30 @@ module RuboCop
         def autocorrect(corrector, if_node)
           replace_loc_and_whitespace(corrector, if_node.loc.question, "\n")
           replace_loc_and_whitespace(corrector, if_node.loc.colon, "\nelse\n")
-          corrector.replace(if_node.if_branch, remove_parentheses(if_node.if_branch.source))
-          corrector.wrap(if_node, 'if ', "\nend")
+          remove_parentheses(corrector, if_node.if_branch)
+
+          if modifier_position?(if_node)
+            corrector.wrap(if_node, '(if ', "\nend)")
+          else
+            corrector.wrap(if_node, 'if ', "\nend")
+          end
         end
 
-        def remove_parentheses(source)
-          if source.start_with?('(') && source.end_with?(')')
-            source.delete_prefix('(').delete_suffix(')')
-          else
-            source
-          end
+        def remove_parentheses(corrector, node)
+          return unless node.begin_type? && node.parenthesized_call?
+
+          corrector.remove(node.loc.begin)
+          corrector.remove(node.loc.end)
+        end
+
+        # An `if` right after `return` or as the first argument of a call without
+        # parentheses would be parsed as a modifier.
+        def modifier_position?(node)
+          return false unless (parent = node.parent)
+          return true if parent.type?(:return, :break, :next)
+
+          parent.type?(:call, :super, :yield) && !parent.parenthesized? &&
+            parent.first_argument.equal?(node)
         end
 
         def replace_loc_and_whitespace(corrector, range, replacement)
