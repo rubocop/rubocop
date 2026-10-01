@@ -9,6 +9,7 @@ RSpec.shared_examples 'multiline literal brace layout' do
   let(:b) { 'b' } # The second element.
   let(:b_comment) { '' } # Comment after the second element.
   let(:multi_prefix) { '' } # Prefix multi and heredoc with this.
+  let(:after_heredoc) { b } # An element that can follow a heredoc element.
   let(:multi) do # A viable multi-line element.
     <<~RUBY.chomp
       {
@@ -64,6 +65,22 @@ RSpec.shared_examples 'multiline literal brace layout' do
         #{multi_prefix}#{safe_heredoc}#{close}
         #{suffix}
       RUBY
+    end
+
+    %w[symmetrical new_line].each do |style|
+      context "with `EnforcedStyle: #{style}`" do
+        let(:cop_config) { { 'EnforcedStyle' => style } }
+
+        it 'ignores a closing brace on the line where a heredoc is opened' do
+          expect_no_offenses(<<~RUBY)
+            #{prefix}#{open}
+            #{a}, #{multi_prefix}<<~EOM, #{after_heredoc}#{close}
+              baz
+            EOM
+            #{suffix}
+          RUBY
+        end
+      end
     end
   end
 
