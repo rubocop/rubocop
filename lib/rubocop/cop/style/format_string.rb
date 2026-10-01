@@ -69,7 +69,7 @@ module RuboCop
 
         # @!method variable_argument?(node)
         def_node_matcher :variable_argument?, <<~PATTERN
-          (send {str dstr} :% #autocorrectable?)
+          (send {str dstr} :% !#autocorrectable?)
         PATTERN
 
         def on_send(node)
@@ -86,10 +86,12 @@ module RuboCop
 
         private
 
+        # Only an argument that is provably not an array can be corrected,
+        # because `String#%` spreads an array argument and `format` does not.
         def autocorrectable?(node)
-          return true if node.lvar_type?
+          return true if node.literal?
 
-          node.send_type? && !AUTOCORRECTABLE_METHODS.include?(node.method_name)
+          node.call_type? && AUTOCORRECTABLE_METHODS.include?(node.method_name)
         end
 
         def message(detected_style)

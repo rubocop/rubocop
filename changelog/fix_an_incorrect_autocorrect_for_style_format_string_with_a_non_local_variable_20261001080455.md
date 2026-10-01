@@ -1,0 +1,1 @@
+* [#15842](https://github.com/rubocop/rubocop/pull/15842): Fix an incorrect autocorrect for `Style/FormatString` when the argument of `String#%` is an instance variable, a constant or another value that may be an array. ([@bbatsov][])
