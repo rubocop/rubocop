@@ -56,7 +56,8 @@ module RuboCop
         end
 
         def on_send(node)
-          return if node.parenthesized?
+          # `foo.*` is a regular method call, not a binary operator.
+          return if node.parenthesized? || node.loc.dot
 
           return unless (parent = node.parent)
           return unless operator?(parent)

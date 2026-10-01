@@ -5645,6 +5645,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Lint/AmbiguousOperatorPrecedence` and ' \
+     '`Style/RedundantParentheses` with an operator method called with a dot' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        NewCops: enable
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      1 + CONST.*
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      1 + CONST.*
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 

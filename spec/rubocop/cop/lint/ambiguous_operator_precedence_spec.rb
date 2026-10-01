@@ -15,6 +15,13 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperatorPrecedence, :config do
     RUBY
   end
 
+  it 'does not register an offense for an operator method called with a dot' do
+    expect_no_offenses(<<~RUBY)
+      1 + CONST.*
+      CONST.* + 1
+    RUBY
+  end
+
   it 'does not register an offense when expressions are wrapped in parentheses by precedence' do
     expect_no_offenses(<<~RUBY)
       a + (b * c)
