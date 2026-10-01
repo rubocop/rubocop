@@ -678,6 +678,74 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'registers an offense but does not autocorrect in a `while` condition' do
+        expect_offense(<<~RUBY)
+          while foo { |x|
+                    ^ Avoid using `{...}` for multi-line blocks.
+          }
+            bar
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense but does not autocorrect in a parenthesized `until` condition' do
+        expect_offense(<<~RUBY)
+          until (foo && baz.any? { |x|
+                                 ^ Avoid using `{...}` for multi-line blocks.
+          })
+            bar
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      context 'with a block in an allowed lambda in a `while` condition' do
+        let(:cop_config) { super().merge('AllowedMethods' => %w[lambda proc]) }
+
+        it 'registers an offense and corrects the block in the lambda body' do
+          expect_offense(<<~RUBY)
+            while foo(-> {
+              bar { |z|
+                  ^ Avoid using `{...}` for multi-line blocks.
+                z
+              }
+            })
+              baz
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            while foo(-> {
+              bar do |z|
+                z
+              end
+            })
+              baz
+            end
+          RUBY
+        end
+      end
+
+      it 'registers an offense and corrects in a `while` body' do
+        expect_offense(<<~RUBY)
+          while foo
+            bar { |x|
+                ^ Avoid using `{...}` for multi-line blocks.
+            }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          while foo
+            bar do |x|
+            end
+          end
+        RUBY
+      end
+
       it 'registers an offense when combined with attribute assignment' do
         expect_offense(<<~RUBY)
           foo.bar = baz.map { |x|
