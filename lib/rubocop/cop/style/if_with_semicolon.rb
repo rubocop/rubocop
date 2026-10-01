@@ -21,6 +21,10 @@ module RuboCop
         MSG_NEWLINE = 'Do not use `%<keyword>s %<expr>s;` - use a newline instead.'
         MSG_TERNARY = 'Do not use `%<keyword>s %<expr>s;` - use a ternary operator instead.'
 
+        LOWER_PRECEDENCE_THAN_TERNARY_TYPES = %i[
+          and or if rescue any_match_pattern while until while_post until_post
+        ].freeze
+
         def on_normal_if_unless(node)
           return if node.parent&.if_type?
           return if part_of_ignored_node?(node)
@@ -120,7 +124,7 @@ module RuboCop
         # Expressions that bind looser than `?:` (or cannot appear unparenthesized
         # inside it) would otherwise absorb or break the ternary.
         def lower_precedence_than_ternary?(node)
-          return true if node.type?(:and, :or, :if, :rescue, :while, :until, :any_match_pattern)
+          return true if node.type?(*LOWER_PRECEDENCE_THAN_TERNARY_TYPES)
           return true if node.send_type? && (node.prefix_not? || prefix_bang_on_command?(node))
 
           node.type?(:yield, :super, :defined?) && node.arguments.any? && !node.parenthesized?

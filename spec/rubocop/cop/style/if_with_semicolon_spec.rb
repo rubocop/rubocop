@@ -96,6 +96,20 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when a branch is a `begin`/`end` loop with a `while` or `until` modifier' do
+    expect_offense(<<~RUBY)
+      if cond; begin foo end while bar else baz end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      x = if cond; foo else begin bar end until baz end
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? (begin foo end while bar) : baz
+      x = cond ? foo : (begin bar end until baz)
+    RUBY
+  end
+
   it 'registers an offense and corrects when `if` is the receiver of a method call' do
     expect_offense(<<~RUBY)
       x = if cond; foo else bar end.baz
