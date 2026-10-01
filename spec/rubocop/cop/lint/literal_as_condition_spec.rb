@@ -782,6 +782,74 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
     RUBY
   end
 
+  context 'when an `if` without a surviving branch is used as a value' do
+    it 'registers an offense and corrects to `nil` for an assignment' do
+      expect_offense(<<~RUBY)
+        foo.bar =
+          if true
+             ^^^^ Literal `true` appeared as a condition.
+          end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar =
+          nil
+      RUBY
+    end
+
+    it 'registers an offense and corrects to `nil` for a falsey literal' do
+      expect_offense(<<~RUBY)
+        x = if false
+               ^^^^^ Literal `false` appeared as a condition.
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = nil
+      RUBY
+    end
+  end
+
+  context 'when a post-loop that runs once uses loop control keywords' do
+    it 'registers an offense but does not autocorrect `redo` and `break` in `while`' do
+      expect_offense(<<~RUBY)
+        begin
+          redo if foo
+          break
+        end while nil
+                  ^^^ Literal `nil` appeared as a condition.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not autocorrect `next` in `until`' do
+      expect_offense(<<~RUBY)
+        begin
+          next if foo
+          bar
+        end until true
+                  ^^^^ Literal `true` appeared as a condition.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense and corrects when the keyword belongs to an inner block' do
+      expect_offense(<<~RUBY)
+        begin
+          items.each { |item| next if item }
+        end while false
+                  ^^^^^ Literal `false` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { |item| next if item }
+      RUBY
+    end
+  end
+
   context 'void value expressions after autocorrect' do
     it 'registers an offense but does not autocorrect when `return` is used after `&&`' do
       expect_offense(<<~RUBY)
