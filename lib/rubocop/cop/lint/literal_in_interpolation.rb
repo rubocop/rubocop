@@ -180,7 +180,9 @@ module RuboCop
         end
 
         def space_literal?(node)
-          node.str_type? && node.value.valid_encoding? && node.value.blank?
+          # `String#blank?` misses Unicode spaces such as U+3000 that
+          # `Layout/TrailingWhitespace` treats as trailing whitespace.
+          node.str_type? && node.value.valid_encoding? && node.value.match?(/\A[[:space:]]*\z/)
         end
 
         def ends_heredoc_line?(node)

@@ -5622,6 +5622,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/TrailingWhitespace` and ' \
+     '`Lint/LiteralInInterpolation` with an ideographic space in a heredoc' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      <<~X
+        foo\u3000
+      X
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read(encoding: Encoding::UTF_8)).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      <<~X
+        foo\#{'\u3000'}
+      X
+    RUBY
+  end
+
   context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
     before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
 

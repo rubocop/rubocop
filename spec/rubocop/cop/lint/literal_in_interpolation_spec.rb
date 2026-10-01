@@ -458,6 +458,14 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
+  it 'does not register an offense when an ideographic space literal is at the end of heredoc line' do
+    expect_no_offenses(<<~RUBY)
+      <<~HERE
+        Line with explicit ideographic space literal at the end. \#{'\u3000'}
+      HERE
+    RUBY
+  end
+
   context 'in string-like contexts' do
     let(:literal) { '42' }
     let(:expected) { '42' }
