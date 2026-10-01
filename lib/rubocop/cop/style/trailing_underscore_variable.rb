@@ -35,19 +35,20 @@ module RuboCop
 
         MSG = 'Do not use trailing `_`s in parallel assignment. Prefer `%<code>s`.'
         UNDERSCORE = '_'
+        ARRAY_OPENING = '['
         DISALLOW = %i[lvasgn splat].freeze
         private_constant :DISALLOW
 
         def on_masgn(node)
-          ranges = unneeded_ranges(node)
-
-          ranges.each do |range|
+          unneeded_ranges(node).each do |range, replacement|
+            closing = replacement == ARRAY_OPENING ? ']' : ''
             good_code = node.source
             offset = range.begin_pos - node.source_range.begin_pos
-            good_code[offset, range.size] = ''
+            good_code[offset, range.size] = replacement
 
-            add_offense(range, message: format(MSG, code: good_code)) do |corrector|
-              corrector.remove(range)
+            add_offense(range, message: format(MSG, code: "#{good_code}#{closing}")) do |corrector|
+              corrector.replace(range, replacement)
+              corrector.insert_after(node, closing) unless closing.empty?
             end
           end
         end
@@ -115,9 +116,12 @@ module RuboCop
 
           return unused_range(node, mlhs_node) if unused_variables_only?(first_offense, variables)
 
-          return range_for_parentheses(first_offense, mlhs_node) if Util.parentheses?(mlhs_node)
-
-          range_between(first_offense.source_range.begin_pos, node.loc.operator.begin_pos)
+          range = if Util.parentheses?(mlhs_node)
+                    range_for_parentheses(first_offense, mlhs_node)
+                  else
+                    range_between(first_offense.source_range.begin_pos, node.loc.operator.begin_pos)
+                  end
+          [range, '']
         end
 
         def children_offenses(variables)
@@ -129,17 +133,17 @@ module RuboCop
         end
 
         def unused_range(node, mlhs_node)
-          start_range = mlhs_node.source_range.begin_pos
-
           # `node` can be an `mlhs` when recursing into a nested destructuring
-          # group; only a `masgn` has a right-hand side to anchor against.
-          end_range = if node.masgn_type?
-                        node.rhs.source_range.begin_pos
-                      else
-                        mlhs_node.source_range.end_pos
-                      end
+          # group. Removing the group could leave a dangling comma or put
+          # something after a splat, so it is collapsed into a single `_`,
+          # which the parent group handles in turn.
+          return [mlhs_node.source_range, UNDERSCORE] unless node.masgn_type?
 
-          range_between(start_range, end_range)
+          rhs = node.rhs
+          range = range_between(mlhs_node.source_range.begin_pos, rhs.source_range.begin_pos)
+
+          # `_, _ = 1, 2` cannot become `1, 2`, so the values become an array literal.
+          [range, rhs.array_type? && !rhs.bracketed? ? ARRAY_OPENING : '']
         end
 
         def range_for_parentheses(offense, left)
