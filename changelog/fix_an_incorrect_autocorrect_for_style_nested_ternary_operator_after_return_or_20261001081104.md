@@ -1,0 +1,1 @@
+* [#15839](https://github.com/rubocop/rubocop/pull/15839): Fix an incorrect autocorrect for `Style/NestedTernaryOperator` when the ternary follows `return` or is a command argument, or when the `if` branch has parentheses that do not wrap all of it. ([@bbatsov][])
