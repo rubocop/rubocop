@@ -96,6 +96,51 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when `if` is the receiver of a method call' do
+    expect_offense(<<~RUBY)
+      x = if cond; foo else bar end.baz
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      x = !if cond; foo else bar end
+           ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = (cond ? foo : bar).baz
+      x = !(cond ? foo : bar)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when `if` is an operand of an operator' do
+    expect_offense(<<~RUBY)
+      x = if cond; foo else bar end || baz
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      x = foo + if cond; bar else baz end
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = (cond ? foo : bar) || baz
+      x = foo + (cond ? bar : baz)
+    RUBY
+  end
+
+  it 'registers an offense and corrects without parentheses when `if` is an argument' do
+    expect_offense(<<~RUBY)
+      foo(if cond; bar else baz end)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      foo[if cond; bar else baz end]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      x = not(if cond; bar else baz end)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(cond ? bar : baz)
+      foo[cond ? bar : baz]
+      x = not(cond ? bar : baz)
+    RUBY
+  end
+
   it 'registers an offense and corrects for one line if/;/end without then body' do
     expect_offense(<<~RUBY)
       if cond; else dont end

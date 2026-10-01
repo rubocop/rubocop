@@ -82,7 +82,9 @@ module RuboCop
 
           then_code, else_code = else_code, then_code if node.unless?
 
-          "#{ternary_condition(node)} ? #{then_code} : #{else_code}"
+          ternary = "#{ternary_condition(node)} ? #{then_code} : #{else_code}"
+
+          operand_of_parent?(node) ? "(#{ternary})" : ternary
         end
 
         def correct_elsif(node)
@@ -122,6 +124,20 @@ module RuboCop
           return true if node.send_type? && (node.prefix_not? || prefix_bang_on_command?(node))
 
           node.type?(:yield, :super, :defined?) && node.arguments.any? && !node.parenthesized?
+        end
+
+        def operand_of_parent?(node)
+          return false unless (parent = node.parent)
+          return true if parent.operator_keyword?
+
+          parent.call_type? && call_operand?(parent, node)
+        end
+
+        def call_operand?(call, node)
+          return false if call.prefix_not?
+          return true if call.receiver.equal?(node)
+
+          call.operator_method? && !call.method?(:[]) && !call.method?(:[]=)
         end
 
         def build_else_branch(second_condition)
