@@ -1,0 +1,1 @@
+* [#15838](https://github.com/rubocop/rubocop/pull/15838): Fix incorrect autocorrects for `Lint/LiteralAsCondition` with an `if` used as a value or a post-loop containing `break`, `next` or `redo`. ([@bbatsov][])

@@ -967,6 +967,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/ArgumentsForwarding` with `Lint/AmbiguousOperator`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(*args, &block)
+        bar *args, &block
+      end
+    RUBY
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/ArgumentsForwarding,Lint/AmbiguousOperator'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(*, &)
+        bar(*, &)
+      end
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Style/ExplicitBlockArgument`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
@@ -5546,6 +5567,52 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect($stderr.string).to eq('')
     expect(source_file.read).to eq(<<~RUBY)
       x = a.kind_of?(String) ? 1 : 2
+    RUBY
+  end
+
+  it 'corrects `Lint/UselessAssignment`, `Layout/ArrayAlignment` and `Layout/AssignmentIndentation` offenses for a list of values without brackets' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      var =
+           first,
+          second
+    RUBY
+
+    status = cli.run(
+      ['-A', '--only', 'Lint/UselessAssignment,Layout/ArrayAlignment,Layout/AssignmentIndentation']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      [first,
+       second]
+    RUBY
+  end
+
+  it 'corrects `Style/ParenthesesAroundCondition` without turning a multi-line brace block in a `while` condition into `do`...`end`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      while (foo {
+      })
+        bar
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '-A', '--only',
+        'Style/BlockDelimiters,Style/ParenthesesAroundCondition,Style/RedundantParentheses'
+      ]
+    )
+
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      while foo {
+      }
+        bar
+      end
     RUBY
   end
 

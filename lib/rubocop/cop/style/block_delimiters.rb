@@ -443,9 +443,17 @@ module RuboCop
         end
 
         def correction_would_break_code?(node)
-          return false unless node.keywords?
+          return loop_condition?(node) if node.braces?
 
           node.send_node.arguments? && !node.send_node.parenthesized?
+        end
+
+        # A `do` in the condition of `while` or `until` is taken as the start of
+        # the loop body.
+        def loop_condition?(node)
+          [node, *node.each_ancestor].each_cons(2).any? do |child, parent|
+            parent.type?(:while, :until) && parent.condition.equal?(child)
+          end
         end
 
         def functional_method?(method_name)
