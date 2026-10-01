@@ -231,7 +231,7 @@ module RuboCop
 
           # end_range starts with the final newline of the if body
           lines = (node.source_range.line + 1)...node.loc.end.line
-          lines = lines.to_a - heredoc_lines(node)
+          lines = lines.to_a - string_content_lines(node)
           # Skip blank lines
           lines.reject { |lineno| /\A\s*\z/.match?(buffer.source_line(lineno)) }
         end
@@ -250,11 +250,25 @@ module RuboCop
           lines.map { |lineno| buffer.source_line(lineno) =~ /\S/ }.min
         end
 
-        def heredoc_lines(node)
-          node.each_node(:dstr)
-              .select(&:heredoc?)
-              .map { |n| n.loc.heredoc_body }
-              .flat_map { |b| (b.line...b.last_line).to_a }
+        # Lines that start inside a string literal or a heredoc body, whose
+        # leading whitespace is part of the string value.
+        def string_content_lines(node)
+          buffer = node.source_range.source_buffer
+          ranges = node.each_node(:any_str).filter_map { |str| string_content_range(str) }
+
+          ranges.flat_map do |range|
+            (range.line..range.last_line).select do |lineno|
+              (range.begin_pos...range.end_pos).cover?(buffer.line_range(lineno).begin_pos)
+            end
+          end
+        end
+
+        def string_content_range(node)
+          if node.heredoc?
+            node.loc.heredoc_body
+          elsif node.loc?(:begin) && node.loc?(:end)
+            node.loc.begin.end.join(node.loc.end.begin)
+          end
         end
 
         def reindent_line(corrector, lineno, delta, buffer)

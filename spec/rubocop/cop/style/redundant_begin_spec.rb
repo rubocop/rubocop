@@ -260,6 +260,86 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using `and` single statement in `begin` block' do
+    expect_offense(<<~RUBY)
+      var = begin
+            ^^^^^ Redundant `begin` block detected.
+        a and b
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = (a and b)
+
+    RUBY
+  end
+
+  it 'registers and corrects an offense without adding parentheses when using `||` single statement in `begin` block' do
+    expect_offense(<<~RUBY)
+      var = begin
+            ^^^^^ Redundant `begin` block detected.
+        a || b
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = a || b
+
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using modifier `until` single statement in `begin` block' do
+    expect_offense(<<~RUBY)
+      var = begin
+            ^^^^^ Redundant `begin` block detected.
+        i += 1 until i > 2
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = (i += 1 until i > 2)
+
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using multi-line `begin` block as a `return` value' do
+    expect_offense(<<~RUBY)
+      def foo
+        return begin
+               ^^^^^ Redundant `begin` block detected.
+          bar
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        return bar
+      #{'  '}
+      end
+    RUBY
+  end
+
+  %w[next break].each do |keyword|
+    it "registers and corrects an offense when using `or` single statement in `begin` block as a `#{keyword}` value" do
+      expect_offense(<<~RUBY, keyword: keyword)
+        loop do
+          %{keyword} begin
+          _{keyword} ^^^^^ Redundant `begin` block detected.
+            a or b
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        loop do
+          #{keyword} (a or b)
+        #{'  '}
+        end
+      RUBY
+    end
+  end
+
   it 'registers and corrects an offense when using multi-line `if` in `begin` block' do
     expect_offense(<<~RUBY)
       var ||= begin
