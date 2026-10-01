@@ -132,7 +132,9 @@ module RuboCop
         end
 
         def requires_parentheses?(node)
-          return true if node.type?(:and, :or, :if, :rescue, :while, :until, :any_match_pattern)
+          return true if node.type?(
+            :and, :or, :if, :rescue, :while, :until, :while_post, :until_post, :any_match_pattern
+          )
           return true if node.assignment?
           return true if method_call_with_changed_precedence?(node)
 
