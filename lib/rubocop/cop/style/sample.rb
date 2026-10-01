@@ -98,20 +98,21 @@ module RuboCop
           second.int_type? ? second.to_a.first : :unknown
         end
 
-        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def range_size(range_node)
-          vals = range_node.to_a
-          return :unknown unless vals.all? { |val| val.nil? || val.int_type? }
-
-          low, high = vals.map { |val| val.nil? ? 0 : val.children[0] }
-          return :unknown unless low.zero? && high >= 0
+          low, high = range_node.to_a
+          # An endless range takes the rest of the collection, whatever its size.
+          return :unknown unless zero_or_beginless?(low) && high&.int_type? && high.value >= 0
 
           case range_node.type
           when :erange
-            (low...high).size
+            high.value
           when :irange
-            (low..high).size
+            high.value + 1
           end
+        end
+
+        def zero_or_beginless?(low)
+          low.nil? || (low.int_type? && low.value.zero?)
         end
 
         def source_range(shuffle_node, node)
