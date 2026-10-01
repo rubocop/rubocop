@@ -130,6 +130,24 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier, :config do
     end
   end
 
+  context 'when the body is a `begin` block' do
+    it 'does not register an offense for while' do
+      expect_no_offenses(<<~RUBY)
+        while foo
+          begin bar end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for until' do
+      expect_no_offenses(<<~RUBY)
+        until foo
+          begin bar end
+        end
+      RUBY
+    end
+  end
+
   context 'when the loop is the body of an endless method definition', :ruby30 do
     it 'wraps the modifier form in parentheses' do
       expect_offense(<<~RUBY)

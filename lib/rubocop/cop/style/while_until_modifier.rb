@@ -59,7 +59,7 @@ module RuboCop
         private
 
         def non_eligible_body?(body)
-          body&.conditional? || super
+          body&.conditional? || body&.kwbegin_type? || super
         end
       end
     end
