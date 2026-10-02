@@ -779,6 +779,102 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
+  context 'if-end is argument to a safe navigation method call' do
+    it 'adds parentheses because otherwise it would cause SyntaxError' do
+      expect_offense(<<~RUBY)
+        x&.push(if a
+                ^^ Favor modifier `if` usage when having a single-line body. [...]
+          1
+        end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.push((1 if a))
+      RUBY
+    end
+  end
+
+  context 'if-end is argument to `yield`' do
+    it 'adds parentheses because otherwise it would cause SyntaxError' do
+      expect_offense(<<~RUBY)
+        def foo
+          yield(if a
+                ^^ Favor modifier `if` usage when having a single-line body. [...]
+            1
+          end)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          yield((1 if a))
+        end
+      RUBY
+    end
+  end
+
+  context 'if-end is argument to `super`' do
+    it 'adds parentheses because otherwise it would cause SyntaxError' do
+      expect_offense(<<~RUBY)
+        def foo
+          super(if a
+                ^^ Favor modifier `if` usage when having a single-line body. [...]
+            1
+          end)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          super((1 if a))
+        end
+      RUBY
+    end
+  end
+
+  context 'if-end is a ternary branch' do
+    it 'adds parentheses because otherwise it would cause SyntaxError' do
+      expect_offense(<<~RUBY)
+        p(b ? if a
+              ^^ Favor modifier `if` usage when having a single-line body. [...]
+          1
+        end : 2)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        p(b ? (1 if a) : 2)
+      RUBY
+    end
+  end
+
+  context 'if-end is the body of an endless method definition', :ruby30 do
+    it 'adds parentheses so as not to make the method definition conditional' do
+      expect_offense(<<~RUBY)
+        def foo(a) = if a
+                     ^^ Favor modifier `if` usage when having a single-line body. [...]
+          1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(a) = (1 if a)
+      RUBY
+    end
+
+    it 'adds parentheses for a singleton method definition' do
+      expect_offense(<<~RUBY)
+        def self.foo(a) = if a
+                          ^^ Favor modifier `if` usage when having a single-line body. [...]
+          1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.foo(a) = (1 if a)
+      RUBY
+    end
+  end
+
   context 'if-end with conditional as body' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)

@@ -282,7 +282,15 @@ module RuboCop
         end
 
         def accepted_form?(node, ending: false)
-          accepted_if?(node, ending) || node.condition.multiline? || node.parent&.assignment?
+          accepted_if?(node, ending) || node.condition.multiline? ||
+            node.parent&.assignment? || endless_method_body?(node)
+        end
+
+        # The body of an endless method is a single expression, so there is no
+        # room for a guard clause followed by the rest of the code.
+        def endless_method_body?(node)
+          parent = node.parent
+          parent&.any_def_type? && parent.endless?
         end
 
         def trivial?(node)

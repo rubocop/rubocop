@@ -887,6 +887,22 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/IfUnlessModifierOfIfUnless` with `Style/SoleNestedConditional` ' \
+     'without duplicating the outer condition' do
+    create_file('example.rb', <<~RUBY)
+      do_something if a unless b.shift
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/IfUnlessModifierOfIfUnless,Style/SoleNestedConditional'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if !b.shift && a
+      do_something
+      end
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifier` with `Style/Next`' do
     source = <<~RUBY
       [1, 2, 3].each do |i|
@@ -1402,6 +1418,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       #{trailing_whitespace * 10}
     RUBY
     expect(File.read('example.rb')).to eq(corrected)
+  end
+
+  it 'corrects `Style/CaseLikeIf` with `Style/IfInsideElse` when the `else` branch holds a modifier `if`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      if x == 1
+        :one
+      elsif x == 2
+        :two
+      elsif x == 4
+        :four
+      else
+        :three if x == 3
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only Style/CaseLikeIf,Style/IfInsideElse])
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      case x
+      when 1
+        :one
+      when 2
+        :two
+      when 4
+        :four
+      else
+        :three if x == 3
+      end
+    RUBY
   end
 
   it 'corrects `Layout/SpaceAroundKeyword` with `Layout/SpaceInsideRangeLiteral`' do

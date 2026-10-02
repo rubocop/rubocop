@@ -118,7 +118,8 @@ module RuboCop
           if node.ternary?
             node.if_branch
           else
-            range_between(node.condition.source_range.end_pos, node.loc.else.begin_pos)
+            if_start = node.loc.begin || node.condition.source_range
+            range_between(if_start.end_pos, node.loc.else.begin_pos)
           end
         end
 

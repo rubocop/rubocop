@@ -130,6 +130,39 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier, :config do
     end
   end
 
+  context 'when the body is a `begin` block' do
+    it 'does not register an offense for while' do
+      expect_no_offenses(<<~RUBY)
+        while foo
+          begin bar end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for until' do
+      expect_no_offenses(<<~RUBY)
+        until foo
+          begin bar end
+        end
+      RUBY
+    end
+  end
+
+  context 'when the loop is the body of an endless method definition', :ruby30 do
+    it 'wraps the modifier form in parentheses' do
+      expect_offense(<<~RUBY)
+        def foo = while bar
+                  ^^^^^ Favor modifier `while` usage when having a single-line body.
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo = (baz while bar)
+      RUBY
+    end
+  end
+
   context 'when the modifier form is long but allowed by `Layout/LineLength`' do
     let(:other_cops) do
       { 'Layout/LineLength' => { 'Enabled' => true, 'Max' => 40, 'AllowURI' => allow_uri } }

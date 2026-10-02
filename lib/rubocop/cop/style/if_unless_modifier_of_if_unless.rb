@@ -28,6 +28,10 @@ module RuboCop
 
         MSG = 'Avoid modifier `%<keyword>s` after another conditional.'
 
+        def self.autocorrect_incompatible_with
+          [Style::SoleNestedConditional]
+        end
+
         # rubocop:disable-next Metrics/AbcSize
         def on_if(node)
           return unless node.modifier_form? && node.body.if_type?

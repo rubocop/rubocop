@@ -137,9 +137,15 @@ module RuboCop
         parent = node.parent
         return false if parent.nil?
         return true if parent.assignment? || parent.operator_keyword?
-        return true if %i[array pair].include?(parent.type)
+        return true if parent.type?(:array, :pair, :call, :yield, :super)
 
-        node.parent.send_type?
+        ternary_branch_or_endless_method_body?(parent)
+      end
+
+      def ternary_branch_or_endless_method_body?(parent)
+        return parent.ternary? if parent.if_type?
+
+        parent.any_def_type? && parent.endless?
       end
 
       def comment_disables_cop?(comment)

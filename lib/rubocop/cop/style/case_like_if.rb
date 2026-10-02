@@ -54,6 +54,10 @@ module RuboCop
 
         MSG = 'Convert `if-elsif` to `case-when`.'
 
+        def self.autocorrect_incompatible_with
+          [Style::IfInsideElse]
+        end
+
         def on_if(node)
           return unless should_check?(node)
 
@@ -224,10 +228,9 @@ module RuboCop
         end
 
         def branch_conditions(node)
-          conditions = []
-          while node&.if_type? && !node.ternary?
+          conditions = [node.condition]
+          while (node = node.else_branch)&.if_type? && node.elsif?
             conditions << node.condition
-            node = node.else_branch
           end
           conditions
         end

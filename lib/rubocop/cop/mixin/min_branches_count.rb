@@ -32,7 +32,9 @@ module RuboCop
         branches << node.if_branch
 
         else_branch = node.else_branch
-        if_conditional_branches(else_branch, branches) if else_branch&.if_type?
+        if else_branch&.if_type? && else_branch.elsif?
+          if_conditional_branches(else_branch, branches)
+        end
         branches
       end
     end

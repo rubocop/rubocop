@@ -39,6 +39,47 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when the condition is followed by `then`' do
+    expect_offense(<<~RUBY)
+      if !x then
+      ^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        do_something
+      else
+        do_something_else
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if x then
+        do_something_else
+      else
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects a single-line `if-then-else`' do
+    expect_offense(<<~RUBY)
+      if !x then do_something else do_something_else end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if x then do_something_else else do_something end
+    RUBY
+  end
+
+  it 'registers an offense and corrects a single-line `if-else` with semicolons' do
+    expect_offense(<<~RUBY)
+      if !x; do_something; else do_something_else; end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if x; do_something_else; else do_something; end
+    RUBY
+  end
+
   it 'registers an offense and corrects when negating condition with `not` for ternary' do
     expect_offense(<<~RUBY)
       !x ? do_something : do_something_else
