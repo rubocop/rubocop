@@ -67,6 +67,66 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpConstructor, :config do
     RUBY
   end
 
+  it 'does not autocorrect when a regexp starting with a space would become the first argument of a command' do
+    expect_offense(<<~RUBY)
+      p Regexp.new(/ a/)
+        ^^^^^^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when a regexp starting with `=` would become the first argument of a command' do
+    expect_offense(<<~RUBY)
+      foo&.bar Regexp.new(/=a/)
+               ^^^^^^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when a regexp starting with a space would begin the first argument of a command' do
+    expect_offense(<<~RUBY)
+      p Regexp.new(/ a/).source
+        ^^^^^^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense and corrects when a regexp starting with a space is the first argument of a parenthesized call' do
+    expect_offense(<<~RUBY)
+      p(Regexp.new(/ a/))
+        ^^^^^^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      p(/ a/)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a regexp starting with a space is not the first argument of a command' do
+    expect_offense(<<~RUBY)
+      foo x, Regexp.new(/ a/)
+             ^^^^^^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo x, / a/
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a `%r` regexp starting with a space is the first argument of a command' do
+    expect_offense(<<~RUBY)
+      p Regexp.new(%r{ a})
+        ^^^^^^^^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      p %r{ a}
+    RUBY
+  end
+
   it 'does not register an offense when wrapping a string literal with `Regexp.new`' do
     expect_no_offenses(<<~RUBY)
       Regexp.new('regexp')

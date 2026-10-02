@@ -96,6 +96,28 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
       RUBY
     end
 
+    it 'attr(:name, true) to attr_accessor(:name)' do
+      expect_offense(<<~RUBY)
+        attr(:name, true)
+        ^^^^ Do not use `attr`. Use `attr_accessor` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        attr_accessor(:name)
+      RUBY
+    end
+
+    it 'attr(:name, false) to attr_reader(:name)' do
+      expect_offense(<<~RUBY)
+        attr(:name, false)
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        attr_reader(:name)
+      RUBY
+    end
+
     it 'attr with multiple names to attr_reader' do
       expect_offense(<<~RUBY)
         attr :foo, :bar

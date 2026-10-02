@@ -134,4 +134,95 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
       RUBY
     end
   end
+
+  it 'parenthesizes the comparison when it is negated with `!`' do
+    expect_offense(<<~'RUBY')
+      !string.match?(/\Astring\z/)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(string == 'string')
+    RUBY
+  end
+
+  it 'parenthesizes the comparison when a method is called on it' do
+    expect_offense(<<~'RUBY')
+      string.match?(/\Astring\z/).to_s
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (string == 'string').to_s
+    RUBY
+  end
+
+  it 'corrects `match?` when its value is used' do
+    expect_offense(<<~'RUBY')
+      result = string.match?(/\Astring\z/)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      result = string == 'string'
+    RUBY
+  end
+
+  it 'corrects `=~` used as a condition' do
+    expect_offense(<<~'RUBY')
+      do_something if string =~ /\Astring\z/ && other
+                      ^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something if string == 'string' && other
+    RUBY
+  end
+
+  it 'corrects `&.match` used as a negated condition' do
+    expect_offense(<<~'RUBY')
+      do_something unless !string&.match(/\Astring\z/)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something unless !(string == 'string')
+    RUBY
+  end
+
+  it 'does not autocorrect `match` when a method is called on the `MatchData`' do
+    expect_offense(<<~'RUBY')
+      string.match(/\Astring\z/).nil?
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect `=~` when its value is used' do
+    expect_offense(<<~'RUBY')
+      index = string =~ /\Astring\z/
+              ^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect `=~` when the value of a logical operation it is part of is used' do
+    expect_offense(<<~'RUBY')
+      result = string =~ /\Astring\z/ && other
+               ^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect `&.match?` when its value is used' do
+    expect_offense(<<~'RUBY')
+      result = string&.match?(/\Astring\z/)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_no_corrections
+  end
 end

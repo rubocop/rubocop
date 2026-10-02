@@ -54,6 +54,9 @@ module RuboCop
 
           rescue_node = node.parent
           add_offense(rescue_node) do |corrector|
+            # The heredoc body would be left behind when the rescue body is moved.
+            next if heredoc_end(node)
+
             parenthesized = parenthesized?(rescue_node)
 
             correct_rescue_block(corrector, rescue_node, parenthesized)
@@ -95,15 +98,8 @@ module RuboCop
         end
 
         def heredoc_end(node)
-          return unless node.call_type?
-
-          heredoc = node.arguments.reverse.find do |argument|
-            argument.respond_to?(:heredoc?) && argument.heredoc?
-          end
-
-          return unless heredoc
-
-          heredoc.loc.heredoc_end
+          node.each_node(:any_str).select(&:heredoc?).map { |heredoc| heredoc.loc.heredoc_end }
+              .max_by(&:end_pos)
         end
       end
     end
