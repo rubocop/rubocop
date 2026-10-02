@@ -1751,6 +1751,74 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when an assignment in a conditional in begin may be read in rescue' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def run_steps(items)
+          step = "load"
+          begin
+            config = load_config
+            step = "validate"
+            validate(config)
+            unless items.empty?
+              step = "prepare"
+              prepare(items)
+              step = "process"
+              process(items)
+            end
+            finish
+          rescue StandardError => error
+            puts "failed during \#{step}: \#{error.message}"
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a conditional assignment in begin is referenced in ensure' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(items)
+          step = :initial
+
+          begin
+            unless items.empty?
+              step = :preparing
+              prepare(items)
+              step = :processing
+              process(items)
+            end
+          ensure
+            log(step)
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a conditional assignment in a rescued begin is referenced afterward' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(items)
+          step = :initial
+
+          begin
+            unless items.empty?
+              step = :preparing
+              prepare(items)
+              step = :processing
+              process(items)
+            end
+          rescue StandardError
+            recover
+          end
+
+          log(step)
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is reassigned multiple times ' \
           'in main body of begin then referenced in ensure' do
     it 'accepts' do

@@ -93,12 +93,13 @@ module RuboCop
             raise NotImplementedError
           end
 
+          # Exception-handling behavior also applies to nested control-flow branches.
           def may_jump_to_other_branch?
-            false
+            parent&.may_jump_to_other_branch? || false
           end
 
           def may_run_incompletely?
-            false
+            parent&.may_run_incompletely? || false
           end
 
           def exclusive_with?(other)
