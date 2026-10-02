@@ -29,6 +29,26 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'accepts a multi-line block in an argument of `yield` without parentheses' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            yield [1, 2, 3].map { |n|
+              n * n
+            }
+          end
+        RUBY
+      end
+
+      it 'accepts a multi-line block in an argument of `super` without parentheses' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            super [1, 2, 3].map { |n|
+              n * n
+            }
+          end
+        RUBY
+      end
+
       it 'accepts a multi-line block followed by another argument' do
         expect_no_offenses(<<~RUBY)
           puts [1, 2, 3].map { |n|

@@ -401,6 +401,22 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for an assignment of multiple values' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            @foo = 1, 2
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for an assignment of a splat' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            @foo = *bar
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects a single assignment body' do
         expect_offense(<<~RUBY)
           def my_method
@@ -891,6 +907,22 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         expect_no_offenses(<<~RUBY)
           def my_method
             foo, bar = 1, 2
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for an assignment of multiple values' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            @foo = 1, 2
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for an assignment of a splat' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            @foo = *bar
           end
         RUBY
       end

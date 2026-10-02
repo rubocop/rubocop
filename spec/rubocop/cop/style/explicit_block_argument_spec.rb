@@ -290,6 +290,108 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     RUBY
   end
 
+  it 'registers an offense when using keyword arguments with zsuper' do
+    expect_offense(<<~RUBY)
+      def my_method(x, k: 1, j:)
+        super { yield }
+        ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def my_method(x, k: 1, j:, &block)
+        super(x, k: k, j: j, &block)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the method uses argument forwarding', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      def my_method(...)
+        bar { |x| yield x }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the method uses argument forwarding with zsuper', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      def my_method(a, ...)
+        super { yield }
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using a no keywords argument with zsuper', :ruby27 do
+    expect_offense(<<~RUBY)
+      def my_method(x, **nil)
+        super { yield }
+        ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def my_method(x, **nil, &block)
+        super(x, &block)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using a block argument with zsuper' do
+    expect_offense(<<~RUBY)
+      def my_method(x, &blk)
+        super { yield }
+        ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def my_method(x, &blk)
+        super(x, &blk)
+      end
+    RUBY
+  end
+
+  it 'registers an offense but does not correct when using a destructuring argument with zsuper' do
+    expect_offense(<<~RUBY)
+      def my_method((a, b))
+        super { yield }
+        ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  context 'Ruby >= 3.2', :ruby32 do
+    it 'registers an offense when using anonymous arguments with zsuper' do
+      expect_offense(<<~RUBY)
+        def my_method(*, **)
+          super { yield }
+          ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def my_method(*, **, &block)
+          super(*, **, &block)
+        end
+      RUBY
+    end
+  end
+
+  context 'Ruby <= 3.1', :ruby31, unsupported_on: :prism do
+    it 'registers an offense but does not correct when using anonymous arguments with zsuper' do
+      expect_offense(<<~RUBY)
+        def my_method(*, **)
+          super { yield }
+          ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
   it 'registers an offense and corrects when there are two methods with the same implementation and name' do
     expect_offense(<<~RUBY)
       def foo

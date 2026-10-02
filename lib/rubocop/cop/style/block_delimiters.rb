@@ -196,6 +196,8 @@ module RuboCop
           end
         end
         alias on_csend on_send
+        alias on_super on_send
+        alias on_yield on_send
 
         def on_block(node)
           return if part_of_ignored_node?(node)

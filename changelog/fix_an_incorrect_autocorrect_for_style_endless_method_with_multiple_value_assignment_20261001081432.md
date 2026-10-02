@@ -1,0 +1,1 @@
+* [#15842](https://github.com/rubocop/rubocop/pull/15842): Fix an incorrect autocorrect for `Style/EndlessMethod` and `Style/SingleLineMethods` when the method body assigns multiple values without brackets. ([@bbatsov][])

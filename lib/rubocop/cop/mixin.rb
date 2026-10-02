@@ -32,6 +32,7 @@ module RuboCop
     autoload :AnnotationComment, "#{__dir__}/mixin/annotation_comment"
     autoload :EmptyParameter, "#{__dir__}/mixin/empty_parameter"
     autoload :EndKeywordAlignment, "#{__dir__}/mixin/end_keyword_alignment"
+    autoload :EndlessMethodBodyHelp, "#{__dir__}/mixin/endless_method_body_help"
     autoload :EndlessMethodRewriter, "#{__dir__}/mixin/endless_method_rewriter"
     autoload :EnforceSuperclass, "#{__dir__}/mixin/enforce_superclass"
     autoload :FirstElementLineBreak, "#{__dir__}/mixin/first_element_line_break"

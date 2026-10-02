@@ -133,6 +133,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include LineLengthHelp
         include EndlessMethodRewriter
+        include EndlessMethodBodyHelp
         extend TargetRubyVersion
         extend AutoCorrector
 
@@ -272,12 +273,8 @@ module RuboCop
         def can_be_made_endless?(node)
           return false unless node.body
           return false if comment_in_discarded_range?(node)
-          return false if node.body.type?(:begin, :kwbegin, :rescue, :ensure, :masgn)
-          if ends_with_omitted_hash_value?(node.body) || ends_with_anonymous_argument?(node.body)
-            return false
-          end
 
-          !command_disallowed_in_endless_body?(node.body)
+          endless_method_body?(node.body)
         end
 
         def single_line_when_made_endless?(node)
@@ -298,29 +295,6 @@ module RuboCop
           end
         end
 
-        def ends_with_omitted_hash_value?(body)
-          body.each_descendant(:pair).any? do |pair|
-            pair.value_omission? && pair.source_range.end_pos == body.source_range.end_pos
-          end
-        end
-
-        def ends_with_anonymous_argument?(body)
-          forwarding = %i[forwarded_restarg forwarded_kwrestarg block_pass]
-
-          body.each_descendant(*forwarding).any? do |argument|
-            argument.source_range.end_pos == body.source_range.end_pos &&
-              (!argument.block_pass_type? || argument.children.first.nil?)
-          end
-        end
-
-        def command_disallowed_in_endless_body?(body)
-          return true if body.assignment? && command_call?(assigned_value(body))
-
-          body.each_node(:any_block).any? do |block|
-            block.keywords? && command_call?(block.send_node)
-          end
-        end
-
         def line_when_made_endless(node)
           keyword_element = node.loc.keyword
           code_before = keyword_element.source_line[0...keyword_element.column]
@@ -328,20 +302,6 @@ module RuboCop
           code_after = end_element.source_line[end_element.last_column..]
 
           "#{code_before}#{endless_replacement(node)}#{code_after}"
-        end
-
-        def assigned_value(node)
-          while node.assignment? || node.rescue_type?
-            node = node.rescue_type? ? node.body : node.children.last
-          end
-          node
-        end
-
-        def command_call?(node)
-          node = node.send_node if node.any_block_type?
-          return false unless node.type?(:call, :super, :yield)
-
-          node.arguments? && !node.parenthesized? && !node.operator_method? && !node.setter_method?
         end
       end
     end

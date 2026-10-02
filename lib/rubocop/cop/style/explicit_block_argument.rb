@@ -70,11 +70,12 @@ module RuboCop
             # this is not a valid ruby pattern, but can happen in haml or erb,
             # so this can cause crashes in haml_lint
             return unless def_node
+            return if argument_forwarding?(def_node)
 
             block_name = extract_block_name(def_node)
 
             add_offense(block_node) do |corrector|
-              next if block_name_taken?(def_node, block_name)
+              next unless can_add_block_argument?(def_node, send_node, block_name)
 
               corrector.remove(block_body_range(block_node, send_node))
 
@@ -86,6 +87,11 @@ module RuboCop
 
         private
 
+        # A block parameter can't be added next to `...`.
+        def argument_forwarding?(def_node)
+          def_node.arguments.any?(&:forward_arg_type?)
+        end
+
         def extract_block_name(def_node)
           if def_node.block_argument?
             def_node.last_argument.name
@@ -94,10 +100,25 @@ module RuboCop
           end
         end
 
+        def can_add_block_argument?(def_node, send_node, block_name)
+          return false if block_name_taken?(def_node, block_name)
+
+          !send_node.zsuper_type? || zsuper_arguments_forwardable?(def_node)
+        end
+
         def block_name_taken?(def_node, block_name)
           return false if def_node.block_argument?
 
           def_node.each_descendant(:argument, :lvasgn).any? { |node| node.name.to_s == block_name }
+        end
+
+        # A destructuring argument can only be passed on as the original value,
+        # and anonymous arguments can only be forwarded since Ruby 3.2.
+        def zsuper_arguments_forwardable?(def_node)
+          def_node.arguments.none? do |arg|
+            arg.mlhs_type? ||
+              (arg.type?(:restarg, :kwrestarg) && !arg.name && target_ruby_version < 3.2)
+          end
         end
 
         def yielding_arguments?(block_args, yield_args)
@@ -160,8 +181,12 @@ module RuboCop
 
         def build_new_arguments_for_zsuper(node)
           def_node = node.each_ancestor(:any_def).first
-          def_node.arguments.map do |arg|
-            arg.optarg_type? ? arg.node_parts[0] : arg.source
+          def_node.arguments.filter_map do |arg|
+            case arg.type
+            when :arg, :optarg then arg.name.to_s
+            when :kwarg, :kwoptarg then "#{arg.name}: #{arg.name}"
+            when :restarg, :kwrestarg then arg.source
+            end
           end
         end
 

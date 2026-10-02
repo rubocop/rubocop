@@ -78,6 +78,8 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
   it_behaves_like 'no offense', 'triple dot forwarding with extra param', '...', 'a, ...'
   it_behaves_like 'no offense', 'triple dot forwarding with different param', 'a, ...', 'b, ...'
   it_behaves_like 'no offense', 'keyword forwarding with extra keyword', 'a, **kwargs', 'a: a, **kwargs'
+  it_behaves_like 'no offense', 'destructured positional argument', '(a, b)', 'a, b'
+  it_behaves_like 'no offense', 'destructured positional argument with splat', 'x, (a, *b)', 'x, a, *b'
 
   context 'Ruby >= 3.1', :ruby31 do
     it_behaves_like 'offense', 'hash value omission', 'a:'

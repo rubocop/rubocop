@@ -278,6 +278,66 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to multiline method definition when the body is an `and` operation' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar and baz; end')
+          def foo;#{trailing_whitespace}
+            bar and baz;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body is an `or` operation' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar or baz; end')
+          def foo;#{trailing_whitespace}
+            bar or baz;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to an endless method definition when the body is a `&&` operation' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar && baz; end')
+          def foo() = bar && baz
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body is a multiple assignment' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; a, b = bar; end')
+          def foo;#{trailing_whitespace}
+            a, b = bar;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body assigns multiple values' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; @foo = 1, 2; end')
+          def foo;#{trailing_whitespace}
+            @foo = 1, 2;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body assigns a splat' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; @foo = *bar; end')
+          def foo;#{trailing_whitespace}
+            @foo = *bar;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to an endless method definition when the body assigns an array literal' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; @foo = [1, 2]; end')
+          def foo() = @foo = [1, 2]
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body assigns a command call' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; @foo = bar baz; end')
+          def foo;#{trailing_whitespace}
+            @foo = bar baz;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
       it 'does not to an endless class method definition when using `return`' do
         expect_correction(<<~RUBY.strip, source: 'def foo(argument) return bar(argument); end')
           def foo(argument)#{trailing_whitespace}
