@@ -37,7 +37,7 @@ module RuboCop
         private
 
         def check(node, var_type)
-          return unless (rhs = node.expression)
+          return unless (rhs = unparenthesized_expression(node))
 
           if rhs.send_type? && rhs.arguments.one?
             check_send_node(node, rhs, node.name, var_type)
@@ -67,8 +67,14 @@ module RuboCop
           end
         end
 
-        def autocorrect(corrector, node)
+        def unparenthesized_expression(node)
           rhs = node.expression
+          rhs = rhs.children.first while rhs&.begin_type? && rhs.children.one?
+          rhs
+        end
+
+        def autocorrect(corrector, node)
+          rhs = unparenthesized_expression(node)
 
           if rhs.send_type?
             autocorrect_send_node(corrector, node, rhs)
@@ -78,16 +84,16 @@ module RuboCop
         end
 
         def autocorrect_send_node(corrector, node, rhs)
-          apply_autocorrect(corrector, node, rhs, rhs.method_name, rhs.first_argument)
+          apply_autocorrect(corrector, node, rhs.method_name, rhs.first_argument)
         end
 
         def autocorrect_boolean_node(corrector, node, rhs)
-          apply_autocorrect(corrector, node, rhs, rhs.loc.operator.source, rhs.rhs)
+          apply_autocorrect(corrector, node, rhs.loc.operator.source, rhs.rhs)
         end
 
-        def apply_autocorrect(corrector, node, rhs, operator, new_rhs)
+        def apply_autocorrect(corrector, node, operator, new_rhs)
           corrector.insert_before(node.loc.operator, operator)
-          corrector.replace(rhs, new_rhs.source)
+          corrector.replace(node.expression, new_rhs.source)
         end
       end
     end
