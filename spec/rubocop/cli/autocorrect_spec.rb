@@ -242,6 +242,47 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/FirstHashElementIndentation` with `EnforcedHashRocketStyle: separator` of `Layout/HashAlignment` when `Layout/LineLength` breaks a key into several lines' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/HashAlignment:
+        EnforcedHashRocketStyle: separator
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def foo
+        @foo_foo_foo_foo_foo_foo_foo ||= bar_bar_bar_bar.
+          where{{baz_bar[:qux_qux] => 'p', quux_quux_q(self.corge[:grault], garply[:waldo]) => /garply/i}}.
+          select{
+            [
+            ]
+          }
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all', '--only',
+        'Layout/FirstArgumentIndentation,Layout/FirstHashElementIndentation,' \
+        'Layout/LineLength,Layout/MultilineMethodCallIndentation'
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      def foo
+        @foo_foo_foo_foo_foo_foo_foo ||= bar_bar_bar_bar.
+                                         where{{
+                                           baz_bar[:qux_qux] => 'p', quux_quux_q(
+                                             self.corge[:grault], garply[:waldo]) => /garply/i}}.
+                                         select{
+                                           [
+                                           ]
+                                         }
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: hash_rockets` of `Style/HashSyntax` with `Layout/HashAlignment`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/HashSyntax:

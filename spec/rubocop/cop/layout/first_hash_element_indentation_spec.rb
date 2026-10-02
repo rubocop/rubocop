@@ -73,6 +73,18 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       RUBY
     end
 
+    it 'does not measure a key spanning several lines when indenting the first pair with :' do
+      expect_no_offenses(<<~'RUBY')
+        a << {
+            a: 1,
+          aaa: 222,
+          "#{foo(
+            bar
+          )}": 3
+        }
+      RUBY
+    end
+
     it_behaves_like 'right brace'
   end
 
@@ -107,6 +119,39 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
         a << {
             'a' => 1,
          'aaa' => 222
+        }
+      RUBY
+    end
+
+    it 'does not measure a key spanning several lines when indenting the first pair' do
+      expect_no_offenses(<<~RUBY)
+        a << {
+            'a' => 1,
+          'aaa' => 222,
+          foo(
+            bar
+          ) => 3
+        }
+      RUBY
+    end
+
+    it 'registers an offense and corrects the first pair with the plain indentation when it is a key spanning several lines' do
+      expect_offense(<<~RUBY)
+        a << {
+            foo(
+            ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
+              bar
+            ) => 1,
+          'a_key_longer_than_the_multiline_one' => 222
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a << {
+          foo(
+              bar
+            ) => 1,
+          'a_key_longer_than_the_multiline_one' => 222
         }
       RUBY
     end

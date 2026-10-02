@@ -187,9 +187,11 @@ module RuboCop
         end
 
         def check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
-          key_lengths = hash_node.keys.map { |key| key.source_range.length }
-          check_first(hash_node.pairs.first, left_brace, left_parenthesis,
-                      key_lengths.max - key_lengths.first)
+          first_key = hash_node.keys.first
+          key_lengths = hash_node.keys.select(&:single_line?).map { |key| key.source_range.length }
+          offset = first_key.single_line? ? key_lengths.max - first_key.source_range.length : 0
+
+          check_first(hash_node.pairs.first, left_brace, left_parenthesis, offset)
         end
 
         # Returns the description of what the correct indentation is based on.
