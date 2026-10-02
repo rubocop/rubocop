@@ -1,0 +1,1 @@
+* [#15852](https://github.com/rubocop/rubocop/pull/15852): Fix an incorrect autocorrect for `Style/IfWithSemicolon` when `if` is the receiver of a method call or an operand of an operator. ([@koic][])
