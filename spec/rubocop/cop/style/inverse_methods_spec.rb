@@ -107,6 +107,37 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
     expect_no_offenses('!!(string =~ /^\w+$/)')
   end
 
+  it 'allows a class hierarchy check with a literal constant operand' do
+    expect_no_offenses('!(Integer < Numeric)')
+  end
+
+  it 'allows a class hierarchy check with a `.class` call operand' do
+    expect_no_offenses('!(foo.class < Numeric)')
+  end
+
+  it 'allows a class hierarchy check with a `.superclass` call operand' do
+    expect_no_offenses('!(model.superclass <= included_module)')
+  end
+
+  it 'allows a class hierarchy check with a `.singleton_class` call operand' do
+    expect_no_offenses('!(foo.singleton_class >= bar)')
+  end
+
+  it 'allows a class hierarchy check when the class-returning call is the argument' do
+    expect_no_offenses('!(included_module >= model.superclass)')
+  end
+
+  it 'registers an offense for an inverted `==` even when the receiver has a `.superclass` call' do
+    expect_offense(<<~RUBY)
+      !(model.superclass == included_module)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!=` instead of inverting `==`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      model.superclass != included_module
+    RUBY
+  end
+
   it 'allows an inverse method with a block when double negation is used' do
     expect_no_offenses('!!foo.reject { |e| !e }')
   end

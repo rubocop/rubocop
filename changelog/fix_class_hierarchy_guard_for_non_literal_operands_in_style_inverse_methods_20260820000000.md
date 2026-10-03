@@ -1,0 +1,1 @@
+* [#15577](https://github.com/rubocop/rubocop/issues/15577): Fix `Style/InverseMethods` to not autocorrect class hierarchy comparisons (`<=`, `>=`, `<`, `>`) whose operand is a call that returns a class or module (e.g. `foo.superclass`), not only a literal constant, since inverting such comparisons is not equivalent. ([@Faseeh06][])
