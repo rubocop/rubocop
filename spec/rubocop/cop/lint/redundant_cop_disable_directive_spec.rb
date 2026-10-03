@@ -1088,4 +1088,86 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
       end
     end
   end
+
+  context 'with file directives' do
+    let(:offenses) { [] }
+    let(:cop) { cop_class.new(config, cop_options, offenses) }
+
+    it 'removes an unused valid directive together with its reason' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable-file Metrics/MethodLength -- generated file
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+        def foo; end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo; end
+      RUBY
+    end
+
+    it 'removes an unused `todo-file` directive together with its reason' do
+      expect_offense(<<~RUBY)
+        # rubocop:todo-file Metrics/MethodLength -- revisit later
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+        def foo; end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo; end
+      RUBY
+    end
+
+    context 'when an offense exists before a misplaced directive' do
+      let(:offenses) do
+        [
+          RuboCop::Cop::Offense.new(:convention,
+                                    FakeLocation.new(line: 1, column: 0),
+                                    'Method has too many lines.',
+                                    'Metrics/MethodLength')
+        ]
+      end
+
+      it 'regards the earlier offense as suppressed' do
+        expect_no_offenses(<<~RUBY)
+          def foo; end
+          # rubocop:disable-file Metrics/MethodLength
+        RUBY
+      end
+    end
+
+    context 'with duplicate directives and a real offense' do
+      let(:offenses) do
+        [
+          RuboCop::Cop::Offense.new(:convention,
+                                    FakeLocation.new(line: 3, column: 0),
+                                    'Method has too many lines.',
+                                    'Metrics/MethodLength')
+        ]
+      end
+
+      it 'keeps the first directive and removes the later duplicate' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable-file Metrics/MethodLength -- first
+          # rubocop:disable-file Metrics/MethodLength -- duplicate
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+          def foo; end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable-file Metrics/MethodLength -- first
+          def foo; end
+        RUBY
+      end
+    end
+
+    it 'reports but does not correct an unused misplaced directive' do
+      expect_offense(<<~RUBY)
+        def foo; end
+        # rubocop:disable-file Metrics/MethodLength -- misplaced
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+      RUBY
+
+      expect_no_corrections
+    end
+  end
 end

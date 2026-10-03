@@ -170,4 +170,53 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
       RUBY
     end
   end
+
+  context 'with file directives' do
+    let(:other_cops) { { 'Layout/SpaceAroundOperators' => { 'Enabled' => true } } }
+
+    context 'when MaxRangeSize is infinite' do
+      let(:cop_config) { { 'MaxRangeSize' => Float::INFINITY } }
+
+      it 'does not require a file directive to be enabled later' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable-file Layout/SpaceAroundOperators
+          x =   0
+        RUBY
+      end
+
+      it 'does not require a `todo-file` directive to be enabled later' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:todo-file Layout/SpaceAroundOperators
+          x =   0
+        RUBY
+      end
+
+      it 'still reports an ordinary unclosed disable' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Layout/SpaceAroundOperators
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:enable` after disabling it.
+          x =   0
+        RUBY
+      end
+    end
+
+    context 'when MaxRangeSize is finite' do
+      let(:cop_config) { { 'MaxRangeSize' => 0 } }
+
+      it 'does not apply the range limit to a file directive' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable-file Layout/SpaceAroundOperators
+          x =   0
+        RUBY
+      end
+
+      it 'still reports an ordinary disable that exceeds the limit' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Layout/SpaceAroundOperators
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Re-enable Layout/SpaceAroundOperators cop within 0 lines after disabling it.
+          x =   0
+        RUBY
+      end
+    end
+  end
 end

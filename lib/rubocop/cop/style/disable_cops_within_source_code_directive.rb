@@ -24,10 +24,11 @@ module RuboCop
       # both be set at the same time; if `DisallowedCops` is set, it takes precedence.
       #
       # `AllowedDirectives` names directive forms - `disable`, `todo`,
-      # `disable-next`, `todo-next`, `push`, `next` - and exempts them from the
-      # cop entirely. `rubocop:todo` is the usual candidate, since
-      # `--disable-uncorrectable` generates those and they record debt rather
-      # than a decision someone should be asked to justify.
+      # `disable-next`, `todo-next`, `disable-file`, `todo-file`, `push`, and
+      # `next` - and exempts them from the cop entirely. `rubocop:todo` is the
+      # usual candidate, since `--disable-uncorrectable` generates those and
+      # they record debt rather than a decision someone should be asked to
+      # justify.
       #
       # With `AllowWithReason` set to `true`, a disable directive carrying
       # a `--` trailing justification comment is allowed, so a team can require
