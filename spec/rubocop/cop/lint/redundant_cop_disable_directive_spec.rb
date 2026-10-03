@@ -94,6 +94,34 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           end
 
+          context 'a cop that is disabled in the config when preview is enabled' do
+            let(:all_cops_config) { super().merge('Preview' => true) }
+
+            context 'when the preview defaults disable it' do
+              let(:other_cops) { { 'Metrics/MethodLength' => { 'Enabled' => false } } }
+
+              it 'returns no offense, since the directive is needed again without preview' do
+                expect_no_offenses(<<~RUBY)
+                  # rubocop:disable Metrics/MethodLength
+                  foo
+                  # rubocop:enable Metrics/MethodLength
+                RUBY
+              end
+            end
+
+            context 'when the preview defaults leave it enabled' do
+              let(:other_cops) { { 'Style/For' => { 'Enabled' => false } } }
+
+              it 'returns an offense' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable Style/For
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Style/For`.
+                  foo
+                RUBY
+              end
+            end
+          end
+
           context 'a cop that is pending in the config' do
             let(:other_cops) { { 'Metrics/MethodLength' => { 'Enabled' => 'pending' } } }
 
