@@ -120,7 +120,7 @@ module RuboCop
           rescued_exceptions = group.exceptions
 
           if rescued_exceptions.any?
-            rescued_exceptions.each_with_object([]) do |exception, converted|
+            rescued_exceptions.each.with_object([]) do |exception, converted|
               RuboCop::Util.silence_warnings do
                 # Avoid printing deprecation warnings about constants
                 converted << Kernel.const_get(exception.source)

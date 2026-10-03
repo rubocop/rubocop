@@ -71,7 +71,7 @@ module RuboCop
         MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, is missing a note.'
 
         def on_new_investigation
-          processed_source.comments.each_with_index do |comment, index|
+          processed_source.comments.each.with_index do |comment, index|
             next unless first_comment_line?(processed_source.comments, index) ||
                         inline_comment?(comment)
 

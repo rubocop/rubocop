@@ -1,0 +1,1 @@
+* [#14723](https://github.com/rubocop/rubocop/pull/14723): Add `Style/EachWith` cop to enforce use of `each.with_index` instead of `each_with_index`. ([@nzlaura][])

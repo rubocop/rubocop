@@ -141,7 +141,7 @@ module RuboCop
         end
       end
 
-      analyses.each_with_object({}) do |element, hash|
+      analyses.each.with_object({}) do |element, hash|
         cop_name, analysis = *element
         next if prevent_directive_disabling?(cop_name)
 

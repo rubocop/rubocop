@@ -169,7 +169,7 @@ module RuboCop
           paths = current_path.split(File::SEPARATOR)
 
           paths.delete('.')
-          paths.each_with_index do |path, index|
+          paths.each.with_index do |path, index|
             if path == '..'
               paths.delete_at(index)
               break
