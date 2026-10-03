@@ -40,6 +40,39 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
         # Some other code
       RUBY
     end
+
+    it 'registers an offense on the `disable` when an `enable-next` suspends it and it is never re-enabled' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/SpaceAroundOperators
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:enable` after disabling it.
+        x =   0
+        # rubocop:enable-next Layout/SpaceAroundOperators
+        y = 1
+        z =   2
+      RUBY
+    end
+
+    it 'registers an offense on the `disable` when a `next +Cop` suspends it and it is never re-enabled' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/SpaceAroundOperators
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:enable` after disabling it.
+        x =   0
+        # rubocop:next +Layout/SpaceAroundOperators
+        y = 1
+        z =   2
+      RUBY
+    end
+
+    it 'does not register an offense when a `disable` suspended by an `enable-next` is re-enabled' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Layout/SpaceAroundOperators
+        x =   0
+        # rubocop:enable-next Layout/SpaceAroundOperators
+        y = 1
+        z =   2
+        # rubocop:enable Layout/SpaceAroundOperators
+      RUBY
+    end
   end
 
   context 'when the maximum range size is finite' do
@@ -112,6 +145,19 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
               1 +
               2 +
               3
+        # Some other code
+      RUBY
+    end
+
+    it 'does not register an offense for a `next -Cop` scope larger than the limit' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:next -Layout/SpaceAroundOperators
+        x =   0 +
+              1 +
+              2 +
+              3 +
+              4 +
+              5
         # Some other code
       RUBY
     end
