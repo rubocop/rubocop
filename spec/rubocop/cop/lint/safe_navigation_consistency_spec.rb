@@ -341,4 +341,26 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
       foo&.bar && foo.baz || foo.qux
     RUBY
   end
+
+  it 'registers an offense and corrects a parenthesized operand needing safe navigation' do
+    expect_offense(<<~RUBY)
+      foo&.bar || (foo.baz)
+                      ^ Use `&.` for consistency with safe navigation.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo&.bar || (foo&.baz)
+    RUBY
+  end
+
+  it 'registers an offense and corrects a parenthesized operand with unnecessary safe navigation' do
+    expect_offense(<<~RUBY)
+      foo.bar && (foo&.baz)
+                     ^^ Use `.` instead of unnecessary `&.`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.bar && (foo.baz)
+    RUBY
+  end
 end
