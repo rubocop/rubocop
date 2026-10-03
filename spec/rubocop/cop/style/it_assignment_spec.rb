@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ItAssignment, :config do
+RSpec.describe RuboCop::Cop::Style::ItAssignment, :config, :ruby34 do
   it 'registers an offense when assigning a local `it` variable' do
     expect_offense(<<~RUBY)
       it = 5
@@ -155,6 +155,13 @@ RSpec.describe RuboCop::Cop::Style::ItAssignment, :config do
     it 'does not register an offense when calling `it` in a block' do
       expect_no_offenses(<<~RUBY)
         foo { puts it }
+      RUBY
+    end
+
+    it 'does not register an offense when assigning a local `it` variable' do
+      # Before Ruby 3.4, `it` has no special meaning as a block parameter.
+      expect_no_offenses(<<~RUBY)
+        it = 5
       RUBY
     end
   end
