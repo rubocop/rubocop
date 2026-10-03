@@ -108,9 +108,17 @@ On a large project you often care only about the code you just touched.
 # Files you have modified since the last commit, including untracked ones
 $ rubocop --changed
 
-# Everything your branch changes relative to main - useful on CI
-$ rubocop --changed=main
+# Files your branch changed since it forked from main
+$ rubocop --changed=main...
 ----
+
+The revision goes straight to `git diff`, so it means what it means there.
+`--changed=main` compares the working tree against the tip of `main`, which
+also picks up every file `main` changed after your branch forked from it. The
+three-dot form `main...` compares against the merge base instead, but it stops
+at your last commit: uncommitted edits to tracked files are left out, though
+untracked files still count. That makes it the one to use on CI, where the
+checkout is clean anyway.
 
 Deleted files are skipped, and `Include`/`Exclude` still apply, so the result is
 the intersection of "what git says changed" and "what RuboCop would inspect
@@ -130,9 +138,13 @@ yet, without a todo file:
 
 [source,sh]
 ----
-$ git fetch origin main --depth=1
-$ rubocop --changed=origin/main
+$ git fetch origin main
+$ rubocop --changed=origin/main...
 ----
+
+Finding the merge base takes history from both branches, so a shallow clone
+(the default for many CI checkouts) has to be deepened first, or git fails with
+`no merge base`.
 
 NOTE: The whole file is inspected, not just the lines that changed, so a file you
 touched can still report an offense from a part you did not write. Tools like

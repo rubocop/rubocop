@@ -170,20 +170,30 @@ RSpec.describe RuboCop::ChangedFiles do
     Dir.chdir('lib') { expect(basenames).to eq(['modified.rb']) }
   end
 
+  it 'reports untracked files outside the current directory' do
+    write('spec/untracked_spec.rb')
+
+    Dir.chdir('lib') { expect(basenames).to eq(['untracked_spec.rb']) }
+  end
+
   context 'in a repository without any commits' do
-    around do |example|
-      Dir.mktmpdir do |tmpdir|
-        Dir.chdir(File.realpath(tmpdir)) do
-          git_init
-          example.run
-        end
-      end
+    # The outer `before` has already committed, so start the repository over.
+    before do
+      FileUtils.rm_rf(['.git', 'lib'])
+      git_init
     end
 
     it 'reports everything in the working tree' do
       write('lib/brand_new.rb')
 
       expect(basenames).to eq(['brand_new.rb'])
+    end
+
+    it 'reports staged files' do
+      write('lib/staged.rb')
+      git('add', 'lib/staged.rb')
+
+      expect(basenames).to eq(['staged.rb'])
     end
 
     it 'still raises for a revision that was asked for by name' do
