@@ -1,0 +1,1 @@
+* [#14520](https://github.com/rubocop/rubocop/issues/14520): Fix false positives for `Lint/UselessAssignment` when a loop condition variable is reassigned in a loop body inside a method. ([@mattyb][])

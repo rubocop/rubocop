@@ -216,12 +216,10 @@ module RuboCop
         end
 
         def variable_in_loop_condition?(assignment_node, variable)
-          return false if assignment_node.each_ancestor(:any_def).any?
-
-          loop_node = assignment_node.each_ancestor.find do |ancestor|
-            ancestor.type?(*VariableForce::LOOP_TYPES)
-          end
-
+          # A method defined inside the loop has its own scope, so the loop condition
+          # can only read the variable if the loop is nearer than any method definition.
+          loop_node = assignment_node.each_ancestor(*VariableForce::LOOP_TYPES, :any_def).first
+          return false if !loop_node || loop_node.any_def_type?
           return false unless loop_node.respond_to?(:condition)
 
           condition_node = loop_node.condition

@@ -2737,5 +2737,57 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         raise(CombinationPoolExhaustedError)
       RUBY
     end
+
+    it 'does not register an offense when variable is used directly in condition inside a method' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          keep_going = true
+          while keep_going
+            keep_going = false
+            if rand < 0.5
+              keep_going = true
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when variable is used in condition expression inside a method' do
+      expect_no_offenses(<<~RUBY)
+        def generate_pin
+          try = 0
+          while try < max_tries
+            try += 1
+            next if weak?
+            try = 0
+          end
+
+          raise(CombinationPoolExhaustedError)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the variable is assigned in a method defined in the loop' do
+      expect_offense(<<~RUBY)
+        x = 0
+        while x < 10
+          def helper
+            x = 1
+            ^ Useless assignment to variable - `x`.
+          end
+          x += 1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = 0
+        while x < 10
+          def helper
+            1
+          end
+          x += 1
+        end
+      RUBY
+    end
   end
 end
