@@ -67,9 +67,22 @@ module RuboCop
 
             break if !assignment.branch || assignment.branch == reference.branch
 
-            unless assignment.branch.may_run_incompletely?
+            unless assignment.branch.may_run_incompletely? ||
+                   exception_may_reach?(assignment.branch, node)
               (consumed_branches ||= Set.new) << assignment.branch
             end
+          end
+        end
+
+        # A branch nested in the main body of `begin` can be cut short by an exception
+        # too. An earlier assignment in it is visible to a reference in the `rescue` or
+        # `ensure` clause, or after a `rescue` that handles the exception.
+        def exception_may_reach?(branch, reference_node)
+          branch.each_ancestor.any? do |ancestor|
+            next false unless ancestor.may_run_incompletely?
+            next false if covers?(ancestor.child_node, reference_node)
+
+            ancestor.control_node.rescue_type? || covers?(ancestor.control_node, reference_node)
           end
         end
 
