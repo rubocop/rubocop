@@ -174,7 +174,7 @@ module RuboCop
       #     end
       #   end
       #
-      class ClassStructure < Base
+      class ClassStructure < Base # rubocop:disable Metrics/ClassLength
         include VisibilityHelp
         include CommentsHelp
         extend AutoCorrector
@@ -196,14 +196,17 @@ module RuboCop
         # Consecutive elements of the same category are reported only once,
         # on the first element of the group.
         def on_class(class_node)
+          out_of_order = out_of_order_elements(class_node)
+          moved_nodes = out_of_order.flat_map { |node, *| moved_group(node) }.to_set
+
           # Corrections are registered in reverse source order because an insertion at
           # a given position lands before any insertion already made there;
           # this keeps the source order of nodes moved before the same anchor.
-          out_of_order_elements(class_node).reverse_each do |node, category, previous|
+          out_of_order.reverse_each do |node, category, previous|
             message = format(MSG, category: category, previous: previous)
 
             add_offense(node, message: message) do |corrector|
-              autocorrect(corrector, node)
+              autocorrect(corrector, node, moved_nodes)
             end
           end
         end
@@ -228,20 +231,46 @@ module RuboCop
 
         # Autocorrect by moving the node, together with the contiguous group of
         # same-category elements that follows it, to its expected position.
-        def autocorrect(corrector, node)
-          return if dynamic_constant?(node)
+        def autocorrect(corrector, node, moved_nodes)
+          group = moved_group(node)
+          return if group.empty?
 
-          anchor = insertion_anchor(node)
-          return unless anchor
-
-          anchor_range = source_range_with_comment(anchor)
+          anchor_range = source_range_with_comment(insertion_anchor(node))
           # Reversed for the same reason offenses are registered in reverse source order:
           # the last insertion at a position comes first.
-          movable_group(node).reverse_each do |group_node|
+          group.reverse_each do |group_node|
             current_range = source_range_with_comment(group_node)
             corrector.insert_before(anchor_range, current_range.source)
-            corrector.remove(current_range)
+            corrector.remove(vacated_range(group_node, current_range, moved_nodes))
           end
+        end
+
+        # The node's movable group, or none when the node itself cannot be moved.
+        def moved_group(node)
+          return [] if dynamic_constant?(node) || !insertion_anchor(node)
+
+          movable_group(node)
+        end
+
+        # The node's own lines together with the blank lines above it, which would otherwise
+        # join whatever follows. A heredoc range already runs past its line break.
+        def vacated_range(node, range, moved_nodes)
+          return range if range.source.end_with?("\n") || sole_separator?(node, moved_nodes)
+
+          # The range starts on the line break that ends the line above the node.
+          line = range.first_line
+          line -= 1 while buffer.source_line(line).blank?
+          range.with(begin_pos: buffer.line_range(line).end_pos)
+        end
+
+        # Whether the blank lines above the node are the only separator left between the
+        # elements around it: the node opens a run of moved elements that a remaining
+        # element directly follows.
+        def sole_separator?(node, moved_nodes)
+          return false if moved_nodes.include?(node.left_sibling)
+
+          following = node.right_siblings.find { |sibling| !moved_nodes.include?(sibling) }
+          following && !buffer.source_line(source_range_with_comment(following).first_line).blank?
         end
 
         # Classifies a node to match with something in the {expected_order}
