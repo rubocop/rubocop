@@ -62,6 +62,67 @@ RSpec.describe RuboCop::Plugin::ConfigurationIntegrator, :isolated_environment d
       end
     end
 
+    # Not `default_configuration = nil`: the describe-level `after` would then rebuild the defaults
+    # while `ConfigObsoletion.files` is still stubbed, caching these rules for later specs.
+    context 'when a plugin configuration contains an obsolete cop name',
+            :mock_obsoletion, :restore_configuration do
+      let(:rubocop_config) { RuboCop::Config.new }
+      let(:fake_plugin) do
+        Class.new(LintRoller::Plugin) do
+          def rules(_context)
+            LintRoller::Rules.new(type: :path, config_format: :rubocop, value: 'default.yml')
+          end
+        end
+      end
+      let(:plugins) { [fake_plugin.new] }
+
+      before do
+        create_file(obsoletion_configuration_path, <<~YAML)
+          renamed:
+            Lint/ErrorCop: Lint/NewErrorCop
+            Lint/WarningCop:
+              new_name: Lint/NewWarningCop
+              severity: warning
+        YAML
+      end
+
+      context 'when the obsoletion is a warning' do
+        before do
+          create_file('default.yml', <<~YAML)
+            Lint/WarningCop:
+              Enabled: false
+          YAML
+        end
+
+        it 'warns, naming the plugin configuration file' do
+          integrated_config
+
+          expect($stderr.string).to include(
+            "Warning: The `Lint/WarningCop` cop has been renamed to `Lint/NewWarningCop`.\n" \
+            '(obsolete configuration found in default.yml, please update it)'
+          )
+        end
+      end
+
+      context 'when the obsoletion is an error' do
+        before do
+          create_file('default.yml', <<~YAML)
+            Lint/ErrorCop:
+              Enabled: false
+          YAML
+        end
+
+        it 'warns instead of raising, naming the plugin configuration file' do
+          expect { integrated_config }.not_to raise_error
+
+          expect($stderr.string).to include(
+            "Warning: The `Lint/ErrorCop` cop has been renamed to `Lint/NewErrorCop`.\n" \
+            '(obsolete configuration found in default.yml, please update it)'
+          )
+        end
+      end
+    end
+
     context 'when a plugin declares a custom `AllCops` key alongside another plugin' do
       let(:rubocop_config) { RuboCop::Config.new }
       let(:declaring_plugin) do
