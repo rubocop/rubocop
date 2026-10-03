@@ -37,8 +37,9 @@ module RuboCop
 
     def resolve_inheritance(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       inherited_files = Array(hash['inherit_from'])
-      base_configs(path, inherited_files, file)
-        .each_with_index.reverse_each do |base_config, index|
+      base_configs = base_configs(path, inherited_files, file)
+      preview = inherited_preview?(hash, base_configs)
+      base_configs.each_with_index.reverse_each do |base_config, index|
         override_department_setting_for_cops(base_config, hash)
         override_enabled_for_disabled_departments(base_config, hash)
 
@@ -50,7 +51,7 @@ module RuboCop
             v = merge(v, hash[k],
                       cop_name: k, file: file, debug: debug,
                       inherited_file: inherited_files[index],
-                      inherit_mode: determine_inherit_mode(hash, k))
+                      inherit_mode: determine_inherit_mode(hash, k, preview))
           end
           hash[k] = v
           fix_include_paths(base_config.loaded_path, hash, path, k, v) if only_base_has_include
@@ -94,8 +95,13 @@ module RuboCop
     # only cops explicitly disabled in user configuration are disabled.
     # When the `--disable-all-cops` or `--enable-all-cops` CLI option is given,
     # it takes precedence over the configuration values.
-    def merge_with_default(config, config_file, unset_nil:)
-      base_defaults = apply_preview_defaults(ConfigLoader.default_configuration, preview?(config))
+    #
+    # With `resolve_preview: false` the `Preview` sections of the default
+    # configuration are left in place and preview is treated as off. That is
+    # what extending the default configuration itself needs: preview gets
+    # applied later, when a project configuration is resolved against it.
+    def merge_with_default(config, config_file, unset_nil:, resolve_preview: true)
+      base_defaults, preview = defaults_with_preview(config, resolve_preview)
       default_configuration = base_defaults
       disabled_by_default, enabled_by_default = resolve_default_overrides(config)
 
@@ -110,7 +116,7 @@ module RuboCop
       end
       override_enabled_for_disabled_departments(default_configuration, config)
 
-      opts = { inherit_mode: inherit_mode_for_default(config), unset_nil: unset_nil }
+      opts = { inherit_mode: inherit_mode_for_default(config, preview), unset_nil: unset_nil }
       Config.new(merge(default_configuration, config, **opts), config_file)
     end
 
@@ -185,16 +191,24 @@ module RuboCop
 
     private
 
-    def inherit_mode_for_default(config)
-      with_preview_exclude_merge(config['inherit_mode'] || {}, config)
+    def defaults_with_preview(config, resolve_preview)
+      defaults = ConfigLoader.default_configuration
+      return [defaults, false] unless resolve_preview
+
+      preview = preview?(config)
+      [apply_preview_defaults(defaults, preview), preview]
+    end
+
+    def inherit_mode_for_default(config, preview)
+      with_preview_exclude_merge(config['inherit_mode'] || {}, preview)
     end
 
     # Under `Preview`, `Exclude` is merged rather than replaced, so that excluding
     # one directory does not silently drop the excludes it would have inherited -
     # from the default configuration or from a file named in `inherit_from`. An
     # explicit `inherit_mode` still wins, in either direction.
-    def with_preview_exclude_merge(mode, config)
-      return mode unless preview?(config)
+    def with_preview_exclude_merge(mode, preview)
+      return mode unless preview
       return mode if Array(mode['override']).include?('Exclude')
       return mode if Array(mode['merge']).include?('Exclude')
 
@@ -249,10 +263,21 @@ module RuboCop
         "the same parameter in #{opts[:inherited_file]}"
     end
 
-    def determine_inherit_mode(hash, key)
+    # The `AllCops: Preview` in effect once inheritance is resolved: the file
+    # itself wins, then the files it inherits from, last one first. It has to be
+    # known before merging, since the keys are merged in whatever order they
+    # appear and `AllCops` may well come after the cops whose `Exclude` it affects.
+    def inherited_preview?(hash, base_configs)
+      all_cops = [hash, *base_configs.reverse].map { |config| config['AllCops'] }.find do |params|
+        params.is_a?(Hash) && params.key?('Preview')
+      end
+      preview?('AllCops' => all_cops)
+    end
+
+    def determine_inherit_mode(hash, key, preview)
       cop_cfg = hash[key]
       local_inherit = cop_cfg['inherit_mode'] if cop_cfg.is_a?(Hash)
-      with_preview_exclude_merge(local_inherit || hash['inherit_mode'] || {}, hash)
+      with_preview_exclude_merge(local_inherit || hash['inherit_mode'] || {}, preview)
     end
 
     def should_union?(derived_hash, base_hash, root_mode, key)

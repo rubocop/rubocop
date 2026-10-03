@@ -2109,6 +2109,24 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'sets a non-boolean value to `Preview`' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          AllCops:
+            Preview: enabled
+        YAML
+      end
+
+      it 'raises an error instead of treating it as off' do
+        expect do
+          load_file
+        end.to raise_error(
+          RuboCop::ValidationError,
+          /invalid enabled for `Preview` found in .*\nValid choices are: true, false/
+        )
+      end
+    end
+
     context 'sets a version to `NewCops` for `AllCops`' do
       before do
         create_file(configuration_path, <<~YAML)
@@ -2325,6 +2343,41 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:config_path) { Pathname('default.yml') }
 
       it { expect { rubocop_config }.not_to raise_error }
+    end
+
+    context 'when the project opts in to preview' do
+      let(:config_path) { 'default.yml' }
+
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            Preview: true
+        YAML
+      end
+
+      it 'still applies the preview defaults' do
+        rubocop_config
+        config = described_class.configuration_from_file('.rubocop.yml')
+
+        expect($stderr.string).not_to include('does not support Preview parameter')
+        expect(config.for_all_cops['FailLevel']).to eq('warning')
+        expect(config.for_cop('Style/Documentation')['Enabled']).to be(false)
+      end
+    end
+
+    context 'with --preview' do
+      let(:config_path) { 'default.yml' }
+
+      before { described_class.preview = true }
+
+      it 'leaves the preview defaults to be applied at resolution time' do
+        rubocop_config
+        default_configuration = described_class.default_configuration
+
+        expect(default_configuration['AllCops']['FailLevel']).to eq('refactor')
+        expect(default_configuration['Style/Documentation']['Enabled']).to be(true)
+        expect(default_configuration['Style/Documentation']['Preview']).to eq('Enabled' => false)
+      end
     end
 
     context 'when config path is a directory' do

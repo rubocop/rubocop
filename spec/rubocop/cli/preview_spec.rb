@@ -143,6 +143,53 @@ RSpec.describe 'RuboCop::CLI --preview', :isolated_environment do # rubocop:disa
       expect($stdout.string).not_to include('legacy.rb')
     end
 
+    it 'merges a cop `Exclude` when the inherited file opts in after setting it' do
+      create_file('legacy.rb', 'z   =  3')
+      create_file('shared.yml', <<~YAML)
+        Layout/SpaceAroundOperators:
+          Exclude:
+            - 'legacy.rb'
+
+        AllCops:
+          Preview: true
+      YAML
+      create_file('.rubocop.yml', <<~YAML)
+        inherit_from: shared.yml
+
+        Layout/SpaceAroundOperators:
+          Exclude:
+            - 'nothing.rb'
+      YAML
+
+      expect(cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])).to eq(0)
+      expect($stdout.string).not_to include('legacy.rb')
+    end
+
+    it 'merges a cop `Exclude` when another inherited file opts in' do
+      create_file('legacy.rb', 'z   =  3')
+      create_file('preview.yml', <<~YAML)
+        AllCops:
+          Preview: true
+      YAML
+      create_file('shared.yml', <<~YAML)
+        Layout/SpaceAroundOperators:
+          Exclude:
+            - 'legacy.rb'
+      YAML
+      create_file('.rubocop.yml', <<~YAML)
+        inherit_from:
+          - preview.yml
+          - shared.yml
+
+        Layout/SpaceAroundOperators:
+          Exclude:
+            - 'nothing.rb'
+      YAML
+
+      expect(cli.run(['--only', 'Layout/SpaceAroundOperators', '--format', 'simple', '.'])).to eq(0)
+      expect($stdout.string).not_to include('legacy.rb')
+    end
+
     it 'lets an explicit `inherit_mode` override win over preview' do
       create_file('.rubocop.yml', <<~YAML)
         inherit_mode:
