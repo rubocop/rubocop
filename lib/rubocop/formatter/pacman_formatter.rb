@@ -57,7 +57,7 @@ module RuboCop
 
       def update_progress_line
         return pacdots(@total_files) unless @total_files > cols
-        return pacdots(cols) unless (@total_files / cols).eql?(@repetitions)
+        return pacdots(cols) unless @total_files / cols == @repetitions
 
         pacdots(@total_files - (cols * @repetitions))
       end
