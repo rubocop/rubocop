@@ -38,7 +38,9 @@ Entries in `.rubocop_todo.yml` outlive their purpose silently: when an
 excluded file is fixed as a side effect of other work, or deleted, nothing
 tells you the entry is no longer needed. Running with
 `--report-unused-todo-entries` reports every `Exclude` entry whose cop no
-longer flags its file and fails the run when any are found:
+longer flags its file and fails the run when any are found.
+A glob entry is judged against its matching source files, not as a literal
+path, and is kept when any of those files still trigger that cop:
 
 [source,console]
 ----
