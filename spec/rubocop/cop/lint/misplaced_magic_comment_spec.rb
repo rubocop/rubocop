@@ -42,6 +42,33 @@ RSpec.describe RuboCop::Cop::Lint::MisplacedMagicComment, :config do
     RUBY
   end
 
+  it 'registers an offense but does not autocorrect a conflicting encoding comment when an effective one exists' do
+    expect_offense(<<~RUBY)
+      # encoding: ascii-8bit
+      require 'foo'
+      # encoding: utf-8
+      ^^^^^^^^^^^^^^^^^ The `encoding` magic comment is ignored unless placed on the first line (or below a shebang on the first line).
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'removes a duplicate encoding comment when an identical effective one exists' do
+    expect_offense(<<~RUBY)
+      #!/usr/bin/env ruby
+      # -*- coding: binary -*-
+      require 'foo'
+      # encoding: ascii-8bit
+      ^^^^^^^^^^^^^^^^^^^^^^ The `encoding` magic comment is ignored unless placed on the first line (or below a shebang on the first line).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #!/usr/bin/env ruby
+      # -*- coding: binary -*-
+      require 'foo'
+    RUBY
+  end
+
   it 'registers an offense for a `frozen_string_literal` comment after code' do
     expect_offense(<<~RUBY)
       require 'foo'
@@ -59,6 +86,87 @@ RSpec.describe RuboCop::Cop::Lint::MisplacedMagicComment, :config do
     expect_offense(<<~RUBY)
       require 'foo' # frozen_string_literal: true
                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The `frozen_string_literal` magic comment is ignored after any code.
+    RUBY
+  end
+
+  it 'keeps an effective encoding comment in place when moving a `frozen_string_literal` comment' do
+    expect_offense(<<~RUBY)
+      # encoding: ascii-8bit
+      require 'foo'
+      # frozen_string_literal: true
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The `frozen_string_literal` magic comment is ignored after any code.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # encoding: ascii-8bit
+      # frozen_string_literal: true
+      require 'foo'
+    RUBY
+  end
+
+  it 'keeps an effective encoding comment below a shebang in place when moving a `frozen_string_literal` comment' do
+    expect_offense(<<~RUBY)
+      #!/usr/bin/env ruby
+      # encoding: ascii-8bit
+      require 'foo'
+      # frozen_string_literal: true
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The `frozen_string_literal` magic comment is ignored after any code.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #!/usr/bin/env ruby
+      # encoding: ascii-8bit
+      # frozen_string_literal: true
+      require 'foo'
+    RUBY
+  end
+
+  it 'moves a `frozen_string_literal` comment below an encoding comment moved in the same run' do
+    expect_offense(<<~RUBY)
+      # Documentation comment
+      # encoding: ascii-8bit
+      ^^^^^^^^^^^^^^^^^^^^^^ The `encoding` magic comment is ignored unless placed on the first line (or below a shebang on the first line).
+      require 'foo'
+      # frozen_string_literal: true
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The `frozen_string_literal` magic comment is ignored after any code.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # encoding: ascii-8bit
+      # frozen_string_literal: true
+      # Documentation comment
+      require 'foo'
+    RUBY
+  end
+
+  it 'moves a `frozen_string_literal` comment below a later encoding comment moved in the same run' do
+    expect_offense(<<~RUBY)
+      require 'foo'
+      # frozen_string_literal: true
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The `frozen_string_literal` magic comment is ignored after any code.
+      # encoding: ascii-8bit
+      ^^^^^^^^^^^^^^^^^^^^^^ The `encoding` magic comment is ignored unless placed on the first line (or below a shebang on the first line).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # encoding: ascii-8bit
+      # frozen_string_literal: true
+      require 'foo'
+    RUBY
+  end
+
+  it 'moves a `frozen_string_literal` comment below a shebang' do
+    expect_offense(<<~RUBY)
+      #!/usr/bin/env ruby
+      require 'foo'
+      # frozen_string_literal: true
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The `frozen_string_literal` magic comment is ignored after any code.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #!/usr/bin/env ruby
+      # frozen_string_literal: true
+      require 'foo'
     RUBY
   end
 
