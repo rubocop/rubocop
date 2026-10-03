@@ -1,0 +1,1 @@
+* [#15620](https://github.com/rubocop/rubocop/pull/15620): Fix the project index missing Ruby's core and standard library definitions, which made index-backed cops resolve names past where Ruby stops looking. ([@HoneyryderChuck][])

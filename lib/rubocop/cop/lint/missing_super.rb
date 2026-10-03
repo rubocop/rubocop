@@ -166,9 +166,13 @@ module RuboCop
 
         # With the project index, the offense is skipped when the class' whole ancestry
         # is resolvable and none of the inherited ancestors defines `initialize` —
-        # `super` would only reach the no-op `Object#initialize`. An unresolvable
+        # `super` would only reach the no-op `BasicObject#initialize`. An unresolvable
         # superclass or mixin anywhere in the chain (e.g. a class from a gem) means
         # the ancestry cannot be verified and the offense is kept.
+        #
+        # The stateless roots are excluded from that scan: they are the ancestors whose
+        # `initialize` is the no-op `super` reaches anyway, and once Ruby's core
+        # signatures are part of the index `BasicObject` does declare one.
         def index_verified_stateless_ancestry?(class_node)
           return false unless project_index
 
@@ -176,7 +180,9 @@ module RuboCop
           return false unless declaration.is_a?(Rubydex::Class)
 
           ancestors = declaration.ancestors.to_a
-          inherited = ancestors.reject { |ancestor| ancestor.name == declaration.name }
+          inherited = ancestors.reject do |ancestor|
+            ancestor.name == declaration.name || STATELESS_CLASSES.include?(ancestor.name)
+          end
           return false if inherited.any? { |ancestor| ancestor.member('initialize()') }
 
           # `extend` affects the singleton class and cannot introduce an
