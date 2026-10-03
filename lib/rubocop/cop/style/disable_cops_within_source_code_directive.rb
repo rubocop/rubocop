@@ -100,6 +100,8 @@ module RuboCop
                              'comment are not permitted.'
 
         def on_new_investigation
+          @matching_pops = nil
+
           processed_source.comments.each do |comment|
             directive = DirectiveComment.new(comment)
             next if ignored?(directive)
@@ -109,7 +111,7 @@ module RuboCop
 
             next unless disallowed_cops.any?
 
-            register_offense(comment, directive_cops, disallowed_cops)
+            register_offense(directive, directive_cops, disallowed_cops)
           end
         end
 
@@ -127,22 +129,59 @@ module RuboCop
           end
         end
 
-        def register_offense(comment, directive_cops, disallowed_cops)
+        def register_offense(directive, directive_cops, disallowed_cops)
+          comment = directive.comment
+
           add_offense(comment, message: offense_message(disallowed_cops)) do |corrector|
             # The remedy in `AllowWithReason` mode is to write the missing `--` justification,
             # which cannot be autocorrected. Removing the directive would also unsuppress
             # the disabled cops and let their autocorrections rewrite the annotated code.
             next if allow_with_reason?
 
-            replacement = ''
-
-            if directive_cops.length != disallowed_cops.length
-              replacement = comment.text.sub(/#{Regexp.union(disallowed_cops)},?\s*/, '')
-                                   .sub(/,\s*$/, '')
+            if directive_cops.length == disallowed_cops.length
+              remove_directive(corrector, directive)
+            elsif signed_args?(directive)
+              remove_signed_args(corrector, directive, disallowed_cops)
+            else
+              remove_cops(corrector, comment, disallowed_cops)
             end
-
-            corrector.replace(comment, replacement)
           end
+        end
+
+        # A `push` without its `pop` leaves an orphan `pop` behind, so the pair goes together.
+        def remove_directive(corrector, directive)
+          corrector.replace(directive.comment, '')
+          return unless directive.push? && (pop = matching_pop(directive.comment))
+
+          corrector.replace(pop, '')
+        end
+
+        def matching_pop(push_comment)
+          @matching_pops ||= pair_pushes_with_pops
+          @matching_pops[push_comment]
+        end
+
+        def pair_pushes_with_pops
+          pushes = []
+          processed_source.comments.each_with_object({}) do |comment, pairs|
+            directive = DirectiveComment.new(comment)
+            if directive.push?
+              pushes.push(comment)
+            elsif directive.pop? && (push = pushes.pop)
+              pairs[push] = comment
+            end
+          end
+        end
+
+        def remove_signed_args(corrector, directive, disallowed_cops)
+          range = directive.range
+          names = Regexp.union(disallowed_cops)
+          corrector.replace(range, range.source.gsub(/\s+[+-]#{names}(?!\S)/, ''))
+        end
+
+        def remove_cops(corrector, comment, disallowed_cops)
+          corrector.replace(comment, comment.text.sub(/#{Regexp.union(disallowed_cops)},?\s*/, '')
+                                                 .sub(/,\s*$/, ''))
         end
 
         def offense_message(disallowed_cops)
@@ -156,8 +195,14 @@ module RuboCop
         end
 
         def directive_cops(directive)
+          return directive.signed_args.values.flatten if signed_args?(directive)
+
           match_captures = directive.match_captures
           match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
+        end
+
+        def signed_args?(directive)
+          directive.push? || directive.next?
         end
 
         def ignored?(directive)
@@ -175,6 +220,11 @@ module RuboCop
         end
 
         def allow_with_reason?
+          # TODO: The obsolete `AllowTrailingComment` is honored for backward compatibility
+          # and will be removed in RuboCop 2.0.
+          allow_trailing_comment = cop_config['AllowTrailingComment'] # rubocop:disable InternalAffairs/UndefinedConfig -- obsolete key, gone from default.yml on purpose
+          return allow_trailing_comment unless allow_trailing_comment.nil?
+
           cop_config['AllowWithReason']
         end
 

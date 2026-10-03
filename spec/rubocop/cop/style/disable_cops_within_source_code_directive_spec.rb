@@ -109,6 +109,74 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
     end
   end
 
+  context 'with `push` and `next` directives' do
+    it 'removes a `push` together with its matching `pop`' do
+      expect_offense(<<~RUBY)
+        # rubocop:push -Metrics/AbcSize
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        # rubocop:push
+        def foo
+        end
+        # rubocop:pop
+        # rubocop:pop
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        # rubocop:push
+        def foo
+        end
+        # rubocop:pop
+
+      RUBY
+    end
+
+    it 'removes a `next` directive' do
+      expect_offense(<<~RUBY)
+        # rubocop:next -Metrics/AbcSize +Style/For
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        def foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        def foo
+        end
+      RUBY
+    end
+
+    context 'with AllowedCops' do
+      let(:cop_config) { { 'AllowedCops' => ['Metrics'] } }
+
+      it 'does not register an offense when every argument is allowed' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:push -Metrics/AbcSize -Metrics/MethodLength
+          def foo
+          end
+          # rubocop:pop
+        RUBY
+      end
+
+      it 'registers an offense naming only the disallowed cops, without their signs' do
+        expect_offense(<<~RUBY)
+          # rubocop:push -Metrics/AbcSize -Layout/LineLength +Style/For -- legacy
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives for `Layout/LineLength`, `Style/For` are not permitted.
+          def foo
+          end
+          # rubocop:pop
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:push -Metrics/AbcSize -- legacy
+          def foo
+          end
+          # rubocop:pop
+        RUBY
+      end
+    end
+  end
+
   context 'with DisallowedCops' do
     let(:cop_config) { { 'DisallowedCops' => ['Lint/Void', 'Security/Eval'] } }
 
@@ -453,6 +521,21 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
 
         expect_no_corrections
       end
+    end
+  end
+
+  context 'when the obsolete AllowTrailingComment is true' do
+    let(:cop_config) { { 'AllowTrailingComment' => true } }
+
+    it 'behaves like AllowWithReason' do
+      expect_no_offenses(<<~RUBY)
+        x = 0 # rubocop:disable Layout/SpaceAroundOperators -- would misalign the table
+      RUBY
+
+      expect_offense(<<~RUBY)
+        x = 0 # rubocop:disable Layout/SpaceAroundOperators
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+      RUBY
     end
   end
 end

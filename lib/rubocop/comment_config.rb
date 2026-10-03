@@ -78,20 +78,17 @@ module RuboCop
 
     # The names of the cops that are opted in by an `enable` comment directive
     # or a `+` argument of a `push`/`next` directive, used to mobilize cops
-    # disabled in the config on demand.
+    # disabled in the config on demand. Departments are expanded for the
+    # opt-in forms only: a plain `enable` naming a department usually just
+    # closes a `disable` of it, and expanding it would switch on every
+    # config-disabled cop of the department for the rest of the file.
     #
     # @api private
     # @return [Set<String>]
     def opt_in_cops
       @opt_in_cops ||= begin
         cops = Set.new
-        each_directive do |directive|
-          if directive.enabled?
-            cops.merge(directive.raw_cop_names) unless directive.all_cops?
-          elsif directive.push? || directive.next?
-            cops.merge(directive.signed_args.fetch('+', []))
-          end
-        end
+        each_directive { |directive| cops.merge(opted_in_by(directive)) }
         cops
       end
     end
@@ -111,6 +108,18 @@ module RuboCop
       end
 
       extras
+    end
+
+    def opted_in_by(directive)
+      if directive.push? || directive.next?
+        directive.signed_args.fetch('+', []).flat_map { |name| expand_cop_name(name) }
+      elsif !directive.enabled? || directive.all_cops?
+        []
+      elsif directive.enable_next?
+        directive.cop_names
+      else
+        directive.raw_cop_names
+      end
     end
 
     # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
