@@ -307,7 +307,60 @@ module RuboCop
 
           add_offense(location, message: message) do |corrector|
             remove_entire_comment(corrector, comment)
+            remove_orphaned_trailing_enables(corrector, comment, cops)
           end
+        end
+
+        # A `disable` that is redundant only because the cop was already
+        # disabled (by the config, or by an earlier directive) pairs with
+        # whatever `enable` closes it back out. Once the `disable` is gone,
+        # that `enable` no longer restores anything: `Lint/RedundantCopEnableDirective`
+        # doesn't catch it either, because it can't tell this apart from the
+        # legitimate case of opting a cop in partway through a file (#10987).
+        # Remove it too, but only when nothing after it depends on the cop
+        # being back on - if real code follows, the `enable` still matters.
+        def remove_orphaned_trailing_enables(corrector, comment, cops)
+          return if all_disabled?(comment)
+
+          cops.each do |cop|
+            next if cop == 'all' || department_marker?(cop)
+
+            enable_comment = trailing_redundant_enable(cop, comment)
+            next unless enable_comment
+
+            remove_entire_comment(corrector, enable_comment)
+          end
+        end
+
+        def trailing_redundant_enable(cop, comment)
+          range = range_closed_by_matching_enable(cop, comment.source_range.line)
+          return unless range
+
+          enable_comment = processed_source.comment_at_line(range.end)
+          return unless enable_comment && solely_enables?(enable_comment, cop)
+          return if code_follows_line?(range.end)
+
+          enable_comment
+        end
+
+        def range_closed_by_matching_enable(cop, disable_line)
+          ranges = cop_disabled_line_ranges[cop]
+          return unless ranges
+
+          ranges.each_cons(2) do |previous_range, range|
+            return range if range.begin == disable_line && followed_ranges?(previous_range, range)
+          end
+
+          nil
+        end
+
+        def solely_enables?(comment, cop)
+          directive = DirectiveComment.new(comment)
+          directive.enabled? && !directive.enabled_all? && directive.raw_cop_names == [cop]
+        end
+
+        def code_follows_line?(line)
+          processed_source.tokens.any? { |token| !token.comment? && token.line > line }
         end
 
         def remove_entire_comment(corrector, comment)
