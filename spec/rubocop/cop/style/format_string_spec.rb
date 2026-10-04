@@ -411,6 +411,18 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
+    it 'registers an offense for format nested in the arguments of format' do
+      expect_offense(<<~RUBY)
+        format(something, a: format(other, b: 1))
+                             ^^^^^^ Favor `String#%` over `format`.
+        ^^^^^^ Favor `String#%` over `format`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        something % { a: other % { b: 1 } }
+      RUBY
+    end
+
     it 'parenthesizes a single argument that binds looser than `%`' do
       expect_offense(<<~RUBY)
         format('%s', a ? b : c)
