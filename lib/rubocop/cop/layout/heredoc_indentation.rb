@@ -55,6 +55,10 @@ module RuboCop
           (send _ {:squish :squish!})
         PATTERN
 
+        def on_new_investigation
+          @offending_heredoc_bodies = nil
+        end
+
         def on_heredoc(node)
           body = heredoc_body(node)
           return if body.strip.empty?
@@ -77,6 +81,9 @@ module RuboCop
         private
 
         def register_offense(node, heredoc_indent_type)
+          return if within_offending_heredoc?(node)
+
+          offending_heredoc_bodies << node.loc.heredoc_body
           message = message(heredoc_indent_type)
 
           add_offense(node.loc.heredoc_body, message: message) do |corrector|
@@ -88,6 +95,14 @@ module RuboCop
               adjust_minus(corrector, node)
             end
           end
+        end
+
+        def within_offending_heredoc?(node)
+          offending_heredoc_bodies.any? { |body| body.contains?(node.source_range) }
+        end
+
+        def offending_heredoc_bodies
+          @offending_heredoc_bodies ||= []
         end
 
         def message(heredoc_indent_type)
