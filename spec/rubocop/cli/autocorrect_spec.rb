@@ -445,6 +445,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not leave a named parameter when `Style/Lambda` converts the lambda in the same pass' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/ItBlockParameter:
+        EnforcedStyle: always
+      Style/Lambda:
+        EnforcedStyle: literal
+    YAML
+    create_file('example.rb', <<~RUBY)
+      take = lambda do |text|
+        github(text)
+      end
+    RUBY
+    expect(cli.run(%w[--autocorrect-all --only Style/ItBlockParameter,Style/Lambda])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      take = -> do#{trailing_whitespace}
+        github(it)
+      end
+    RUBY
+  end
+
   it 'keeps parentheses when `Style/BlockDelimiters` converts the block to braces in the same pass' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
