@@ -142,6 +142,10 @@ module RuboCop
         MSG_HASH_ROCKETS = 'Use hash rockets syntax.'
         NO_MIXED_KEYS_STYLES = %i[ruby19_no_mixed_keys no_mixed_keys].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_hash(node)
           pairs = node.pairs
 

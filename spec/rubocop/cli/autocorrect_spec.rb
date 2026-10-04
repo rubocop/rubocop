@@ -359,6 +359,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not double the closing parenthesis when `Style/HashSyntax` and ' \
+     '`Style/MethodCallWithArgsParentheses` both add parentheses' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+      Style/HashSyntax:
+        EnforcedShorthandSyntax: always
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo
+        set bar: bar
+        baz
+      end
+    RUBY
+    expect(cli.run(['--autocorrect', '--only',
+                    'Style/HashSyntax,Style/MethodCallWithArgsParentheses'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo
+        set(bar:)
+        baz
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
