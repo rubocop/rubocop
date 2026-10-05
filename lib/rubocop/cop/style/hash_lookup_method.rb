@@ -12,6 +12,9 @@ module RuboCop
       # When enforcing `brackets` style, only `fetch` calls with a single key
       # argument are flagged (not those with default values or blocks).
       #
+      # NOTE: `ENV.fetch` is not flagged in `brackets` style when `Style/FetchEnvVar`
+      # is enabled, to prevent conflicting rules.
+      #
       # @safety
       #   This cop is unsafe because `Hash#[]` and `Hash#fetch` have different
       #   semantics. `Hash#[]` returns `nil` for missing keys, while `Hash#fetch`
@@ -55,6 +58,9 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[[] fetch].freeze
 
+        # @!method env_const?(node)
+        def_node_matcher :env_const?, '(const {nil? cbase} :ENV)'
+
         def on_send(node)
           return if (receiver = node.receiver) && allowed_receiver?(receiver)
           return if part_of_ignored_node?(node)
@@ -77,7 +83,11 @@ module RuboCop
 
         def offense_for_brackets?(node)
           style == :brackets && node.receiver && node.method?(:fetch) && node.arguments.one? &&
-            !node.block_literal? && !node.csend_type?
+            !node.block_literal? && !node.csend_type? && !env_fetch_enforced?(node)
+        end
+
+        def env_fetch_enforced?(node)
+          env_const?(node.receiver) && config.cop_enabled?('Style/FetchEnvVar')
         end
 
         def offense_for_fetch?(node)

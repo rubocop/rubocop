@@ -77,6 +77,39 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
         RUBY
       end
     end
+
+    context 'when `Style/FetchEnvVar` is enabled' do
+      let(:other_cops) { { 'Style/FetchEnvVar' => { 'Enabled' => true } } }
+
+      it 'does not register an offense for `ENV.fetch`' do
+        expect_no_offenses(<<~RUBY)
+          ENV.fetch('X')
+          ::ENV.fetch('X')
+        RUBY
+      end
+
+      it 'registers an offense for `fetch` on other receivers' do
+        expect_offense(<<~RUBY)
+          hash.fetch('X')
+               ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
+        RUBY
+      end
+    end
+
+    context 'when `Style/FetchEnvVar` is disabled' do
+      let(:other_cops) { { 'Style/FetchEnvVar' => { 'Enabled' => false } } }
+
+      it 'registers an offense for `ENV.fetch`' do
+        expect_offense(<<~RUBY)
+          ENV.fetch('X')
+              ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ENV['X']
+        RUBY
+      end
+    end
   end
 
   context 'with EnforcedStyle: fetch' do

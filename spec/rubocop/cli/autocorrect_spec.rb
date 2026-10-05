@@ -385,6 +385,23 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not loop between `Style/FetchEnvVar` and `Style/HashLookupMethod`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/FetchEnvVar:
+        DefaultToNil: false
+      Style/HashLookupMethod:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      ENV['X']
+    RUBY
+    expect(cli.run(['--autocorrect-all', '--only',
+                    'Style/FetchEnvVar,Style/HashLookupMethod'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      ENV.fetch('X')
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
