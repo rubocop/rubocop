@@ -50,10 +50,11 @@ module RuboCop
           (block $_ (args $...) (yield $...))
         PATTERN
 
-        # `Style/LambdaCall` rewrites the `call` that the block argument is appended to in
-        # the same pass.
+        # `Style/LambdaCall` rewrites the `call` that the block argument is appended to, and
+        # `Style/TrailingCommaInArguments` changes the trailing comma where it is appended,
+        # in the same pass.
         def self.autocorrect_incompatible_with
-          [Lint::UnusedMethodArgument, Style::LambdaCall]
+          [Lint::UnusedMethodArgument, Style::LambdaCall, Style::TrailingCommaInArguments]
         end
 
         def initialize(config = nil, options = nil)

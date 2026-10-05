@@ -1309,6 +1309,56 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/ExplicitBlockArgument` with `EnforcedStyleForMultiline: consistent_comma` of `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(a, b, &block)
+        bar(a,
+            b) { |x| yield x }
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Style/ExplicitBlockArgument,Style/TrailingCommaInArguments']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(a, b, &block)
+        bar(a,
+            b, &block)
+      end
+    RUBY
+  end
+
+  it 'corrects `Style/ExplicitBlockArgument` with `EnforcedStyleForMultiline: no_comma` of `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: no_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(a, b, &block)
+        bar(a,
+            b,) { |x| yield x }
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Style/ExplicitBlockArgument,Style/TrailingCommaInArguments']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(a, b, &block)
+        bar(a,
+            b, &block)
+      end
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Lint/AmbiguousOperator`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
