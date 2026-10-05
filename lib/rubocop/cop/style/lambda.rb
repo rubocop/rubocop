@@ -48,6 +48,7 @@ module RuboCop
       #       end
       class Lambda < Base
         include ConfigurableEnforcedStyle
+        include RescueNode
         extend AutoCorrector
 
         LITERAL_MESSAGE = 'Use the `-> { ... }` lambda literal syntax for %<modifier>s lambdas.'
@@ -71,6 +72,7 @@ module RuboCop
           selector = node.send_node.source
 
           return unless offending_selector?(node, selector)
+          return if uncorrectable_lambda_literal?(node)
 
           add_offense(node.send_node, message: message(node, selector)) do |corrector|
             if node.send_node.lambda_literal?
@@ -89,6 +91,20 @@ module RuboCop
           lines = node.multiline? ? :multiline : :single_line
 
           selector == OFFENDING_SELECTORS[:style][style][lines]
+        end
+
+        def uncorrectable_lambda_literal?(node)
+          return false unless node.send_node.lambda_literal?
+          return false unless rescue_or_ensure_clause?(node.body)
+
+          LambdaLiteralToMethodCorrector.new(node).replace_delimiters?
+        end
+
+        def rescue_or_ensure_clause?(body)
+          return false unless body
+          return true if body.ensure_type?
+
+          body.rescue_type? && !rescue_modifier?(body.resbody_branches.first)
         end
 
         def message(node, selector)
