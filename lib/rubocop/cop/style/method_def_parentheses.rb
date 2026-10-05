@@ -127,7 +127,19 @@ module RuboCop
 
         def correct_arguments(arg_node, corrector)
           corrector.replace(arg_node.loc.begin, ' ')
-          corrector.remove(arg_node.loc.end)
+
+          if code_after_arguments?(arg_node)
+            corrector.replace(arg_node.loc.end, ';')
+          else
+            corrector.remove(arg_node.loc.end)
+          end
+        end
+
+        def code_after_arguments?(arg_node)
+          closing = arg_node.loc.end
+          rest = closing.source_line[(closing.column + 1)..].strip
+
+          !rest.empty? && !rest.start_with?(';', '#')
         end
 
         def forced_parentheses?(node)
