@@ -1,0 +1,1 @@
+* [#15803](https://github.com/rubocop/rubocop/issues/15803): Fix false positives for `Lint/UselessAssignment` when a variable reassigned in a conditional in `begin` is referenced in `rescue`. ([@mattyb][])
