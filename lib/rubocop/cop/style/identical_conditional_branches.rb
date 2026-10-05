@@ -188,7 +188,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def check_expressions(node, expressions, insert_position)
           return if expressions.any?(&:nil?)
 
@@ -198,8 +198,7 @@ module RuboCop
             add_offense(expression) do |corrector|
               next if node.if_type? && (node.ternary? || node.then?)
 
-              range = range_by_whole_lines(expression.source_range, include_final_newline: true)
-              corrector.remove(range)
+              corrector.remove(removal_range(expression))
               next if inserted_expression
 
               if node.parent&.assignment?
@@ -210,6 +209,26 @@ module RuboCop
 
               inserted_expression = true
             end
+          end
+        end
+
+        def removal_range(expression)
+          range = expression.source_range
+          whole_lines = range_by_whole_lines(range, include_final_newline: true)
+          return whole_lines if whole_lines.source.strip == expression.source
+
+          range_with_separator(range)
+        end
+
+        def range_with_separator(range)
+          source = range.source_buffer.source
+
+          if (following = source[range.end_pos..][/\A[ \t]*;[ \t]*/])
+            range.adjust(end_pos: following.length)
+          elsif (preceding = source[0...range.begin_pos][/[ \t]*;[ \t]*\z/])
+            range.adjust(begin_pos: -preceding.length)
+          else
+            range_with_surrounding_space(range, side: :right, newlines: false)
           end
         end
 

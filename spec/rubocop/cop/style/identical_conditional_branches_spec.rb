@@ -101,6 +101,98 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on if..else with identical trailing lines and the else branch on one line' do
+    it 'registers and corrects an offense' do
+      expect_offense(<<~RUBY)
+        if something
+          method_call_here(1, 2, 3)
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        else; do_x; end
+              ^^^^ Move `do_x` out of the conditional.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if something
+          method_call_here(1, 2, 3)
+        else; end
+        do_x
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical trailing expressions after other expressions on the same line' do
+    it 'registers and corrects an offense' do
+      expect_offense(<<~RUBY)
+        if something
+          method_call_here(1, 2, 3); do_x
+                                     ^^^^ Move `do_x` out of the conditional.
+        else
+          1 + 2 + 3; do_x
+                     ^^^^ Move `do_x` out of the conditional.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if something
+          method_call_here(1, 2, 3)
+        else
+          1 + 2 + 3
+        end
+        do_x
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical leading expressions before other expressions on the same line' do
+    it 'registers and corrects an offense' do
+      expect_offense(<<~RUBY)
+        if something
+          do_x; method_call_here(1, 2, 3)
+          ^^^^ Move `do_x` out of the conditional.
+        else
+          do_x; 1 + 2 + 3
+          ^^^^ Move `do_x` out of the conditional.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_x
+        if something
+          method_call_here(1, 2, 3)
+        else
+          1 + 2 + 3
+        end
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical trailing lines and a trailing comment' do
+    it 'registers and corrects an offense keeping the comment' do
+      expect_offense(<<~RUBY)
+        if something
+          method_call_here(1, 2, 3)
+          do_x # comment
+          ^^^^ Move `do_x` out of the conditional.
+        else
+          1 + 2 + 3
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if something
+          method_call_here(1, 2, 3)
+          # comment
+        else
+          1 + 2 + 3
+        end
+        do_x
+      RUBY
+    end
+  end
+
   context 'on if...else with identical leading lines and using index assign' do
     it 'registers and corrects an offense' do
       expect_offense(<<~RUBY)
