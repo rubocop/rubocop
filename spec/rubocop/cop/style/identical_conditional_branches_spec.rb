@@ -765,6 +765,21 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'when the `else` branch is on the same line as `else` and `end`' do
+    it 'registers an offense but does not correct' do
+      expect_offense(<<~RUBY)
+        if x
+          a
+          nil
+          ^^^ Move `nil` out of the conditional.
+        else; nil; end
+              ^^^ Move `nil` out of the conditional.
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
   context 'with a ternary' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

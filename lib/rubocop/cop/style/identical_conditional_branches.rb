@@ -197,6 +197,7 @@ module RuboCop
           expressions.each do |expression|
             add_offense(expression) do |corrector|
               next if node.if_type? && (node.ternary? || node.then?)
+              next if expressions.any? { |e| shares_line?(e) }
 
               range = range_by_whole_lines(expression.source_range, include_final_newline: true)
               corrector.remove(range)
@@ -211,6 +212,10 @@ module RuboCop
               inserted_expression = true
             end
           end
+        end
+
+        def shares_line?(expression)
+          range_by_whole_lines(expression.source_range).source.strip != expression.source
         end
 
         def correct_assignment(corrector, node, expression, insert_position)
