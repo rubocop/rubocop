@@ -3888,6 +3888,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/ConcatArrayLiterals` and `Style/TrailingCommaInArguments` with `EnforcedStyleForMultiline: diff_comma` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: diff_comma
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      obj.concat(
+        [
+          foo
+        ]
+      )
+    RUBY
+
+    status = cli.run(['-A', '--only', 'Style/ConcatArrayLiterals,Style/TrailingCommaInArguments'])
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      obj.push(
+       #{trailing_whitespace}
+          foo,
+       #{trailing_whitespace}
+      )
+    RUBY
+  end
+
   it 'corrects `Style/MapToHash` and `Layout/SingleLineBlockChain` offenses' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

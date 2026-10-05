@@ -32,8 +32,10 @@ module RuboCop
 
         # `Style/MethodCallWithArgsParentheses` removing the parentheses of the `push(...)`
         # this cop writes in the same pass drops the line continuation a multiline call needs.
+        # `Style/TrailingCommaInArguments` adds a comma after the array literal this cop
+        # replaces with its elements in the same pass.
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::TrailingCommaInArguments]
         end
 
         # rubocop:disable-next Metrics
