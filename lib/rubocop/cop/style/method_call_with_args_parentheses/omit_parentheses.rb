@@ -40,6 +40,7 @@ module RuboCop
             return if legitimate_call_with_parentheses?(node)
             return if allowed_camel_case_method_call?(node)
             return if allowed_string_interpolation_method_call?(node)
+            return if code_after_closing_parenthesis_on_its_own_line?(node)
 
             (@pending_omit_offenses ||= []) << node
           end
@@ -102,6 +103,15 @@ module RuboCop
           def allowed_string_interpolation_method_call?(node)
             cop_config['AllowParenthesesInStringInterpolation'] &&
               inside_string_interpolation?(node)
+          end
+
+          def code_after_closing_parenthesis_on_its_own_line?(node)
+            closing = node.loc.end
+            return false if node.arguments.none? || node.last_argument.last_line == closing.line
+
+            rest = closing.source_line[(closing.column + 1)..].strip
+
+            !rest.empty? && !rest.start_with?('#')
           end
 
           def parentheses_at_the_end_of_multiline_call?(node)
