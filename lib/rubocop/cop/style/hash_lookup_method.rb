@@ -97,12 +97,9 @@ module RuboCop
 
         def correct_brackets_to_fetch(corrector, node)
           key = node.first_argument.source
+          replacement = node.loc.dot ? "fetch(#{key})" : ".fetch(#{key})"
 
-          if node.csend_type?
-            corrector.replace(node.loc.dot.join(node.source_range.end), "&.fetch(#{key})")
-          else
-            corrector.replace(node.loc.selector.join(node.source_range.end), ".fetch(#{key})")
-          end
+          corrector.replace(node.loc.selector.join(node.source_range.end), replacement)
         end
       end
     end
