@@ -25,6 +25,12 @@ module RuboCop
         MSG = 'Remove the redundant double splat and braces, use keyword arguments directly.'
         MERGE_METHODS = %i[merge merge!].freeze
 
+        # `Style/TrailingCommaInHashLiteral` adds a comma to the hash literal whose braces
+        # this cop removes in the same pass, which would leave a dangling comma.
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInHashLiteral]
+        end
+
         # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_hash(node)
           return if node.pairs.empty? || node.pairs.any?(&:hash_rocket?)

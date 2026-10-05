@@ -1013,6 +1013,31 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RedundantDoubleSplatHashBraces` with `EnforcedStyleForMultiline: diff_comma` of `Style/TrailingCommaInHashLiteral`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: diff_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      do_something :foo, **{
+        bar: 1
+      }
+      baz
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only', 'Style/RedundantDoubleSplatHashBraces,Style/TrailingCommaInHashLiteral'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something :foo, bar: 1
+      baz
+    RUBY
+  end
+
   it 'corrects `Style/SoleNestedConditional` with `Style/InverseMethods` and `Style/IfUnlessModifier`' do
     source = <<~RUBY
       unless foo.to_s == 'foo'
