@@ -228,6 +228,26 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
     end
 
+    context 'when a parameter spans multiple lines' do
+      it 'does not register an offense for a multiline default value' do
+        expect_no_offenses(<<~RUBY)
+          def foo(bar, baz = {
+            qux: 1
+          })
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the other parameters are on separate lines' do
+        expect_no_offenses(<<~RUBY)
+          def foo(bar,
+                  baz = (qux = false
+                         nil))
+          end
+        RUBY
+      end
+    end
+
     context 'when correction would exceed maximum line length' do
       let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 5 } } }
 
