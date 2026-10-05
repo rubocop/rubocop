@@ -480,6 +480,25 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         end
       end
     RUBY
+    it 'registers an offense only for the innermost constant of a chained assignment' do
+      expect_offense(<<~RUBY)
+        VERSION = Version = []
+                            ^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        VERSION = Version = [].freeze
+      RUBY
+    end
+
+    it 'does not register an offense for a chained assignment of a frozen string literal' do
+      expect_no_offenses(<<~RUBY)
+        # frozen_string_literal: true
+
+        VERSION = Version = '2.3.0'
+      RUBY
+    end
+
     it_behaves_like 'immutable objects', 'Data.define'
     it_behaves_like 'immutable objects', '::Data.define'
     it_behaves_like 'immutable objects', 'Data.define(:a, :b)'

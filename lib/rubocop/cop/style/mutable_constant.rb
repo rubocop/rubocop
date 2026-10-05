@@ -188,6 +188,7 @@ module RuboCop
         end
 
         def strict_check(value)
+          return if value.casgn_type?
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
