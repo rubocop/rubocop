@@ -177,6 +177,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
+  it 'accepts code that follows an attribute accessor on the same line' do
+    expect_no_offenses(<<~RUBY)
+      attr_accessor :foo; def do_something
+        foo
+      end
+    RUBY
+  end
+
   it 'accepts code that where the attr_accessor is the last line' do
     expect_no_offenses('attr_accessor :foo')
   end
