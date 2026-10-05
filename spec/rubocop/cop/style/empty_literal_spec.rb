@@ -200,6 +200,30 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
+    it 'autocorrects Hash[] to {} and wraps all arguments in ' \
+       'parentheses when it is the first argument to a method call' do
+      expect_offense(<<~RUBY)
+        assert_equal Hash[], foo
+                     ^^^^^^ Use hash literal `{}` instead of `Hash[]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        assert_equal({}, foo)
+      RUBY
+    end
+
+    it 'autocorrects Hash([]) to {} and wraps it in parentheses ' \
+       'when it is the only argument to a method call' do
+      expect_offense(<<~RUBY)
+        puts Hash([])
+             ^^^^^^^^ Use hash literal `{}` instead of `Hash([])`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts({})
+      RUBY
+    end
+
     it 'autocorrects Hash.new to {} and wraps all arguments in ' \
        'parentheses when it is the first argument to super' do
       expect_offense(<<~RUBY)

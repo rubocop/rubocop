@@ -103,7 +103,7 @@ module RuboCop
         end
 
         def replacement_range(node)
-          if hash_node(node) && first_argument_unparenthesized?(node)
+          if offense_hash_node?(node) && first_argument_unparenthesized?(node)
             # `some_method {}` is not same as `some_method Hash.new`
             # because the braces are interpreted as a block. We will have
             # to rewrite the arguments to wrap them in parenthesis.
