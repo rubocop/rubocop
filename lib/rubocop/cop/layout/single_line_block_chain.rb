@@ -31,7 +31,9 @@ module RuboCop
 
         def on_send(node)
           range = offending_range(node)
-          add_offense(range) { |corrector| corrector.insert_before(range, "\n") } if range
+          return if !range || heredoc_opened_before?(node.receiver, range)
+
+          add_offense(range) { |corrector| corrector.insert_before(range, "\n") }
         end
         alias on_csend on_send
 
@@ -62,6 +64,10 @@ module RuboCop
         def selector_range(node)
           # l.(1) has no selector, so we use the opening parenthesis instead
           node.loc.selector || node.loc.begin
+        end
+
+        def heredoc_opened_before?(receiver, range)
+          receiver.each_node(:any_str).any? { |str| str.heredoc? && str.first_line == range.line }
         end
       end
     end
