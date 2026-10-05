@@ -85,6 +85,25 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
       RUBY
     end
 
+    it 'registers an offense for nil? with a leading dot on its own line' do
+      expect_offense(<<~RUBY)
+        x
+          .nil?
+           ^^^^ Prefer the use of the `==` comparison.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x == nil
+      RUBY
+    end
+
+    it 'does not register an offense for nil? with a comment before a leading dot' do
+      expect_no_offenses(<<~RUBY)
+        x # comment
+          .nil?
+      RUBY
+    end
+
     it 'registers and corrects an offense for `!x.nil?`' do
       expect_offense(<<~RUBY)
         !x.nil?
