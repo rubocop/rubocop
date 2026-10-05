@@ -97,7 +97,7 @@ module RuboCop
         end
 
         def can_simplify_conditional?(node)
-          node.else_branch && node.loc.else.source == 'else'
+          !node.elsif? && node.else_branch && node.loc.else.source == 'else'
         end
 
         def remove_empty_branch(corrector, node)

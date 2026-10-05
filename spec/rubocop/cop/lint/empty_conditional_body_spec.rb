@@ -123,6 +123,20 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     expect_no_corrections
   end
 
+  it 'registers an offense but does not correct for missing `elsif` body with `else`' do
+    expect_offense(<<~RUBY)
+      if condition
+        do_something
+      elsif other_condition
+      ^^^^^^^^^^^^^^^^^^^^^ Avoid `elsif` branches without a body.
+      else
+        do_something_else
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'registers an offense for missing `if` and `elsif` body' do
     expect_offense(<<~RUBY)
       if condition
