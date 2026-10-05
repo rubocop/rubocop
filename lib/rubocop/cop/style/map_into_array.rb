@@ -112,8 +112,7 @@ module RuboCop
 
         def on_block(node)
           return unless each_block_with_push?(node)
-
-          dest_var = find_dest_var(node)
+          return unless (dest_var = find_dest_var(node))
 
           if offending_empty_array_tap?(node, dest_var)
             asgn = dest_var.declaration_node

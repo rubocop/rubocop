@@ -334,6 +334,20 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  it 'does not register an offense when pushing into a numbered block parameter' do
+    expect_no_offenses(<<~RUBY)
+      foo
+      src.each { _1 << bar }
+    RUBY
+  end
+
+  it 'does not register an offense when pushing into the `it` block parameter', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      foo
+      src.each { it << bar }
+    RUBY
+  end
+
   it 'does not register an offense when `each` is called with non-block arguments' do
     expect_no_offenses(<<~RUBY)
       dest = []
