@@ -629,6 +629,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when the anonymous rest argument is followed by other arguments' do
+        expect_no_offenses(<<~RUBY)
+          def foo(*)
+            bar(*, baz: 1)
+          end
+        RUBY
+      end
     end
 
     context 'anonymous keyword rest arguments in 3.2', :ruby32 do
