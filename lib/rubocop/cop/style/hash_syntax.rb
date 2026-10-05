@@ -245,6 +245,8 @@ module RuboCop
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.delimiter == delim
+              next if pair.value_omission? && keyword_value?(pair)
+
               location = pair.source_range.begin.join(pair.loc.operator)
               add_offense(location, message: msg) do |corrector|
                 autocorrect(corrector, pair)

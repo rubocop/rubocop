@@ -11,6 +11,15 @@ module RuboCop
       DO_NOT_MIX_OMIT_VALUE_MSG = "#{DO_NOT_MIX_MSG_PREFIX} #{OMIT_HASH_VALUE_MSG}"
       DO_NOT_MIX_EXPLICIT_VALUE_MSG = "#{DO_NOT_MIX_MSG_PREFIX} #{EXPLICIT_HASH_VALUE_MSG}"
 
+      # A keyword parameter can be named after a keyword, as in `def foo(if:)`,
+      # but the parameter can only be referenced by an omitted hash value,
+      # so `{ if: }` has no explicit form: `{ if: if }` is invalid Ruby.
+      KEYWORDS = %i[
+        __ENCODING__ __FILE__ __LINE__ BEGIN END alias and begin break case class def do
+        else elsif end ensure false for if in module next nil not or redo rescue retry
+        return self super then true undef unless until when while yield
+      ].to_set.freeze
+
       DefNode = Struct.new(:node) do
         def selector
           if node.loc?(:selector)
@@ -53,7 +62,7 @@ module RuboCop
           replacement = "#{hash_key_source}:"
           self.config_to_allow_offenses = { 'Enabled' => false }
         else
-          return unless node.value_omission?
+          return if !node.value_omission? || keyword_value?(node)
 
           message = EXPLICIT_HASH_VALUE_MSG
           replacement = "#{hash_key_source}: #{hash_key_source}"
@@ -219,6 +228,8 @@ module RuboCop
       def mixed_shorthand_syntax_check(hash_value_type_breakdown)
         if hash_with_values_that_cant_be_omitted?(hash_value_type_breakdown)
           each_omitted_value_pair(hash_value_type_breakdown) do |pair_node|
+            next if keyword_value?(pair_node)
+
             hash_key_source = pair_node.key.source
             replacement = "#{hash_key_source}: #{hash_key_source}"
             register_offense(pair_node, DO_NOT_MIX_EXPLICIT_VALUE_MSG, replacement)
@@ -241,6 +252,10 @@ module RuboCop
           replacement = "#{hash_key_source}:"
           register_offense(pair_node, OMIT_HASH_VALUE_MSG, replacement)
         end
+      end
+
+      def keyword_value?(pair_node)
+        KEYWORDS.include?(pair_node.key.value)
       end
     end
   end
