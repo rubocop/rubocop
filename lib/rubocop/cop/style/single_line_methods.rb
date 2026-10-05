@@ -97,8 +97,8 @@ module RuboCop
 
         def correct_to_endless(corrector, node)
           receiver = "#{node.receiver.source}." if node.receiver
-          arguments = node.arguments.any? ? node.arguments.source : '()'
           body_source = method_body_source(node.body)
+          arguments = endless_arguments(node)
           replacement = "def #{receiver}#{node.method_name}#{arguments} = #{body_source}"
 
           corrector.replace(node, replacement)
@@ -144,6 +144,13 @@ module RuboCop
           return false if method_body.arithmetic_operation?
 
           !method_body.arguments.empty? && !method_body.comparison_method?
+        end
+
+        def endless_arguments(node)
+          arguments = node.arguments
+          return '()' if arguments.none?
+
+          arguments.loc.begin ? arguments.source : "(#{arguments.source})"
         end
 
         def disallow_endless_method_style?
