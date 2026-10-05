@@ -28,6 +28,7 @@ module RuboCop
       #   end
       #
       class RedundantDirGlobSort < Base
+        include RangeHelp
         extend AutoCorrector
         extend TargetRubyVersion
 
@@ -46,8 +47,9 @@ module RuboCop
           selector = node.loc.selector
 
           add_offense(selector) do |corrector|
-            corrector.remove(selector)
-            corrector.remove(node.loc.dot)
+            range = node.loc.dot.join(selector)
+
+            corrector.remove(range_with_surrounding_space(range, side: :left))
           end
         end
 
