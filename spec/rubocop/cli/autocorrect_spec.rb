@@ -1234,6 +1234,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/ExplicitBlockArgument` with `EnforcedStyle: braces` of `Style/LambdaCall`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/LambdaCall:
+        EnforcedStyle: braces
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(&block)
+        bar.call { |x| yield x }
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect-all', '--only', 'Style/ExplicitBlockArgument,Style/LambdaCall']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(&block)
+        bar.(&block)
+      end
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Lint/AmbiguousOperator`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:

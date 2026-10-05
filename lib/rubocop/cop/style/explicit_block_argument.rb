@@ -50,8 +50,10 @@ module RuboCop
           (block $_ (args $...) (yield $...))
         PATTERN
 
+        # `Style/LambdaCall` rewrites the `call` that the block argument is appended to in
+        # the same pass.
         def self.autocorrect_incompatible_with
-          [Lint::UnusedMethodArgument]
+          [Lint::UnusedMethodArgument, Style::LambdaCall]
         end
 
         def initialize(config = nil, options = nil)
