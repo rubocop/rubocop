@@ -1144,6 +1144,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineArrayBraceLayout` with `EnforcedStyle: same_line` and `Style/ConcatArrayLiterals`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/MultilineArrayBraceLayout:
+        EnforcedStyle: same_line
+    YAML
+    create_file('example.rb', <<~RUBY)
+      obj.concat([
+        'foo',
+        'bar'
+      ])
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Layout/MultilineArrayBraceLayout,Style/ConcatArrayLiterals']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      obj.push(
+        'foo',
+        'bar')
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifierOfIfUnless` with `Style/SoleNestedConditional` ' \
      'without duplicating the outer condition' do
     create_file('example.rb', <<~RUBY)

@@ -110,8 +110,12 @@ module RuboCop
         # `Layout/MultilineHashBraceLayout` or `Layout/MultilineMethodCallBraceLayout` moves
         # that element's closing brace in the same pass places the bracket after whatever
         # follows the moved brace, such as a comment.
+        # Moving it while `Style/ConcatArrayLiterals` removes the brackets in the same pass
+        # leaves the bracket behind.
         def self.autocorrect_incompatible_with
-          [Layout::MultilineHashBraceLayout, Layout::MultilineMethodCallBraceLayout]
+          [
+            Layout::MultilineHashBraceLayout, Layout::MultilineMethodCallBraceLayout, Style::ConcatArrayLiterals
+          ]
         end
 
         def on_array(node)
