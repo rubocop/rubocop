@@ -385,6 +385,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not double the closing parenthesis when `Layout/MultilineMethodDefinitionBraceLayout` ' \
+     'and `Style/MultilineMethodSignature` both move it' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MultilineMethodSignature:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(a, b
+      )
+        c
+      end
+    RUBY
+    expect(cli.run(['--autocorrect', '--only',
+                    'Layout/MultilineMethodDefinitionBraceLayout,' \
+                    'Style/MultilineMethodSignature'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(a, b)
+        c
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
