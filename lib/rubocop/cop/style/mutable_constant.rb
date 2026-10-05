@@ -192,6 +192,7 @@ module RuboCop
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
           return if shareable_constant_value?(value)
+          return if parenthesized_immutable_value?(value)
 
           true
         end
@@ -291,6 +292,10 @@ module RuboCop
           return false if target_ruby_version < 3.0
 
           recent_shareable_value? node
+        end
+
+        def parenthesized_immutable_value?(value)
+          value.begin_type? && value.children.one? && !strict_check(value.children.first)
         end
 
         def frozen_regexp_or_range_literals?(node)
