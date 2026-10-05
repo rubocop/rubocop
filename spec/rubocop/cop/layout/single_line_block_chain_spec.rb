@@ -88,4 +88,28 @@ RSpec.describe RuboCop::Cop::Layout::SingleLineBlockChain, :config do
       end.join('-')
     RUBY
   end
+
+  it 'does not register an offense when the block receiver opens a heredoc on the same line' do
+    expect_no_offenses(<<~RUBY)
+      <<~TEXT.each_line.map { |line| line.strip }.join
+        text
+      TEXT
+    RUBY
+  end
+
+  it 'registers an offense when a heredoc is opened after the chained call' do
+    expect_offense(<<~RUBY)
+      example.map { |item| item.name }.join(<<~SEP)
+                                      ^^^^^ Put method call on a separate line if chained to a single line block.
+        ,
+      SEP
+    RUBY
+
+    expect_correction(<<~RUBY)
+      example.map { |item| item.name }
+      .join(<<~SEP)
+        ,
+      SEP
+    RUBY
+  end
 end
