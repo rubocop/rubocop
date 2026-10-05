@@ -103,6 +103,8 @@ module RuboCop
         def remove_empty_branch(corrector, node)
           range = if empty_if_branch?(node) && else_branch?(node)
                     branch_range(node)
+                  elsif node.condition.last_line == node.loc.else.line
+                    node.source_range.with(end_pos: node.loc.else.begin_pos)
                   else
                     deletion_range(branch_range(node))
                   end
