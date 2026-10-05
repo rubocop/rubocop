@@ -1490,6 +1490,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects `EnforcedStyle: for` of `Style/For` with `Style/RedundantBegin`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/For:
+        EnforcedStyle: for
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.each do |n|
+        begin
+          bar(n)
+        rescue StandardError
+          baz
+        end
+      end
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only', 'Style/For,Style/RedundantBegin'])
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      for n in foo do
+        begin
+          bar(n)
+        rescue StandardError
+          baz
+        end
+      end
+    RUBY
+  end
+
   it 'corrects `Style/RedundantBegin` with `Style/MultilineMemoization`' do
     source = <<~RUBY
       @memo ||= begin
