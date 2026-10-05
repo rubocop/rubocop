@@ -38,7 +38,7 @@ module RuboCop
         KIND = 'block'
 
         def on_block(node)
-          first_line = node.send_node.last_line
+          first_line = node.loc.begin.line
 
           check(node, node.body, adjusted_first_line: first_line)
         end
