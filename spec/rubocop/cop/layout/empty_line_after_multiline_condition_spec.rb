@@ -209,6 +209,31 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
     RUBY
   end
 
+  it 'registers an offense when no new line after a statement with modifier `while` with multiline condition' do
+    expect_offense(<<~RUBY)
+      do_something while multiline &&
+                         ^^^^^^^^^^^^ Use empty line after multiline condition.
+                         condition
+      do_something_else
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something while multiline &&
+                         condition
+
+      do_something_else
+    RUBY
+  end
+
+  it 'does not register an offense when a statement with modifier `while` with multiline condition is the last child of its parent' do
+    expect_no_offenses(<<~RUBY)
+      def m
+        do_something while multiline &&
+                           condition
+      end
+    RUBY
+  end
+
   it 'registers an offense when no new line after `when` with multiline condition' do
     expect_offense(<<~RUBY)
       case x

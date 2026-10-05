@@ -68,6 +68,8 @@ module RuboCop
         end
 
         def on_while(node)
+          return if node.modifier_form? && !node.right_sibling
+
           check_condition(node.condition)
         end
         alias on_until on_while
