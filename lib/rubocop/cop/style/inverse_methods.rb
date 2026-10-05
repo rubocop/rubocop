@@ -114,9 +114,31 @@ module RuboCop
           method_call, _lhs, method, _rhs = inverse_candidate?(node)
           return unless method_call && method
 
-          corrector.remove(not_to_receiver(node, method_call))
+          remove_negation(corrector, node, method, method_call)
           corrector.replace(method_call.loc.selector, inverse_methods[method].to_s)
-          remove_end_parenthesis(corrector, node, method, method_call)
+        end
+
+        def remove_negation(corrector, node, method, method_call)
+          if !keep_parentheses?(node, method_call)
+            corrector.remove(not_to_receiver(node, method_call))
+            remove_end_parenthesis(corrector, node, method, method_call)
+          elsif node.parenthesized?
+            corrector.remove(node.loc.selector)
+          else
+            corrector.remove(node.loc.selector.join(node.receiver.source_range.begin))
+          end
+        end
+
+        def keep_parentheses?(node, method_call)
+          return false unless node.receiver.begin_type? || node.parenthesized?
+          return false unless method_call.operator_method?
+          return false unless (parent = node.parent)&.call_type?
+
+          binary_operator?(parent) || parent.receiver.equal?(node)
+        end
+
+        def binary_operator?(node)
+          node.operator_method? && !node.loc.dot && !node.method?(:[]) && !node.method?(:[]=)
         end
 
         def correct_inverse_block(corrector, node)

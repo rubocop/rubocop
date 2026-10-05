@@ -93,6 +93,61 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
     RUBY
   end
 
+  it 'registers an offense and keeps the parentheses for an inverted operator as an operand of an operator' do
+    expect_offense(<<~RUBY)
+      foo != !(bar == baz)
+             ^^^^^^^^^^^^^ Use `!=` instead of inverting `==`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo != (bar != baz)
+    RUBY
+  end
+
+  it 'registers an offense and keeps the parentheses for `not` with parentheses as an operand of an operator' do
+    expect_offense(<<~RUBY)
+      foo != not(bar == baz)
+             ^^^^^^^^^^^^^^^ Use `!=` instead of inverting `==`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo != (bar != baz)
+    RUBY
+  end
+
+  it 'registers an offense and keeps the parentheses for an inverted operator as an operand of an arithmetic operator' do
+    expect_offense(<<~RUBY)
+      foo + !(bar < baz)
+            ^^^^^^^^^^^^ Use `>=` instead of inverting `<`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo + (bar >= baz)
+    RUBY
+  end
+
+  it 'registers an offense and removes the parentheses for an inverted operator as an element reference index' do
+    expect_offense(<<~RUBY)
+      foo[!(bar == baz)]
+          ^^^^^^^^^^^^^ Use `!=` instead of inverting `==`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo[bar != baz]
+    RUBY
+  end
+
+  it 'registers an offense and removes the parentheses for an inverted operator as a method argument' do
+    expect_offense(<<~RUBY)
+      do_something(!(bar == baz))
+                   ^^^^^^^^^^^^^ Use `!=` instead of inverting `==`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(bar != baz)
+    RUBY
+  end
+
   it 'does not register an offense for safe navigation calling !.any? inside parens' do
     expect_no_offenses(<<~RUBY)
       !(foo&.any? &:working?)
