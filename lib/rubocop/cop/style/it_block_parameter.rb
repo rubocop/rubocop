@@ -61,8 +61,10 @@ module RuboCop
 
         minimum_target_ruby_version 3.4
 
+        # `Style/StabbyLambdaParentheses` wraps the parameter this cop removes in the same pass,
+        # which would leave an empty parameter list that forbids `it`.
         def self.autocorrect_incompatible_with
-          [Style::Lambda]
+          [Style::Lambda, Style::StabbyLambdaParentheses]
         end
 
         def on_block(node)
