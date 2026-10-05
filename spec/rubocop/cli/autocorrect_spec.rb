@@ -976,6 +976,58 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineArrayBraceLayout` with `Layout/MultilineHashBraceLayout` with `EnforcedStyle: same_line`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/MultilineArrayBraceLayout:
+        EnforcedStyle: same_line
+      Layout/MultilineHashBraceLayout:
+        EnforcedStyle: same_line
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo [
+        {
+          'a' => 'b' # comment
+        }
+      ]
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Layout/MultilineArrayBraceLayout,Layout/MultilineHashBraceLayout'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo [
+        {
+          'a' => 'b'}] # comment
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineArrayBraceLayout` with `Layout/MultilineMethodCallBraceLayout` with `EnforcedStyle: same_line`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/MultilineArrayBraceLayout:
+        EnforcedStyle: same_line
+      Layout/MultilineMethodCallBraceLayout:
+        EnforcedStyle: same_line
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo [
+        bar(
+          1 # comment
+        )
+      ]
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Layout/MultilineArrayBraceLayout,Layout/MultilineMethodCallBraceLayout']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo [
+        bar(
+          1)] # comment
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifierOfIfUnless` with `Style/SoleNestedConditional` ' \
      'without duplicating the outer condition' do
     create_file('example.rb', <<~RUBY)

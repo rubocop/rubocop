@@ -106,6 +106,14 @@ module RuboCop
         ALWAYS_SAME_LINE_MESSAGE = 'The closing array brace must be on the ' \
                                    'same line as the last array element.'
 
+        # Moving the closing bracket after a hash literal or method call element while
+        # `Layout/MultilineHashBraceLayout` or `Layout/MultilineMethodCallBraceLayout` moves
+        # that element's closing brace in the same pass places the bracket after whatever
+        # follows the moved brace, such as a comment.
+        def self.autocorrect_incompatible_with
+          [Layout::MultilineHashBraceLayout, Layout::MultilineMethodCallBraceLayout]
+        end
+
         def on_array(node)
           check_brace_layout(node)
         end
