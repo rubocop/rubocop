@@ -92,4 +92,46 @@ RSpec.describe RuboCop::Cop::Style::YodaExpression, :config do
       CONST.* + 1
     RUBY
   end
+
+  it 'accepts a splat argument' do
+    expect_no_offenses(<<~RUBY)
+      CONST.+(*ary)
+    RUBY
+  end
+
+  it 'accepts a block argument' do
+    expect_no_offenses(<<~RUBY)
+      CONST.+(&block)
+    RUBY
+  end
+
+  it 'accepts keyword arguments' do
+    expect_no_offenses(<<~RUBY)
+      CONST.+(key: value)
+      CONST.+(**options)
+    RUBY
+  end
+
+  it 'accepts argument forwarding', :ruby32 do
+    expect_no_offenses(<<~RUBY)
+      def do_something(...)
+        CONST.+(...)
+      end
+
+      def do_something_else(*)
+        CONST.+(*)
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using a hash literal argument' do
+    expect_offense(<<~RUBY)
+      CONST.+({ key: value })
+      ^^^^^^^^^^^^^^^^^^^^^^^ Non-literal operand (`{ key: value }`) should be first.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      { key: value }.+(CONST)
+    RUBY
+  end
 end
