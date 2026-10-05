@@ -1,0 +1,1 @@
+* [#15863](https://github.com/rubocop/rubocop/pull/15863): Fix an incorrect autocorrect for `Style/EmptyLiteral` when `Hash[]` or `Hash([])` is the first argument of a method call without parentheses. ([@kevin9327][])
