@@ -26,7 +26,7 @@ module RuboCop
 
           node.each_descendant(:if).select(&:ternary?).each do |nested_ternary|
             add_offense(nested_ternary) do |corrector|
-              next if part_of_ignored_node?(node)
+              next if part_of_ignored_node?(node) || contains_heredoc?(node)
 
               autocorrect(corrector, node)
               ignore_node(node)
@@ -35,6 +35,10 @@ module RuboCop
         end
 
         private
+
+        def contains_heredoc?(node)
+          node.each_descendant(:any_str).any?(&:heredoc?)
+        end
 
         def autocorrect(corrector, if_node)
           replace_loc_and_whitespace(corrector, if_node.loc.question, "\n")

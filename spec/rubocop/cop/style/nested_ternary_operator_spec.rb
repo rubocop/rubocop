@@ -219,4 +219,15 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
       end)
     RUBY
   end
+
+  it 'registers an offense but does not correct when the ternary contains a heredoc' do
+    expect_offense(<<~RUBY)
+      x ? <<~A.map { |l| y ? l : 1 }.join : 2
+                         ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+        a
+      A
+    RUBY
+
+    expect_no_corrections
+  end
 end
