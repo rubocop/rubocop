@@ -1372,7 +1372,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       create_file('example1.rb', "JSON.load('{}')")
       file = abs('example1.rb')
       urls = 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load, ' \
-             'https://bugs.ruby-lang.org/issues/19528'
+             'https://bugs.ruby-lang.org/issues/19528, ' \
+             'https://github.com/ruby/json/blob/master/CHANGES.md#2026-08-11-300rc1'
 
       expect(cli.run(['--format', 'emacs', '--display-style-guide', 'example1.rb'])).to eq(1)
 
