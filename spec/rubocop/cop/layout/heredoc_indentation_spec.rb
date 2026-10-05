@@ -382,6 +382,31 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
 
   context 'when Ruby >= 2.3', :ruby23 do
     [nil, "'", '"', '`'].each { |quote| it_behaves_like 'all heredoc type', quote }
+
+    it 'registers an offense for a heredoc nested in the interpolation of another heredoc' do
+      expect_offense(<<~'RUBY')
+        def foo
+          <<~A
+          #{y ? <<~B : ""}
+        ^^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
+          b
+          B
+          a
+          A
+        end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        def foo
+          <<~A
+            #{y ? <<~B : ""}
+              b
+            B
+            a
+          A
+        end
+      RUBY
+    end
   end
 
   context 'when Ruby <= 2.2', :ruby22, unsupported_on: :prism do
