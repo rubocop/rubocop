@@ -47,12 +47,22 @@ RSpec.describe RuboCop::Cop::Style::ReturnNil, :config do
 
     it 'registers an offense for return' do
       expect_offense(<<~RUBY)
-        return
-        ^^^^^^ Use `return nil` instead of `return`.
+        def foo
+          return
+          ^^^^^^ Use `return nil` instead of `return`.
+        end
       RUBY
 
       expect_correction(<<~RUBY)
-        return nil
+        def foo
+          return nil
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a top-level return' do
+      expect_no_offenses(<<~RUBY)
+        return if foo
       RUBY
     end
 
