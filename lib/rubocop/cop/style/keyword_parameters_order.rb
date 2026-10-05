@@ -75,7 +75,9 @@ module RuboCop
 
         def remove_kwargs(kwarg_nodes, corrector)
           kwarg_nodes.each do |kwarg|
-            with_space = range_with_surrounding_space(kwarg.source_range)
+            range = range_with_surrounding_space(kwarg.source_range, side: :left, whitespace: true)
+            with_space = range_with_surrounding_space(range, side: :right)
+
             corrector.remove(range_with_surrounding_comma(with_space, :left))
           end
         end

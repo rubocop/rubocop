@@ -60,6 +60,22 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when a comma before a `kwarg` is followed by trailing whitespace' do
+    expect_offense(<<~RUBY)
+      def m(optional: 1,#{trailing_whitespace}
+            ^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+            required:,#{trailing_whitespace}
+            other: 2)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m(required:, optional: 1,#{trailing_whitespace}
+            other: 2)
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when multiple `kwoptarg`s are interleaved with `kwarg`s' do
     expect_offense(<<~RUBY)
       def m(arg, optional1: 1, required1:, optional2: 2, required2:, **rest, &block)
