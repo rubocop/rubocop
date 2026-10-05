@@ -545,6 +545,21 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       it_behaves_like 'operator methods', '/'
       it_behaves_like 'operator methods', '%'
       it_behaves_like 'operator methods', '**'
+      it_behaves_like 'operator methods', '&&'
+      it_behaves_like 'operator methods', '||'
+    end
+
+    context 'when assigning with a ternary operator' do
+      it 'registers an offense and corrects with parens and freeze' do
+        expect_offense(<<~RUBY)
+          CONST = foo ? bar : baz
+                  ^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = (foo ? bar : baz).freeze
+        RUBY
+      end
     end
 
     context 'when assigning with multiple operator calls' do

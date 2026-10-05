@@ -298,7 +298,11 @@ module RuboCop
         end
 
         def requires_parentheses?(node)
-          node.range_type? || unparenthesized_method_call?(node)
+          if node.range_type? || node.operator_keyword? || unparenthesized_method_call?(node)
+            return true
+          end
+
+          node.if_type? && node.ternary?
         end
 
         def unparenthesized_method_call?(node)
