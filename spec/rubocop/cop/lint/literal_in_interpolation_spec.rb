@@ -458,6 +458,14 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
+  it 'does not register an offense when space literal with spaces inside the interpolation is at the end of heredoc line' do
+    expect_no_offenses(<<~RUBY)
+      <<~HERE
+        Line with explicit space literal at the end. \#{ ' ' }
+      HERE
+    RUBY
+  end
+
   it 'does not register an offense when an ideographic space literal is at the end of heredoc line' do
     expect_no_offenses(<<~RUBY)
       <<~HERE
