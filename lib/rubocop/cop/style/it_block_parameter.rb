@@ -61,6 +61,10 @@ module RuboCop
 
         minimum_target_ruby_version 3.4
 
+        def self.autocorrect_incompatible_with
+          [Style::Lambda]
+        end
+
         def on_block(node)
           return unless style == :always
           return unless node.arguments.one?
