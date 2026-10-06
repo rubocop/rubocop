@@ -53,6 +53,12 @@ module RuboCop
         PREFER_EACH = 'Prefer `each` over `for`.'
         PREFER_FOR = 'Prefer `for` over `each`.'
 
+        # `Style/RedundantBegin` removes the `begin` of a block body in the same pass,
+        # leaving a `rescue` or `ensure` clause directly in the `for` body.
+        def self.autocorrect_incompatible_with
+          [Style::RedundantBegin]
+        end
+
         def on_for(node)
           if style == :each
             add_offense(node, message: PREFER_EACH) do |corrector|
