@@ -407,6 +407,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not put a trailing comma before `.freeze` with `Style/MutableConstant` ' \
+     'and `Style/TrailingCommaInHashLiteral`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MutableConstant:
+        Recursive: true
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: diff_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      X = {
+        a: {
+          b: 1
+        }
+      }
+    RUBY
+    expect(cli.run(['--autocorrect-all', '--only',
+                    'Style/MutableConstant,Style/TrailingCommaInHashLiteral'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      X = {
+        a: {
+          b: 1,
+        }.freeze,
+      }.freeze
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:

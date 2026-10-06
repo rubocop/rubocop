@@ -146,6 +146,10 @@ module RuboCop
 
         MSG = 'Freeze mutable objects assigned to constants.'
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInHashLiteral]
+        end
+
         def on_casgn(node)
           if node.expression.nil? # This is only the case for `CONST += ...` or similar
             parent = node.parent
