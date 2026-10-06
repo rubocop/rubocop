@@ -48,7 +48,7 @@ module RuboCop
         end
 
         def used?
-          (!reassigned? && @variable.captured_by_block?) || @referenced
+          (!reassigned? && @variable.captured_by_block? && @variable.referenced?) || @referenced
         end
 
         def regexp_named_capture?
