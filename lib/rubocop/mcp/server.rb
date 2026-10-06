@@ -33,6 +33,25 @@ module RuboCop
     # RuboCop MCP Server.
     # @api private
     class Server
+      include RuboCop::CLI::Command::CopNames
+
+      EXPLAIN_DESCRIPTION =
+        'Explain what cops do: the problem each one targets, bad and good examples, ' \
+        'its configuration as this project resolves it, and whether it autocorrects. ' \
+        'Takes cop names as offenses report them, such as `Style/StringLiterals`. ' \
+        'Pass the `path` of a file to see the configuration that applies to it.'
+      EXPLAIN_INPUT_SCHEMA = {
+        properties: {
+          cop_names: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          path: { type: 'string' }
+        },
+        required: ['cop_names']
+      }.freeze
+      EXPLAIN_ANNOTATIONS = {
+        title: "RuboCop's cop explanation", destructive_hint: false, idempotent_hint: true,
+        open_world_hint: false, read_only_hint: true
+      }.freeze
+
       INSPECTION_DESCRIPTION =
         'Inspect Ruby code for offenses. ' \
         'Provide `source_code` to check inline code or `path` to check files. ' \
@@ -57,7 +76,7 @@ module RuboCop
         server = ::MCP::Server.new(
           name: 'rubocop_mcp_server',
           version: RuboCop::Version::STRING,
-          tools: [inspection_tool, autocorrection_tool]
+          tools: [inspection_tool, autocorrection_tool, explain_tool]
         )
 
         ::MCP::Server::Transports::StdioTransport.new(server).open
@@ -93,6 +112,23 @@ module RuboCop
           required: ['safety']
         ) do |path: nil, source_code: nil, safety: true|
           run_autocorrection(path, source_code, safety)
+        end
+      end
+
+      # The tool's block does not run in this instance, so it reaches
+      # `run_explain` through a method object it closes over.
+      def explain_tool
+        explain = method(:run_explain)
+
+        ::MCP::Tool.define(
+          name: 'rubocop_explain',
+          description: EXPLAIN_DESCRIPTION,
+          input_schema: EXPLAIN_INPUT_SCHEMA,
+          annotations: EXPLAIN_ANNOTATIONS
+        ) do |cop_names:, path: nil|
+          ::MCP::Tool::Response.new([{ type: 'text', text: explain.call(cop_names, path) }])
+        rescue RuboCop::Error => e
+          ::MCP::Tool::Response.new([{ type: 'text', text: e.message }], error: true)
         end
       end
 
@@ -135,6 +171,22 @@ module RuboCop
             end
           end.to_json
         end
+      end
+
+      # Explains the cops it recognizes and then names the ones it does not, as
+      # `--explain` does, so a typo does not cost the explanations asked for
+      # alongside it. The configuration is loaded first, since that is what
+      # registers the cops of any plugins it names.
+      def run_explain(cop_names, path)
+        config = path ? @config_store.for_file(path) : @config_store.for_pwd
+        explanations = known_cop_classes(cop_names).map do |cop_class|
+          Cop::CopExplanation.new(cop_class, config).to_s
+        end
+        validate_cop_names!(cop_names)
+
+        explanations.join("\n\n")
+      rescue IncorrectCopNameError => e
+        raise RuboCop::Error, [*explanations, e.message].join("\n\n")
       end
 
       def process_files(path, filter_empty: false)

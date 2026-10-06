@@ -110,9 +110,113 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
               required: ['safety'], type: 'object'
             },
             name: 'rubocop_autocorrection'
+          }, {
+            annotations: {
+              destructiveHint: false,
+              idempotentHint: true,
+              openWorldHint: false,
+              readOnlyHint: true,
+              title: "RuboCop's cop explanation"
+            },
+            description: 'Explain what cops do: the problem each one targets, ' \
+                         'bad and good examples, its configuration as this project ' \
+                         'resolves it, and whether it autocorrects. Takes cop names ' \
+                         'as offenses report them, such as `Style/StringLiterals`. ' \
+                         'Pass the `path` of a file to see the configuration that ' \
+                         'applies to it.',
+            inputSchema: {
+              '$schema': 'https://json-schema.org/draft/2020-12/schema',
+              properties: {
+                cop_names: { type: 'array', items: { type: 'string' }, minItems: 1 },
+                path: { type: 'string' }
+              },
+              required: ['cop_names'], type: 'object'
+            },
+            name: 'rubocop_explain'
           }]
         }
       )
+    end
+  end
+
+  describe 'tools/call to explain' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: '42',
+        method: 'tools/call',
+        params: { name: 'rubocop_explain', arguments: { cop_names: cop_names, path: path }.compact }
+      }]
+    end
+    let(:path) { nil }
+    let(:text) { response[:result][:content].first[:text] }
+
+    context 'with cops that exist' do
+      let(:cop_names) { %w[Style/StringLiterals Lint/UselessAssignment] }
+
+      it 'explains each of them the way `--explain` does' do
+        expect(stderr).to be_blank
+        expect(response[:result][:isError]).to be false
+        expect(text).to start_with("Style/StringLiterals\n")
+        expect(text).to include('Autocorrect: safe, applied by -a')
+        expect(text).to include("\n\nLint/UselessAssignment\n")
+        expect(text).to include('Autocorrect: safe, applied by -a, but not through LSP or MCP')
+      end
+    end
+
+    context 'with the configuration of the project' do
+      let(:cop_names) { %w[Style/StringLiterals] }
+
+      before do
+        File.write('.rubocop.yml', <<~YAML)
+          Style/StringLiterals:
+            EnforcedStyle: double_quotes
+        YAML
+      end
+
+      it 'reports the values the project resolves' do
+        expect(text).to include('EnforcedStyle: double_quotes')
+      end
+    end
+
+    context 'with the path of a file that has its own configuration' do
+      let(:cop_names) { %w[Style/StringLiterals] }
+      let(:path) { 'engine/lib/engine.rb' }
+
+      before do
+        FileUtils.mkdir_p('engine/lib')
+        File.write('engine/.rubocop.yml', <<~YAML)
+          Style/StringLiterals:
+            EnforcedStyle: double_quotes
+        YAML
+        File.write(path, "puts 'engine'\n")
+      end
+
+      it 'reports the values that apply to that file' do
+        expect(response[:result][:isError]).to be false
+        expect(text).to include('EnforcedStyle: double_quotes')
+      end
+    end
+
+    context 'with a name that is not a cop' do
+      let(:cop_names) { %w[Style/StringLiteral Metrics] }
+
+      it 'reports an error with suggestions' do
+        expect(response[:result][:isError]).to be true
+        expect(text).to include('Unrecognized cop: Style/StringLiteral.')
+        expect(text).to include('Did you mean? Style/StringLiterals')
+        expect(text).to include('Metrics is a department, not a cop.')
+      end
+    end
+
+    context 'with a name that is not a cop alongside one that is' do
+      let(:cop_names) { %w[Style/Semicolon Style/StringLiteral] }
+
+      it 'explains the cop it recognizes before reporting the error' do
+        expect(response[:result][:isError]).to be true
+        expect(text).to start_with("Style/Semicolon\n")
+        expect(text).to match(%r{\n\nUnrecognized cop: Style/StringLiteral\.\nDid you mean\? .*\z})
+      end
     end
   end
 
