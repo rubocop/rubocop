@@ -649,6 +649,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           foo = 2
           bar {
             foo = 3
+            puts foo
           }
         end
       RUBY
@@ -659,8 +660,121 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           foo = 2
           bar {
             foo = 3
+            puts foo
           }
         end
+      RUBY
+    end
+
+    context 'and the variable is never referenced' do
+      it 'registers offenses for all the assignments' do
+        expect_offense(<<~RUBY)
+          def some_method
+            foo = 1
+            ^^^ Useless assignment to variable - `foo`.
+            foo = 2
+            ^^^ Useless assignment to variable - `foo`.
+            bar {
+              foo = 3
+              ^^^ Useless assignment to variable - `foo`.
+            }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def some_method
+            1
+            2
+            bar {
+              3
+            }
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when an outer variable is reassigned in a block and never referenced' do
+    it 'registers offenses for all the assignments' do
+      expect_offense(<<~RUBY)
+        prev = nil
+        ^^^^ Useless assignment to variable - `prev`.
+        [1, 2, 3].each { |item| prev = item }
+                                ^^^^ Useless assignment to variable - `prev`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        nil
+        [1, 2, 3].each { |item| item }
+      RUBY
+    end
+
+    it 'registers offenses when the variable is reassigned in a lambda' do
+      expect_offense(<<~RUBY)
+        value = nil
+        ^^^^^ Useless assignment to variable - `value`.
+        callback = -> { value = 1 }
+                        ^^^^^ Useless assignment to variable - `value`.
+        callback.call
+      RUBY
+    end
+
+    it 'registers offenses in a numblock', :ruby27 do
+      expect_offense(<<~RUBY)
+        prev = nil
+        ^^^^ Useless assignment to variable - `prev`.
+        [1, 2, 3].each { prev = _1 }
+                         ^^^^ Useless assignment to variable - `prev`.
+      RUBY
+    end
+
+    it 'registers offenses in an itblock', :ruby34 do
+      expect_offense(<<~RUBY)
+        prev = nil
+        ^^^^ Useless assignment to variable - `prev`.
+        [1, 2, 3].each { prev = it }
+                         ^^^^ Useless assignment to variable - `prev`.
+      RUBY
+    end
+  end
+
+  context 'when an outer variable is reassigned in a block and referenced after it' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        found = false
+        items.each { |item| found = true if item.ok? }
+        puts found
+      RUBY
+    end
+  end
+
+  context 'when an outer variable is reassigned in a block and referenced in another block' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        value = nil
+        writer = -> { value = 1 }
+        reader = -> { value }
+        writer.call
+        reader.call
+      RUBY
+    end
+  end
+
+  context 'when an outer variable is reassigned in a block and read through `binding`' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        value = nil
+        foo { value = 1 }
+        binding
+      RUBY
+    end
+  end
+
+  context 'when an outer variable is reassigned in a block and its name starts with an underscore' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        _prev = nil
+        [1, 2, 3].each { |item| _prev = item }
       RUBY
     end
   end
