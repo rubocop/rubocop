@@ -59,11 +59,19 @@ module RuboCop
         return node.loc.name if node.casgn_type?
 
         if LSP.enabled?
-          end_range = node.loc?(:name) ? node.loc.name : node.loc.begin
-          node.source_range.begin.join(end_range)
+          node.source_range.begin.join(header_end(node))
         else
           node.source_range
         end
+      end
+
+      # Where the header of a definition ends: the name of a class, module or
+      # method, the `self` of `class << self`, or the opening of a block.
+      def header_end(node)
+        return node.loc.name if node.loc?(:name)
+        return node.identifier.source_range if node.sclass_type?
+
+        node.loc.begin
       end
     end
   end

@@ -167,6 +167,25 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
       offense = offenses.first
       expect(offense.location.last_line).to eq(1)
     end
+
+    it 'reports the header of a singleton class outside a class' do
+      offenses = expect_offense(<<~RUBY)
+        module Test
+          class << self
+          ^^^^^^^^^^^^^ Class has too many lines. [6/5]
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
+          end
+        end
+      RUBY
+
+      offense = offenses.first
+      expect(offense.location.last_line).to eq(2)
+    end
   end
 
   context 'when CountComments is disabled' do
