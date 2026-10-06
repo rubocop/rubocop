@@ -118,6 +118,10 @@ module RuboCop
         ALWAYS_SAME_LINE_MESSAGE = 'Closing method definition brace must be ' \
                                    'on the same line as the last parameter.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MultilineMethodSignature]
+        end
+
         def on_def(node)
           check_brace_layout(node.arguments)
         end
