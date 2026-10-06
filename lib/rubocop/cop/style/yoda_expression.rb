@@ -43,6 +43,9 @@ module RuboCop
         MSG = 'Non-literal operand (`%<source>s`) should be first.'
 
         RESTRICT_ON_SEND = %i[* + & | ^].freeze
+        ARGUMENT_ONLY_TYPES = %i[
+          splat block_pass forwarded_args forwarded_restarg forwarded_kwrestarg
+        ].freeze
 
         def on_new_investigation
           @offended_nodes = nil
@@ -68,11 +71,17 @@ module RuboCop
         private
 
         def yoda_expression_constant?(lhs, rhs)
-          constant_portion?(lhs) && !constant_portion?(rhs)
+          constant_portion?(lhs) && !constant_portion?(rhs) && operand?(rhs)
         end
 
         def constant_portion?(node)
           node.type?(:numeric, :const)
+        end
+
+        def operand?(node)
+          return false if node.hash_type? && !node.braces?
+
+          !node.type?(*ARGUMENT_ONLY_TYPES)
         end
 
         def supported_operators
