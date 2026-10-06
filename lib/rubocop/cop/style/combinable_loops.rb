@@ -72,7 +72,7 @@ module RuboCop
           return unless node.body && node.left_sibling.body
 
           add_offense(node) do |corrector|
-            next unless node.arguments == node.left_sibling.arguments
+            next unless combinable_blocks?(node, node.left_sibling)
 
             combine_with_left_sibling(corrector, node)
           end
@@ -112,6 +112,12 @@ module RuboCop
 
         def same_collection_looping_for?(node, sibling)
           sibling&.for_type? && node.collection == sibling.collection
+        end
+
+        def combinable_blocks?(node, sibling)
+          return false unless node.arguments == sibling.arguments
+
+          !node.body.type?(:rescue, :ensure) && !sibling.body.type?(:rescue, :ensure)
         end
 
         def combine_with_left_sibling(corrector, node)
