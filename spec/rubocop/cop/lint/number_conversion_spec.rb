@@ -282,6 +282,13 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'does not register an offense for a symbol operand of an operator method' do
+      expect_no_offenses(<<~RUBY)
+        method_name == :to_i
+        hash[:to_f]
+      RUBY
+    end
+
     it 'registers an offense with send' do
       expect_offense(<<~RUBY)
         "foo".send(:to_c)
