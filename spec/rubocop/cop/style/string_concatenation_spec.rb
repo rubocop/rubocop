@@ -267,6 +267,17 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
         email_with_name = "He said \"Arrest that man!\"."
       RUBY
     end
+
+    it 'registers an offense and corrects with interpolated percentage quotes containing quotes' do
+      expect_offense(<<~'RUBY')
+        command = %(clone "#{ref}" "#{url}" && ) + %(echo "done")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        command = "clone \"#{ref}\" \"#{url}\" && echo \"done\""
+      RUBY
+    end
   end
 
   context 'empty quotes' do
