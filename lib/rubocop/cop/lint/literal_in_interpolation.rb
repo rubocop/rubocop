@@ -190,7 +190,8 @@ module RuboCop
           return false unless grandparent&.dstr_type? && grandparent.heredoc?
 
           line = processed_source.lines[node.last_line - 1]
-          line.size == node.loc.last_column + 1
+
+          line.size == node.parent.source_range.last_column
         end
 
         def in_array_percent_literal?(node)
