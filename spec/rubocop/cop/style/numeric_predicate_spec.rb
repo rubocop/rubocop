@@ -273,6 +273,50 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
       RUBY
     end
 
+    it 'registers an offense and adds parentheses when the predicate is an operand of an operator' do
+      expect_offense(<<~RUBY)
+        foo == number.zero?
+               ^^^^^^^^^^^^ Use `(number == 0)` instead of `number.zero?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo == (number == 0)
+      RUBY
+    end
+
+    it 'registers an offense and adds parentheses when the predicate is a method call receiver' do
+      expect_offense(<<~RUBY)
+        number.positive?.to_s
+        ^^^^^^^^^^^^^^^^ Use `(number > 0)` instead of `number.positive?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (number > 0).to_s
+      RUBY
+    end
+
+    it 'registers an offense without adding parentheses when the predicate is an element reference index' do
+      expect_offense(<<~RUBY)
+        foo[number.zero?]
+            ^^^^^^^^^^^^ Use `number == 0` instead of `number.zero?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo[number == 0]
+      RUBY
+    end
+
+    it 'registers an offense without adding parentheses when the predicate is a method argument' do
+      expect_offense(<<~RUBY)
+        do_something(number.zero?)
+                     ^^^^^^^^^^^^ Use `number == 0` instead of `number.zero?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(number == 0)
+      RUBY
+    end
+
     it 'allows checking if a number is not zero' do
       expect_no_offenses('number.nonzero?')
     end

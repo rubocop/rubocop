@@ -131,7 +131,7 @@ module RuboCop
         def replacement(node, numeric, operation)
           if style == :predicate
             [parenthesized_source(numeric), REPLACEMENTS.invert[operation.to_s]].join('.')
-          elsif negated?(node)
+          elsif comparison_requires_parentheses?(node)
             "(#{numeric.source} #{REPLACEMENTS[operation.to_s]} 0)"
           else
             [numeric.source, REPLACEMENTS[operation.to_s], 0].join(' ')
@@ -166,10 +166,11 @@ module RuboCop
           end
         end
 
-        def negated?(node)
-          return false unless (parent = node.parent)
+        def comparison_requires_parentheses?(node)
+          return false unless (parent = node.parent)&.call_type?
+          return true if parent.receiver.equal?(node)
 
-          parent.send_type? && parent.method?(:!)
+          parent.operator_method? && !parent.method?(:[]) && !parent.method?(:[]=)
         end
 
         # @!method predicate(node)
