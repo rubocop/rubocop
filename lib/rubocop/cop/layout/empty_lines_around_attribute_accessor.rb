@@ -111,6 +111,7 @@ module RuboCop
 
         def require_empty_line?(node)
           return false unless node.respond_to?(:type)
+          return false if node.left_sibling.last_line == node.first_line
 
           !allow_alias?(node) && !attribute_or_allowed_method?(node)
         end
