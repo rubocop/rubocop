@@ -26,12 +26,10 @@ module RuboCop
           raise IncorrectCopNameError, unknown.map { |name| unknown_cop_message(name) }.join("\n")
         end
 
+        # Not memoized: the MCP server lives long enough for a plugin to register
+        # a cop after a lookup has missed it.
         def cop_class_for(name)
-          @cop_class_for ||= {}
-          unless @cop_class_for.key?(name)
-            @cop_class_for[name] = Cop::Registry.global.find_by_cop_name(name)
-          end
-          @cop_class_for[name]
+          Cop::Registry.global.find_by_cop_name(name)
         end
 
         def unknown_cop_message(name)
