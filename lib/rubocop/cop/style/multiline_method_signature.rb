@@ -27,6 +27,7 @@ module RuboCop
         def on_def(node)
           return unless node.arguments?
           return if opening_line(node) == closing_line(node)
+          return if node.arguments.any?(&:multiline?)
           return if correction_exceeds_max_line_length?(node)
           return unless (begin_of_arguments = node.arguments.loc.begin)
 
