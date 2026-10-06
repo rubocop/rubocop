@@ -2192,6 +2192,19 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           "1 file inspected, 2 offenses detected, 1 offense autocorrectable\n"
         )
       end
+
+      it 'reports no edits for `Style/StringLiterals` in JSON output' do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          puts "Hello"
+        RUBY
+
+        expect(cli.run(['--format', 'json', 'example.rb'])).to eq(1)
+        offense = JSON.parse($stdout.string, symbolize_names: true)[:files][0][:offenses][0]
+        expect(offense).to include(cop_name: 'Style/StringLiterals', correctable: false)
+        expect(offense).not_to have_key(:correction)
+      end
     end
 
     # For backward compatibility, `false` is treated the same as `'disabled'`.
@@ -2214,6 +2227,19 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string.lines.to_a.last).to eq(
           "1 file inspected, 2 offenses detected, 1 offense autocorrectable\n"
         )
+      end
+
+      it 'reports no edits for `Style/StringLiterals` in JSON output' do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          puts "Hello"
+        RUBY
+
+        expect(cli.run(['--format', 'json', 'example.rb'])).to eq(1)
+        offense = JSON.parse($stdout.string, symbolize_names: true)[:files][0][:offenses][0]
+        expect(offense).to include(cop_name: 'Style/StringLiterals', correctable: false)
+        expect(offense).not_to have_key(:correction)
       end
     end
   end
