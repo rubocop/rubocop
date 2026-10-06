@@ -40,8 +40,7 @@ module RuboCop
         # allow turning off autocorrect on a cop by cop basis
         return true unless cop_config
 
-        # `false` is the same as `disabled` for backward compatibility.
-        return false if ['disabled', false].include?(cop_config['AutoCorrect'])
+        return false if disabled_autocorrect?
 
         # When LSP is enabled or the `--editor-mode` option is on, it is considered as editing
         # source code, and autocorrection with `AutoCorrect: contextual` will not be performed.

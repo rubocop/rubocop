@@ -387,6 +387,12 @@ module RuboCop
         cop_config.fetch('AutoCorrect', 'always') == 'contextual'
       end
 
+      # @api private
+      def disabled_autocorrect?
+        # `false` is the same as `'disabled'` for backward compatibility.
+        ['disabled', false].include?(cop_config['AutoCorrect'])
+      end
+
       def inspect # :nodoc:
         "#<#{self.class.name}:#{object_id} @config=#{@config} @options=#{@options}>"
       end
@@ -405,8 +411,14 @@ module RuboCop
 
         # Since this range may be generated from Ruby code embedded in some
         # template file, we convert it to location info in the original file.
+        # A cop configured with `AutoCorrect: false` reports no edits, since
+        # nothing that honors the configuration applies them. The corrector
+        # stays, so an editor can still offer it as a quick fix to choose.
+        corrections = [] if corrector && disabled_autocorrect?
+
         Offense.new(severity, range_for_original(range), message, name, status, corrector,
-                    justification: justification, correction_safe: safe_autocorrect?)
+                    justification: justification, correction_safe: safe_autocorrect?,
+                    corrections: corrections)
       end
 
       ### Reserved for Cop::Cop
