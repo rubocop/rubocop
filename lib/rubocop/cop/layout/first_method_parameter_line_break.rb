@@ -59,6 +59,10 @@ module RuboCop
 
         MSG = 'Add a line break before the first parameter of a multi-line method parameter list.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodDefParentheses]
+        end
+
         def on_def(node)
           check_method_line_break(node, node.arguments, ignore_last: ignore_last_element?)
         end

@@ -1141,6 +1141,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/FirstMethodParameterLineBreak` with `EnforcedStyle: require_no_parentheses` of `Style/MethodDefParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/FirstMethodParameterLineBreak:
+        Enabled: true
+      Style/MethodDefParentheses:
+        EnforcedStyle: require_no_parentheses
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def foo(bar:, baz: nil,
+              qux: nil)
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only',
+       'Layout/FirstMethodParameterLineBreak,Style/MethodDefParentheses']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      def foo(
+      bar:, baz: nil,
+              qux: nil)
+      end
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Style/MethodDefParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
