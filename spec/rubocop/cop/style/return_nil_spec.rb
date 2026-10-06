@@ -45,6 +45,51 @@ RSpec.describe RuboCop::Cop::Style::ReturnNil, :config do
       )
     end
 
+    it 'registers an offense and adds parentheses for return as an operand of `||`' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar || return
+                 ^^^^^^ Use `return nil` instead of `return`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar || (return nil)
+        end
+      RUBY
+    end
+
+    it 'registers an offense and adds parentheses for return in a ternary operator' do
+      expect_offense(<<~RUBY)
+        def foo
+          x = bar ? return : baz
+                    ^^^^^^ Use `return nil` instead of `return`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          x = bar ? (return nil) : baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense without adding parentheses for return as an operand of `or`' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar or return
+                 ^^^^^^ Use `return nil` instead of `return`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar or return nil
+        end
+      RUBY
+    end
+
     it 'registers an offense for return' do
       expect_offense(<<~RUBY)
         def foo
