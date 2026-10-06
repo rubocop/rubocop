@@ -43,7 +43,7 @@ $ gem install mcp
 The MCP server exposes two tools:
 
 `rubocop_inspection`::
-Inspect Ruby code for offenses. Accepts a `path` to check files on disk or `source_code` to check inline code. Each offense is reported the way xref:formatters.adoc#json-formatter[`--format json`] reports it, with 1-based lines and columns and the edits its correction would make. Either way the result has the same `files` and `summary`: inline code is reported as a single file, named after `path` when one is given and `example.rb` otherwise.
+Inspect Ruby code for offenses. Accepts a `path` to check files on disk or `source_code` to check inline code. Each offense is reported the way xref:formatters.adoc#json-formatter[`--format json`] reports it, with 1-based lines and columns and the edits its correction would make. Either way the result has the same `files` and `summary`: inline code is reported as a single file, named after `path` when one is given and `example.rb` otherwise. An optional `max_offenses_per_cop` caps how many offenses each cop reports across the files inspected, as xref:usage/cli_reference.adoc[`--max-offenses-per-cop`] does, and the summary's `unreported_offenses` counts what each capped cop left out. A file missing from `files` under a cap can still have offenses; they were just counted rather than listed.
 
 `rubocop_autocorrection`::
 Autocorrect RuboCop offenses in Ruby code. Accepts `path` or `source_code` like the inspection tool, plus a `safety` boolean (defaults to `true`). When `safety` is `true`, only safe corrections are applied; set it to `false` to include unsafe corrections.

@@ -39,7 +39,9 @@ module RuboCop
         'Either way the result lists offenses per file, with a summary, and the ' \
         'offenses use the `rubocop --format json` format, with 1-based lines. ' \
         '`correctable` says whether `rubocop_autocorrection` fixes an offense, ' \
-        'and one whose `correction` is not `safe` needs `safety` set to false.'
+        'and one whose `correction` is not `safe` needs `safety` set to false. ' \
+        '`max_offenses_per_cop` caps what each cop reports, and the ' \
+        'summary\'s `unreported_offenses` counts what was left out.'
 
       def initialize(config_store)
         @config_store = config_store
@@ -71,9 +73,9 @@ module RuboCop
           destructive_hint: false,
           idempotent_hint: true,
           read_only_hint: true,
-          safety_required: false
-        ) do |path, source_code|
-          run_inspection(path, source_code)
+          properties: { max_offenses_per_cop: { type: 'integer', minimum: 1 } }
+        ) do |path: nil, source_code: nil, max_offenses_per_cop: nil|
+          run_inspection(path, source_code, max_offenses_per_cop)
         end
       end
 
@@ -87,23 +89,34 @@ module RuboCop
           destructive_hint: true,
           idempotent_hint: false,
           read_only_hint: false,
-          safety_required: true
-        ) do |path, source_code, safety|
+          properties: { safety: { type: 'boolean' } },
+          required: ['safety']
+        ) do |path: nil, source_code: nil, safety: true|
           run_autocorrection(path, source_code, safety)
         end
       end
 
-      def run_inspection(path, source_code)
-        if source_code
-          file = path || 'example.rb'
-          build_result([file], [inspect_source(file, source_code)], filter_empty: true)
-        else
-          process_files(path, filter_empty: true) { |file, source| inspect_source(file, source) }
-        end
+      # A limit counts across the files of one request, so every request starts
+      # from zero.
+      def run_inspection(path, source_code, max_offenses_per_cop)
+        limit = OffenseLimit.new(max_offenses_per_cop) if max_offenses_per_cop
+        result =
+          if source_code
+            file = path || 'example.rb'
+            build_result([file], [inspect_source(file, source_code, limit)], filter_empty: true)
+          else
+            process_files(path, filter_empty: true) { |file, src| inspect_source(file, src, limit) }
+          end
+        # The agent never sees stderr, so the summary says what the limit left out.
+        unreported = limit&.elided_per_cop
+        result[:summary][:unreported_offenses] = unreported if unreported&.any?
+        result.to_json
       end
 
-      def inspect_source(file, source)
-        @json_formatter.hash_for_file(file, @runtime.raw_offenses(file, source))
+      def inspect_source(file, source, limit)
+        offenses = @runtime.raw_offenses(file, source)
+        offenses = limit.filter(offenses) if limit
+        @json_formatter.hash_for_file(file, offenses)
       end
 
       def run_autocorrection(path, source_code, safety)
@@ -120,7 +133,7 @@ module RuboCop
 
               { path: PathUtil.relative_path(file), corrected: source != corrected }
             end
-          end
+          end.to_json
         end
       end
 
@@ -137,7 +150,7 @@ module RuboCop
       def build_result(target_files, all_files, filter_empty: false)
         files = filter_empty ? all_files.reject { |f| f[:offenses]&.empty? } : all_files
 
-        { files: files, summary: build_summary(target_files, all_files) }.to_json
+        { files: files, summary: build_summary(target_files, all_files) }
       end
 
       def read_file(file)
@@ -176,16 +189,8 @@ module RuboCop
       # rubocop:disable-next Metrics/MethodLength, Metrics/ParameterLists
       def build_tool(
         name:, description:,
-        title:, destructive_hint:, idempotent_hint:, read_only_hint:, safety_required:
+        title:, destructive_hint:, idempotent_hint:, read_only_hint:, properties:, required: nil
       )
-        if safety_required
-          safety_property = { safety: { type: 'boolean' } }
-          required = ['safety']
-        else
-          safety_property = {}
-          required = nil
-        end
-
         ::MCP::Tool.define(
           name: name,
           description: description,
@@ -193,7 +198,7 @@ module RuboCop
             properties: {
               path: { type: 'string' },
               source_code: { type: 'string' }
-            }.merge(safety_property),
+            }.merge(properties),
             required: required
           }.compact,
           annotations: {
@@ -203,8 +208,11 @@ module RuboCop
             open_world_hint: false,
             read_only_hint: read_only_hint
           }
-        ) do |path: nil, source_code: nil, safety: true|
-          result = yield(path, source_code, safety)
+        ) do |**arguments|
+          # Taking any keywords makes the gem pass a `server_context` as well.
+          # Each tool's own block names the arguments it accepts.
+          arguments.delete(:server_context)
+          result = yield(**arguments)
 
           ::MCP::Tool::Response.new([{ type: 'text', text: result }])
         rescue RuboCop::Error => e
