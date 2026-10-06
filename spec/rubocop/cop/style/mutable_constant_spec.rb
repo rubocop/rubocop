@@ -602,6 +602,18 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     context 'methods and operators that produce frozen objects' do
+      it 'accepts a parenthesized comparison' do
+        expect_no_offenses(<<~RUBY)
+          CONST = (foo == 'bar')
+        RUBY
+      end
+
+      it 'accepts a parenthesized range', :ruby30 do
+        expect_no_offenses(<<~RUBY)
+          CONST = (0..100)
+        RUBY
+      end
+
       it 'accepts assigning to an environment variable with a fallback' do
         expect_no_offenses(<<~RUBY)
           CONST = ENV['foo'] || 'foo'
