@@ -71,7 +71,11 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
               title: "RuboCop's inspection"
             },
             description: 'Inspect Ruby code for offenses. ' \
-                         'Provide `source_code` to check inline code or `path` to check files.',
+                         'Provide `source_code` to check inline code or `path` to check files. ' \
+                         'Either way the result lists offenses per file, with a summary, and the ' \
+                         'offenses use the `rubocop --format json` format, with 1-based lines. ' \
+                         '`correctable` says whether `rubocop_autocorrection` fixes an offense, ' \
+                         'and one whose `correction` is not `safe` needs `safety` set to false.',
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
@@ -118,46 +122,104 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
         params: { name: 'rubocop_inspection', arguments: { source_code: '?a' } }
       }]
     end
-    let(:character_literal) { parsed_result.find { |o| o[:code] == 'Style/CharacterLiteral' } }
-    let(:frozen_string) do
-      parsed_result.find { |o| o[:code] == 'Style/FrozenStringLiteralComment' }
+    let(:offenses) { parsed_result[:files].first[:offenses] }
+    let(:character_literal) do
+      offenses.find { |o| o[:cop_name] == 'Style/CharacterLiteral' }
     end
-    let(:trailing_lines) { parsed_result.find { |o| o[:code] == 'Layout/TrailingEmptyLines' } }
+    let(:frozen_string) do
+      offenses.find { |o| o[:cop_name] == 'Style/FrozenStringLiteralComment' }
+    end
+    let(:trailing_lines) do
+      offenses.find { |o| o[:cop_name] == 'Layout/TrailingEmptyLines' }
+    end
 
     it 'handles requests' do
       expect(stderr).to be_blank
       expect(messages.count).to eq(1)
       expect(response).to include(id: '42', jsonrpc: '2.0')
       expect(response[:result][:isError]).to be false
-      if RuboCop::Platform.windows?
-        expect(parsed_result.size).to eq(4)
-      else
-        expect(parsed_result.size).to eq(3)
-      end
+      expected_count = RuboCop::Platform.windows? ? 4 : 3
+      expect(parsed_result[:files].map { |file| file[:path] }).to eq(['example.rb'])
+      expect(offenses.size).to eq(expected_count)
+      expect(parsed_result[:summary]).to eq(target_file_count: 1, offense_count: expected_count)
 
       expect(character_literal).to include(
-        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 2 } },
-        severity: 3,
-        source: 'RuboCop'
+        severity: 'convention',
+        correctable: true,
+        location: a_hash_including(start_line: 1, start_column: 1, last_line: 1, last_column: 2),
+        correction: {
+          safe: true,
+          edits: [{
+            start_line: 1, start_column: 1, last_line: 1, last_column: 2,
+            begin_pos: 0, end_pos: 2, replacement: "'a'"
+          }]
+        }
       )
-      expect(character_literal[:codeDescription][:href]).to include('stylecharacterliteral')
-      expect(character_literal[:data]).to include(correctable: true)
 
       expect(frozen_string).to include(
-        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
-        severity: 3,
-        source: 'RuboCop'
+        severity: 'convention',
+        correctable: true,
+        location: a_hash_including(start_line: 1, start_column: 1),
+        correction: a_hash_including(safe: false)
       )
-      expect(frozen_string[:codeDescription][:href]).to include('stylefrozenstringliteralcomment')
-      expect(frozen_string[:data]).to include(correctable: true)
 
       expect(trailing_lines).to include(
-        range: { start: { line: 0, character: 2 }, end: { line: 0, character: 2 } },
-        severity: 3,
-        source: 'RuboCop'
+        severity: 'convention',
+        correctable: true,
+        location: a_hash_including(start_line: 1, start_column: 3),
+        correction: a_hash_including(safe: true)
       )
-      expect(trailing_lines[:codeDescription][:href]).to include('layouttrailingemptylines')
-      expect(trailing_lines[:data]).to include(correctable: true)
+    end
+  end
+
+  describe 'tools/call to inspection of inline code with no offenses' do
+    # Inline code skips the newline conversion `File.write` does on Windows, so
+    # it has to arrive with native line endings to satisfy `Layout/EndOfLine`.
+    let(:newline) { RuboCop::Platform.windows? ? "\r\n" : "\n" }
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: '42',
+        method: 'tools/call',
+        params: {
+          name: 'rubocop_inspection',
+          arguments: { source_code: "# frozen_string_literal: true#{newline}" }
+        }
+      }]
+    end
+
+    it 'reports it the way it reports a clean file' do
+      expect(parsed_result).to eq(files: [], summary: { target_file_count: 1, offense_count: 0 })
+    end
+  end
+
+  describe 'tools/call to inspection of an offense autocorrection leaves alone' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: '42',
+        method: 'tools/call',
+        params: {
+          name: 'rubocop_inspection',
+          arguments: { source_code: "def foo\n  x = 1\nend\n" }
+        }
+      }]
+    end
+    let(:useless_assignment) do
+      parsed_result[:files].first[:offenses].find { |o| o[:cop_name] == 'Lint/UselessAssignment' }
+    end
+
+    # `AutoCorrect: contextual` corrections are not applied while code is being
+    # edited, but the edit is still there for the agent to apply itself.
+    it 'reports it as not correctable while keeping its correction' do
+      expect(useless_assignment).to include(
+        correctable: false,
+        location: a_hash_including(start_line: 2, start_column: 3),
+        correction: {
+          safe: true,
+          edits: [a_hash_including(start_line: 2, start_column: 3, replacement: '')]
+        }
+      )
     end
   end
 
@@ -182,7 +244,14 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       expect(response).to include(id: '42', jsonrpc: '2.0')
       expect(response[:result][:isError]).to be false
       expect(parsed_result[:files].first[:path]).to eq(file_path)
-      expect(parsed_result[:files].first[:offenses]).not_to be_empty
+      expect(parsed_result[:files].first[:offenses]).to include(
+        a_hash_including(
+          cop_name: 'Style/CharacterLiteral',
+          correctable: true,
+          location: a_hash_including(start_line: 1, start_column: 1),
+          correction: a_hash_including(safe: true)
+        )
+      )
     end
   end
 
