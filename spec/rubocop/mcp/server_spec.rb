@@ -75,10 +75,13 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
                          'Either way the result lists offenses per file, with a summary, and the ' \
                          'offenses use the `rubocop --format json` format, with 1-based lines. ' \
                          '`correctable` says whether `rubocop_autocorrection` fixes an offense, ' \
-                         'and one whose `correction` is not `safe` needs `safety` set to false.',
+                         'and one whose `correction` is not `safe` needs `safety` set to false. ' \
+                         '`max_offenses_per_cop` caps what each cop reports, and the ' \
+                         'summary\'s `unreported_offenses` counts what was left out.',
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
+                max_offenses_per_cop: { type: 'integer', minimum: 1 },
                 path: { type: 'string' },
                 source_code: { type: 'string' }
               },
@@ -277,6 +280,87 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       expect(response[:result][:isError]).to be false
       expect(parsed_result[:files]).not_to be_empty
       expect(parsed_result[:summary][:target_file_count]).to eq(1)
+      expect(parsed_result[:summary]).not_to have_key(:unreported_offenses)
+    end
+  end
+
+  describe 'tools/call to inspection with `max_offenses_per_cop`' do
+    let(:arguments) { { max_offenses_per_cop: 1 } }
+    let(:requests) do
+      [1, 2].map do |id|
+        { jsonrpc: '2.0', id: id, method: 'tools/call',
+          params: { name: 'rubocop_inspection', arguments: arguments } }
+      end
+    end
+    let(:results) do
+      messages.map do |message|
+        JSON.parse(message[:result][:content].first[:text], symbolize_names: true)
+      end
+    end
+
+    before do
+      source = "# frozen_string_literal: true\n\nputs \"a\"\nputs \"b\"\n"
+      File.write('a.rb', source)
+      File.write('b.rb', source)
+    end
+
+    it 'caps each cop across the files and counts what it left out' do
+      result = results.first
+
+      expect(result[:files].map { |file| file[:path] }).to eq(['a.rb'])
+      cop_names = result[:files].first[:offenses].map { |offense| offense[:cop_name] }
+      expect(cop_names).to eq(['Style/StringLiterals'])
+      expect(result[:summary]).to include(
+        offense_count: 1, unreported_offenses: { 'Style/StringLiterals': 3 }
+      )
+    end
+
+    it 'starts counting again for every request' do
+      expect(results.last).to eq(results.first)
+    end
+
+    context 'with inline source code' do
+      let(:arguments) { { max_offenses_per_cop: 1, source_code: "puts \"a\"\nputs \"b\"\n" } }
+
+      it 'caps it the same way' do
+        result = results.first
+        string_literals = result[:files].first[:offenses].count do |offense|
+          offense[:cop_name] == 'Style/StringLiterals'
+        end
+
+        expect(string_literals).to eq(1)
+        expect(result[:summary][:unreported_offenses]).to eq('Style/StringLiterals': 1)
+      end
+    end
+
+    context 'with a limit below one' do
+      let(:arguments) { { max_offenses_per_cop: 0 } }
+
+      it 'rejects it' do
+        expect(messages.first[:result][:isError]).to be true
+      end
+    end
+  end
+
+  describe 'tools/call to autocorrection with `max_offenses_per_cop`' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: '42',
+        method: 'tools/call',
+        params: {
+          name: 'rubocop_autocorrection',
+          arguments: { safety: true, path: 'a.rb', max_offenses_per_cop: 1 }
+        }
+      }]
+    end
+
+    before { File.write('a.rb', '?a') }
+
+    # How much of the error the client sees depends on the version of the mcp gem.
+    it 'refuses an argument only inspection takes, without correcting anything' do
+      expect(response).to have_key(:error)
+      expect(File.read('a.rb')).to eq('?a')
     end
   end
 

@@ -4,7 +4,8 @@ require 'rubocop/mcp/server'
 
 module MCPHelper
   def run_server_on_requests(*requests)
-    stdin = StringIO.new(requests.map(&:to_json).join)
+    # The stdio transport reads one message per line.
+    stdin = StringIO.new(requests.map { |request| "#{request.to_json}\n" }.join)
     stdout = StringIO.new
     stderr = StringIO.new
 
