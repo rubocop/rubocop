@@ -148,7 +148,7 @@ module RuboCop
             if node
               corrector.insert_before(node, ' ')
             else
-              corrector.insert_after(target, ' ')
+              corrector.insert_after(range_between(space_begin_pos, space_begin_pos), ' ')
             end
           end
         end
