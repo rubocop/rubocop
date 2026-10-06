@@ -48,15 +48,22 @@ module RuboCop
       end
 
       def offenses(path, text, document_encoding = nil, prism_result: nil)
+        found = raw_offenses(path, text, prism_result: prism_result)
+        processed_source = @runner.processed_source
+        config = @runner.config_for_working_directory
+        found.map do |offense|
+          build_diagnostic(offense, path, document_encoding, processed_source, config)
+        end
+      end
+
+      # The offenses before they are converted to LSP diagnostics, for callers
+      # that do not speak LSP.
+      def raw_offenses(path, text, prism_result: nil)
         diagnostic_options = {}
         diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         @runner.run(path, text, diagnostic_options, prism_result: prism_result)
-        processed_source = @runner.processed_source
-        config = @runner.config_for_working_directory
-        @runner.offenses.map do |offense|
-          build_diagnostic(offense, path, document_encoding, processed_source, config)
-        end
+        @runner.offenses
       end
 
       private
