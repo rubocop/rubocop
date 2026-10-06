@@ -1655,6 +1655,22 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect(stdout).to include('Safety')
     end
 
+    it 'reports autocorrection as disabled when the configuration turns it off' do
+      create_file('.rubocop.yml', <<~YAML)
+        Style/StringLiterals:
+          AutoCorrect: false
+      YAML
+      cli.run(['--explain', 'Style/StringLiterals'])
+
+      expect(stdout).to include('Autocorrect: disabled')
+    end
+
+    it 'reports that a contextual correction is not applied through LSP or MCP' do
+      cli.run(['--explain', 'Lint/UselessAssignment'])
+
+      expect(stdout).to include('Autocorrect: safe, applied by -a, but not through LSP or MCP')
+    end
+
     it 'does not repeat the description as a details section' do
       cli.run(['--explain', 'Style/Semicolon'])
 

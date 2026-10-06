@@ -88,11 +88,15 @@ module RuboCop
       def autocorrect_description
         return 'not supported' unless @cop_class.support_autocorrect?
 
-        if @cop_config.fetch('Safe', true) && @cop_config.fetch('SafeAutoCorrect', true)
-          'safe, applied by -a'
-        else
-          'unsafe, applied by -A only'
-        end
+        # Asks the cop, so `AutoCorrect` is read the way the cop reads it.
+        cop = @cop_class.new(@config)
+        return 'disabled' unless cop.always_autocorrect? || cop.contextual_autocorrect?
+
+        description = cop.safe_autocorrect? ? 'safe, applied by -a' : 'unsafe, applied by -A only'
+        # Contextual corrections wait until the code is finished, which an
+        # editor or an agent mid-edit cannot promise.
+        description += ', but not through LSP or MCP' if cop.contextual_autocorrect?
+        description
       end
 
       def version_lines
