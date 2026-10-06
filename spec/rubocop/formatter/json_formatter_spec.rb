@@ -181,6 +181,21 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
           expect(hash[:correction][:safe]).to be(false)
         end
       end
+
+      context 'when multibyte characters precede the edit' do
+        let(:source) { "x = 'é'\ny = \"b\"" }
+        let(:location) do
+          source_buffer = Parser::Source::Buffer.new('test', 1)
+          source_buffer.source = source
+          Parser::Source::Range.new(source_buffer, 12, 15)
+        end
+
+        it 'counts positions in characters, not bytes' do
+          edit = hash[:correction][:edits].first
+
+          expect(source[edit[:begin_pos]...edit[:end_pos]]).to eq('"b"')
+        end
+      end
     end
 
     it 'sets value of #hash_for_location for :location key' do
