@@ -678,4 +678,16 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
 
   it_behaves_like 'incorrect cases', '.'
   it_behaves_like 'incorrect cases', '&.'
+
+  it 'does not register an offense for a call whose block argument contains a heredoc argument' do
+    expect_no_offenses(<<~RUBY)
+      export(
+        ->(db) {
+          db.execute(<<~SQL)
+            x
+          SQL
+        }
+      )
+    RUBY
+  end
 end

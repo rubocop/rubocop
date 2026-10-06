@@ -117,6 +117,8 @@ module RuboCop
           previous = heredoc
           current = previous.parent
           until send_missing_closing_parens?(current, previous, heredoc)
+            return if current&.any_block_type?
+
             previous = current
             current = current.parent
             return unless previous && current
