@@ -706,6 +706,68 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
       end
     end
 
+    context 'with a multiline lambda literal with `rescue` as an argument' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          do_something :foo, ->(x) do
+            x.bar
+          rescue
+            nil
+          end
+        RUBY
+      end
+    end
+
+    context 'with a multiline lambda literal with `ensure` as an argument' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          do_something :foo, ->(x) do
+            x.bar
+          ensure
+            x.baz
+          end
+        RUBY
+      end
+    end
+
+    context 'with a multiline lambda literal with a modifier `rescue` as an argument' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          do_something :foo, ->(x) do
+                             ^^ Use the `lambda` method for multiline lambdas.
+            x.bar rescue nil
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something :foo, lambda { |x|
+            x.bar rescue nil
+          }
+        RUBY
+      end
+    end
+
+    context 'with a multiline lambda literal with `rescue` as a parenthesized argument' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          do_something(:foo, ->(x) do
+                             ^^ Use the `lambda` method for multiline lambdas.
+            x.bar
+          rescue
+            nil
+          end)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something(:foo, lambda do |x|
+            x.bar
+          rescue
+            nil
+          end)
+        RUBY
+      end
+    end
+
     context 'with a multiline braces lambda literal as a keyword argument' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)

@@ -29,6 +29,10 @@ module RuboCop
         insert_arguments(corrector)
       end
 
+      def replace_delimiters?
+        !block_node.braces? && arg_to_unparenthesized_call?
+      end
+
       private
 
       attr_reader :block_node, :method, :arguments
@@ -77,7 +81,7 @@ module RuboCop
       end
 
       def replace_delimiters(corrector)
-        return if block_node.braces? || !arg_to_unparenthesized_call?
+        return unless replace_delimiters?
 
         corrector.insert_after(block_begin, ' ') unless separating_space?
 
