@@ -523,7 +523,9 @@ module RuboCop
 
       @options.delete(:parallel)
 
-      puts '-P/--parallel is being ignored because ' \
+      # On stderr, so that it can't end up in the middle of a formatter's
+      # output, such as `--format json`.
+      warn '-P/--parallel is being ignored because ' \
            "it is not compatible with #{invalid_flags.join(', ')}."
     end
 
