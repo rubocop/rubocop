@@ -38,6 +38,8 @@ module RuboCop
       class ModuleLength < Base
         include CodeLength
 
+        LABEL = 'Module'
+
         def on_module(node)
           check_code_length(node)
         end
@@ -53,8 +55,8 @@ module RuboCop
           (casgn nil? _ (any_block (send (const {nil? cbase} :Module) :new) ...))
         PATTERN
 
-        def message(length, max_length)
-          format('Module has too many lines. [%<length>d/%<max>d]', length: length, max: max_length)
+        def cop_label
+          LABEL
         end
       end
     end

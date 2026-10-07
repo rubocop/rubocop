@@ -48,10 +48,6 @@ module RuboCop
 
           1
         end
-
-        def count_block?(block)
-          KNOWN_ITERATING_METHODS.include? block.method_name
-        end
       end
     end
   end

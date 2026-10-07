@@ -81,7 +81,6 @@ module RuboCop
       #   gem 'bar', '< 2.1'
       #
       class GemComment < Base
-        include DefNode
         include GemDeclaration
 
         MSG = 'Missing gem description comment.'
