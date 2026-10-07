@@ -356,6 +356,12 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           options.parse %w[--parallel --cache false]
           expect($stdout.string).to be_empty
         end
+
+        it 'says nothing when parallel inspection was turned off' do
+          options.parse %w[--no-parallel --cache false]
+          expect($stdout.string).to be_empty
+          expect($stderr.string).to be_empty
+        end
       end
 
       context 'combined with an autocorrect argument' do

@@ -515,7 +515,7 @@ module RuboCop
     end
 
     def disable_parallel_when_invalid_option_combo
-      return unless @options.key?(:parallel)
+      return unless @options[:parallel]
 
       invalid_flags = invalid_arguments_for_parallel
 
