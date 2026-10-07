@@ -359,6 +359,39 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
+  it 'registers an offense for a method definition with an unparenthesized keyword parameter ' \
+     'terminated with a semicolon' do
+    expect_offense(<<~RUBY)
+      def c a:;
+              ^ Do not use semicolons to terminate expressions.
+        d
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def c a:
+        d
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a `case`/`in` hash pattern terminated with a semicolon', :ruby27 do
+    expect_offense(<<~RUBY)
+      case h
+      in a:;
+           ^ Do not use semicolons to terminate expressions.
+        d
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case h
+      in a:
+        d
+      end
+    RUBY
+  end
+
   context 'Ruby >= 3.1', :ruby31 do
     it 'registers an offense for a method call using multiple hash value omission without parentheses when terminated with a semicolon' do
       expect_offense(<<~RUBY)
