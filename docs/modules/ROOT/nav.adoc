@@ -9,6 +9,7 @@
 ** xref:usage/caching.adoc[Caching]
 ** xref:usage/lsp.adoc[LSP]
 ** xref:usage/mcp.adoc[MCP]
+** xref:usage/ai_agents.adoc[AI Agents]
 ** xref:usage/server.adoc[Server]
 ** xref:usage/source_code_directives.adoc[Source Code Directives]
 ** xref:usage/project_index.adoc[Project Index]
