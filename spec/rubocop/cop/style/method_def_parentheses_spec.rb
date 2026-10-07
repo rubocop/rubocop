@@ -92,6 +92,39 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       RUBY
     end
 
+    it 'requires parens when nothing but the closing parenthesis separates the parameters from the body' do
+      expect_no_offenses(<<~RUBY)
+        def func(a) bar(a) end
+
+        def self.func(a) bar(a) end
+
+        def func(a) end
+      RUBY
+    end
+
+    it 'requires parens when a line continuation follows the closing parenthesis' do
+      expect_no_offenses(<<~'RUBY')
+        def func(a) \
+          bar(a)
+        end
+      RUBY
+    end
+
+    it 'removes the parens when a comment follows the closing parenthesis' do
+      expect_offense(<<~RUBY)
+        def func(a) # comment
+                ^^^ Use def without parentheses.
+          bar(a)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func a # comment
+          bar(a)
+        end
+      RUBY
+    end
+
     it 'requires parens for forwarding', :ruby27 do
       expect_no_offenses(<<~RUBY)
         def foo(...)

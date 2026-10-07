@@ -139,9 +139,10 @@ module RuboCop
           # 5. Argument lists containing an anonymous block forwarding (`&`)
           # 6. Argument lists that begin on a line below the method name
           # 7. Argument lists that begin with a destructuring parameter (`(a, b)`)
+          # 8. Argument lists that nothing but the closing parenthesis separates from the body
           # Removing the parens would be a syntax error, or a change of the parameters, here.
           node.endless? || anonymous_arguments?(node) || arguments_on_own_line?(node) ||
-            destructuring_first_argument?(node)
+            destructuring_first_argument?(node) || undelimited_parameter_list?(node)
         end
 
         def require_parentheses?(args)
@@ -189,6 +190,14 @@ module RuboCop
 
         def destructuring_first_argument?(node)
           node.first_argument&.mlhs_type?
+        end
+
+        def undelimited_parameter_list?(node)
+          return false unless parentheses?(node.arguments)
+
+          end_parenthesis = node.arguments.loc.end
+
+          !end_parenthesis.source_line[end_parenthesis.last_column..].match?(/\A\s*(?:[;#]|\z)/)
         end
       end
     end

@@ -1,0 +1,1 @@
+* [#15926](https://github.com/rubocop/rubocop/pull/15926): Fix an incorrect autocorrect for `Style/MethodDefParentheses` when nothing but the closing parenthesis separates the parameters from the method body. ([@viralpraxis][])
