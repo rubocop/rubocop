@@ -391,6 +391,39 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         end
       RUBY
     end
+
+    it 'reports an offense and separates the parameters from a body on the same line' do
+      expect_offense(<<~RUBY)
+        def func(a, b) do_something(a, b) end
+                ^^^^^^ Use def without parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func a, b; do_something(a, b) end
+      RUBY
+    end
+
+    it 'reports an offense and separates the parameters from `end` on the same line' do
+      expect_offense(<<~RUBY)
+        def func(a) end
+                ^^^ Use def without parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func a; end
+      RUBY
+    end
+
+    it 'reports an offense and keeps a semicolon after the parameters' do
+      expect_offense(<<~RUBY)
+        def func(a); do_something(a); end
+                ^^^ Use def without parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func a; do_something(a); end
+      RUBY
+    end
   end
 
   context 'require_no_parentheses_except_multiline' do
