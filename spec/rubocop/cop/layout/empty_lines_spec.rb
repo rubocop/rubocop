@@ -17,6 +17,22 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines, :config do
     RUBY
   end
 
+  it 'registers an offense for consecutive empty lines with CRLF line endings' do
+    expect_offense(<<~RUBY)
+      test = 5\r
+      \r
+      \r
+      ^{} Extra blank line detected.
+      top\r
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test = 5
+
+      top
+    RUBY
+  end
+
   it 'does not register an offense when there are no tokens' do
     expect_no_offenses('#comment')
   end
