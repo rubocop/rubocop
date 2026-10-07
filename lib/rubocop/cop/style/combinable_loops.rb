@@ -129,11 +129,19 @@ module RuboCop
 
         def correct_end_of_block(corrector, node)
           return unless node.left_sibling.respond_to?(:braces?)
-          return if node.right_sibling&.any_block_type?
+          return if combined_with_right_sibling?(node)
 
           end_of_block = node.left_sibling.braces? ? '}' : ' end'
           corrector.remove(node.loc.end)
           corrector.insert_before(node.source_range.end, end_of_block)
+        end
+
+        def combined_with_right_sibling?(node)
+          sibling = node.right_sibling
+          return false unless sibling&.any_block_type?
+
+          same_collection_looping_block?(sibling, node) && sibling.body &&
+            combinable_blocks?(sibling, node)
         end
       end
     end
