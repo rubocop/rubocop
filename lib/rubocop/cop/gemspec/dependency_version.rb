@@ -53,10 +53,10 @@ module RuboCop
       class DependencyVersion < Base
         include ConfigurableEnforcedStyle
         include GemspecHelp
+        include GemVersionSpecification
 
         REQUIRED_MSG = 'Dependency version specification is required.'
         FORBIDDEN_MSG = 'Dependency version specification is forbidden.'
-        VERSION_SPECIFICATION_REGEX = /^\s*[~<>=]*\s*[0-9.]+/.freeze
 
         ADD_DEPENDENCY_METHODS = %i[
           add_dependency add_runtime_dependency add_development_dependency
@@ -81,32 +81,14 @@ module RuboCop
 
         def on_send(node)
           return unless add_dependency_method_declaration?(node)
-          return if allowed_gem?(node)
 
-          if offense?(node)
-            add_offense(node)
-            opposite_style_detected
-          else
-            correct_style_detected
-          end
+          check_version_specification(node)
         end
 
         private
 
         def allowed_gem?(node)
           allowed_gems.include?(node.first_argument.str_content)
-        end
-
-        def allowed_gems
-          Array(cop_config['AllowedGems'])
-        end
-
-        def message(_range)
-          if required_style?
-            REQUIRED_MSG
-          elsif forbidden_style?
-            FORBIDDEN_MSG
-          end
         end
 
         def match_block_variable_name?(receiver_name)
@@ -117,34 +99,6 @@ module RuboCop
 
         def add_dependency_method?(method_name)
           ADD_DEPENDENCY_METHODS.include?(method_name)
-        end
-
-        def offense?(node)
-          required_offense?(node) || forbidden_offense?(node)
-        end
-
-        def required_offense?(node)
-          return false unless required_style?
-
-          !includes_version_specification?(node) && !includes_commit_reference?(node)
-        end
-
-        def forbidden_offense?(node)
-          return false unless forbidden_style?
-
-          includes_version_specification?(node) || includes_commit_reference?(node)
-        end
-
-        def forbidden_style?
-          style == :forbidden
-        end
-
-        def required_style?
-          style == :required
-        end
-
-        def version_specification?(expression)
-          expression.match?(VERSION_SPECIFICATION_REGEX)
         end
       end
     end
