@@ -42,11 +42,15 @@ module RuboCop
         '`correctable` says whether `rubocop_autocorrection` fixes an offense, ' \
         'and one whose `correction` is not `safe` needs `safety` set to false. ' \
         '`max_offenses_per_cop` caps what each cop reports, and the ' \
-        'summary\'s `unreported_offenses` counts what was left out.'
+        'summary\'s `unreported_offenses` counts what was left out. ' \
+        'A cop that crashes is listed in its file\'s `errors`; the rest still report.'
 
       def initialize(config_store)
         @config_store = config_store
         @runtime = RuboCop::LSP::Runtime.new(@config_store)
+        # One cop crashing on one file should not cost an agent everything else
+        # in the request, so cop errors are collected and reported per file.
+        @runtime.raise_cop_error = false
         @options = {}
         # Offenses are reported the way `--format json` reports them, so an agent
         # sees the same 1-based locations and correction data either way.
@@ -117,25 +121,60 @@ module RuboCop
       def inspect_source(file, source, limit)
         offenses = @runtime.raw_offenses(file, source)
         offenses = limit.filter(offenses) if limit
-        @json_formatter.hash_for_file(file, offenses)
+        entry = @json_formatter.hash_for_file(file, offenses)
+        entry.merge(problems_of_last_run(file, entry[:path]))
       end
 
       def run_autocorrection(path, source_code, safety)
         command = safety ? 'rubocop.formatAutocorrects' : 'rubocop.formatAutocorrectsAll'
 
         if source_code
-          @runtime.format(path || 'example.rb', source_code, command: command).tap do |corrected|
-            write_file(path, corrected) if path
-          end
+          correct_inline(path, source_code, command)
         else
-          process_files(path) do |file, source|
-            @runtime.format(file, source, command: command).then do |corrected|
-              write_file(file, corrected)
-
-              { path: PathUtil.relative_path(file), corrected: source != corrected }
-            end
-          end.to_json
+          process_files(path) { |file, source| correct_file(file, source, command) }.to_json
         end
+      end
+
+      # Cops that keep undoing each other's corrections leave the file half
+      # corrected, so it is left alone and the loop is reported instead.
+      def correct_file(file, source, command)
+        corrected = @runtime.format(file, source, command: command)
+        looped = @runtime.errors.any?(Runner::InfiniteCorrectionLoop)
+        write_file(file, corrected) unless looped
+
+        path = PathUtil.relative_path(file)
+        { path: path, corrected: !looped && source != corrected }
+          .merge(problems_of_last_run(file, path))
+      end
+
+      # Corrected inline code comes back as plain text with nowhere to mention
+      # a cop that crashed, so a crash fails the call instead of going unseen.
+      def correct_inline(path, source_code, command)
+        file = path || 'example.rb'
+        corrected = @runtime.format(file, source_code, command: command)
+        errors = problems_of_last_run(file, PathUtil.smart_path(file))[:errors]
+        raise RuboCop::Error, errors.join("\n") if errors
+
+        write_file(path, corrected) if path
+        corrected
+      end
+
+      # A crashing cop fails once per node it visits, and again on every
+      # autocorrection pass, so its messages lose their line and column and
+      # collapse into one per cop. Messages name the file the way its entry
+      # in the result does.
+      def problems_of_last_run(file, path)
+        return {} if @runtime.errors.empty? && @runtime.warnings.empty?
+
+        location = /#{Regexp.escape(File.expand_path(file))}(:\d+)*/
+        { errors: @runtime.errors, warnings: @runtime.warnings }.filter_map do |key, problems|
+          messages = problems.map { |problem| plain_message(problem, location, path) }.uniq
+          [key, messages] unless messages.empty?
+        end.to_h
+      end
+
+      def plain_message(problem, location, path)
+        Rainbow::StringUtils.uncolor(problem.to_s).sub(location, path)
       end
 
       def process_files(path, filter_empty: false)
@@ -149,9 +188,13 @@ module RuboCop
       # Inline code is reported as a single file, so an agent reads one shape
       # whichever way it asked.
       def build_result(target_files, all_files, filter_empty: false)
-        files = filter_empty ? all_files.reject { |f| f[:offenses]&.empty? } : all_files
+        files = filter_empty ? all_files.reject { |f| nothing_to_report?(f) } : all_files
 
         { files: files, summary: build_summary(target_files, all_files) }
+      end
+
+      def nothing_to_report?(file)
+        file[:offenses].empty? && !file[:errors] && !file[:warnings]
       end
 
       def read_file(file)
@@ -184,7 +227,14 @@ module RuboCop
         else
           summary[:corrected_file_count] = files.count { |f| f[:corrected] }
         end
-        summary
+        summary.merge(problem_counts(files))
+      end
+
+      def problem_counts(files)
+        {
+          error_count: files.sum { |f| f[:errors]&.size.to_i },
+          warning_count: files.sum { |f| f[:warnings]&.size.to_i }
+        }.reject { |_, count| count.zero? }
       end
 
       # rubocop:disable-next Metrics/MethodLength, Metrics/ParameterLists

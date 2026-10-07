@@ -23,7 +23,6 @@ module RuboCop
         stderr: true,
         force_exclusion: true,
         formatters: ['RuboCop::Formatter::BaseFormatter'],
-        raise_cop_error: true,
         todo_file: nil,
         todo_ignore_files: []
       }.freeze
