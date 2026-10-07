@@ -3647,6 +3647,48 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(status).to eq(0)
   end
 
+  it 'corrects `Recursive: true` of `Style/MutableConstant` with TrailingCommaIn(Array|Hash)Literal' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MutableConstant:
+        Recursive: true
+      Style/TrailingCommaInArrayLiteral:
+        EnforcedStyleForMultiline: consistent_comma
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      FOO = [
+        %w[a
+           b]
+      ].freeze
+      BAR = {
+        baz: %w[a
+                b]
+      }.freeze
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all', '--only',
+        'Style/MutableConstant,Style/TrailingCommaInArrayLiteral,Style/TrailingCommaInHashLiteral'
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      FOO = [
+        %w[a
+           b].freeze,
+      ].freeze
+      BAR = {
+        baz: %w[a
+                b].freeze,
+      }.freeze
+    RUBY
+  end
+
   it 'corrects TrailingCommaIn(Array|Hash)Literal and Multiline(Array|Hash)BraceLayout offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/TrailingCommaInArrayLiteral:

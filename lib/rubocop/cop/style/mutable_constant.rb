@@ -146,6 +146,13 @@ module RuboCop
 
         MSG = 'Freeze mutable objects assigned to constants.'
 
+        # With `Recursive: true`, `.freeze` is appended to a nested literal. When the literal
+        # is the last element and spans multiple lines, the trailing comma lands between the literal
+        # and the `.freeze` appended in the same pass.
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArrayLiteral, Style::TrailingCommaInHashLiteral]
+        end
+
         def on_casgn(node)
           if node.expression.nil? # This is only the case for `CONST += ...` or similar
             parent = node.parent
