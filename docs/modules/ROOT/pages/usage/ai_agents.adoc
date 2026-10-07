@@ -1,0 +1,155 @@
+= AI Agents
+
+Coding agents such as Claude Code, Codex or Cursor run RuboCop the way a
+developer does, only far more often and with less tolerance for noise, since
+everything RuboCop prints ends up in the agent's context. They can drive it in
+two ways: from the command line, which works with any agent that can run a
+shell command, or through the xref:usage/mcp.adoc[MCP server], which keeps
+RuboCop loaded and answers with structured tool results. This page covers what
+makes either work well.
+
+== Command Line
+
+A handful of options matter more to an agent than to a person at a terminal:
+
+`--format json`::
+Reports each offense with 1-based lines and columns, whether autocorrection can
+fix it, and the edits that fix would make, marked safe or unsafe. See the
+xref:formatters.adoc#json-formatter[JSON formatter]. An agent can apply the
+edits itself, but xref:formatters.adoc#corrections[Corrections] lists the
+catches, and running `-a` is usually simpler.
+
+`--max-offenses-per-cop=COUNT`::
+Caps how many offenses each cop reports. A codebase new to RuboCop easily has
+thousands of offenses from a few cops, and an agent fed all of them spends its
+context reading near-duplicates. With a cap it still sees every kind of
+problem, and a note on stderr says how many were held back.
+
+`--explain COP`::
+Prints what a cop checks, its bad and good examples, its configuration as the
+project resolves it, and whether it autocorrects. The offense message alone is
+often too terse to fix the code the way the cop wants.
+
+`--only`, `--except` and `--changed`::
+Narrow a run to some cops or departments, or to the files that differ from a
+git revision. An agent that just edited three files doesn't need the whole
+project checked again.
+
+`-a` and `-A`::
+`-a` applies only the corrections that are safe. `-A` adds the ones that can
+change what the code does, so an agent should stick to `-a` unless told
+otherwise. See xref:usage/autocorrect.adoc#safe-vs-unsafe[Safe vs. unsafe].
+
+`--server`::
+Keeps RuboCop loaded between runs, which takes most of the startup time out of
+repeated checks. See xref:usage/server.adoc[Server Mode]. It isn't available on
+Windows or JRuby.
+
+The exit status tells an agent whether it's done without parsing anything: `0`
+for no offenses, `1` for offenses at or above the
+xref:configuration.adoc#fail-level[fail level], `2` for an error. See
+xref:usage/cli_reference.adoc#exit-codes[Exit codes].
+
+=== Cutting the Noise
+
+RuboCop prints two notices that are meant for people, and an agent pays for
+them in context. The pending cops notice goes to stderr on every run, listing
+each cop added since the configuration last decided what to do about new cops;
+setting xref:versioning.adoc#pending-cops[`NewCops`] to `enable` or `disable`
+silences it. The extension suggestions follow the default progress output,
+though never `--format json`, and go away with
+xref:plugins.adoc#plugin-suggestions[`SuggestExtensions: false`].
+
+[source,yaml]
+----
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+----
+
+== MCP Server
+
+The xref:usage/mcp.adoc[MCP server] offers inspection, autocorrection and cop
+explanations as tools. A call is answered by a process that's already running,
+so there's no startup cost, and the agent learns how to use the tools from their
+descriptions rather than from instructions about command-line options.
+Inspection results have the same shape as `--format json`, and a cop that
+crashes on a file is reported next to the other cops' results instead of
+failing the call. Inspection and autocorrection both take `only`, `except` and
+`changed`, which work like the command-line options.
+
+Unlike the command line, the server holds back corrections from cops with
+`AutoCorrect: contextual`, such as `Lint/UselessAssignment`, because the code
+is assumed to be mid-edit. Their offenses still carry the edits.
+
+== Instructing the Agent
+
+Agents read standing instructions from a file at the project root, usually
+`AGENTS.md` or `CLAUDE.md`. A few lines about RuboCop spare the agent from
+guessing how the project wants it run:
+
+[source,markdown]
+----
+## Linting
+
+- Before finishing, check what you changed with `bundle exec rubocop --changed --format json`.
+- Fix offenses with `bundle exec rubocop -a FILES`. Don't use `-A` unless asked.
+- If an offense is unclear, run `bundle exec rubocop --explain Department/CopName`.
+- Don't edit `.rubocop.yml` or `.rubocop_todo.yml` to make offenses go away,
+  and don't regenerate the todo file.
+- When an offense has to stay, disable the cop on that line and say why:
+  `# rubocop:disable Department/CopName -- the reason`.
+----
+
+== Justified Suppressions
+
+An agent told to get RuboCop passing can do it with a directive, and a
+`# rubocop:disable` is quicker to write than a fix. Banning directives outright
+is too blunt, since some offenses really are better left alone. Requiring a
+reason for each one works better: the agent has to say why, and the reason is
+there for whoever reviews the change.
+
+xref:cops_style.adoc#styledisablecopswithinsourcecodedirective[`Style/DisableCopsWithinSourceCodeDirective`]
+enforces that with `AllowWithReason`:
+
+[source,yaml]
+----
+Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: true
+  AllowWithReason: true
+----
+
+A directive that disables a cop without a `--` justification is then an
+offense, `todo` and `disable-next` included. Once the cop is explicitly enabled
+no directive can turn it off, and it doesn't autocorrect, since only the agent
+or a person can supply the reason.
+
+[source,ruby]
+----
+# bad
+name = "fixture" # rubocop:disable Style/StringLiterals
+
+# good
+name = "fixture" # rubocop:disable Style/StringLiterals -- matches the recorded output
+----
+
+Any reason passes, whichever cop the directive disables. Combining
+`AllowWithReason` with `DisallowedCops` doesn't put some cops off limits; it
+only narrows which directives need a reason. `AllowedDirectives: [todo]`
+exempts the `rubocop:todo` comments that `--disable-uncorrectable` writes, but
+it also gives the agent a way to skip the reason.
+
+To review what the directives in a codebase hide, `--display-suppressed`
+reports the suppressed offenses too, and the JSON formatter gives each its
+`justification`:
+
+[source,console]
+----
+$ rubocop --display-suppressed --format json
+----
+
+`Lint/RedundantCopDisableDirective`, which is on by default, reports a
+directive that outlived the offense it was hiding. None of this covers the
+configuration: an agent can still loosen `.rubocop.yml` or add an `Exclude`.
+Most agents can be denied write access to particular files, which is the surer
+way to keep the configuration out of their reach.
