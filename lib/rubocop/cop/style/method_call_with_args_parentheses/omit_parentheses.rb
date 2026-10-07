@@ -275,10 +275,11 @@ module RuboCop
           end
 
           def forwards_anonymous_rest_arguments?(node)
-            return false unless (last_argument = node.last_argument)
-            return true if last_argument.forwarded_restarg_type?
+            node.arguments.any? do |argument|
+              next true if argument.forwarded_restarg_type?
 
-            last_argument.hash_type? && last_argument.children.any?(&:forwarded_kwrestarg_type?)
+              argument.hash_type? && argument.children.any?(&:forwarded_kwrestarg_type?)
+            end
           end
         end
       end
