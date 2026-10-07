@@ -2,6 +2,7 @@
 
 RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
   include MCPHelper
+  include FailingCopHelper
 
   subject(:result) { run_server_on_requests(*requests) }
 
@@ -77,7 +78,9 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
                          '`correctable` says whether `rubocop_autocorrection` fixes an offense, ' \
                          'and one whose `correction` is not `safe` needs `safety` set to false. ' \
                          '`max_offenses_per_cop` caps what each cop reports, and the ' \
-                         'summary\'s `unreported_offenses` counts what was left out.',
+                         'summary\'s `unreported_offenses` counts what was left out. ' \
+                         'A cop that crashes is listed in its file\'s `errors`; ' \
+                         'the rest still report.',
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
@@ -654,6 +657,111 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       expect(parsed_result[:files]).not_to be_empty
       expect(parsed_result[:summary][:target_file_count]).to eq(1)
       expect(File.read(file_path)).to include("'a'")
+    end
+  end
+
+  context 'when a cop crashes' do
+    let(:source) { "# frozen_string_literal: true\n\nputs ?a, \"b\"\n" }
+    # One message for the cop, though it crashed on both strings.
+    let(:crashes) { ['An error occurred while Style/CharacterLiteral cop was inspecting a.rb.'] }
+    let(:requests) do
+      [{
+        jsonrpc: '2.0', id: '42', method: 'tools/call',
+        params: { name: tool, arguments: arguments }
+      }]
+    end
+
+    before do
+      make_cop_fail(RuboCop::Cop::Style::CharacterLiteral, :on_str, NoMethodError, 'boom')
+      File.write('a.rb', source)
+    end
+
+    describe 'tools/call to inspection' do
+      let(:tool) { 'rubocop_inspection' }
+      let(:arguments) { { path: 'a.rb' } }
+
+      it 'lists the crash against its file and still reports the other cops' do
+        file = parsed_result[:files].first
+
+        expect(file[:errors]).to eq(crashes)
+        expect(file[:offenses].map { |offense| offense[:cop_name] }).to eq(['Style/StringLiterals'])
+        expect(parsed_result[:summary]).to include(offense_count: 1, error_count: 1)
+      end
+    end
+
+    describe 'tools/call to autocorrection' do
+      let(:tool) { 'rubocop_autocorrection' }
+      let(:arguments) { { path: 'a.rb', safety: true } }
+
+      it 'still corrects what the other cops can and lists the crash' do
+        expect(parsed_result[:files]).to eq([{ path: 'a.rb', corrected: true, errors: crashes }])
+        expect(File.read('a.rb')).to eq("# frozen_string_literal: true\n\nputs ?a, 'b'\n")
+      end
+    end
+
+    describe 'tools/call to autocorrection of inline code' do
+      let(:tool) { 'rubocop_autocorrection' }
+      let(:arguments) { { source_code: source, path: 'a.rb', safety: true } }
+
+      it 'fails without writing anything, since plain text has nowhere to list the crash' do
+        expect(response[:result][:isError]).to be true
+        expect(response[:result][:content].first[:text]).to eq(crashes.join("\n"))
+        expect(File.read('a.rb')).to eq(source)
+      end
+    end
+  end
+
+  context 'when a cop raises a warning' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0', id: '42', method: 'tools/call',
+        params: { name: 'rubocop_inspection', arguments: { path: 'a.rb' } }
+      }]
+    end
+
+    before do
+      make_cop_fail(RuboCop::Cop::Style::CharacterLiteral, :on_str,
+                    RuboCop::Warning, 'odd configuration')
+      File.write('a.rb', "# frozen_string_literal: true\n\nputs ?a\n")
+    end
+
+    it 'lists the warning against its file' do
+      expect(parsed_result[:files]).to eq(
+        [{ path: 'a.rb', offenses: [], warnings: ['odd configuration (from file: a.rb)'] }]
+      )
+      expect(parsed_result[:summary]).to include(warning_count: 1)
+    end
+  end
+
+  context 'when corrections loop' do
+    let(:source) { "puts 'a'\n" }
+    let(:requests) do
+      [{
+        jsonrpc: '2.0', id: '42', method: 'tools/call',
+        params: { name: 'rubocop_autocorrection', arguments: { path: 'a.rb', safety: true } }
+      }]
+    end
+
+    # Stands in for two cops undoing each other: the runner gives up with the
+    # source part way through and reports the loop.
+    before do
+      File.write('a.rb', source)
+      allow(RuboCop::Lsp::StdinRunner).to receive(:new).and_wrap_original do |new, *args|
+        runner = new.call(*args)
+        allow(runner).to receive(:file_offenses) do |file|
+          runner.instance_variable_get(:@options)[:stdin] = 'half corrected'
+          raise RuboCop::Runner::InfiniteCorrectionLoop.new(file, [[]])
+        end
+        runner
+      end
+    end
+
+    it 'leaves the file alone and lists the loop' do
+      file = parsed_result[:files].first
+
+      expect(file).to include(path: 'a.rb', corrected: false)
+      expect(file[:errors]).to contain_exactly(start_with('Infinite loop detected in a.rb'))
+      expect(File.read('a.rb')).to eq(source)
     end
   end
 

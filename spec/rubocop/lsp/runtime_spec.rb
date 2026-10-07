@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+require 'rubocop/lsp/runtime'
+
+RSpec.describe RuboCop::LSP::Runtime, :isolated_environment, :lsp do
+  include FailingCopHelper
+
+  subject(:runtime) { described_class.new(RuboCop::ConfigStore.new) }
+
+  # The runtime runs RuboCop against the process's own streams, and a cop that
+  # fails reports itself on stderr.
+  include_context 'mock console output'
+
+  # Inline code skips the newline conversion `File.write` does on Windows, so
+  # it needs native line endings to satisfy `Layout/EndOfLine`.
+  let(:newline) { RuboCop::Platform.windows? ? "\r\n" : "\n" }
+  let(:source) { "# frozen_string_literal: true\n\nputs ?a, \"b\"\n".gsub("\n", newline) }
+
+  before { make_cop_fail(RuboCop::Cop::Style::CharacterLiteral, :on_str, NoMethodError, 'boom') }
+
+  it 'raises cop errors by default' do
+    expect { runtime.raw_offenses('example.rb', source) }
+      .to raise_error(RuboCop::ErrorWithAnalyzedFileLocation)
+  end
+
+  context 'when cop errors are collected' do
+    before { runtime.raise_cop_error = false }
+
+    it 'still reports the cops that did not crash' do
+      offenses = runtime.raw_offenses('example.rb', source)
+
+      expect(offenses.map(&:cop_name)).to eq(['Style/StringLiterals'])
+      expect(runtime.errors).to all(include('Style/CharacterLiteral'))
+    end
+
+    it 'still applies the corrections of the cops that did not crash' do
+      corrected = runtime.format('example.rb', source, command: 'rubocop.formatAutocorrects')
+
+      # Line by line, since on Windows the corrected source comes back with
+      # plain newlines whatever the input used.
+      expect(corrected.lines(chomp: true))
+        .to eq(['# frozen_string_literal: true', '', "puts ?a, 'b'"])
+      expect(runtime.errors).not_to be_empty
+    end
+  end
+end

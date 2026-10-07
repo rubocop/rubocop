@@ -17,7 +17,7 @@ module RuboCop
     # Runtime for Language Server Protocol of RuboCop.
     # @api private
     class Runtime
-      attr_writer :safe_autocorrect, :lint_mode, :layout_mode
+      attr_writer :safe_autocorrect, :lint_mode, :layout_mode, :raise_cop_error
 
       def initialize(config_store)
         RuboCop::LSP.enable
@@ -27,6 +27,7 @@ module RuboCop
         @safe_autocorrect = true
         @lint_mode = false
         @layout_mode = false
+        @raise_cop_error = true
       end
 
       def format(path, text, command:, prism_result: nil)
@@ -36,7 +37,9 @@ module RuboCop
                              @safe_autocorrect
                            end
 
-        formatting_options = { autocorrect: true, safe_autocorrect: safe_autocorrect }
+        formatting_options = {
+          autocorrect: true, safe_autocorrect: safe_autocorrect, raise_cop_error: @raise_cop_error
+        }
         formatting_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         @runner.run(path, text, formatting_options, prism_result: prism_result)
@@ -59,11 +62,21 @@ module RuboCop
       # The offenses before they are converted to LSP diagnostics, for callers
       # that do not speak LSP.
       def raw_offenses(path, text, prism_result: nil)
-        diagnostic_options = {}
+        diagnostic_options = { raise_cop_error: @raise_cop_error }
         diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         @runner.run(path, text, diagnostic_options, prism_result: prism_result)
         @runner.offenses
+      end
+
+      # What went wrong in the last run. Cop errors only end up here when
+      # `raise_cop_error` is off; otherwise they are raised.
+      def errors
+        @runner.errors
+      end
+
+      def warnings
+        @runner.warnings
       end
 
       private
