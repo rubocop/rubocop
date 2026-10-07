@@ -249,6 +249,23 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
              'c'
       RUBY
     end
+
+    it 'corrects consecutive misaligned parts in a single pass' do
+      expect_offense(<<~'RUBY')
+        puts 'a' \
+             'b' \
+        'c' \
+        ^^^ Align parts of a string concatenated with backslash.
+        'd'
+      RUBY
+
+      expect_correction(<<~'RUBY', loop: false)
+        puts 'a' \
+             'b' \
+             'c' \
+             'd'
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is indented' do
@@ -260,6 +277,25 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
       expect_no_offenses(<<~'RUBY')
         puts 'a' \
           'b'
+      RUBY
+    end
+
+    it 'corrects consecutive misaligned parts in a single pass' do
+      expect_offense(<<~'RUBY')
+        x = 'a' \
+          'b' \
+        'c' \
+        ^^^ Align parts of a string concatenated with backslash.
+        'd' \
+        'e'
+      RUBY
+
+      expect_correction(<<~'RUBY', loop: false)
+        x = 'a' \
+          'b' \
+          'c' \
+          'd' \
+          'e'
       RUBY
     end
 
