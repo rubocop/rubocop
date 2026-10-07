@@ -179,11 +179,11 @@ module RuboCop
         end
 
         def single_quoted?(str_node)
-          str_node.source.start_with?("'")
+          str_node.loc.begin && str_node.source.start_with?("'")
         end
 
         def double_quoted?(str_node)
-          str_node.source.start_with?('"')
+          str_node.loc.begin && str_node.source.start_with?('"')
         end
 
         def mode
