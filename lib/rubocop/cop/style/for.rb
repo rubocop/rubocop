@@ -75,7 +75,7 @@ module RuboCop
 
           if style == :for
             return unless node.receiver
-            return if rescue_or_ensure_body?(node)
+            return if rescue_or_ensure_body?(node) || do_end_block_in_collection?(node)
 
             add_offense(node, message: PREFER_FOR) do |corrector|
               EachToForCorrector.new(node).call(corrector)
@@ -97,6 +97,10 @@ module RuboCop
 
         def rescue_or_ensure_body?(node)
           node.body&.type?(:rescue, :ensure)
+        end
+
+        def do_end_block_in_collection?(node)
+          node.receiver.each_node(:any_block).any?(&:keywords?)
         end
       end
     end

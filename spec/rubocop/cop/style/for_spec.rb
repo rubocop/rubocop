@@ -427,6 +427,31 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'does not register an offense when the receiver has a `do`...`end` block' do
+      expect_no_offenses(<<~RUBY)
+        foo.select do |x|
+          x.bar?
+        end.each do |n|
+          puts n
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the receiver has a brace block' do
+      expect_offense(<<~RUBY)
+        foo.select { |x| x.bar? }.each do |n|
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          puts n
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for n in foo.select { |x| x.bar? } do
+          puts n
+        end
+      RUBY
+    end
+
     it 'accepts for' do
       expect_no_offenses(<<~RUBY)
         def func
