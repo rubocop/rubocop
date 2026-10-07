@@ -168,10 +168,10 @@ module RuboCop
       formatter_set.started(files)
       formatters_started = true
       file_iterator(files) do |file|
-        offenses = process_file(file)
+        offenses, problems = collect_problems { process_file(file) }
         succeeded = offenses.none? { |o| considered_failure?(o) && offense_displayed?(o) }
 
-        [offenses, succeeded]
+        [offenses, succeeded, problems]
       end
     ensure
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
@@ -189,9 +189,9 @@ module RuboCop
       all_passed = true
 
       on_start = ->(file, _index) { file_started(file) }
-      on_finish = lambda do |file, index, (offenses, passed)|
+      on_finish = lambda do |file, index, (offenses, passed, problems)|
         all_passed &&= passed
-        finished_report(file, index, offenses)
+        finished_report(file, index, offenses, problems)
       end
 
       if run_in_parallel?(files)
@@ -205,8 +205,8 @@ module RuboCop
       all_passed
     end
 
-    def finished_report(file, index, offenses)
-      @report_queue[index] = [file, offenses]
+    def finished_report(file, index, offenses, problems)
+      @report_queue[index] = [file, offenses, problems]
       @next_index_to_report ||= 0
       while @report_queue.key?(@next_index_to_report)
         process_report_queue_entry(@next_index_to_report)
@@ -215,7 +215,9 @@ module RuboCop
     end
 
     def process_report_queue_entry(index)
-      file, offenses = @report_queue.delete(index)
+      file, offenses, (errors, warnings) = @report_queue.delete(index)
+      @errors.concat(errors)
+      @warnings.concat(warnings)
       file_finished(file, offenses)
     end
 
@@ -277,6 +279,21 @@ module RuboCop
 
     def list_files(paths)
       paths.each { |path| puts PathUtil.relative_path(path) }
+    end
+
+    # Keeps the errors and warnings a file causes apart from the rest of the
+    # run's. A parallel worker inspects files in a copy of the runner that is
+    # thrown away, so they have to travel back with the file's offenses.
+    def collect_problems
+      errors = @errors
+      warnings = @warnings
+      @errors = []
+      @warnings = []
+
+      [yield, [@errors, @warnings]]
+    ensure
+      @errors = errors
+      @warnings = warnings
     end
 
     def process_file(file)
@@ -399,7 +416,8 @@ module RuboCop
       return unless cache
       # Caching results when a cop has crashed would prevent the crash in the
       # next run, since the cop would not be called then. We want crashes to
-      # show up the same in each run.
+      # show up the same in each run. Only this file's errors and warnings are
+      # visible here, see `collect_problems`.
       return if errors.any? || warnings.any?
 
       cache.save(offenses)
