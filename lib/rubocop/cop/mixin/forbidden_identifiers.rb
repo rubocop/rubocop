@@ -7,9 +7,9 @@ module RuboCop
       SIGILS = '@$' # if a variable starts with a sigil it will be removed
 
       def forbidden_identifier?(name)
-        name = name.to_s.delete(SIGILS)
+        return false if forbidden_identifiers.empty?
 
-        forbidden_identifiers.any? && forbidden_identifiers.include?(name)
+        forbidden_identifiers.include?(name.to_s.delete(SIGILS))
       end
 
       def forbidden_identifiers

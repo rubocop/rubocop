@@ -52,7 +52,8 @@ module RuboCop
         end
 
         def correct_case_delimiters?(node)
-          delimiter_string(node) == correct_delimiters(delimiter_string(node))
+          delimiters = delimiter_string(node)
+          delimiters == correct_delimiters(delimiters)
         end
 
         def correct_delimiters(source)
