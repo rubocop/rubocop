@@ -1330,6 +1330,44 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
+    context 'when the reparse verification is skipped for an oversized scope' do
+      before { stub_const('RuboCop::Cop::ReparsedEquivalence::MAX_VERIFICATION_FRAGMENT_SIZE', 0) }
+
+      it 'accepts parens when a `do` block follows the closing parenthesis on its own line' do
+        expect_no_offenses(<<~RUBY)
+          Foo = Struct.new(
+            :bar, :baz
+          ) do
+            def qux
+            end
+          end
+        RUBY
+      end
+
+      it 'accepts parens when a modifier follows the closing parenthesis on its own line' do
+        expect_no_offenses(<<~RUBY)
+          do_something(
+            :bar, :baz
+          ) if qux
+        RUBY
+      end
+
+      it 'registers an offense when only a comment follows the closing parenthesis on its own line' do
+        expect_offense(<<~RUBY)
+          do_something(
+                      ^ Omit parentheses for method calls with arguments.
+            :bar, :baz
+          ) # comment
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something \\
+            :bar, :baz
+           # comment
+        RUBY
+      end
+    end
+
     context 'allowing parens in multi-line calls' do
       let(:cop_config) do
         {
