@@ -31,14 +31,8 @@ module RuboCop
             dup_arguments = arguments.dup
             dup_arguments.delete(config_node)
 
-            corrector.replace(offense_range(arguments), dup_arguments.map(&:source).join(', '))
+            corrector.replace(arguments_range(node), dup_arguments.map(&:source).join(', '))
           end
-        end
-
-        private
-
-        def offense_range(arguments)
-          range_between(arguments.first.source_range.begin_pos, arguments.last.source_range.end_pos)
         end
       end
     end

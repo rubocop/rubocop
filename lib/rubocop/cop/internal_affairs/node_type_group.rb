@@ -46,13 +46,6 @@ module RuboCop
 
         private
 
-        def arguments_range(node)
-          range_between(
-            node.first_argument.source_range.begin_pos,
-            node.last_argument.source_range.end_pos
-          )
-        end
-
         def group_satisfied?(group_types, symbol_args)
           group_types.all? { |type| symbol_args.any? { |arg| arg.value == type } }
         end
