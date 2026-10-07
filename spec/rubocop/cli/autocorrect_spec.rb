@@ -2273,6 +2273,64 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       RUBY
   end
 
+  it 'corrects `Layout/ClassStructure` with `Layout/EmptyLinesAroundClassBody`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo
+
+        def self.bar
+        end
+        BAZ = 1
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Layout/ClassStructure,Layout/EmptyLinesAroundClassBody']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo
+        BAZ = 1
+        def self.bar
+        end
+      end
+    RUBY
+  end
+
+  it 'corrects `Layout/ClassStructure` with `Layout/EmptyLines`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo
+        def self.bar
+        end
+
+
+        def baz
+        end
+        def self.qux
+        end
+      end
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only', 'Layout/ClassStructure,Layout/EmptyLines'])
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo
+        def self.bar
+        end
+
+        def self.qux
+        end
+        def baz
+        end
+      end
+    RUBY
+  end
+
   # A case where two cops, EmptyLinesAroundBody and EmptyLines, try to
   # remove the same line in autocorrect.
   it 'can correct two empty lines at end of class body' do
