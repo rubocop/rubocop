@@ -134,6 +134,14 @@ RSpec.describe RuboCop::ChangedFiles do
     expect(basenames).to eq(['modified.rb'])
   end
 
+  it 'keeps only the changed files among those it is given, in their order' do
+    write('lib/modified.rb', "# frozen_string_literal: true\n# changed\n")
+    write('lib/added.rb')
+    files = %w[lib/added.rb lib/untouched.rb lib/modified.rb].map { |path| File.expand_path(path) }
+
+    expect(changed_files.filter(files)).to eq([files[0], files[2]])
+  end
+
   it 'reports staged files' do
     write('lib/modified.rb', "# frozen_string_literal: true\n# changed\n")
     git('add', 'lib/modified.rb')

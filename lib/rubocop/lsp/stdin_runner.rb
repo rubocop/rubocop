@@ -40,6 +40,13 @@ module RuboCop
       end
 
       def run(path, contents, options, prism_result: nil)
+        # The cops mobilized for a configuration are cached, which only holds while
+        # every run asks for the same ones.
+        selection = options.values_at(:only, :except)
+        unless selection == @cop_selection
+          forget_mobilized_cops
+          @cop_selection = selection
+        end
         @options = options.merge(DEFAULT_RUBOCOP_OPTIONS)
         @options[:stdin] = contents
 

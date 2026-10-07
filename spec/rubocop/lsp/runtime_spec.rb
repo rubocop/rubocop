@@ -16,31 +16,44 @@ RSpec.describe RuboCop::LSP::Runtime, :isolated_environment, :lsp do
   let(:newline) { RuboCop::Platform.windows? ? "\r\n" : "\n" }
   let(:source) { "# frozen_string_literal: true\n\nputs ?a, \"b\"\n".gsub("\n", newline) }
 
-  before { make_cop_fail(RuboCop::Cop::Style::CharacterLiteral, :on_str, NoMethodError, 'boom') }
+  context 'when a cop crashes' do
+    before { make_cop_fail(RuboCop::Cop::Style::CharacterLiteral, :on_str, NoMethodError, 'boom') }
 
-  it 'raises cop errors by default' do
-    expect { runtime.raw_offenses('example.rb', source) }
-      .to raise_error(RuboCop::ErrorWithAnalyzedFileLocation)
+    it 'raises the error by default' do
+      expect { runtime.raw_offenses('example.rb', source) }
+        .to raise_error(RuboCop::ErrorWithAnalyzedFileLocation)
+    end
+
+    context 'when cop errors are collected' do
+      before { runtime.raise_cop_error = false }
+
+      it 'still reports the cops that did not crash' do
+        offenses = runtime.raw_offenses('example.rb', source)
+
+        expect(offenses.map(&:cop_name)).to eq(['Style/StringLiterals'])
+        expect(runtime.errors).to all(include('Style/CharacterLiteral'))
+      end
+
+      it 'still applies the corrections of the cops that did not crash' do
+        corrected = runtime.format('example.rb', source, command: 'rubocop.formatAutocorrects')
+
+        # Line by line, since on Windows the corrected source comes back with
+        # plain newlines whatever the input used.
+        expect(corrected.lines(chomp: true))
+          .to eq(['# frozen_string_literal: true', '', "puts ?a, 'b'"])
+        expect(runtime.errors).not_to be_empty
+      end
+    end
   end
 
-  context 'when cop errors are collected' do
-    before { runtime.raise_cop_error = false }
+  # The runner caches the cops it mobilizes, and the same runtime serves call
+  # after call, so a selection must not stick past the call that made it.
+  it 'runs the cops each call selects' do
+    cop_names = ->(**cops) { runtime.raw_offenses('example.rb', source, **cops).map(&:cop_name) }
 
-    it 'still reports the cops that did not crash' do
-      offenses = runtime.raw_offenses('example.rb', source)
-
-      expect(offenses.map(&:cop_name)).to eq(['Style/StringLiterals'])
-      expect(runtime.errors).to all(include('Style/CharacterLiteral'))
-    end
-
-    it 'still applies the corrections of the cops that did not crash' do
-      corrected = runtime.format('example.rb', source, command: 'rubocop.formatAutocorrects')
-
-      # Line by line, since on Windows the corrected source comes back with
-      # plain newlines whatever the input used.
-      expect(corrected.lines(chomp: true))
-        .to eq(['# frozen_string_literal: true', '', "puts ?a, 'b'"])
-      expect(runtime.errors).not_to be_empty
-    end
+    expect(cop_names.call(cops: { only: ['Style/StringLiterals'] })).to eq(['Style/StringLiterals'])
+    expect(cop_names.call).to contain_exactly('Style/CharacterLiteral', 'Style/StringLiterals')
+    expect(cop_names.call(cops: { except: ['Style/StringLiterals'] }))
+      .to eq(['Style/CharacterLiteral'])
   end
 end

@@ -53,6 +53,8 @@ Explain what cops do, the way xref:usage/cli_reference.adoc[`--explain`] does: t
 
 An inspected offense tells an agent what autocorrection will do with it. `correctable` says whether `rubocop_autocorrection` fixes it at all, and `correction.safe` whether that takes `safety: false`. An offense can carry a `correction` without being `correctable`: cops with `AutoCorrect: contextual`, such as `Lint/UselessAssignment`, are not corrected while code is being edited, since the variable may be about to be used. Their edits are still reported, so an agent that has finished editing can apply them itself. xref:formatters.adoc#corrections[Corrections] covers what to watch for when applying edits directly.
 
+Both `rubocop_inspection` and `rubocop_autocorrection` can narrow what they do, the way the matching command-line options do. `only` and `except` take lists of cop or department names, as xref:usage/cli_reference.adoc[`--only` and `--except`] do, so an agent can check just `Lint`, or apply a single cop's corrections. When checking files, `changed` sticks to the files git says changed, like `--changed`: `true` for changes since the last commit, or a revision to compare against, such as `main`.
+
 == Client Configuration
 
 For a list of tools that support MCP, see https://modelcontextprotocol.io/clients[MCP Clients].

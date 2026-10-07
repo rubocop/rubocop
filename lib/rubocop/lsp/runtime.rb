@@ -30,7 +30,7 @@ module RuboCop
         @raise_cop_error = true
       end
 
-      def format(path, text, command:, prism_result: nil)
+      def format(path, text, command:, prism_result: nil, cops: nil)
         safe_autocorrect = if command
                              command == 'rubocop.formatAutocorrects'
                            else
@@ -39,8 +39,7 @@ module RuboCop
 
         formatting_options = {
           autocorrect: true, safe_autocorrect: safe_autocorrect, raise_cop_error: @raise_cop_error
-        }
-        formatting_options[:only] = config_only_options if @lint_mode || @layout_mode
+        }.merge(cop_options(cops))
 
         @runner.run(path, text, formatting_options, prism_result: prism_result)
         @runner.formatted_source
@@ -61,9 +60,8 @@ module RuboCop
 
       # The offenses before they are converted to LSP diagnostics, for callers
       # that do not speak LSP.
-      def raw_offenses(path, text, prism_result: nil)
-        diagnostic_options = { raise_cop_error: @raise_cop_error }
-        diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
+      def raw_offenses(path, text, prism_result: nil, cops: nil)
+        diagnostic_options = { raise_cop_error: @raise_cop_error }.merge(cop_options(cops))
 
         @runner.run(path, text, diagnostic_options, prism_result: prism_result)
         @runner.offenses
@@ -89,6 +87,14 @@ module RuboCop
           RuboCop::Cop::Registry.global.find_by_cop_name(offense.cop_name),
           processed_source
         ).to_lsp_diagnostic(config)
+      end
+
+      # The cops to run: the caller's `only` and `except`, or the departments a
+      # lint or layout mode limits the server to.
+      def cop_options(cops)
+        only, except = cops&.values_at(:only, :except)
+        only ||= config_only_options if @lint_mode || @layout_mode
+        { only: only, except: except }.compact
       end
 
       def config_only_options
