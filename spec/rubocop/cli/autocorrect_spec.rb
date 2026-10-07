@@ -1087,6 +1087,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineHashBraceLayout` with `Style/RedundantDoubleSplatHashBraces`' do
+    create_file('example.rb', <<~RUBY)
+      do_something **{ foo: 1,
+        bar: 2
+      }
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only', 'Layout/MultilineHashBraceLayout,Style/RedundantDoubleSplatHashBraces'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something foo: 1,
+        bar: 2
+    RUBY
+  end
+
   it 'corrects `Style/SoleNestedConditional` with `Style/InverseMethods` and `Style/IfUnlessModifier`' do
     source = <<~RUBY
       unless foo.to_s == 'foo'
