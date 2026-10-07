@@ -822,6 +822,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/FirstMethodArgumentLineBreak` with `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/FirstMethodArgumentLineBreak:
+        Enabled: true
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      do_something(:foo,
+                   bar: baz)
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only',
+       'Layout/FirstMethodArgumentLineBreak,Style/MethodCallWithArgsParentheses']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      do_something \\
+      :foo,
+                   bar: baz
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/AndOr`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

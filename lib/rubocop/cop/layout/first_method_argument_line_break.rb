@@ -75,6 +75,12 @@ module RuboCop
 
         MSG = 'Add a line break before the first argument of a multi-line method argument list.'
 
+        # A line break inserted after `(` while `Style/MethodCallWithArgsParentheses` removes
+        # the parentheses in the same pass leaves the method name alone on its line.
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_send(node)
           return if allowed_method?(node.method_name)
 
