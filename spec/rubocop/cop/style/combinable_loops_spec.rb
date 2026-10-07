@@ -60,6 +60,61 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'registers an offense when the loop is followed by a block with a different method' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each { |item| bar(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        items.reject! { |item| baz(item) }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        bar(item)  end
+        items.reject! { |item| baz(item) }
+      RUBY
+    end
+
+    it 'registers an offense when the loop is followed by the same loop with different block variable names' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each { |item| bar(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        items.each { |x| baz(x) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        bar(item)  end
+        items.each { |x| baz(x) }
+      RUBY
+    end
+
+    it 'registers an offense when the loop is followed by the same loop with an empty body' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each { |item| bar(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        items.each { |item| }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        bar(item)  end
+        items.each { |item| }
+      RUBY
+    end
+
     it 'registers an offense and does not correct when looping over the same data with different block variable names' do
       expect_offense(<<~RUBY)
         items.each { |item| foo(item) }
