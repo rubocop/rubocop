@@ -42,6 +42,44 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks, :config 
     end
   end
 
+  context 'when arguments follow a heredoc opener on the same line' do
+    it 'registers an offense only for the arguments before the heredoc' do
+      expect_offense(<<~RUBY)
+        taz("abc",
+        "foo", <<~TEXT, "bar")
+               ^^^^^^^ Each argument in a multi-line method call must start on a separate line.
+          text
+        TEXT
+      RUBY
+
+      expect_correction(<<~RUBY)
+        taz("abc",
+        "foo",#{trailing_whitespace}
+        <<~TEXT, "bar")
+          text
+        TEXT
+      RUBY
+    end
+
+    it 'registers an offense for an argument after a multiline argument whose heredoc opens on an earlier line' do
+      expect_offense(<<~RUBY)
+        foo(bar(<<~TEXT,
+          text
+        TEXT
+          1), baz)
+              ^^^ Each argument in a multi-line method call must start on a separate line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(bar(<<~TEXT,
+          text
+        TEXT
+          1),#{trailing_whitespace}
+        baz)
+      RUBY
+    end
+  end
+
   context 'when many arguments are on multiple lines, two on same line' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)

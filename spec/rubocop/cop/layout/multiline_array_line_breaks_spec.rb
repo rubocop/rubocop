@@ -35,6 +35,17 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayLineBreaks, :config do
     end
   end
 
+  context 'when an element follows a heredoc opener on the same line' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        [1,
+          <<~TEXT, 2]
+            text
+          TEXT
+      RUBY
+    end
+  end
+
   context 'when nested arrays' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)

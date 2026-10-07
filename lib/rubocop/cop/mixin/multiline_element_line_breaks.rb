@@ -11,8 +11,10 @@ module RuboCop
         return if all_on_same_line?(children, ignore_last: ignore_last)
 
         last_seen_line = -1
-        children.each do |child|
+        children.each_with_index do |child, index|
           if last_seen_line >= child.first_line
+            next if heredoc_opened_before?(children.first(index), child)
+
             add_offense(child) { |corrector| EmptyLineCorrector.insert_before(corrector, child) }
           else
             last_seen_line = child.last_line
@@ -26,6 +28,14 @@ module RuboCop
         return same_line?(nodes.first, nodes.last) if ignore_last
 
         nodes.first.first_line == nodes.last.last_line
+      end
+
+      def heredoc_opened_before?(previous_children, child)
+        previous_children.any? do |previous|
+          previous.each_node(:any_str).any? do |str|
+            str.heredoc? && same_line?(str, child)
+          end
+        end
       end
     end
   end
