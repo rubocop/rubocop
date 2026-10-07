@@ -499,6 +499,8 @@ module RuboCop
           end
 
           def offensive_block_forwarding?
+            return false if @send_node.block_literal?
+
             @block_arg ? forwarded_block_arg : allow_offense_for_no_block?
           end
 

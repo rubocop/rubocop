@@ -2741,6 +2741,30 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
   end
 
   context 'TargetRubyVersion >= 3.4', :ruby34 do
+    context 'AllowOnlyRestArgument: false' do
+      let(:cop_config) { { 'AllowOnlyRestArgument' => false } }
+
+      it 'registers an offense but does not use `...` when the call has a block literal' do
+        expect_offense(<<~RUBY)
+          def foo(*args, **kwargs)
+                         ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+                  ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            bar(*args, **kwargs) do |x|
+                       ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(*, **)
+            bar(*, **) do |x|
+            end
+          end
+        RUBY
+      end
+    end
+
     it 'registers an offense when rest arguments forwarding to a method in numbered block' do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
