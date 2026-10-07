@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def on_if(node)
-          traverse_condition(node.condition) do |cond|
+          node.condition.each_node(:send) do |cond|
             add_offense(cond, message: MSG_FOR_CONDITIONAL_USE) if style_detected_api_used?(cond)
           end
         end
@@ -133,12 +133,6 @@ module RuboCop
             negative_style_detected_method_check(node) ||
             no_acceptable_style_check(node) ||
             style_detected_check(node)
-        end
-
-        def traverse_condition(condition, &block)
-          yield condition if condition.send_type?
-
-          condition.each_child_node { |child| traverse_condition(child, &block) }
         end
       end
     end
