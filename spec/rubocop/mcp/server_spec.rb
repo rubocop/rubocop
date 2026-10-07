@@ -86,7 +86,8 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
               properties: {
                 max_offenses_per_cop: { type: 'integer', minimum: 1 },
                 path: { type: 'string' },
-                source_code: { type: 'string' }
+                source_code: { type: 'string' },
+                **RuboCop::MCP::Scope::PROPERTIES
               },
               type: 'object'
             },
@@ -108,7 +109,8 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
               properties: {
                 path: { type: 'string' },
                 safety: { type: 'boolean' },
-                source_code: { type: 'string' }
+                source_code: { type: 'string' },
+                **RuboCop::MCP::Scope::PROPERTIES
               },
               required: ['safety'], type: 'object'
             },
@@ -730,6 +732,115 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
         [{ path: 'a.rb', offenses: [], warnings: ['odd configuration (from file: a.rb)'] }]
       )
       expect(parsed_result[:summary]).to include(warning_count: 1)
+    end
+  end
+
+  context 'with a scope' do
+    let(:source) { "# frozen_string_literal: true\n\nputs ?a, \"b\"\n" }
+    let(:requests) do
+      [{
+        jsonrpc: '2.0', id: '42', method: 'tools/call',
+        params: { name: tool, arguments: arguments }
+      }]
+    end
+    let(:tool) { 'rubocop_inspection' }
+    let(:cop_names) do
+      parsed_result[:files].flat_map { |file| file[:offenses].map { |offense| offense[:cop_name] } }
+    end
+
+    before { File.write('a.rb', source) }
+
+    context 'with `only`' do
+      let(:arguments) { { path: 'a.rb', only: ['Style/StringLiterals'] } }
+
+      it 'runs only those cops' do
+        expect(cop_names).to eq(['Style/StringLiterals'])
+      end
+    end
+
+    context 'with `except`' do
+      let(:arguments) { { path: 'a.rb', except: ['Style'] } }
+
+      it 'runs every cop but those' do
+        expect(cop_names).to be_empty
+      end
+    end
+
+    context 'with a cop name that leaves out the department' do
+      let(:arguments) { { path: 'a.rb', only: ['StringLiterals'] } }
+
+      it 'finds the cop, as `--only` does' do
+        expect(cop_names).to eq(['Style/StringLiterals'])
+      end
+    end
+
+    context 'with an empty list' do
+      let(:arguments) { { path: 'a.rb', only: [] } }
+
+      it 'runs every cop rather than none' do
+        expect(cop_names).to contain_exactly('Style/CharacterLiteral', 'Style/StringLiterals')
+      end
+    end
+
+    context 'with a cop name that does not exist' do
+      let(:arguments) { { path: 'a.rb', only: ['Style/StringLiteral'] } }
+
+      it 'reports it with suggestions' do
+        expect(response[:result][:isError]).to be true
+        expect(response[:result][:content].first[:text]).to include('Style/StringLiterals')
+      end
+    end
+
+    context 'with a selection the command line refuses' do
+      let(:arguments) { { path: 'a.rb', except: ['Lint/Syntax'] } }
+
+      it 'refuses it too' do
+        expect(response[:result][:isError]).to be true
+        expect(response[:result][:content].first[:text])
+          .to eq('Syntax checking cannot be turned off.')
+      end
+    end
+
+    context 'when autocorrecting with `only`' do
+      let(:tool) { 'rubocop_autocorrection' }
+      let(:arguments) { { path: 'a.rb', safety: true, only: ['Style/StringLiterals'] } }
+
+      it 'applies only those cops\' corrections' do
+        expect(parsed_result[:summary][:corrected_file_count]).to eq(1)
+        expect(File.read('a.rb')).to eq("# frozen_string_literal: true\n\nputs ?a, 'b'\n")
+      end
+    end
+
+    context 'with `changed`' do
+      let(:arguments) { { changed: true } }
+
+      def git(*args)
+        _stdout, stderr, status = Open3.capture3('git', *args)
+        raise "git #{args.join(' ')} failed: #{stderr}" unless status.success?
+      end
+
+      before do
+        git('init')
+        git('config', 'maintenance.auto', 'false')
+        git('add', 'a.rb')
+        git('-c', 'user.email=test@example.com', '-c', 'user.name=Test', 'commit', '-m', 'a')
+        File.write('b.rb', source)
+      end
+
+      it 'checks only the files git says changed' do
+        expect(parsed_result[:files].map { |file| file[:path] }).to eq(['b.rb'])
+        expect(parsed_result[:summary][:target_file_count]).to eq(1)
+      end
+    end
+
+    context 'with `changed` and inline source code' do
+      let(:arguments) { { source_code: source, changed: true } }
+
+      it 'refuses, since there are no files to choose from' do
+        expect(response[:result][:isError]).to be true
+        expect(response[:result][:content].first[:text])
+          .to eq('`changed` only applies when checking files.')
+      end
     end
   end
 

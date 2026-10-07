@@ -28,6 +28,7 @@ end
 require_relative '../lsp'
 require_relative '../lsp/runtime'
 require_relative 'explain_tool'
+require_relative 'scope'
 
 module RuboCop
   module MCP
@@ -79,8 +80,8 @@ module RuboCop
           idempotent_hint: true,
           read_only_hint: true,
           properties: { max_offenses_per_cop: { type: 'integer', minimum: 1 } }
-        ) do |path: nil, source_code: nil, max_offenses_per_cop: nil|
-          run_inspection(path, source_code, max_offenses_per_cop)
+        ) do |scope:, path: nil, source_code: nil, max_offenses_per_cop: nil|
+          run_inspection(path, source_code, max_offenses_per_cop, scope)
         end
       end
 
@@ -96,21 +97,24 @@ module RuboCop
           read_only_hint: false,
           properties: { safety: { type: 'boolean' } },
           required: ['safety']
-        ) do |path: nil, source_code: nil, safety: true|
-          run_autocorrection(path, source_code, safety)
+        ) do |scope:, path: nil, source_code: nil, safety: true|
+          run_autocorrection(path, source_code, safety, scope)
         end
       end
 
       # A limit counts across the files of one request, so every request starts
       # from zero.
-      def run_inspection(path, source_code, max_offenses_per_cop)
+      def run_inspection(path, source_code, max_offenses_per_cop, scope)
         limit = OffenseLimit.new(max_offenses_per_cop) if max_offenses_per_cop
         result =
           if source_code
             file = path || 'example.rb'
-            build_result([file], [inspect_source(file, source_code, limit)], filter_empty: true)
+            entry = inspect_source(file, source_code, limit, scope)
+            build_result([file], [entry], filter_empty: true)
           else
-            process_files(path, filter_empty: true) { |file, src| inspect_source(file, src, limit) }
+            process_files(path, scope, filter_empty: true) do |file, src|
+              inspect_source(file, src, limit, scope)
+            end
           end
         # The agent never sees stderr, so the summary says what the limit left out.
         unreported = limit&.elided_per_cop
@@ -118,27 +122,28 @@ module RuboCop
         result.to_json
       end
 
-      def inspect_source(file, source, limit)
-        offenses = @runtime.raw_offenses(file, source)
+      def inspect_source(file, source, limit, scope)
+        offenses = @runtime.raw_offenses(file, source, cops: scope.cop_options)
         offenses = limit.filter(offenses) if limit
         entry = @json_formatter.hash_for_file(file, offenses)
         entry.merge(problems_of_last_run(file, entry[:path]))
       end
 
-      def run_autocorrection(path, source_code, safety)
+      def run_autocorrection(path, source_code, safety, scope)
         command = safety ? 'rubocop.formatAutocorrects' : 'rubocop.formatAutocorrectsAll'
 
         if source_code
-          correct_inline(path, source_code, command)
+          correct_inline(path, source_code, command, scope)
         else
-          process_files(path) { |file, source| correct_file(file, source, command) }.to_json
+          process_files(path, scope) { |file, source| correct_file(file, source, command, scope) }
+            .to_json
         end
       end
 
       # Cops that keep undoing each other's corrections leave the file half
       # corrected, so it is left alone and the loop is reported instead.
-      def correct_file(file, source, command)
-        corrected = @runtime.format(file, source, command: command)
+      def correct_file(file, source, command, scope)
+        corrected = @runtime.format(file, source, command: command, cops: scope.cop_options)
         looped = @runtime.errors.any?(Runner::InfiniteCorrectionLoop)
         write_file(file, corrected) unless looped
 
@@ -149,9 +154,9 @@ module RuboCop
 
       # Corrected inline code comes back as plain text with nowhere to mention
       # a cop that crashed, so a crash fails the call instead of going unseen.
-      def correct_inline(path, source_code, command)
+      def correct_inline(path, source_code, command, scope)
         file = path || 'example.rb'
-        corrected = @runtime.format(file, source_code, command: command)
+        corrected = @runtime.format(file, source_code, command: command, cops: scope.cop_options)
         errors = problems_of_last_run(file, PathUtil.smart_path(file))[:errors]
         raise RuboCop::Error, errors.join("\n") if errors
 
@@ -177,9 +182,11 @@ module RuboCop
         Rainbow::StringUtils.uncolor(problem.to_s).sub(location, path)
       end
 
-      def process_files(path, filter_empty: false)
+      def process_files(path, scope, filter_empty: false)
         target_finder = RuboCop::TargetFinder.new(@config_store, @options)
-        target_files = target_finder.find(path ? [path] : [], :only_recognized_file_types)
+        target_files = scope.select_files(
+          target_finder.find(path ? [path] : [], :only_recognized_file_types)
+        )
         all_files = target_files.map { |file| yield(file, read_file(file)) }
 
         build_result(target_files, all_files, filter_empty: filter_empty)
@@ -249,7 +256,7 @@ module RuboCop
             properties: {
               path: { type: 'string' },
               source_code: { type: 'string' }
-            }.merge(properties),
+            }.merge(properties, Scope::PROPERTIES),
             required: required
           }.compact,
           annotations: {
@@ -263,10 +270,14 @@ module RuboCop
           # Taking any keywords makes the gem pass a `server_context` as well.
           # Each tool's own block names the arguments it accepts.
           arguments.delete(:server_context)
-          result = yield(**arguments)
+          selection = Scope::PROPERTIES.keys.to_h { |key| [key, arguments.delete(key)] }
+          scope = Scope.new(inline: !arguments[:source_code].nil?, **selection)
+          result = yield(**arguments, scope: scope)
 
           ::MCP::Tool::Response.new([{ type: 'text', text: result }])
-        rescue RuboCop::Error => e
+        rescue RuboCop::Error, IncorrectCopNameError => e
+          # The runner raises `IncorrectCopNameError` for a name in `only` or
+          # `except` that it does not know, with suggestions.
           ::MCP::Tool::Response.new([{ type: 'text', text: e.message }], error: true)
         end
       end

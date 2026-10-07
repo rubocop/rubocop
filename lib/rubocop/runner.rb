@@ -111,9 +111,7 @@ module RuboCop
     def only_changed(target_files)
       return target_files unless @options[:changed]
 
-      changed = ChangedFiles.new(@options[:changed]).paths
-
-      target_files.select { |file| changed.include?(file) }.freeze
+      ChangedFiles.new(@options[:changed]).filter(target_files).freeze
     end
 
     def find_target_files(paths)
@@ -597,6 +595,12 @@ module RuboCop
       end
     end
 
+    # Lets a runner that is reused from run to run pick up a different `--only`
+    # or `--except`.
+    def forget_mobilized_cops
+      @mobilized_cop_classes = nil
+    end
+
     def mobilize_cop_badge?(badge, config)
       return false if badge.department == :Test
       return false if badge.match_name?(@options[:except])
@@ -613,7 +617,7 @@ module RuboCop
       %i[only except].each do |option|
         next unless @options[option]
 
-        @options[option].map! do |cop_name|
+        @options[option] = @options[option].map do |cop_name|
           Cop::Registry.qualified_cop_name(cop_name, "--#{option} option")
         end
       end

@@ -29,6 +29,12 @@ module RuboCop
       (modified_paths + untracked_paths).to_set { |path| File.expand_path(path, root) }
     end
 
+    # @return [Array<String>] the files among these that changed
+    def filter(files)
+      changed = paths
+      files.select { |file| changed.include?(file) }
+    end
+
     private
 
     def repository_root
