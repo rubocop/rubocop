@@ -92,10 +92,10 @@ module RuboCop
         @offenses = offenses
       end
 
-      def do_inspection_loop(file)
-        source, offenses = super
-        @processed_source = source
-        [source, offenses]
+      def do_inspection_loop(file, source = nil)
+        processed_source, offenses = super
+        @processed_source = processed_source
+        [processed_source, offenses]
       end
     end
   end
