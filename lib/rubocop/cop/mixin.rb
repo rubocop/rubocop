@@ -38,6 +38,7 @@ module RuboCop
     autoload :FirstElementLineBreak, "#{__dir__}/mixin/first_element_line_break"
     autoload :FrozenStringLiteral, "#{__dir__}/mixin/frozen_string_literal"
     autoload :GemDeclaration, "#{__dir__}/mixin/gem_declaration"
+    autoload :GemVersionSpecification, "#{__dir__}/mixin/gem_version_specification"
     autoload :GemspecHelp, "#{__dir__}/mixin/gemspec_help"
     autoload :HashAlignmentStyles, "#{__dir__}/mixin/hash_alignment_styles"
     autoload :HashSubset, "#{__dir__}/mixin/hash_subset"
