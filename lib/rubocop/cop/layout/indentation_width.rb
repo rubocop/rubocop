@@ -82,7 +82,7 @@ module RuboCop
 
         # @!method access_modifier?(node)
         def_node_matcher :access_modifier?, <<~PATTERN
-          [(send ...) access_modifier?]
+          [(send ...) bare_access_modifier?]
         PATTERN
 
         def on_rescue(node)
@@ -250,7 +250,7 @@ module RuboCop
 
         def check_members_for_normal_style(base, members)
           members.first.children.each do |member|
-            next if member.send_type? && member.access_modifier?
+            next if member.send_type? && member.bare_access_modifier?
 
             check_indentation(base, member)
           end

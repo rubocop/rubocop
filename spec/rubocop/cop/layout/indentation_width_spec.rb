@@ -1753,6 +1753,26 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
             end
           RUBY
         end
+
+        it 'registers an offense for an unindented inline access modifier' do
+          expect_offense(<<~RUBY)
+            class Test
+            private def foo
+            ^{} Use 2 (not 0) spaces for indentation.
+            end
+            alias bar foo
+            ^{} Use 2 (not 0) spaces for indentation.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              private def foo
+              end
+              alias bar foo
+            end
+          RUBY
+        end
       end
 
       context 'when consistency style is indented_internal_methods' do
