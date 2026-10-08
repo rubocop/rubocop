@@ -234,6 +234,15 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       }
     end
 
+    it 'does not register an offense when a body line matches the corrected delimiter' do
+      expect_no_offenses(<<~RUBY)
+        module_eval(<<~End)
+          def foo
+          end
+        End
+      RUBY
+    end
+
     context 'with an interpolated heredoc' do
       it 'does not register an offense with a lowercase delimiter' do
         expect_no_offenses(<<~RUBY)
