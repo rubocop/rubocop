@@ -40,6 +40,8 @@ module RuboCop
       class ClassLength < Base
         include CodeLength
 
+        LABEL = 'Class'
+
         def on_class(node)
           check_code_length(node)
         end
@@ -60,8 +62,8 @@ module RuboCop
 
         private
 
-        def message(length, max_length)
-          format('Class has too many lines. [%<length>d/%<max>d]', length: length, max: max_length)
+        def cop_label
+          LABEL
         end
 
         def find_expression_within_parent(parent)

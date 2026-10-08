@@ -109,12 +109,6 @@ module RuboCop
           end
         end
 
-        def match_block_variable_name?(receiver_name)
-          gem_specification(processed_source.ast) do |block_variable_name|
-            return block_variable_name == receiver_name
-          end
-        end
-
         def add_dependency_method?(method_name)
           ADD_DEPENDENCY_METHODS.include?(method_name)
         end
