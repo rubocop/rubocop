@@ -21,7 +21,7 @@ If you use Bundler, add the following to your `Gemfile`:
 
 [source,ruby]
 ----
-gem 'mcp', '~> 0.6'
+gem 'mcp'
 ----
 
 Then run:
