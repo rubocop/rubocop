@@ -152,7 +152,9 @@ module RuboCop
           # making autocorrection ping-pong between the two forms.
           return if style_for_kind(node.body.type) == :nested
           return unless compactible_namespace?(node)
+          return if node.each_ancestor(:class, :module).any? { |ancestor| ignored_node?(ancestor) }
 
+          ignore_node(node)
           compact_node(corrector, node)
           remove_end(corrector, node.body)
           unindent(corrector, node)
