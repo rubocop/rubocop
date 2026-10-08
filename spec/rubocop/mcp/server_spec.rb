@@ -574,6 +574,20 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
 
       expect(File.read(file_path)).to eq("'a'\n")
     end
+
+    context 'when the file already holds the corrected code' do
+      let(:modified_at) { Time.new(2020, 1, 1) }
+
+      before do
+        File.write(file_path, "'a'\n", mode: 'wb')
+        File.utime(modified_at, modified_at, file_path)
+      end
+
+      it 'leaves it untouched' do
+        expect(response[:result][:content]).to eq([{ text: "'a'\n", type: 'text' }])
+        expect(File.mtime(file_path)).to eq(modified_at)
+      end
+    end
   end
 
   describe 'tools/call to autocorrection (unsafe)' do
@@ -659,6 +673,21 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       expect(parsed_result[:files]).not_to be_empty
       expect(parsed_result[:summary][:target_file_count]).to eq(1)
       expect(File.read(file_path)).to include("'a'")
+    end
+
+    context 'with a file that has nothing to correct' do
+      let(:clean_file_path) { 'clean.rb' }
+      let(:modified_at) { Time.new(2020, 1, 1) }
+
+      before do
+        File.write(clean_file_path, "# frozen_string_literal: true\n\nputs 'a'\n")
+        File.utime(modified_at, modified_at, clean_file_path)
+      end
+
+      it 'leaves it untouched' do
+        expect(parsed_result[:summary]).to include(target_file_count: 2, corrected_file_count: 1)
+        expect(File.mtime(clean_file_path)).to eq(modified_at)
+      end
     end
   end
 

@@ -141,15 +141,16 @@ module RuboCop
       end
 
       # Cops that keep undoing each other's corrections leave the file half
-      # corrected, so it is left alone and the loop is reported instead.
+      # corrected, so it is left alone and the loop is reported instead. A file
+      # with nothing to correct is left alone too, so its modification time
+      # doesn't tell editors and agents it changed.
       def correct_file(file, source, command, scope)
         corrected = @runtime.format(file, source, command: command, cops: scope.cop_options)
-        looped = @runtime.errors.any?(Runner::InfiniteCorrectionLoop)
-        write_file(file, corrected) unless looped
+        changed = source != corrected && @runtime.errors.none?(Runner::InfiniteCorrectionLoop)
+        write_file(file, corrected) if changed
 
         path = PathUtil.relative_path(file)
-        { path: path, corrected: !looped && source != corrected }
-          .merge(problems_of_last_run(file, path))
+        { path: path, corrected: changed }.merge(problems_of_last_run(file, path))
       end
 
       # Corrected inline code comes back as plain text with nowhere to mention
@@ -160,8 +161,13 @@ module RuboCop
         errors = problems_of_last_run(file, PathUtil.smart_path(file))[:errors]
         raise RuboCop::Error, errors.join("\n") if errors
 
-        write_file(path, corrected) if path
+        write_file(path, corrected) if path && !already_written?(path, corrected)
         corrected
+      end
+
+      # Writing what a file already holds would only bump its modification time.
+      def already_written?(file, content)
+        File.file?(file) && File.binread(file) == content.b
       end
 
       # Collapsed the way `--format json` collapses them, which also folds the
