@@ -743,6 +743,34 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       RUBY
     end
 
+    it 'registers an offense only for the inner constant of a chained constant assignment' do
+      expect_offense(<<~RUBY)
+        FOO = BAR = 'baz'
+                    ^^^^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        FOO = BAR = 'baz'.freeze
+      RUBY
+    end
+
+    it 'does not register an offense for a chained local variable assignment' do
+      expect_no_offenses(<<~RUBY)
+        FOO = bar = []
+      RUBY
+    end
+
+    it 'registers an offense and corrects a parenthesized assignment' do
+      expect_offense(<<~RUBY)
+        FOO = (bar = [])
+              ^^^^^^^^^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        FOO = (bar = []).freeze
+      RUBY
+    end
+
     it_behaves_like 'string literal'
   end
 

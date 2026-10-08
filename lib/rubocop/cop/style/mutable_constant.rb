@@ -195,6 +195,7 @@ module RuboCop
         end
 
         def strict_check(value)
+          return if value.assignment?
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
@@ -302,7 +303,11 @@ module RuboCop
         end
 
         def parenthesized_immutable_value?(value)
-          value.begin_type? && value.children.one? && !strict_check(value.children.first)
+          return false if !value.begin_type? || !value.children.one?
+
+          inner = value.children.first
+
+          !inner.assignment? && !strict_check(inner)
         end
 
         def frozen_regexp_or_range_literals?(node)
