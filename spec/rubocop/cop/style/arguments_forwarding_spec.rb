@@ -2311,6 +2311,26 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense when the parentheses are omitted and the arguments go to different calls' do
+      expect_offense(<<~RUBY)
+        def foo *args, &block
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                       ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          bar(&block)
+              ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          baz(*args)
+              ^^^^^ Use anonymous positional arguments forwarding (`*`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*, &)
+          bar(&)
+          baz(*)
+        end
+      RUBY
+    end
+
     it 'registers an offense when forwarding anonymous arguments' do
       expect_offense(<<~RUBY)
         def foo(*, **, &)
