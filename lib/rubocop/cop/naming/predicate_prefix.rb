@@ -142,12 +142,6 @@ module RuboCop
           end
         end
 
-        def offending_prefixes_for(node, method_name)
-          predicate_prefixes.reject do |prefix|
-            allowed_method_name?(method_name, prefix) ||
-              (use_sorbet_sigs? && !sorbet_sig?(node, return_type: 'T::Boolean'))
-          end
-        end
         alias on_defs on_def
 
         def validate_config
@@ -161,6 +155,13 @@ module RuboCop
         end
 
         private
+
+        def offending_prefixes_for(node, method_name)
+          prefixes = predicate_prefixes.reject { |p| allowed_method_name?(method_name, p) }
+          return prefixes if prefixes.empty? || !use_sorbet_sigs?
+
+          sorbet_sig?(node, return_type: 'T::Boolean') ? prefixes : []
+        end
 
         # @!method sorbet_return_type(node)
         def_node_matcher :sorbet_return_type, <<~PATTERN
@@ -209,22 +210,6 @@ module RuboCop
 
         def method_definition_macro?(macro_name)
           cop_config['MethodDefinitionMacros'].include?(macro_name.to_s)
-        end
-
-        # When `AllCops/UseProjectIndex` is enabled, methods that override a
-        # method defined by an ancestor elsewhere in the project are not
-        # reported: renaming an override breaks the inherited contract.
-        def overrides_inherited_method?(node)
-          return false unless project_index
-          return false unless (namespace_node = node.each_ancestor(:class, :module).first)
-
-          declaration = resolve_constant_in_index(namespace_node.identifier)
-          return false unless declaration.is_a?(Rubydex::Namespace)
-
-          scope = node.defs_type? ? indexed_singleton_of(declaration) : declaration
-          !scope.nil? && inherited_index_member?(scope, "#{node.method_name}()")
-        rescue StandardError
-          false
         end
       end
     end

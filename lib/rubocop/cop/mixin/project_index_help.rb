@@ -119,6 +119,21 @@ module RuboCop
         end
       end
 
+      # Whether the `def`/`defs` node overrides a method defined by an ancestor
+      # of its enclosing class or module elsewhere in the project.
+      def overrides_inherited_method?(def_node)
+        return false unless project_index
+        return false unless (namespace_node = def_node.each_ancestor(:class, :module).first)
+
+        declaration = resolve_constant_in_index(namespace_node.identifier)
+        return false unless declaration.is_a?(Rubydex::Namespace)
+
+        scope = def_node.defs_type? ? indexed_singleton_of(declaration) : declaration
+        !scope.nil? && inherited_index_member?(scope, "#{def_node.method_name}()")
+      rescue StandardError
+        false
+      end
+
       # Whether every link of the declaration's ancestry is resolved in the
       # index: no definition of any ancestor has an unresolved superclass or
       # mixin reference. Unresolved links silently vanish from `ancestors`,

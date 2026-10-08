@@ -80,22 +80,6 @@ module RuboCop
             node.arguments.one? &&
             node.first_argument.arg_type?
         end
-
-        # When `AllCops/UseProjectIndex` is enabled, methods that override a
-        # method defined by an ancestor elsewhere in the project are not
-        # reported: renaming an override breaks the inherited contract.
-        def overrides_inherited_method?(node)
-          return false unless project_index
-          return false unless (namespace_node = node.each_ancestor(:class, :module).first)
-
-          declaration = resolve_constant_in_index(namespace_node.identifier)
-          return false unless declaration.is_a?(Rubydex::Namespace)
-
-          scope = node.defs_type? ? indexed_singleton_of(declaration) : declaration
-          !scope.nil? && inherited_index_member?(scope, "#{node.method_name}()")
-        rescue StandardError
-          false
-        end
       end
     end
   end
