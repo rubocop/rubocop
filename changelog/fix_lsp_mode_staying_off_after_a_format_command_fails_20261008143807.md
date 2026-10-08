@@ -1,0 +1,1 @@
+* [#15948](https://github.com/rubocop/rubocop/pull/15948): Fix the LSP server applying contextual corrections while editing for the rest of a session after a cop fails during a format command. ([@bbatsov][])
