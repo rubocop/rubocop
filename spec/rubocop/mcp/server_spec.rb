@@ -104,6 +104,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
+                dry_run: { type: 'boolean' },
                 max_offenses_per_cop: { type: 'integer', minimum: 1 },
                 path: { type: 'string' },
                 safety: { type: 'boolean' },
@@ -526,6 +527,20 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       end
     end
 
+    context 'with `dry_run`' do
+      let(:arguments) { { safety: true, dry_run: true } }
+
+      it 'writes nothing and shows the diff it would have applied' do
+        expect(parsed_result[:files]).to match([include(path: 'a.rb', corrected: true)])
+        # Line by line, since on Windows the file and the diff have CRLF.
+        expect(parsed_result[:files].first[:diff].lines(chomp: true)).to eq(
+          ['--- a/a.rb', '+++ b/a.rb', '@@ -1,2 +1,2 @@',
+           '-x = "a"', "+x = 'a'", ' puts [1].size == 0']
+        )
+        expect(File.read('a.rb')).to eq(source)
+      end
+    end
+
     context 'with an argument it does not take' do
       let(:arguments) { { safety: true, path: 'a.rb', fix_everything: true } }
 
@@ -637,6 +652,25 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       )
 
       expect(File.read(file_path)).to eq("'a'\n")
+    end
+
+    context 'with `dry_run`' do
+      let(:requests) do
+        [{
+          jsonrpc: '2.0', id: '42', method: 'tools/call',
+          params: {
+            name: 'rubocop_autocorrection',
+            arguments: { safety: true, source_code: '?a', path: file_path, dry_run: true }
+          }
+        }]
+      end
+
+      before { File.write(file_path, '?a') }
+
+      it 'returns the corrected code without writing it' do
+        expect(response[:result][:content]).to eq([{ text: "'a'\n", type: 'text' }])
+        expect(File.read(file_path)).to eq('?a')
+      end
     end
 
     context 'when the file already holds the corrected code' do

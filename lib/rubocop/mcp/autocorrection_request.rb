@@ -8,6 +8,7 @@ module RuboCop
     class AutocorrectionRequest
       PROPERTIES = {
         safety: { type: 'boolean' },
+        dry_run: { type: 'boolean' },
         max_offenses_per_cop: { type: 'integer', minimum: 1 }
       }.freeze
 
@@ -18,10 +19,16 @@ module RuboCop
 
       attr_reader :scope, :limit
 
-      def initialize(scope, safety: true, max_offenses_per_cop: DEFAULT_MAX_OFFENSES_PER_COP)
+      def initialize(scope, safety: true, dry_run: false,
+                     max_offenses_per_cop: DEFAULT_MAX_OFFENSES_PER_COP)
         @scope = scope
         @safety = safety
+        @dry_run = dry_run
         @limit = OffenseLimit.new(max_offenses_per_cop)
+      end
+
+      def dry_run?
+        @dry_run
       end
 
       # The options `LSP::Runtime#format` takes to apply the corrections
