@@ -194,6 +194,17 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
         RUBY
       end
     end
+
+    it 'registers an offense for an explicit element reference call' do
+      expect_offense(<<~RUBY)
+        hash.[](key)
+        ^^^^^^^^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        hash.fetch(key)
+      RUBY
+    end
   end
 
   context 'with EnforcedStyle: fetch and a key that is itself a lookup' do
