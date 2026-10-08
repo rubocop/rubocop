@@ -1326,6 +1326,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: compact` of `Style/ClassAndModuleChildren` with `Style/StructInheritance`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/ClassAndModuleChildren:
+        EnforcedStyle: compact
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      module Foo
+        class Bar < Struct.new(:baz)
+          def qux
+          end
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Style/ClassAndModuleChildren,Style/StructInheritance']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      Foo::Bar = Struct.new(:baz) do
+        def qux
+        end
+      end
+    RUBY
+  end
+
   it 'corrects `Style/GuardClause` with `Style/MissingElse`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/EmptyElse:
