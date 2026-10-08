@@ -20,7 +20,7 @@ module RuboCop
       def write(file, content)
         return if File.file?(file) && File.binread(file) == content.b
 
-        File.write(file, content)
+        Util.replace_file_contents(file, content)
       rescue Errno::EACCES
         raise RuboCop::Error, "Permission denied: #{file}"
       rescue Errno::ENOSPC

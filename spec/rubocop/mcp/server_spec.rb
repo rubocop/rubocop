@@ -1127,7 +1127,11 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
 
     before do
       File.write(file_path, '?a')
-      allow(File).to receive(:write).and_raise(Errno::ENOSPC)
+      # The disk fills up partway through, which truncates a file written in place.
+      allow(File).to receive(:write).and_wrap_original do |write, path, content|
+        write.call(path, content[0])
+        raise Errno::ENOSPC
+      end
     end
 
     it 'returns no space left error' do
@@ -1135,6 +1139,11 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
       expect(response).to include(id: '42', jsonrpc: '2.0')
       expect(response[:result][:isError]).to be true
       expect(response[:result][:content].first[:text]).to include('No space left on device')
+    end
+
+    it 'leaves the file as it was' do
+      expect(messages.count).to eq(1)
+      expect(File.read(file_path)).to eq('?a')
     end
   end
 
