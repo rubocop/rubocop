@@ -44,6 +44,8 @@ module RuboCop
         'offenses use the `rubocop --format json` format, with 1-based lines. ' \
         '`correctable` says whether `rubocop_autocorrection` fixes an offense, ' \
         'and one whose `correction` is not `safe` needs `safety` set to false. ' \
+        'One with a `correction` that is not `correctable` is held back while code is ' \
+        'being written, and only fixed with `contextual` set to true. ' \
         '`max_offenses_per_cop` caps what each cop reports, and the ' \
         'summary\'s `unreported_offenses` counts what was left out. ' \
         'A cop that crashes is listed in its file\'s `errors`; the rest still report.'
@@ -52,14 +54,16 @@ module RuboCop
         'Autocorrect RuboCop offenses in Ruby code. ' \
         'Provide `source_code` to correct inline code, which comes back corrected as ' \
         'plain text, or `path` to correct files. ' \
-        'Set `safety` to false to include unsafe corrections. ' \
+        'Set `safety` to false to include unsafe corrections, and `contextual` to true ' \
+        'to include the ones held back while code is being written, such as removing ' \
+        'an unused variable. ' \
         'Set `dry_run` to true to preview: nothing is written, and each corrected file ' \
         'comes with its `diff`. ' \
         'For files, the result lists each file that was corrected or still has offenses, ' \
         'with the offenses left in the `rubocop_inspection` format, located in the ' \
         'corrected file. One whose `correction` is not `safe` needs `safety` set to false, ' \
-        'and one with a `correction` that is not `correctable` is held back while code ' \
-        'is being edited. Each cop lists at most `max_offenses_per_cop` of them, 5 unless ' \
+        'and one with a `correction` that is not `correctable` needs `contextual` set to ' \
+        'true. Each cop lists at most `max_offenses_per_cop` of them, 5 unless ' \
         'set, and the summary\'s `unreported_offenses` counts the rest. ' \
         'A cop that crashes is listed in its file\'s `errors`, and a file whose ' \
         'corrections loop is left unchanged.'
@@ -114,7 +118,8 @@ module RuboCop
           properties: AutocorrectionRequest::PROPERTIES,
           required: ['safety']
         ) do |scope:, path: nil, source_code: nil, **arguments|
-          run_autocorrection(path, source_code, AutocorrectionRequest.new(scope, **arguments))
+          request = AutocorrectionRequest.new(scope, **arguments)
+          request.run { run_autocorrection(path, source_code, request) }
         end
       end
 

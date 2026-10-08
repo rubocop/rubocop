@@ -1668,7 +1668,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     it 'reports that a contextual correction is not applied through LSP or MCP' do
       cli.run(['--explain', 'Lint/UselessAssignment'])
 
-      expect(stdout).to include('Autocorrect: safe, applied by -a, but not through LSP or MCP')
+      expect(stdout)
+        .to include('Autocorrect: safe, applied by -a, but through LSP or MCP only on request')
     end
 
     it 'does not repeat the description as a details section' do

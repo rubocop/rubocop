@@ -77,6 +77,8 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
                          'offenses use the `rubocop --format json` format, with 1-based lines. ' \
                          '`correctable` says whether `rubocop_autocorrection` fixes an offense, ' \
                          'and one whose `correction` is not `safe` needs `safety` set to false. ' \
+                         'One with a `correction` that is not `correctable` is held back while ' \
+                         'code is being written, and only fixed with `contextual` set to true. ' \
                          '`max_offenses_per_cop` caps what each cop reports, and the ' \
                          'summary\'s `unreported_offenses` counts what was left out. ' \
                          'A cop that crashes is listed in its file\'s `errors`; ' \
@@ -104,6 +106,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
+                contextual: { type: 'boolean' },
                 dry_run: { type: 'boolean' },
                 max_offenses_per_cop: { type: 'integer', minimum: 1 },
                 path: { type: 'string' },
@@ -164,7 +167,8 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
         expect(text).to start_with("Style/StringLiterals\n")
         expect(text).to include('Autocorrect: safe, applied by -a')
         expect(text).to include("\n\nLint/UselessAssignment\n")
-        expect(text).to include('Autocorrect: safe, applied by -a, but not through LSP or MCP')
+        expect(text)
+          .to include('Autocorrect: safe, applied by -a, but through LSP or MCP only on request')
       end
     end
 
@@ -491,6 +495,36 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
     it 'marks a correction held back while code is being edited as not correctable' do
       expect(offense_of('Lint/UselessAssignment'))
         .to include(correctable: false, correction: include(:edits))
+    end
+
+    context 'with `contextual`' do
+      let(:arguments) { { safety: true, contextual: true } }
+
+      it 'also applies the corrections held back while code is being edited' do
+        expect(offense_of('Lint/UselessAssignment')).to be_nil
+        expect(File.read('a.rb')).to eq("puts [1].size == 0\n")
+      end
+
+      context 'when followed by a request without it' do
+        let(:requests) do
+          [{ name: 'rubocop_autocorrection', arguments: arguments.merge(path: 'a.rb') },
+           { name: 'rubocop_autocorrection', arguments: { safety: true, path: 'b.rb' } }]
+            .each_with_index.map do |params, id|
+              { jsonrpc: '2.0', id: id.to_s, method: 'tools/call', params: params }
+            end
+        end
+
+        before { File.write('b.rb', "x = 1\n") }
+
+        it 'holds them back again' do
+          second = JSON.parse(messages.last[:result][:content].first[:text], symbolize_names: true)
+
+          expect(second[:files].first[:offenses]).to include(
+            include(cop_name: 'Lint/UselessAssignment', correctable: false)
+          )
+          expect(File.read('b.rb')).to eq("x = 1\n")
+        end
+      end
     end
 
     context 'with unsafe corrections' do

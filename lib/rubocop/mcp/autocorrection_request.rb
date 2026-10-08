@@ -8,6 +8,7 @@ module RuboCop
     class AutocorrectionRequest
       PROPERTIES = {
         safety: { type: 'boolean' },
+        contextual: { type: 'boolean' },
         dry_run: { type: 'boolean' },
         max_offenses_per_cop: { type: 'integer', minimum: 1 }
       }.freeze
@@ -19,16 +20,25 @@ module RuboCop
 
       attr_reader :scope, :limit
 
-      def initialize(scope, safety: true, dry_run: false,
+      def initialize(scope, safety: true, contextual: false, dry_run: false,
                      max_offenses_per_cop: DEFAULT_MAX_OFFENSES_PER_COP)
         @scope = scope
         @safety = safety
+        @contextual = contextual
         @dry_run = dry_run
         @limit = OffenseLimit.new(max_offenses_per_cop)
       end
 
       def dry_run?
         @dry_run
+      end
+
+      # Cops with `AutoCorrect: contextual` hold back corrections that get in
+      # the way of code still being written, such as removing a variable that
+      # is about to be used. The server runs in LSP mode, which holds them
+      # back, so an agent that is done editing has to ask for them.
+      def run(&block)
+        @contextual ? LSP.disable(&block) : yield
       end
 
       # The options `LSP::Runtime#format` takes to apply the corrections

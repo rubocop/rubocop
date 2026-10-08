@@ -94,8 +94,8 @@ module RuboCop
 
         description = cop.safe_autocorrect? ? 'safe, applied by -a' : 'unsafe, applied by -A only'
         # Contextual corrections wait until the code is finished, which an
-        # editor or an agent mid-edit cannot promise.
-        description += ', but not through LSP or MCP' if cop.contextual_autocorrect?
+        # editor or an agent mid-edit cannot promise, so they have to ask.
+        description += ', but through LSP or MCP only on request' if cop.contextual_autocorrect?
         description
       end
 
