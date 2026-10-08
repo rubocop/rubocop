@@ -349,9 +349,11 @@ module RuboCop
         if redundant_updated
           # Do one extra inspection loop if any redundant disables were
           # removed. This is done in order to find rubocop:enable directives that
-          # have now become useless.
+          # have now become useless. It finds the offenses that are left again,
+          # located in the corrected source, so only the corrected ones are kept
+          # from before, as `inspect_and_correct` does.
           _source, new_offenses = do_inspection_loop(file, team.updated_source)
-          offenses |= new_offenses
+          offenses = offenses.select(&:corrected?) | new_offenses
         end
       end
       offenses

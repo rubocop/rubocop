@@ -1946,6 +1946,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'reports an offense left after removing a redundant directive once, where it ends up' do
+    create_file('example.rb', <<~RUBY)
+      # frozen_string_literal: true
+
+      # rubocop:disable Style/For
+      $g = 'a'
+      # rubocop:enable Style/For
+    RUBY
+    expect(cli.run(%w[--autocorrect --format simple])).to eq(1)
+    expect($stdout.string).to eq(<<~RESULT)
+      == example.rb ==
+      W:  3:  1: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/For.
+      C:  3:  1: Style/GlobalVars: Do not introduce global variables.
+      W:  4: 18: [Corrected] Lint/RedundantCopEnableDirective: Unnecessary enabling of Style/For.
+
+      1 file inspected, 3 offenses detected, 2 offenses corrected
+    RESULT
+    expect(File.read('example.rb')).to eq("# frozen_string_literal: true\n\n$g = 'a'\n")
+  end
+
   it 'corrects RedundantCopDisableDirective offenses' do
     source = <<~RUBY
       class A
