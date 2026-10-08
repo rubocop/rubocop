@@ -34,6 +34,9 @@ module RuboCop
       #   # good - fetch with block is allowed
       #   hash.fetch(key) { default }
       #
+      #   # good - `ENV.fetch` is left to `Style/FetchEnvVar` when it is enabled
+      #   ENV.fetch(key)
+      #
       # @example EnforcedStyle: fetch
       #   # bad
       #   hash[key]
@@ -54,6 +57,9 @@ module RuboCop
         FETCH_MSG = 'Use `Hash#fetch` instead of `Hash#[]`.'
 
         RESTRICT_ON_SEND = %i[[] fetch].freeze
+
+        # @!method env_const?(node)
+        def_node_matcher :env_const?, '(const {nil? cbase} :ENV)'
 
         def on_send(node)
           return if (receiver = node.receiver) && allowed_receiver?(receiver)
@@ -76,8 +82,15 @@ module RuboCop
         private
 
         def offense_for_brackets?(node)
-          style == :brackets && node.receiver && node.method?(:fetch) && node.arguments.one? &&
-            !node.block_literal? && !node.csend_type?
+          return false if style != :brackets || !node.receiver
+          return false if !node.method?(:fetch) || !node.arguments.one?
+          return false if node.block_literal? || node.csend_type?
+
+          !env_fetch_preferred?(node.receiver)
+        end
+
+        def env_fetch_preferred?(receiver)
+          env_const?(receiver) && processed_source.registry.enabled?(Style::FetchEnvVar, config)
         end
 
         def offense_for_fetch?(node)
