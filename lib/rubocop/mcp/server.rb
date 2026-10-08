@@ -275,7 +275,10 @@ module RuboCop
               path: { type: 'string' },
               source_code: { type: 'string' }
             }.merge(properties, Scope::PROPERTIES),
-            required: required
+            required: required,
+            # The gem checks arguments against the schema, so one the tool
+            # doesn't take is refused by name rather than failing the call.
+            additionalProperties: false
           }.compact,
           annotations: {
             title: title,

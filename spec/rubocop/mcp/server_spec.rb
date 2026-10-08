@@ -85,6 +85,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
                          'the rest still report.',
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
+              additionalProperties: false,
               properties: {
                 max_offenses_per_cop: { type: 'integer', minimum: 1 },
                 path: { type: 'string' },
@@ -105,6 +106,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
             description: described_class::AUTOCORRECTION_DESCRIPTION,
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
+              additionalProperties: false,
               properties: {
                 contextual: { type: 'boolean' },
                 dry_run: { type: 'boolean' },
@@ -133,6 +135,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
                          'applies to it.',
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
+              additionalProperties: false,
               properties: {
                 cop_names: { type: 'array', items: { type: 'string' }, minItems: 1 },
                 path: { type: 'string' }
@@ -152,9 +155,10 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
         jsonrpc: '2.0',
         id: '42',
         method: 'tools/call',
-        params: { name: 'rubocop_explain', arguments: { cop_names: cop_names, path: path }.compact }
+        params: { name: 'rubocop_explain', arguments: arguments }
       }]
     end
+    let(:arguments) { { cop_names: cop_names, path: path }.compact }
     let(:path) { nil }
     let(:text) { response[:result][:content].first[:text] }
 
@@ -224,6 +228,15 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
         expect(response[:result][:isError]).to be true
         expect(text).to start_with("Style/Semicolon\n")
         expect(text).to match(%r{\n\nUnrecognized cop: Style/StringLiteral\.\nDid you mean\? .*\z})
+      end
+    end
+
+    context 'with an argument it does not take' do
+      let(:arguments) { { cop_names: %w[Style/StringLiterals], verbose: true } }
+
+      it 'refuses it by name' do
+        expect(response[:result][:isError]).to be true
+        expect(text).to include('verbose')
       end
     end
   end
@@ -612,9 +625,9 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
     context 'with an argument it does not take' do
       let(:arguments) { { safety: true, path: 'a.rb', fix_everything: true } }
 
-      # How much of the error the client sees depends on the version of the mcp gem.
-      it 'refuses it without correcting anything' do
-        expect(response).to have_key(:error)
+      it 'refuses it by name without correcting anything' do
+        expect(response[:result][:isError]).to be true
+        expect(response[:result][:content].first[:text]).to include('fix_everything')
         expect(File.read('a.rb')).to eq(source)
       end
     end
