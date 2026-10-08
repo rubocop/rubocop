@@ -17,7 +17,8 @@ module RuboCop
           cop_names: { type: 'array', items: { type: 'string' }, minItems: 1 },
           path: { type: 'string' }
         },
-        required: ['cop_names']
+        required: ['cop_names'],
+        additionalProperties: false
       }.freeze
       ANNOTATIONS = {
         title: "RuboCop's cop explanation", destructive_hint: false, idempotent_hint: true,
