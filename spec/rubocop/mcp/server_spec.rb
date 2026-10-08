@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
+RSpec.describe RuboCop::MCP::Server, :isolated_environment do
   include MCPHelper
   include FailingCopHelper
 
@@ -367,6 +367,40 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
           correction: a_hash_including(safe: true)
         )
       )
+    end
+  end
+
+  describe 'tools/call to inspection of offenses an editor shows differently' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: '42',
+        method: 'tools/call',
+        params: { name: 'rubocop_inspection', arguments: { source_code: source_code } }
+      }]
+    end
+    let(:offense) { parsed_result[:files].first[:offenses].first }
+
+    context 'with a method that is too long' do
+      let(:source_code) { "def long\n#{"  call\n" * 11}end\n" }
+      let(:requests) do
+        super().each { |request| request[:params][:arguments][:only] = ['Metrics'] }
+      end
+
+      it 'locates the offense over the whole method, as `--format json` does' do
+        expect(offense).to include(
+          cop_name: 'Metrics/MethodLength',
+          location: include(start_line: 1, last_line: 13)
+        )
+      end
+    end
+
+    context 'with a syntax error' do
+      let(:source_code) { 'def foo(' }
+
+      it 'says which parser version it used, as `--format json` does' do
+        expect(offense[:message]).to include('Using Ruby')
+      end
     end
   end
 

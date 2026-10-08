@@ -33,19 +33,19 @@ module RuboCop
         @dry_run
       end
 
-      # Cops with `AutoCorrect: contextual` hold back corrections that get in
-      # the way of code still being written, such as removing a variable that
-      # is about to be used. The server runs in LSP mode, which holds them
-      # back, so an agent that is done editing has to ask for them.
-      def run(&block)
-        @contextual ? LSP.disable(&block) : yield
-      end
-
       # The options `LSP::Runtime#format` takes to apply the corrections
-      # `safety` allows, from the cops the scope selects.
+      # `safety` and `contextual` allow, from the cops the scope selects.
       def format_options
         command = @safety ? 'rubocop.formatAutocorrects' : 'rubocop.formatAutocorrectsAll'
-        { command: command, cops: @scope.cop_options }
+        { command: command, options: runtime_options }
+      end
+
+      # The options the LSP runtime takes for each call the request makes.
+      # Cops with `AutoCorrect: contextual` hold back corrections that get in
+      # the way of code still being written, such as removing a variable that
+      # is about to be used, so an agent that is done editing has to ask for them.
+      def runtime_options
+        { **@scope.cop_options, editing: !@contextual }
       end
     end
   end

@@ -70,7 +70,9 @@ module RuboCop
 
       def initialize(config_store)
         @config_store = config_store
-        @runtime = RuboCop::LSP::Runtime.new(@config_store)
+        # An agent isn't an editor, so offenses are located and worded the way
+        # the command line does it. Only contextual corrections are held back.
+        @runtime = RuboCop::LSP::Runtime.new(@config_store, lsp_mode: false)
         # One cop crashing on one file should not cost an agent everything else
         # in the request, so cop errors are collected and reported per file.
         @runtime.raise_cop_error = false
@@ -118,8 +120,7 @@ module RuboCop
           properties: AutocorrectionRequest::PROPERTIES,
           required: ['safety']
         ) do |scope:, path: nil, source_code: nil, **arguments|
-          request = AutocorrectionRequest.new(scope, **arguments)
-          request.run { run_autocorrection(path, source_code, request) }
+          run_autocorrection(path, source_code, AutocorrectionRequest.new(scope, **arguments))
         end
       end
 
@@ -138,7 +139,8 @@ module RuboCop
       end
 
       def inspect_source(file, source, limit, scope)
-        offenses = @runtime.raw_offenses(file, source, cops: scope.cop_options)
+        options = { **scope.cop_options, editing: true }
+        offenses = @runtime.raw_offenses(file, source, options: options)
         offense_entry(file, offenses, limit).merge(problems_of_last_run(file))
       end
 
@@ -202,7 +204,7 @@ module RuboCop
         on_disk = changed ? Util.emulate_write_read_cycle(corrected) : source
         return @runtime.uncorrected_offenses if on_disk == corrected
 
-        @runtime.raw_offenses(file, on_disk, cops: request.scope.cop_options)
+        @runtime.raw_offenses(file, on_disk, options: request.runtime_options)
       end
 
       # Corrected inline code comes back as plain text with nowhere to mention

@@ -35,7 +35,7 @@ module RuboCop
         validate(inline)
       end
 
-      # @return [Hash] the cop selection, as the LSP runtime takes it
+      # @return [Hash] the cop selection, among the options the LSP runtime takes
       def cop_options
         { only: @only, except: @except }.compact
       end

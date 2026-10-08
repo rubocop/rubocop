@@ -492,7 +492,8 @@ module RuboCop
           # The unsafe correction will not run, so the offense is
           # uncorrectable for this run and gets a todo comment.
           attempt_correction(range, nil)
-        elsif corrector && (always_autocorrect? || (contextual_autocorrect? && !LSP.enabled?))
+        elsif corrector && (always_autocorrect? ||
+                            (contextual_autocorrect? && !contextual_autocorrect_held_back?))
           :uncorrected
         else
           :unsupported
