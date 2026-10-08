@@ -2223,6 +2223,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects IndentationWidth and IndentationConsistency offenses ' \
+     'with an inline access modifier and `EnforcedStyle: outdent` of ' \
+     '`Layout/AccessModifierIndentation`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/AccessModifierIndentation:
+        EnforcedStyle: outdent
+    YAML
+    create_file('example.rb', <<~RUBY)
+      module Foo
+      private def bar
+      end
+      alias baz bar
+      end
+    RUBY
+
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only',
+                     ['Layout/IndentationConsistency', 'Layout/IndentationWidth'].join(',')
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      module Foo
+        private def bar
+        end
+        alias baz bar
+      end
+    RUBY
+  end
+
   it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
     source = ['foo.map{ |a| a.nil? }']
     create_file('example.rb', source)
