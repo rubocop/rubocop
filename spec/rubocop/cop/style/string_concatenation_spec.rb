@@ -245,6 +245,30 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
     end
   end
 
+  context 'with `__FILE__`' do
+    it 'registers an offense and corrects by interpolating `__FILE__`' do
+      expect_offense(<<~RUBY)
+        __FILE__ + '/c'
+        ^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{__FILE__}/c"
+      RUBY
+    end
+
+    it 'registers an offense and corrects when an interpolated string spells out `__FILE__`' do
+      expect_offense(<<~'RUBY')
+        "__FILE__#{c}" + 'd'
+        ^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "__FILE__#{c}d"
+      RUBY
+    end
+  end
+
   context 'double quotes inside string' do
     it 'registers an offense and corrects with double quotes' do
       expect_offense(<<~'RUBY')
