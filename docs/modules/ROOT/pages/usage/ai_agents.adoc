@@ -35,7 +35,8 @@ often too terse to fix the code the way the cop wants.
 `--only`, `--except` and `--changed`::
 Narrow a run to some cops or departments, or to the files that differ from a
 git revision. An agent that just edited three files doesn't need the whole
-project checked again.
+project checked again. On a branch, `--changed=$(git merge-base main HEAD)`
+covers the branch's commits as well as the edits not committed yet.
 
 `-a` and `-A`::
 `-a` applies only the corrections that are safe. `-A` adds the ones that can
