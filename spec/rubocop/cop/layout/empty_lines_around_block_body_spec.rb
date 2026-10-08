@@ -166,4 +166,50 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       RUBY
     end
   end
+
+  context 'when `EnforcedStyle` is `empty_lines` and `do` follows a line continuation' do
+    let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
+
+    it 'registers an offense and inserts the blank line after `do`' do
+      expect_offense(<<~RUBY)
+        foo :bar \\
+        do
+          baz
+        ^ Empty line missing at block body beginning.
+        end
+        ^ Empty line missing at block body end.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo :bar \\
+        do
+
+          baz
+
+        end
+      RUBY
+    end
+  end
+
+  context 'when `EnforcedStyle` is `no_empty_lines` and `do` follows a line continuation' do
+    let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
+
+    it 'registers an offense and removes the blank line after `do`' do
+      expect_offense(<<~RUBY)
+        foo :bar \\
+        do
+
+        ^{} Extra empty line detected at block body beginning.
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo :bar \\
+        do
+          baz
+        end
+      RUBY
+    end
+  end
 end
