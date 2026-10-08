@@ -218,6 +218,7 @@ module RuboCop
       file, offenses, (errors, warnings) = @report_queue.delete(index)
       @errors.concat(errors)
       @warnings.concat(warnings)
+      file_problems(file, errors, warnings) unless errors.empty? && warnings.empty?
       file_finished(file, offenses)
     end
 
@@ -396,6 +397,15 @@ module RuboCop
     def file_started(file)
       puts "Scanning #{file}" if @options[:debug]
       formatter_set.file_started(file, cli_options: @options, config_store: @config_store)
+    end
+
+    # Formatters get the messages without the colors added for the terminal.
+    def file_problems(file, errors, warnings)
+      formatter_set.file_problems(file, plain_messages(errors), plain_messages(warnings))
+    end
+
+    def plain_messages(problems)
+      problems.map { |problem| Rainbow::StringUtils.uncolor(problem.to_s) }
     end
 
     def file_finished(file, offenses)

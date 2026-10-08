@@ -49,6 +49,10 @@ module RuboCop
         each { |f| f.file_started(file, options) }
       end
 
+      def file_problems(file, errors, warnings)
+        each { |f| f.file_problems(file, errors, warnings) if f.respond_to?(:file_problems) }
+      end
+
       def file_finished(file, offenses)
         each { |f| f.file_finished(file, offenses) }
         offenses

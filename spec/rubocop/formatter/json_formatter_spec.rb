@@ -61,8 +61,57 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     end
   end
 
+  describe '#file_problems' do
+    let(:file) { File.expand_path('lib/foo.rb') }
+    let(:other_file) { File.expand_path('lib/bar.rb') }
+    let(:entries) { formatter.output_hash[:files].to_h { |entry| [entry[:path], entry] } }
+    let(:summary) { formatter.output_hash[:summary] }
+
+    def crash_message(location)
+      "An error occurred while Style/Foo cop was inspecting #{location}."
+    end
+
+    before do
+      formatter.file_problems(file, [crash_message("#{file}:1:2"), crash_message("#{file}:3:4")],
+                              ["Careful (from file: #{file}:5:6)"])
+      formatter.file_finished(file, [])
+      formatter.file_finished(other_file, [])
+      formatter.finished([file, other_file])
+    end
+
+    it 'adds them to the entry of the file they belong to, listing repeats once' do
+      expect(entries['lib/foo.rb']).to include(
+        errors: [crash_message('lib/foo.rb:1:2')],
+        warnings: ['Careful (from file: lib/foo.rb:5:6)']
+      )
+    end
+
+    it 'keeps a file name that looks like a backreference intact' do
+      skip 'Windows paths use backslashes as separators' if RuboCop::Platform.windows?
+
+      file = File.expand_path('lib/a\\1b.rb')
+
+      expect(formatter.hash_for_problems(file, [crash_message("#{file}:1:2")], [])).to eq(
+        errors: [crash_message('lib/a\\1b.rb:1:2')]
+      )
+    end
+
+    it 'leaves the keys out of the entry of a file without any' do
+      expect(entries['lib/bar.rb'].keys).to eq(%i[path offenses])
+    end
+
+    it 'counts them in the summary' do
+      expect(summary).to include(error_count: 1, warning_count: 1)
+    end
+  end
+
   describe '#finished' do
     let(:summary) { formatter.output_hash[:summary] }
+
+    it 'leaves error and warning counts out of the summary when there are none' do
+      formatter.finished(files)
+      expect(summary.keys).not_to include(:error_count, :warning_count)
+    end
 
     it 'sets inspected file count in summary' do
       expect(summary[:inspected_file_count]).to be_nil

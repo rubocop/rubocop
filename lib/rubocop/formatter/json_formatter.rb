@@ -13,19 +13,29 @@ module RuboCop
       def initialize(output, options = {})
         super
         @output_hash = { metadata: metadata_hash, files: [], summary: { offense_count: 0 } }
+        @problems = {}
       end
 
       def started(target_files)
         output_hash[:summary][:target_file_count] = target_files.count
       end
 
+      def file_problems(file, errors, warnings)
+        @problems[file] = hash_for_problems(file, errors, warnings)
+      end
+
       def file_finished(file, offenses)
-        output_hash[:files] << hash_for_file(file, offenses)
+        entry = hash_for_file(file, offenses)
+        problems = @problems.delete(file)
+        entry.merge!(problems) if problems
+
+        output_hash[:files] << entry
         output_hash[:summary][:offense_count] += offenses.count
       end
 
       def finished(inspected_files)
         output_hash[:summary][:inspected_file_count] = inspected_files.count
+        output_hash[:summary].merge!(problem_counts(output_hash[:files]))
         output.write output_hash.to_json
       end
 
@@ -44,6 +54,31 @@ module RuboCop
           path:     smart_path(file),
           offenses: offenses.map { |o| hash_for_offense(o) }
         }
+      end
+
+      # A cop that crashes fails once per node it visits, so messages that
+      # differ only in their line and column are listed once, at the first place
+      # they happened. They name the file the way its entry does. The keys are
+      # absent when there's nothing to report, which keeps them additive for
+      # existing consumers.
+      def hash_for_problems(file, errors, warnings, path = smart_path(file))
+        return {} if errors.empty? && warnings.empty?
+
+        location = /#{Regexp.escape(File.expand_path(file))}((?::\d+)*)/
+
+        { errors: errors, warnings: warnings }.filter_map do |key, messages|
+          next if messages.empty?
+
+          messages = messages.uniq { |message| message.gsub(location, '') }
+          [key, messages.map { |message| message.gsub(location) { path + Regexp.last_match(1) } }]
+        end.to_h
+      end
+
+      def problem_counts(files)
+        {
+          error_count: files.sum { |f| f[:errors]&.size.to_i },
+          warning_count: files.sum { |f| f[:warnings]&.size.to_i }
+        }.reject { |_, count| count.zero? }
       end
 
       def hash_for_offense(offense)

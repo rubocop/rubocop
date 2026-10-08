@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       let(:invocation_order) { [] }
       let(:formatter) do
         formatter = instance_spy(RuboCop::Formatter::BaseFormatter)
-        %i[started file_started file_finished finished output].each do |message|
+        %i[started file_started file_problems file_finished finished output].each do |message|
           allow(formatter).to receive(message) do
             invocation_order << message unless message == :output
           end
@@ -49,6 +49,22 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             finished
           ]
         )
+      end
+
+      context 'when a cop crashes' do
+        include FailingCopHelper
+
+        before do
+          make_cop_fail(RuboCop::Cop::Style::FrozenStringLiteralComment, :on_new_investigation,
+                        RuntimeError, 'boom')
+        end
+
+        it 'reports the error right before the file finishes' do
+          run
+          expect(invocation_order).to eq(
+            [:started, *(%i[file_started file_problems file_finished] * 3), :finished]
+          )
+        end
       end
     end
 

@@ -323,6 +323,30 @@ Two things to keep in mind when applying edits yourself:
   conflicts while correcting. Apply a batch from the end of the file backwards
   and skip any edit that overlaps one already applied, then re-run.
 
+=== Errors and Warnings
+
+A cop that crashes on a file is listed in that file's `errors` and counted in
+the summary's `error_count`, and so are corrections that go into an infinite
+loop. The other cops still report the file's offenses. Warnings a cop raises
+are listed the same way, under `warnings` and `warning_count`. These keys are
+absent when there's nothing to report.
+
+A cop crashes on every node of the kind it fails on, so messages that differ
+only in their line and column are listed once, at the first place they
+happened. That makes `error_count` lower than the number of errors the
+command line prints.
+
+[source,javascript]
+----
+{
+  "path": "lib/bar.rb",
+  "offenses": [],
+  "errors": [
+    "An error occurred while Style/Example cop was inspecting lib/bar.rb:12:5."
+  ]
+}
+----
+
 == JUnit Style Formatter
 
 *Machine-parsable*

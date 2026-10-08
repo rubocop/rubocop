@@ -517,6 +517,50 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
           expect(runner.warnings).to match([include('example.rb'), include('other.rb')])
         end
+
+        context 'with the JSON formatter' do
+          let(:options) { { parallel: true, formatters: [['json', formatter_output_path]] } }
+
+          it 'lists the errors of each file in its entry' do
+            make_cop_fail(RuboCop::Cop::Style::FrozenStringLiteralComment, :on_new_investigation,
+                          RuntimeError, 'boom')
+            runner.run([])
+
+            expect(JSON.parse(formatter_output)['files']).to match(
+              %w[example.rb other.rb].map do |path|
+                include('path' => path,
+                        'errors' => ['An error occurred while Style/FrozenStringLiteralComment ' \
+                                     "cop was inspecting #{path}."])
+              end
+            )
+          end
+        end
+      end
+    end
+
+    context 'when a cop crashes and a formatter reports it' do
+      include FailingCopHelper
+
+      include_context 'mock console output'
+
+      let(:options) { { formatters: [['json', formatter_output_path]] } }
+      let(:source) { "# frozen_string_literal: true\n\nputs 'crash'\n" }
+
+      around do |example|
+        Rainbow.enabled = true
+        example.run
+      ensure
+        Rainbow.enabled = false
+      end
+
+      it 'gives the formatter the messages without terminal colors' do
+        make_cop_fail(RuboCop::Cop::Style::StringLiterals, :on_str, RuntimeError, 'boom')
+        runner.run([])
+
+        expect(JSON.parse(formatter_output)['files']).to contain_exactly(
+          include('errors' => ['An error occurred while Style/StringLiterals cop ' \
+                               'was inspecting example.rb:3:5.'])
+        )
       end
     end
 
