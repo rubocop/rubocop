@@ -1,0 +1,1 @@
+* [#15957](https://github.com/rubocop/rubocop/pull/15957): Fix the MCP server reporting length and complexity offenses on a definition's first line only, and syntax errors without the parser version, unlike `--format json`. ([@bbatsov][])

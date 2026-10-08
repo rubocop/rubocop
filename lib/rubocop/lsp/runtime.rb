@@ -19,8 +19,10 @@ module RuboCop
     class Runtime
       attr_writer :safe_autocorrect, :lint_mode, :layout_mode, :raise_cop_error
 
-      def initialize(config_store)
-        RuboCop::LSP.enable
+      # Without `lsp_mode`, offenses keep the locations and messages the
+      # command line gives them, rather than the ones meant for an editor.
+      def initialize(config_store, lsp_mode: true)
+        RuboCop::LSP.enable if lsp_mode
 
         @runner = RuboCop::Lsp::StdinRunner.new(config_store)
 
@@ -30,7 +32,7 @@ module RuboCop
         @raise_cop_error = true
       end
 
-      def format(path, text, command:, prism_result: nil, cops: nil)
+      def format(path, text, command:, prism_result: nil, options: {})
         safe_autocorrect = if command
                              command == 'rubocop.formatAutocorrects'
                            else
@@ -39,7 +41,7 @@ module RuboCop
 
         formatting_options = {
           autocorrect: true, safe_autocorrect: safe_autocorrect, raise_cop_error: @raise_cop_error
-        }.merge(cop_options(cops))
+        }.merge(call_options(options))
 
         @runner.run(path, text, formatting_options, prism_result: prism_result)
         @runner.formatted_source
@@ -60,8 +62,8 @@ module RuboCop
 
       # The offenses before they are converted to LSP diagnostics, for callers
       # that do not speak LSP.
-      def raw_offenses(path, text, prism_result: nil, cops: nil)
-        diagnostic_options = { raise_cop_error: @raise_cop_error }.merge(cop_options(cops))
+      def raw_offenses(path, text, prism_result: nil, options: {})
+        diagnostic_options = { raise_cop_error: @raise_cop_error }.merge(call_options(options))
 
         @runner.run(path, text, diagnostic_options, prism_result: prism_result)
         @runner.offenses
@@ -95,12 +97,14 @@ module RuboCop
         ).to_lsp_diagnostic(config)
       end
 
-      # The cops to run: the caller's `only` and `except`, or the departments a
-      # lint or layout mode limits the server to.
-      def cop_options(cops)
-        only, except = cops&.values_at(:only, :except)
-        only ||= config_only_options if @lint_mode || @layout_mode
-        { only: only, except: except }.compact
+      # What a caller adds for one call, such as `only` and `except` to select
+      # the cops, or `editing` to hold back the corrections of cops with
+      # `AutoCorrect: contextual`, as LSP mode does. Without `only`, the cops
+      # are the departments a lint or layout mode limits the server to.
+      def call_options(options)
+        return options if options[:only] || !(@lint_mode || @layout_mode)
+
+        options.merge(only: config_only_options)
       end
 
       def config_only_options

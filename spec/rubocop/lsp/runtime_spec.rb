@@ -53,7 +53,7 @@ RSpec.describe RuboCop::LSP::Runtime, :isolated_environment, :lsp do
     # `Layout/EndOfLine` would report.
     it 'lists what the last format left, located in the source it returned' do
       corrected = runtime.format('example.rb', source, command: 'rubocop.formatAutocorrectsAll',
-                                                       cops: { except: ['Layout/EndOfLine'] })
+                                                       options: { except: ['Layout/EndOfLine'] })
 
       expect(corrected.lines(chomp: true))
         .to eq(['# frozen_string_literal: true', '', "puts 'a'", 'x = 1'])
@@ -65,11 +65,12 @@ RSpec.describe RuboCop::LSP::Runtime, :isolated_environment, :lsp do
   # The runner caches the cops it mobilizes, and the same runtime serves call
   # after call, so a selection must not stick past the call that made it.
   it 'runs the cops each call selects' do
-    cop_names = ->(**cops) { runtime.raw_offenses('example.rb', source, **cops).map(&:cop_name) }
+    cop_names = lambda do |**options|
+      runtime.raw_offenses('example.rb', source, options: options).map(&:cop_name)
+    end
 
-    expect(cop_names.call(cops: { only: ['Style/StringLiterals'] })).to eq(['Style/StringLiterals'])
+    expect(cop_names.call(only: ['Style/StringLiterals'])).to eq(['Style/StringLiterals'])
     expect(cop_names.call).to contain_exactly('Style/CharacterLiteral', 'Style/StringLiterals')
-    expect(cop_names.call(cops: { except: ['Style/StringLiterals'] }))
-      .to eq(['Style/CharacterLiteral'])
+    expect(cop_names.call(except: ['Style/StringLiterals'])).to eq(['Style/CharacterLiteral'])
   end
 end

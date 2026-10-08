@@ -42,9 +42,7 @@ module RuboCop
 
         return false if disabled_autocorrect?
 
-        # When LSP is enabled or the `--editor-mode` option is on, it is considered as editing
-        # source code, and autocorrection with `AutoCorrect: contextual` will not be performed.
-        return false if contextual_autocorrect? && LSP.enabled?
+        return false if contextual_autocorrect_held_back?
 
         # :safe_autocorrect is a derived option based on several command-line
         # arguments - see RuboCop::Options#add_autocorrection_options
@@ -54,6 +52,14 @@ module RuboCop
       end
 
       private
+
+      # When LSP is enabled or the `--editor-mode` option is on, it is considered as editing
+      # source code, and autocorrection with `AutoCorrect: contextual` will not be performed.
+      # The `editing` option says the same without the rest of LSP mode, which
+      # is about showing offenses in an editor.
+      def contextual_autocorrect_held_back?
+        contextual_autocorrect? && (LSP.enabled? || @options.fetch(:editing, false))
+      end
 
       def disable_offense(offense_range)
         unbreakable_range = multiline_ranges(offense_range)&.find do |range|
