@@ -515,6 +515,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not leave empty parentheses when `Style/StabbyLambdaParentheses` wraps the parameter in the same pass' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/ItBlockParameter:
+        EnforcedStyle: always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      -> x { do_something(x) }
+    RUBY
+
+    expect(
+      cli.run(%w[--autocorrect-all --only Style/ItBlockParameter,Style/StabbyLambdaParentheses])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      ->  { do_something(it) }
+    RUBY
+  end
+
   it 'keeps parentheses when `Style/BlockDelimiters` converts the block to braces in the same pass' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
