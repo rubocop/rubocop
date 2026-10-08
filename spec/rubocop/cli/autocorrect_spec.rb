@@ -1041,6 +1041,48 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineHashBraceLayout` with `EnforcedStyle: no_braces` of `Style/HashAsLastArrayItem`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/HashAsLastArrayItem:
+        EnforcedStyle: no_braces
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo = [
+        { bar: 1,
+        }
+      ]
+    RUBY
+    expect(
+      cli.run(['-A', '--only', 'Layout/MultilineHashBraceLayout,Style/HashAsLastArrayItem'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo = [
+         bar: 1,
+      ]
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineHashBraceLayout` with `EnforcedStyle: same_line` and `Style/RedundantDoubleSplatHashBraces`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/MultilineHashBraceLayout:
+        EnforcedStyle: same_line
+    YAML
+    create_file('example.rb', <<~RUBY)
+      do_something :foo, **{
+        bar: 1
+      }
+      baz
+    RUBY
+    expect(
+      cli.run(['-A', '--only',
+               'Layout/MultilineHashBraceLayout,Style/RedundantDoubleSplatHashBraces'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something :foo, bar: 1
+      baz
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifier` with `Style/Next`' do
     source = <<~RUBY
       [1, 2, 3].each do |i|
