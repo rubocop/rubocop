@@ -82,7 +82,8 @@ failing the call. Inspection and autocorrection both take `only`, `except` and
 
 Unlike the command line, the server holds back corrections from cops with
 `AutoCorrect: contextual`, such as `Lint/UselessAssignment`, because the code
-is assumed to be mid-edit. Their offenses still carry the edits.
+is assumed to be mid-edit. An agent that's done editing gets them by setting
+`contextual` to `true`.
 
 == Instructing the Agent
 
