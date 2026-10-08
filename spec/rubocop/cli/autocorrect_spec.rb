@@ -471,6 +471,54 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineBlockLayout` with `EnforcedStyle: literal` of `Style/Lambda`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/Lambda:
+        EnforcedStyle: literal
+    YAML
+    create_file('example.rb', <<~RUBY)
+      run lambda {
+        |env| foo(env) }
+    RUBY
+    expect(cli.run(%w[--autocorrect-all --only Layout/MultilineBlockLayout,Style/Lambda])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      run ->(env) {
+            foo(env) }
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineBlockLayout` with `EnforcedStyle: always` of `Style/ItBlockParameter`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/ItBlockParameter:
+        EnforcedStyle: always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo.each {
+        |x| bar(x) }
+    RUBY
+    expect(cli.run(%w[--autocorrect-all --only
+                      Layout/MultilineBlockLayout,Style/ItBlockParameter])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo.each {#{trailing_whitespace}
+        bar(it) }
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineBlockLayout` with `Style/HashEachMethods`' do
+    create_file('example.rb', <<~RUBY)
+      hash.each {
+        |key, _value| do_something(key) }
+    RUBY
+    expect(cli.run(%w[--autocorrect-all --only
+                      Layout/MultilineBlockLayout,Style/HashEachMethods])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      hash.each_key { |key|
+        do_something(key) }
+    RUBY
+  end
+
   it 'does not leave a named parameter when `Style/Lambda` converts the lambda in the same pass' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
