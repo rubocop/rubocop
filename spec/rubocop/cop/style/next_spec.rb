@@ -484,6 +484,28 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
           end
         RUBY
       end
+
+      it "registers an offense for modifier #{condition} wrapping a block with another offense" do
+        expect_offense(<<~RUBY, condition: condition)
+          [].each do |o|
+            o.each do |v|
+            ^^^^^^^^^^^^^ Use `next` to skip iteration.
+              puts v #{condition} v == 1
+              ^^^^^^^^{condition}^^^^^^^ Use `next` to skip iteration.
+            end #{condition} o
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [].each do |o|
+            next #{opposite} o
+            o.each do |v|
+              next #{opposite} v == 1
+              puts v
+            end
+          end
+        RUBY
+      end
     end
 
     it 'autocorrects a misaligned end' do
