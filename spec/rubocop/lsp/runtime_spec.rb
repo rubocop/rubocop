@@ -46,6 +46,22 @@ RSpec.describe RuboCop::LSP::Runtime, :isolated_environment, :lsp do
     end
   end
 
+  describe '#uncorrected_offenses' do
+    let(:source) { "puts \"a\"\nx = 1\n".gsub("\n", newline) }
+
+    # On Windows the corrected source comes back with LF line endings, which
+    # `Layout/EndOfLine` would report.
+    it 'lists what the last format left, located in the source it returned' do
+      corrected = runtime.format('example.rb', source, command: 'rubocop.formatAutocorrectsAll',
+                                                       cops: { except: ['Layout/EndOfLine'] })
+
+      expect(corrected.lines(chomp: true))
+        .to eq(['# frozen_string_literal: true', '', "puts 'a'", 'x = 1'])
+      expect(runtime.uncorrected_offenses.map { |offense| [offense.cop_name, offense.line] })
+        .to eq([['Lint/UselessAssignment', 4]])
+    end
+  end
+
   # The runner caches the cops it mobilizes, and the same runtime serves call
   # after call, so a selection must not stick past the call that made it.
   it 'runs the cops each call selects' do

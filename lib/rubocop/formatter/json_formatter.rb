@@ -61,9 +61,10 @@ module RuboCop
       # they happened. They name the file the way its entry does. The keys are
       # absent when there's nothing to report, which keeps them additive for
       # existing consumers.
-      def hash_for_problems(file, errors, warnings, path = smart_path(file))
+      def hash_for_problems(file, errors, warnings)
         return {} if errors.empty? && warnings.empty?
 
+        path = smart_path(file)
         location = /#{Regexp.escape(File.expand_path(file))}((?::\d+)*)/
 
         { errors: errors, warnings: warnings }.filter_map do |key, messages|

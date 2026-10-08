@@ -27,6 +27,7 @@ end
 
 require_relative '../lsp'
 require_relative '../lsp/runtime'
+require_relative 'autocorrection_request'
 require_relative 'explain_tool'
 require_relative 'scope'
 
@@ -45,6 +46,20 @@ module RuboCop
         '`max_offenses_per_cop` caps what each cop reports, and the ' \
         'summary\'s `unreported_offenses` counts what was left out. ' \
         'A cop that crashes is listed in its file\'s `errors`; the rest still report.'
+
+      AUTOCORRECTION_DESCRIPTION =
+        'Autocorrect RuboCop offenses in Ruby code. ' \
+        'Provide `source_code` to correct inline code, which comes back corrected as ' \
+        'plain text, or `path` to correct files. ' \
+        'Set `safety` to false to include unsafe corrections. ' \
+        'For files, the result lists each file that was corrected or still has offenses, ' \
+        'with the offenses left in the `rubocop_inspection` format, located in the ' \
+        'corrected file. One whose `correction` is not `safe` needs `safety` set to false, ' \
+        'and one with a `correction` that is not `correctable` is held back while code ' \
+        'is being edited. Each cop lists at most `max_offenses_per_cop` of them, 5 unless ' \
+        'set, and the summary\'s `unreported_offenses` counts the rest. ' \
+        'A cop that crashes is listed in its file\'s `errors`, and a file whose ' \
+        'corrections loop is left unchanged.'
 
       def initialize(config_store)
         @config_store = config_store
@@ -88,17 +103,15 @@ module RuboCop
       def autocorrection_tool
         build_tool(
           name: 'rubocop_autocorrection',
-          description: 'Autocorrect RuboCop offenses in Ruby code. ' \
-                       'Provide `source_code` to correct inline code or `path` to correct files. ' \
-                       'Set `safety` to false to include unsafe corrections.',
+          description: AUTOCORRECTION_DESCRIPTION,
           title: "RuboCop's autocorrection",
           destructive_hint: true,
           idempotent_hint: false,
           read_only_hint: false,
-          properties: { safety: { type: 'boolean' } },
+          properties: AutocorrectionRequest::PROPERTIES,
           required: ['safety']
-        ) do |scope:, path: nil, source_code: nil, safety: true|
-          run_autocorrection(path, source_code, safety, scope)
+        ) do |scope:, path: nil, source_code: nil, **arguments|
+          run_autocorrection(path, source_code, AutocorrectionRequest.new(scope, **arguments))
         end
       end
 
@@ -109,56 +122,76 @@ module RuboCop
         result =
           if source_code
             file = path || 'example.rb'
-            entry = inspect_source(file, source_code, limit, scope)
-            build_result([file], [entry], filter_empty: true)
+            build_result([file], [inspect_source(file, source_code, limit, scope)])
           else
-            process_files(path, scope, filter_empty: true) do |file, src|
-              inspect_source(file, src, limit, scope)
-            end
+            process_files(path, scope) { |file, src| inspect_source(file, src, limit, scope) }
           end
-        # The agent never sees stderr, so the summary says what the limit left out.
+        result_json(result, limit)
+      end
+
+      def inspect_source(file, source, limit, scope)
+        offenses = @runtime.raw_offenses(file, source, cops: scope.cop_options)
+        offense_entry(file, offenses, limit).merge(problems_of_last_run(file))
+      end
+
+      # The offenses of a file the way `--format json` lists them, capped across
+      # the files of a request.
+      def offense_entry(file, offenses, limit)
+        offenses = limit.filter(offenses) if limit
+        @json_formatter.hash_for_file(file, offenses)
+      end
+
+      def run_autocorrection(path, source_code, request)
+        return correct_inline(path, source_code, request) if source_code
+
+        result = process_files(path, request.scope) do |file, source|
+          correct_file(file, source, request)
+        end
+        result[:summary][:corrected_file_count] = result[:files].count { |file| file[:corrected] }
+        result_json(result, request.limit)
+      end
+
+      # The agent never sees stderr, so the summary says what the limit left out.
+      def result_json(result, limit)
         unreported = limit&.elided_per_cop
         result[:summary][:unreported_offenses] = unreported if unreported&.any?
         result.to_json
       end
 
-      def inspect_source(file, source, limit, scope)
-        offenses = @runtime.raw_offenses(file, source, cops: scope.cop_options)
-        offenses = limit.filter(offenses) if limit
-        entry = @json_formatter.hash_for_file(file, offenses)
-        entry.merge(problems_of_last_run(file, entry[:path]))
-      end
-
-      def run_autocorrection(path, source_code, safety, scope)
-        command = safety ? 'rubocop.formatAutocorrects' : 'rubocop.formatAutocorrectsAll'
-
-        if source_code
-          correct_inline(path, source_code, command, scope)
-        else
-          process_files(path, scope) { |file, source| correct_file(file, source, command, scope) }
-            .to_json
-        end
-      end
-
       # Cops that keep undoing each other's corrections leave the file half
       # corrected, so it is left alone and the loop is reported instead. A file
       # with nothing to correct is left alone too, so its modification time
-      # doesn't tell editors and agents it changed.
-      def correct_file(file, source, command, scope)
-        corrected = @runtime.format(file, source, command: command, cops: scope.cop_options)
-        changed = source != corrected && @runtime.errors.none?(Runner::InfiniteCorrectionLoop)
+      # doesn't tell editors and agents it changed. The offenses left over are
+      # the ones an agent has to fix itself, which saves it inspecting again.
+      def correct_file(file, source, request)
+        corrected = @runtime.format(file, source, **request.format_options)
+        problems = problems_of_last_run(file)
+        looped = @runtime.errors.any?(Runner::InfiniteCorrectionLoop)
+        changed = !looped && source != corrected
         write_file(file, corrected) if changed
 
-        path = PathUtil.relative_path(file)
-        { path: path, corrected: changed }.merge(problems_of_last_run(file, path))
+        leftovers = leftover_offenses(file, source, corrected, changed, request)
+        entry = offense_entry(file, leftovers, request.limit)
+        { path: entry[:path], corrected: changed, **entry, **problems }
+      end
+
+      # What's left is in the file as written, or as it was when nothing is
+      # written, such as when its corrections loop. The runner checks corrected
+      # code with LF line endings, which writing turns into CRLF on Windows, so
+      # there the file is checked again as written.
+      def leftover_offenses(file, source, corrected, changed, request)
+        on_disk = changed ? Util.emulate_write_read_cycle(corrected) : source
+        return @runtime.uncorrected_offenses if on_disk == corrected
+
+        @runtime.raw_offenses(file, on_disk, cops: request.scope.cop_options)
       end
 
       # Corrected inline code comes back as plain text with nowhere to mention
       # a cop that crashed, so a crash fails the call instead of going unseen.
-      def correct_inline(path, source_code, command, scope)
+      def correct_inline(path, source_code, request)
         file = path || 'example.rb'
-        corrected = @runtime.format(file, source_code, command: command, cops: scope.cop_options)
-        errors = problems_of_last_run(file, PathUtil.smart_path(file))[:errors]
+        corrected = @runtime.format(file, source_code, **request.format_options)
+        errors = problems_of_last_run(file)[:errors]
         raise RuboCop::Error, errors.join("\n") if errors
 
         write_file(path, corrected) if path && !already_written?(path, corrected)
@@ -172,33 +205,33 @@ module RuboCop
 
       # Collapsed the way `--format json` collapses them, which also folds the
       # repeats from each autocorrection pass a crashing cop fails on.
-      def problems_of_last_run(file, path)
+      def problems_of_last_run(file)
         errors, warnings = [@runtime.errors, @runtime.warnings].map do |problems|
           problems.map { |problem| Rainbow::StringUtils.uncolor(problem.to_s) }
         end
-        @json_formatter.hash_for_problems(file, errors, warnings, path)
+        @json_formatter.hash_for_problems(file, errors, warnings)
       end
 
-      def process_files(path, scope, filter_empty: false)
+      def process_files(path, scope)
         target_finder = RuboCop::TargetFinder.new(@config_store, @options)
         target_files = scope.select_files(
           target_finder.find(path ? [path] : [], :only_recognized_file_types)
         )
         all_files = target_files.map { |file| yield(file, read_file(file)) }
 
-        build_result(target_files, all_files, filter_empty: filter_empty)
+        build_result(target_files, all_files)
       end
 
       # Inline code is reported as a single file, so an agent reads one shape
-      # whichever way it asked.
-      def build_result(target_files, all_files, filter_empty: false)
-        files = filter_empty ? all_files.reject { |f| nothing_to_report?(f) } : all_files
+      # whichever way it asked. Files with nothing to report are only counted.
+      def build_result(target_files, all_files)
+        files = all_files.reject { |f| nothing_to_report?(f) }
 
         { files: files, summary: build_summary(target_files, all_files) }
       end
 
       def nothing_to_report?(file)
-        file[:offenses].empty? && !file[:errors] && !file[:warnings]
+        file[:offenses].empty? && !file[:corrected] && !file[:errors] && !file[:warnings]
       end
 
       def read_file(file)
@@ -225,13 +258,9 @@ module RuboCop
       # to reason about. Since LLM execution is non-deterministic, it is also sensible to
       # compute the summary deterministically at this stage.
       def build_summary(target_files, files)
-        summary = { target_file_count: target_files.count }
-        if files.first&.key?(:offenses)
-          summary[:offense_count] = files.sum { |f| f[:offenses].size }
-        else
-          summary[:corrected_file_count] = files.count { |f| f[:corrected] }
-        end
-        summary.merge(@json_formatter.problem_counts(files))
+        offense_count = files.sum { |f| f[:offenses].size }
+        { target_file_count: target_files.count, offense_count: offense_count }
+          .merge(@json_formatter.problem_counts(files))
       end
 
       # rubocop:disable-next Metrics/MethodLength, Metrics/ParameterLists

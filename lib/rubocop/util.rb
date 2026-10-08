@@ -13,6 +13,17 @@ module RuboCop
       $VERBOSE = old_verbose
     end
 
+    # The source as it reads back after `File.write`, which in text mode turns
+    # each LF into CRLF on Windows. Cops like `Layout/EndOfLine` have to see
+    # corrected code that way between correction passes, and so does anything
+    # that compares it with what a write leaves on disk. The final `File.write`
+    # still performs the conversion for the file itself.
+    def self.emulate_write_read_cycle(source)
+      return source unless Platform.windows?
+
+      source.encode(source.encoding, crlf_newline: true)
+    end
+
     # Replaces the contents of `path` without a window in which the file is truncated
     # but not yet rewritten, so that an interrupted run or a full disk cannot lose
     # the original: the new contents are written next to the file and renamed over it,
