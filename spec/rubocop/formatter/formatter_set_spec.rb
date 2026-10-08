@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
   end
 
   it 'responds to all formatter API methods' do
-    %i[started file_started file_finished finished].each do |method|
+    %i[started file_started file_problems file_finished finished].each do |method|
       expect(formatter_set).to respond_to(method)
     end
   end
@@ -23,6 +23,13 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
       expect(formatter_set[0]).to receive(:started).with(files)
       expect(formatter_set[1]).to receive(:started).with(files)
       formatter_set.started(files)
+    end
+
+    it 'skips #file_problems for a formatter that does not implement it' do
+      formatter_set.add_formatter('json')
+      formatter_set << Object.new
+      expect(formatter_set[0]).to receive(:file_problems).with(files[0], ['boom'], [])
+      formatter_set.file_problems(files[0], ['boom'], [])
     end
   end
 

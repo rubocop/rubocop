@@ -664,8 +664,10 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
 
   context 'when a cop crashes' do
     let(:source) { "# frozen_string_literal: true\n\nputs ?a, \"b\"\n" }
-    # One message for the cop, though it crashed on both strings.
-    let(:crashes) { ['An error occurred while Style/CharacterLiteral cop was inspecting a.rb.'] }
+    # One message for the cop, at the first string, though it crashed on both.
+    let(:crashes) do
+      ['An error occurred while Style/CharacterLiteral cop was inspecting a.rb:3:5.']
+    end
     let(:requests) do
       [{
         jsonrpc: '2.0', id: '42', method: 'tools/call',
@@ -729,7 +731,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
 
     it 'lists the warning against its file' do
       expect(parsed_result[:files]).to eq(
-        [{ path: 'a.rb', offenses: [], warnings: ['odd configuration (from file: a.rb)'] }]
+        [{ path: 'a.rb', offenses: [], warnings: ['odd configuration (from file: a.rb:3:5)'] }]
       )
       expect(parsed_result[:summary]).to include(warning_count: 1)
     end

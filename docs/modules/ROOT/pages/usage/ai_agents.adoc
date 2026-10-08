@@ -17,7 +17,9 @@ Reports each offense with 1-based lines and columns, whether autocorrection can
 fix it, and the edits that fix would make, marked safe or unsafe. See the
 xref:formatters.adoc#json-formatter[JSON formatter]. An agent can apply the
 edits itself, but xref:formatters.adoc#corrections[Corrections] lists the
-catches, and running `-a` is usually simpler.
+catches, and running `-a` is usually simpler. A cop that crashes on a file is
+listed with that file's results, not only on stderr (see
+xref:formatters.adoc#errors-and-warnings[Errors and Warnings]).
 
 `--max-offenses-per-cop=COUNT`::
 Caps how many offenses each cop reports. A codebase new to RuboCop easily has

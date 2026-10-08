@@ -164,22 +164,13 @@ module RuboCop
         corrected
       end
 
-      # A crashing cop fails once per node it visits, and again on every
-      # autocorrection pass, so its messages lose their line and column and
-      # collapse into one per cop. Messages name the file the way its entry
-      # in the result does.
+      # Collapsed the way `--format json` collapses them, which also folds the
+      # repeats from each autocorrection pass a crashing cop fails on.
       def problems_of_last_run(file, path)
-        return {} if @runtime.errors.empty? && @runtime.warnings.empty?
-
-        location = /#{Regexp.escape(File.expand_path(file))}(:\d+)*/
-        { errors: @runtime.errors, warnings: @runtime.warnings }.filter_map do |key, problems|
-          messages = problems.map { |problem| plain_message(problem, location, path) }.uniq
-          [key, messages] unless messages.empty?
-        end.to_h
-      end
-
-      def plain_message(problem, location, path)
-        Rainbow::StringUtils.uncolor(problem.to_s).sub(location, path)
+        errors, warnings = [@runtime.errors, @runtime.warnings].map do |problems|
+          problems.map { |problem| Rainbow::StringUtils.uncolor(problem.to_s) }
+        end
+        @json_formatter.hash_for_problems(file, errors, warnings, path)
       end
 
       def process_files(path, scope, filter_empty: false)
@@ -234,14 +225,7 @@ module RuboCop
         else
           summary[:corrected_file_count] = files.count { |f| f[:corrected] }
         end
-        summary.merge(problem_counts(files))
-      end
-
-      def problem_counts(files)
-        {
-          error_count: files.sum { |f| f[:errors]&.size.to_i },
-          warning_count: files.sum { |f| f[:warnings]&.size.to_i }
-        }.reject { |_, count| count.zero? }
+        summary.merge(@json_formatter.problem_counts(files))
       end
 
       # rubocop:disable-next Metrics/MethodLength, Metrics/ParameterLists

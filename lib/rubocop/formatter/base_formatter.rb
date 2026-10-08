@@ -35,6 +35,7 @@ module RuboCop
     # * `#file_started`
     # * `#file_finished`
     # * `#file_started`
+    # * `#file_problems` (only when a cop crashed or warned on the file)
     # * `#file_finished`
     # * `#finished`
     #
@@ -87,6 +88,27 @@ module RuboCop
       #
       # @return [void]
       def file_started(file, options); end
+
+      # @api public
+      #
+      # Invoked before `#file_finished` for a file that a cop crashed on or
+      # raised a warning for, or whose corrections went into an infinite loop.
+      # Optional: a formatter implementing the API by duck typing is skipped
+      # when it doesn't define it.
+      #
+      # @param file [String]
+      #   the file path
+      #
+      # @param errors [Array(String)]
+      #   the error messages as they're printed, without colors. A cop that
+      #   crashes on every node of a kind has a message for each, naming the
+      #   line and column.
+      #
+      # @param warnings [Array(String)]
+      #   the warning messages, in the same form
+      #
+      # @return [void]
+      def file_problems(file, errors, warnings); end
 
       # @api public
       #
