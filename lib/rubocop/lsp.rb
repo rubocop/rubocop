@@ -26,8 +26,11 @@ module RuboCop
       if block
         original = @enabled
         @enabled = false
-        yield
-        @enabled = original
+        begin
+          yield
+        ensure
+          @enabled = original
+        end
       else
         @enabled = false
       end

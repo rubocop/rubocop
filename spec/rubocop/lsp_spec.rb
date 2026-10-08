@@ -34,6 +34,15 @@ RSpec.describe RuboCop::LSP, :lsp do
       end
     end
 
+    context 'when the block given to `RuboCop::LSP.disable` raises after `RuboCop::LSP.enable`' do
+      before { described_class.enable }
+
+      it 'returns true after the block' do
+        expect { described_class.disable { raise 'boom' } }.to raise_error('boom')
+        expect(described_class).to be_enabled
+      end
+    end
+
     context 'when `RuboCop::LSP.disable` with block is called after `RuboCop::LSP.disable`' do
       before do
         described_class.disable
