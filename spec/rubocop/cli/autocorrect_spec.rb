@@ -769,6 +769,38 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not loop between `Style/EndlessMethod`, `Style/MethodDefParentheses`, ' \
+     '`Layout/SpaceInsideParens` and `Layout/LineLength`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Layout/LineLength:
+        Max: 27
+      Layout/SpaceInsideParens:
+        EnforcedStyle: compact
+      Style/EndlessMethod:
+        EnforcedStyle: require_single_line
+      Style/MethodDefParentheses:
+        EnforcedStyle: require_no_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo a, b
+        bar( a, b )
+      end
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only',
+                     'Layout/LineLength,Layout/SpaceInsideParens,' \
+                     'Style/EndlessMethod,Style/MethodDefParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo a, b
+        bar( a, b )
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_always` of `Style/EndlessMethod` with ' \
      '`Naming/BlockForwarding`' do
     create_file('.rubocop.yml', <<~YAML)
