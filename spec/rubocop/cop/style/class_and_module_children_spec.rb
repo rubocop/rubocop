@@ -293,6 +293,33 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects a nested definition that is not at the top level' do
+      expect_offense(<<~RUBY)
+        module Foo
+          do_something
+
+          module Bar
+                 ^^^ Use compact module/class definition instead of nested style.
+            module Baz
+              def qux
+              end
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+          do_something
+
+          module Bar::Baz
+            def qux
+            end
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense for modules with nested children' do
       expect_offense(<<~RUBY)
         module FooModule
