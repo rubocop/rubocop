@@ -37,6 +37,58 @@ RSpec.describe RuboCop::Cop::Lint::RedundantDirGlobSort, :config do
       RUBY
     end
 
+    it 'registers an offense and correction when using `sort` with a leading dot on its own line' do
+      expect_offense(<<~RUBY)
+        Dir
+          .glob(pattern)
+          .sort
+           ^^^^ Remove redundant `sort`.
+          .each do |file|
+          end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Dir
+          .glob(pattern)
+          .each do |file|
+          end
+      RUBY
+    end
+
+    it 'registers an offense and correction keeping a comment before `sort` with a leading dot' do
+      expect_offense(<<~RUBY)
+        Dir
+          .glob(pattern) # comment
+          .sort
+           ^^^^ Remove redundant `sort`.
+          .each do |file|
+          end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Dir
+          .glob(pattern) # comment
+          .each do |file|
+          end
+      RUBY
+    end
+
+    it 'registers an offense and correction when using `sort` with a trailing dot' do
+      expect_offense(<<~RUBY)
+        Dir.glob(pattern).
+          sort.
+          ^^^^ Remove redundant `sort`.
+          each do |file|
+          end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Dir.glob(pattern).
+          each do |file|
+          end
+      RUBY
+    end
+
     it 'registers an offense and correction when using `Dir[].sort.each(&do_something)`' do
       expect_offense(<<~RUBY)
         Dir['./lib/**/*.rb'].sort.each(&method(:require))
