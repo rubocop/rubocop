@@ -19,7 +19,7 @@ rescue LoadError => e
   raise unless e.path == 'mcp'
 
   warn <<~MESSAGE
-    Error: Unable to load `mcp` gem. Add `gem 'mcp', '~> 0.6'` to your Gemfile, or run `gem install mcp`.
+    Error: Unable to load `mcp` gem. Add `gem 'mcp'` to your Gemfile, or run `gem install mcp`.
   MESSAGE
 
   exit!
