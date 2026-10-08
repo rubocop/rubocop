@@ -30,6 +30,7 @@ require_relative '../lsp/runtime'
 require_relative 'autocorrection_request'
 require_relative 'explain_tool'
 require_relative 'scope'
+require_relative 'source_files'
 
 module RuboCop
   module MCP
@@ -168,7 +169,7 @@ module RuboCop
         problems = problems_of_last_run(file)
         looped = @runtime.errors.any?(Runner::InfiniteCorrectionLoop)
         changed = !looped && source != corrected
-        write_file(file, corrected) if changed
+        SourceFiles.write(file, corrected) if changed
 
         leftovers = leftover_offenses(file, source, corrected, changed, request)
         entry = offense_entry(file, leftovers, request.limit)
@@ -194,13 +195,8 @@ module RuboCop
         errors = problems_of_last_run(file)[:errors]
         raise RuboCop::Error, errors.join("\n") if errors
 
-        write_file(path, corrected) if path && !already_written?(path, corrected)
+        SourceFiles.write(path, corrected) if path
         corrected
-      end
-
-      # Writing what a file already holds would only bump its modification time.
-      def already_written?(file, content)
-        File.file?(file) && File.binread(file) == content.b
       end
 
       # Collapsed the way `--format json` collapses them, which also folds the
@@ -217,7 +213,9 @@ module RuboCop
         target_files = scope.select_files(
           target_finder.find(path ? [path] : [], :only_recognized_file_types)
         )
-        all_files = target_files.map { |file| yield(file, read_file(file)) }
+        all_files = target_files.map do |file|
+          yield(file, SourceFiles.read(file, @config_store.for_file(file)))
+        end
 
         build_result(target_files, all_files)
       end
@@ -232,25 +230,6 @@ module RuboCop
 
       def nothing_to_report?(file)
         file[:offenses].empty? && !file[:corrected] && !file[:errors] && !file[:warnings]
-      end
-
-      def read_file(file)
-        config = @config_store.for_file(file)
-        RuboCop::ProcessedSource.from_file(
-          file, config.target_ruby_version, parser_engine: config.parser_engine
-        ).raw_source
-      rescue Errno::ENOENT
-        raise RuboCop::Error, "No such file or directory: #{file}"
-      end
-
-      def write_file(file, content)
-        File.write(file, content)
-      rescue Errno::EACCES
-        raise RuboCop::Error, "Permission denied: #{file}"
-      rescue Errno::ENOSPC
-        raise RuboCop::Error, "No space left on device: #{file}"
-      rescue Errno::EROFS
-        raise RuboCop::Error, "Read-only file system: #{file}"
       end
 
       # NOTE: It is useful for RuboCop's result summary to be shown in the LLM's responses
