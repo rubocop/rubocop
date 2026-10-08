@@ -53,6 +53,8 @@ module RuboCop
         'Provide `source_code` to correct inline code, which comes back corrected as ' \
         'plain text, or `path` to correct files. ' \
         'Set `safety` to false to include unsafe corrections. ' \
+        'Set `dry_run` to true to preview: nothing is written, and each corrected file ' \
+        'comes with its `diff`. ' \
         'For files, the result lists each file that was corrected or still has offenses, ' \
         'with the offenses left in the `rubocop_inspection` format, located in the ' \
         'corrected file. One whose `correction` is not `safe` needs `safety` set to false, ' \
@@ -169,17 +171,28 @@ module RuboCop
         problems = problems_of_last_run(file)
         looped = @runtime.errors.any?(Runner::InfiniteCorrectionLoop)
         changed = !looped && source != corrected
-        SourceFiles.write(file, corrected) if changed
-
         leftovers = leftover_offenses(file, source, corrected, changed, request)
         entry = offense_entry(file, leftovers, request.limit)
-        { path: entry[:path], corrected: changed, **entry, **problems }
+        diff = write_or_diff(file, entry[:path], source, corrected, request) if changed
+
+        { path: entry[:path], corrected: changed, diff: diff, **entry, **problems }.compact
       end
 
-      # What's left is in the file as written, or as it was when nothing is
-      # written, such as when its corrections loop. The runner checks corrected
-      # code with LF line endings, which writing turns into CRLF on Windows, so
-      # there the file is checked again as written.
+      # A dry run writes nothing and returns the diff a real run would have
+      # applied, line endings included.
+      def write_or_diff(file, path, source, corrected, request)
+        if request.dry_run?
+          UnifiedDiff.new(path, source, Util.emulate_write_read_cycle(corrected)).to_s
+        else
+          SourceFiles.write(file, corrected)
+          nil
+        end
+      end
+
+      # What's left is in the file as written, or as a dry run would have
+      # written it, or as it was when its corrections loop. The runner checks
+      # corrected code with LF line endings, which writing turns into CRLF on
+      # Windows, so there the file is checked again as written.
       def leftover_offenses(file, source, corrected, changed, request)
         on_disk = changed ? Util.emulate_write_read_cycle(corrected) : source
         return @runtime.uncorrected_offenses if on_disk == corrected
@@ -195,7 +208,7 @@ module RuboCop
         errors = problems_of_last_run(file)[:errors]
         raise RuboCop::Error, errors.join("\n") if errors
 
-        SourceFiles.write(path, corrected) if path
+        SourceFiles.write(path, corrected) if path && !request.dry_run?
         corrected
       end
 
