@@ -67,6 +67,12 @@ module RuboCop
         @runner.offenses
       end
 
+      # The offenses the last `format` found but didn't correct, located in the
+      # source it returned.
+      def uncorrected_offenses
+        @runner.offenses.reject(&:corrected?)
+      end
+
       # What went wrong in the last run. Cop errors only end up here when
       # `raise_cop_error` is off; otherwise they are raised.
       def errors

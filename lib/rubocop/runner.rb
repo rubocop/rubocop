@@ -511,7 +511,7 @@ module RuboCop
       # The original source is the file as it is on disk, so the corrected one
       # has to go through the same line ending conversion `File.write` would
       # apply, or on Windows every single line reads as changed.
-      new_source = new_source ? emulate_write_read_cycle(new_source) : original_source
+      new_source = new_source ? Util.emulate_write_read_cycle(new_source) : original_source
 
       sources = (@diff_sources[file] ||= [original_source])
       sources[1] = new_source
@@ -522,17 +522,6 @@ module RuboCop
       team.defer_corrections = @options[:diff] || in_memory_corrections_possible?
       offenses, updated_source_file = inspect_file(processed_source, team)
       [team, offenses, updated_source_file]
-    end
-
-    # When corrections were written to disk and read back between iterations,
-    # the text-mode write converted LF to CRLF on Windows, and cops like
-    # `Layout/EndOfLine` rely on seeing the source as it would be on disk.
-    # Apply the same conversion to the in-memory source. The final `File.write`
-    # still performs it for the file itself.
-    def emulate_write_read_cycle(source)
-      return source unless Platform.windows?
-
-      source.encode(source.encoding, crlf_newline: true)
     end
 
     # Custom ruby extractors may derive their fragments from the file on
@@ -741,7 +730,7 @@ module RuboCop
 
       processed_source = if source
                            ProcessedSource.new(
-                             emulate_write_read_cycle(source),
+                             Util.emulate_write_read_cycle(source),
                              ruby_version,
                              file,
                              parser_engine: parser_engine

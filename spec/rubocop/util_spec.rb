@@ -3,6 +3,20 @@
 RSpec.describe RuboCop::Util, :isolated_environment do
   include FileHelper
 
+  describe '.emulate_write_read_cycle' do
+    it 'turns each LF into CRLF on Windows, as a text-mode write does' do
+      allow(RuboCop::Platform).to receive(:windows?).and_return(true)
+
+      expect(described_class.emulate_write_read_cycle("a\nb\n")).to eq("a\r\nb\r\n")
+    end
+
+    it 'leaves the source alone elsewhere' do
+      allow(RuboCop::Platform).to receive(:windows?).and_return(false)
+
+      expect(described_class.emulate_write_read_cycle("a\nb\n")).to eq("a\nb\n")
+    end
+  end
+
   describe '.replace_file_contents' do
     let(:path) { 'example.rb' }
 

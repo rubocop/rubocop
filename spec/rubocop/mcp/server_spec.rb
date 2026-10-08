@@ -100,13 +100,11 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
               readOnlyHint: false,
               title: "RuboCop's autocorrection"
             },
-            description: 'Autocorrect RuboCop offenses in Ruby code. ' \
-                         'Provide `source_code` to correct inline code ' \
-                         'or `path` to correct files. ' \
-                         'Set `safety` to false to include unsafe corrections.',
+            description: described_class::AUTOCORRECTION_DESCRIPTION,
             inputSchema: {
               '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
+                max_offenses_per_cop: { type: 'integer', minimum: 1 },
                 path: { type: 'string' },
                 safety: { type: 'boolean' },
                 source_code: { type: 'string' },
@@ -451,25 +449,91 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
     end
   end
 
-  describe 'tools/call to autocorrection with `max_offenses_per_cop`' do
+  describe 'tools/call to autocorrection of files' do
+    let(:arguments) { { safety: true } }
     let(:requests) do
       [{
         jsonrpc: '2.0',
         id: '42',
         method: 'tools/call',
-        params: {
-          name: 'rubocop_autocorrection',
-          arguments: { safety: true, path: 'a.rb', max_offenses_per_cop: 1 }
-        }
+        params: { name: 'rubocop_autocorrection', arguments: arguments }
       }]
     end
+    let(:source) { "x = \"a\"\nputs [1].size == 0\n" }
+    let(:offenses) { parsed_result[:files].first[:offenses] }
 
-    before { File.write('a.rb', '?a') }
+    def offense_of(cop_name)
+      offenses.find { |offense| offense[:cop_name] == cop_name }
+    end
 
-    # How much of the error the client sees depends on the version of the mcp gem.
-    it 'refuses an argument only inspection takes, without correcting anything' do
-      expect(response).to have_key(:error)
-      expect(File.read('a.rb')).to eq('?a')
+    before do
+      File.write('a.rb', source)
+      File.write('clean.rb', "# frozen_string_literal: true\n\nputs 'a'\n")
+    end
+
+    it 'lists the offenses it left, in the inspection format, and only the files that matter' do
+      expect(parsed_result[:files]).to match([include(path: 'a.rb', corrected: true)])
+      expect(offenses.map { |offense| offense[:cop_name] }).to contain_exactly(
+        'Lint/UselessAssignment', 'Style/FrozenStringLiteralComment',
+        'Style/NumericPredicate', 'Style/ZeroLengthPredicate'
+      )
+      expect(parsed_result[:summary]).to eq(
+        target_file_count: 2, offense_count: 4, corrected_file_count: 1
+      )
+    end
+
+    it 'marks an unsafe correction left behind as needing `safety` set to false' do
+      expect(offense_of('Style/ZeroLengthPredicate'))
+        .to include(correctable: true, correction: include(safe: false))
+    end
+
+    it 'marks a correction held back while code is being edited as not correctable' do
+      expect(offense_of('Lint/UselessAssignment'))
+        .to include(correctable: false, correction: include(:edits))
+    end
+
+    context 'with unsafe corrections' do
+      let(:arguments) { { safety: false } }
+
+      it 'locates the offenses it left in the corrected file' do
+        line = offense_of('Lint/UselessAssignment')[:location][:start_line]
+
+        expect(line).to eq(3)
+        expect(File.read('a.rb').lines[line - 1]).to eq("x = 'a'\n")
+      end
+    end
+
+    context 'with more offenses left than the default cap' do
+      let(:source) { (1..6).map { |n| "x#{n} = #{n}\n" }.join }
+
+      it 'lists five of each cop and counts the rest' do
+        expect(offenses.count { |offense| offense[:cop_name] == 'Lint/UselessAssignment' }).to eq(5)
+        expect(parsed_result[:summary][:unreported_offenses]).to eq('Lint/UselessAssignment': 1)
+      end
+    end
+
+    context 'with `max_offenses_per_cop`' do
+      let(:arguments) { { safety: true, max_offenses_per_cop: 1 } }
+
+      before { File.write('b.rb', "x = \"b\"\n") }
+
+      it 'caps the offenses it lists, not the corrections it makes' do
+        expect(parsed_result[:files].sum { |file| file[:offenses].size }).to eq(4)
+        expect(parsed_result[:summary][:unreported_offenses]).to eq(
+          'Lint/UselessAssignment': 1, 'Style/FrozenStringLiteralComment': 1
+        )
+        expect(File.read('b.rb')).to eq("x = 'b'\n")
+      end
+    end
+
+    context 'with an argument it does not take' do
+      let(:arguments) { { safety: true, path: 'a.rb', fix_everything: true } }
+
+      # How much of the error the client sees depends on the version of the mcp gem.
+      it 'refuses it without correcting anything' do
+        expect(response).to have_key(:error)
+        expect(File.read('a.rb')).to eq(source)
+      end
     end
   end
 
@@ -727,7 +791,9 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       let(:arguments) { { path: 'a.rb', safety: true } }
 
       it 'still corrects what the other cops can and lists the crash' do
-        expect(parsed_result[:files]).to eq([{ path: 'a.rb', corrected: true, errors: crashes }])
+        expect(parsed_result[:files]).to eq(
+          [{ path: 'a.rb', corrected: true, offenses: [], errors: crashes }]
+        )
         expect(File.read('a.rb')).to eq("# frozen_string_literal: true\n\nputs ?a, 'b'\n")
       end
     end
@@ -884,25 +950,30 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       }]
     end
 
-    # Stands in for two cops undoing each other: the runner gives up with the
-    # source part way through and reports the loop.
+    # Stands in for two cops undoing each other: when correcting, the runner
+    # gives up with the source part way through and reports the loop.
     before do
       File.write('a.rb', source)
       allow(RuboCop::Lsp::StdinRunner).to receive(:new).and_wrap_original do |new, *args|
         runner = new.call(*args)
-        allow(runner).to receive(:file_offenses) do |file|
-          runner.instance_variable_get(:@options)[:stdin] = 'half corrected'
+        allow(runner).to receive(:file_offenses).and_wrap_original do |file_offenses, file|
+          options = runner.instance_variable_get(:@options)
+          next file_offenses.call(file) unless options[:autocorrect]
+
+          options[:stdin] = 'half corrected'
           raise RuboCop::Runner::InfiniteCorrectionLoop.new(file, [[]])
         end
         runner
       end
     end
 
-    it 'leaves the file alone and lists the loop' do
+    it 'leaves the file alone and lists the loop, with the offenses it still has' do
       file = parsed_result[:files].first
 
       expect(file).to include(path: 'a.rb', corrected: false)
       expect(file[:errors]).to contain_exactly(start_with('Infinite loop detected in a.rb'))
+      expect(file[:offenses].map { |offense| offense[:cop_name] })
+        .to eq(['Style/FrozenStringLiteralComment'])
       expect(File.read('a.rb')).to eq(source)
     end
   end
