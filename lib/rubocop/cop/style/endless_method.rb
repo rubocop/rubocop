@@ -265,9 +265,21 @@ module RuboCop
 
         def arguments(node, missing = '')
           return missing unless node.arguments.any?
-          return "(#{node.arguments.source})" if unparenthesized_arguments?(node)
+          return parenthesized_arguments(node) if unparenthesized_arguments?(node)
 
           node.arguments.source
+        end
+
+        def parenthesized_arguments(node)
+          padding = space_inside_parens? ? ' ' : ''
+
+          "(#{padding}#{node.arguments.source}#{padding})"
+        end
+
+        def space_inside_parens?
+          return false unless config.cop_enabled?('Layout/SpaceInsideParens')
+
+          config.for_cop('Layout/SpaceInsideParens')['EnforcedStyle'] != 'no_space'
         end
 
         def can_be_made_endless?(node)
