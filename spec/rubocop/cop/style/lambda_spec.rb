@@ -246,6 +246,60 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
         end
       end
     end
+
+    context 'with a lambda literal in a pattern', :ruby27 do
+      it 'does not register an offense for a lambda literal as an `in` pattern' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in -> { _1.positive? }
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a lambda literal nested in an array pattern' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in [String, Hash | -> { _1.positive? }]
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a lambda literal in a one-line pattern match' do
+        expect_no_offenses(<<~RUBY)
+          value in -> { _1.positive? }
+        RUBY
+      end
+
+      it 'registers an offense for a lambda literal in a pinned expression', :ruby31 do
+        expect_offense(<<~RUBY)
+          case value
+          in ^(-> { _1.positive? }) => x
+               ^^ Use the `lambda` method for all lambdas.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ^(lambda { _1.positive? }) => x
+          end
+        RUBY
+      end
+
+      it 'registers an offense for a lambda literal in a guard clause' do
+        expect_offense(<<~RUBY)
+          case value
+          in x if -> { _1.positive? }.call(x)
+                  ^^ Use the `lambda` method for all lambdas.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in x if lambda { _1.positive? }.call(x)
+          end
+        RUBY
+      end
+    end
   end
 
   context 'with enforced `literal` style' do

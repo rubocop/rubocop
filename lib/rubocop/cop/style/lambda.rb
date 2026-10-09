@@ -62,6 +62,11 @@ module RuboCop
           }
         }.freeze
 
+        PATTERN_TYPES = %i[
+          array_pattern array_pattern_with_tail begin const_pattern find_pattern hash_pattern
+          match_alt match_as pair
+        ].freeze
+
         def self.autocorrect_incompatible_with
           [Style::SymbolProc]
         end
@@ -95,9 +100,29 @@ module RuboCop
 
         def uncorrectable_lambda_literal?(node)
           return false unless node.send_node.lambda_literal?
+          return true if in_pattern?(node)
           return false unless rescue_or_ensure_clause?(node.body)
 
           LambdaLiteralToMethodCorrector.new(node).replace_delimiters?
+        end
+
+        def in_pattern?(node)
+          child = node
+
+          node.each_ancestor do |ancestor|
+            case ancestor.type
+            when :in_pattern
+              return ancestor.pattern.equal?(child)
+            when :match_pattern, :match_pattern_p
+              return ancestor.children[1].equal?(child)
+            when *PATTERN_TYPES
+              child = ancestor
+            else
+              return false
+            end
+          end
+
+          false
         end
 
         def rescue_or_ensure_clause?(body)
