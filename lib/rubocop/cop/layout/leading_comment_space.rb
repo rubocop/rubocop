@@ -174,7 +174,7 @@ module RuboCop
         end
 
         def rackup_config_file?
-          File.basename(processed_source.file_path).eql?('config.ru')
+          File.basename(processed_source.file_path) == 'config.ru'
         end
 
         def allow_doxygen_comment?
@@ -190,7 +190,7 @@ module RuboCop
         end
 
         def gemfile?
-          File.basename(processed_source.file_path).eql?('Gemfile')
+          File.basename(processed_source.file_path) == 'Gemfile'
         end
 
         def ruby_comment_in_gemfile?(comment)
