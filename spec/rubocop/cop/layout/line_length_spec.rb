@@ -900,8 +900,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               RUBY
 
               expect_correction(<<~'RUBY')
-                foo("aaaaaaaaaaaaaaaaaaaaaaaaa#{b} cc " \
-                "dd " \
+                foo("aaaaaaaaaaaaaaaaaaaaaaaaa#{b} " \
+                "cc dd " \
                     "ee")
               RUBY
             end
@@ -1292,6 +1292,29 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                 expect_offense(<<~'RUBY')
                   "#{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}bb cc dd"
                                                           ^^^^^^^ Line is too long. [47/40]
+                RUBY
+
+                expect_no_corrections
+              end
+            end
+
+            context 'when the string does not begin its line' do
+              it 'breaks the string so that the first line fits' do
+                expect_offense(<<~'RUBY')
+                  some_method_name("#{aaaa}bb cc dd ee ff gg hh")
+                                                          ^^^^^^^ Line is too long. [47/40]
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  some_method_name("#{aaaa}bb cc dd ee " \
+                  "ff gg hh")
+                RUBY
+              end
+
+              it 'does not correct when the string after the interpolation starts past the limit' do
+                expect_offense(<<~'RUBY')
+                  some_variable_name = "#{aaaaaaaaaaaaaaaaa}bb cc dd ee ff gg"
+                                                          ^^^^^^^^^^^^^^^^^^^^ Line is too long. [60/40]
                 RUBY
 
                 expect_no_corrections
