@@ -299,9 +299,11 @@ module RuboCop
         end
 
         def heredoc_ranges_in(body)
-          body.each_node(:any_str).select(&:heredoc?).map do |heredoc|
+          ranges = body.each_node(:any_str).select(&:heredoc?).map do |heredoc|
             range_by_whole_lines(heredoc.loc.heredoc_body.join(heredoc.loc.heredoc_end))
           end
+          # A heredoc opened in another heredoc's interpolation is moved along with it.
+          ranges.reject { |range| ranges.any? { |other| other.contains?(range) } }
         end
 
         def comment_on_node_line(node)
