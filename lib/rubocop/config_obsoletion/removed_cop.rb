@@ -20,7 +20,7 @@ module RuboCop
 
         if reason
           "#{base} since #{reason.chomp}."
-        elsif alternatives
+        elsif alternatives.any?
           "#{base}. Please use #{to_sentence(alternatives, connector: 'and/or')} instead."
         else
           "#{base}."
