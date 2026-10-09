@@ -142,7 +142,7 @@ RSpec.describe RuboCop::RakeTask do
         1  Style/FrozenStringLiteralComment [Unsafe Correctable]
         1  Style/SpecialGlobalVars [Unsafe Correctable]
         --
-        2  Total in 1 files
+        2  Total in 1 file
 
       RESULT
       expect($stderr.string.strip).to eq 'RuboCop failed!'

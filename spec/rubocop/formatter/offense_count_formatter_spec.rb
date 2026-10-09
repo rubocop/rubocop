@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
             1  Style/AndOr [Unsafe Correctable]
             1  Style/HashSyntax [Safe Correctable]
             --
-            4  Total in 1 files
+            4  Total in 1 file
 
           OUTPUT
         end
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
             1  Style/AndOr [Unsafe Correctable] (https://rubystyle.guide#no-good-Style/AndOr)
             1  Style/HashSyntax [Safe Correctable] (https://rubystyle.guide#no-good-Style/HashSyntax)
             --
-            4  Total in 1 files
+            4  Total in 1 file
 
           OUTPUT
         end

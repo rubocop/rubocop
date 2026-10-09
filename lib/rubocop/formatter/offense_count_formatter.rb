@@ -14,6 +14,8 @@ module RuboCop
     # --
     # 29  Total in 5 files
     class OffenseCountFormatter < BaseFormatter
+      include TextUtil
+
       attr_reader :offense_counts
 
       def started(target_files)
@@ -64,7 +66,7 @@ module RuboCop
           output.puts "#{count.to_s.ljust(column_width)}#{cop_information(cop_name)}"
         end
         output.puts '--'
-        output.puts "#{total_count}  Total in #{offending_files_count} files"
+        output.puts "#{total_count}  Total in #{pluralize(offending_files_count, 'file')}"
 
         output.puts
       end
