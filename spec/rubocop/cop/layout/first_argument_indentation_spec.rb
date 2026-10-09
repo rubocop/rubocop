@@ -646,6 +646,25 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             )
           RUBY
         end
+
+        it 'corrects only the first argument when a method call chain beginning its line is under-indented' do
+          expect_offense(<<~RUBY)
+            foo.bar(
+              baz(:qux).quux(
+            corge,
+            ^^^^^ Indent the first argument one step more than the start of the previous line.
+                grault).garply
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.bar(
+              baz(:qux).quux(
+                corge,
+                grault).garply
+            )
+          RUBY
+        end
       end
 
       context 'without outer parentheses' do

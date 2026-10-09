@@ -3593,6 +3593,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop for `Layout/FirstArgumentIndentation` with `Layout/FirstMethodArgumentLineBreak` in a method call chain that begins its line' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/FirstMethodArgumentLineBreak:
+        Enabled: true
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.bar(
+        baz(:qux).quux(corge,
+                       grault).garply
+      )
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only', %w[
+      Layout/ArgumentAlignment Layout/FirstArgumentIndentation Layout/FirstMethodArgumentLineBreak
+    ].join(',')])
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo.bar(
+        baz(:qux).quux(
+          corge,
+          grault).garply
+      )
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation`' do
     create_file('example.rb', <<~RUBY)
