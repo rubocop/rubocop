@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'io/console'
+
 module RuboCop
   module Formatter
     # This formatter prints a PACDOT per every file to be analyzed.
@@ -50,7 +52,7 @@ module RuboCop
 
       def cols
         @cols ||= begin
-          _height, width = $stdout.winsize
+          _height, width = output.winsize if output.tty?
           width.nil? || width.zero? ? FALLBACK_TERMINAL_WIDTH : width
         end
       end

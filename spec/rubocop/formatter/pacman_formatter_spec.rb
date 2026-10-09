@@ -29,6 +29,22 @@ RSpec.describe RuboCop::Formatter::PacmanFormatter do
     end
   end
 
+  describe '#cols' do
+    context 'when the output is a terminal' do
+      let(:output) { instance_double(IO, tty?: true, winsize: [24, 120]) }
+
+      it 'uses its width' do
+        expect(formatter.cols).to eq(120)
+      end
+    end
+
+    context 'when the output is not a terminal' do
+      it 'falls back to the default width' do
+        expect(formatter.cols).to eq(described_class::FALLBACK_TERMINAL_WIDTH)
+      end
+    end
+  end
+
   describe '#update_progress_line' do
     subject(:update_progress_line) { formatter.update_progress_line }
 
