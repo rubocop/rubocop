@@ -4123,6 +4123,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/RedundantLineBreak` with `Layout/LineLength` when expressions that each fit on a single line share a line' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 35
+      Layout/RedundantLineBreak:
+        Enabled: true
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      do_something(foo(a,
+                       b) => bar(c,
+                                 d))
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/LineLength,Layout/RedundantLineBreak'])).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      do_something(foo(a, b) => bar(c,
+                                 d))
+    RUBY
+  end
+
   it 'corrects `Layout/DotPosition` and `Layout/SingleLineBlockChain` offenses' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

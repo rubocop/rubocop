@@ -54,6 +54,11 @@ module RuboCop
 
         MSG = 'Redundant line break detected.'
 
+        def on_new_investigation
+          super
+          @offense_line_ranges = []
+        end
+
         def on_lvasgn(node)
           super unless end_with_percent_blank_string?(processed_source)
         end
@@ -83,6 +88,8 @@ module RuboCop
         end
 
         def register_offense(node)
+          return if shares_line_with_offense?(node)
+
           # The exact single-line correction is verified to parse equivalently
           # before the offense is registered, so a join that would change how
           # the code parses is never reported or offered.
@@ -92,6 +99,13 @@ module RuboCop
             corrector.replace(node, to_single_line(node.source).strip)
           end
           ignore_node(node)
+          @offense_line_ranges << (node.first_line..node.last_line)
+        end
+
+        def shares_line_with_offense?(node)
+          @offense_line_ranges.any? do |range|
+            range.begin <= node.last_line && node.first_line <= range.end
+          end
         end
 
         def apply_reparse_correction(corrector, node)

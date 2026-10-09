@@ -849,6 +849,24 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
     end
   end
 
+  context 'when expressions that each fit on a single line share a line' do
+    let(:max_line_length) { 35 }
+
+    it 'registers an offense only for the first expression when joining both would make the line too long' do
+      expect_offense(<<~RUBY)
+        do_something(foo(a,
+                     ^^^^^^ Redundant line break detected.
+                         b) => bar(c,
+                                   d))
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(foo(a, b) => bar(c,
+                                   d))
+      RUBY
+    end
+  end
+
   context 'when `Layout/LineLength` is disabled' do
     let(:line_length_enabled) { false }
 
