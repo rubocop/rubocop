@@ -2,6 +2,44 @@
 
 RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :config do
   context 'when defining predicate method' do
+    it 'registers an offense when using `return` as an operand of `||`' do
+      expect_offense(<<~RUBY)
+        def foo?
+          condition || return
+                       ^^^^^^ Return `false` instead of `nil` in predicate methods.
+
+          bar?
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo?
+          condition || (return false)
+
+          bar?
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using `return` as an operand of `or`' do
+      expect_offense(<<~RUBY)
+        def foo?
+          condition or return
+                       ^^^^^^ Return `false` instead of `nil` in predicate methods.
+
+          bar?
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo?
+          condition or return false
+
+          bar?
+        end
+      RUBY
+    end
+
     it 'registers an offense when using `return`' do
       expect_offense(<<~RUBY)
         def foo?
