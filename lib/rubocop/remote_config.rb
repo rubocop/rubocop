@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'net/http'
 require 'time'
+require 'uri'
 
 module RuboCop
   # Common methods and behaviors for dealing with remote config files.
@@ -44,6 +44,9 @@ module RuboCop
 
     def request(uri = @uri, limit = 10, &block)
       raise ArgumentError, 'HTTP redirect too deep' if limit.zero?
+
+      # Loaded here rather than at the top, since most runs never fetch a remote config.
+      require 'net/http'
 
       http = Net::HTTP.new(uri.hostname, uri.port)
       http.use_ssl = uri.instance_of?(URI::HTTPS)
