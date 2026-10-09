@@ -97,6 +97,7 @@ module RuboCop
 
         def on_send(node)
           return unless offense_condition?(node)
+          return if comment_before_to_f?(node)
 
           add_offense(node) do |corrector|
             case style
@@ -141,8 +142,27 @@ module RuboCop
         end
 
         def remove_to_f_method(corrector, send_node)
-          corrector.remove(send_node.loc.dot)
-          corrector.remove(send_node.loc.selector)
+          corrector.remove(send_node.receiver.source_range.end.join(send_node.loc.selector.end))
+        end
+
+        def comment_before_to_f?(node)
+          operands_losing_to_f(node).any? do |operand|
+            next false unless to_f_method?(operand)
+
+            range = operand.receiver.source_range.end.join(operand.loc.selector.begin)
+            processed_source.contains_comment?(range)
+          end
+        end
+
+        def operands_losing_to_f(node)
+          case style
+          when :left_coerce, :single_coerce
+            [node.first_argument]
+          when :right_coerce
+            [node.receiver]
+          else
+            [node.receiver, node.first_argument]
+          end
         end
 
         def correct_from_slash_to_fdiv(corrector, receiver, argument)

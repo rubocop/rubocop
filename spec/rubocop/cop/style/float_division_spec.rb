@@ -124,6 +124,33 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects for left coerce with a leading dot on its own line' do
+      expect_offense(<<~RUBY)
+        a
+        ^ Prefer using `.to_f` on the right side.
+          .to_f / b
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a / b.to_f
+      RUBY
+    end
+
+    it 'does not register an offense for left coerce with a comment before a leading dot' do
+      expect_no_offenses(<<~RUBY)
+        a # comment
+          .to_f / b
+      RUBY
+    end
+
+    it 'does not register an offense for left coerce with a comment between a trailing dot and `to_f`' do
+      expect_no_offenses(<<~RUBY)
+        a.
+          # comment
+          to_f / b
+      RUBY
+    end
+
     it 'does not register offense for left coerce with implicit receiver' do
       expect_no_offenses('to_f / b')
     end
