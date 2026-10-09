@@ -142,6 +142,7 @@ module RuboCop
         include RangeHelp
         include AllowedMethods
         include AllowedPattern
+        include PatternMatchingHelp
         extend AutoCorrector
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` instead of a block.'
@@ -175,6 +176,8 @@ module RuboCop
               return if proc_node?(dispatch_node)
               return if LAMBDA_OR_PROC.include?(dispatch_node.method_name)
             end
+            # A pattern accepts a lambda literal, but not `lambda(&:foo)`.
+            return if in_pattern?(node)
             return if unsafe_hash_usage?(dispatch_node)
             return if unsafe_array_usage?(dispatch_node)
             return if allowed_method_name?(dispatch_node.method_name)

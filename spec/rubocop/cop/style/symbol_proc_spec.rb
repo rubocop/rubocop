@@ -143,6 +143,56 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
         ::Proc.new(&:method)
       RUBY
     end
+
+    context 'with a lambda literal in a pattern', :ruby27 do
+      it 'does not register an offense for a lambda literal as an `in` pattern' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in ->(x) { x.positive? } then 1
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a multiline lambda literal as an `in` pattern' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in ->(x) do
+            x.positive?
+          end
+            1
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a lambda literal with a numbered parameter nested in an array pattern' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in [Integer, -> { _1.positive? }] then 1
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a lambda literal in a one-line pattern match' do
+        expect_no_offenses(<<~RUBY)
+          value in ->(x) { x.positive? }
+        RUBY
+      end
+
+      it 'registers an offense for a lambda literal in a pinned expression', :ruby31 do
+        expect_offense(<<~RUBY)
+          case value
+          in ^(->(x) { x.positive? }) then 1
+               ^^^^^^^^^^^^^^^^^^^^^ Use `lambda(&:positive?)` instead of `->(x) { x.positive? }`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ^(lambda(&:positive?)) then 1
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when AllowedMethods is enabled' do
