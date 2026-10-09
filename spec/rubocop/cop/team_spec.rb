@@ -53,6 +53,68 @@ RSpec.describe RuboCop::Cop::Team do
     end
   end
 
+  context 'when a cop declares another cop as autocorrect incompatible', :isolated_environment,
+          :restore_registry do
+    include FileHelper
+
+    let(:options) { { autocorrect: true } }
+    let(:file_path) { 'example.rb' }
+    let(:source) do
+      source = RuboCop::ProcessedSource.from_file(
+        file_path, ruby_version, parser_engine: parser_engine
+      )
+      source.config = config
+      source.registry = cop_classes
+      source
+    end
+
+    let!(:integer_cop) do
+      stub_cop_class('Test::IntegerCop') do
+        extend RuboCop::Cop::AutoCorrector
+
+        def on_int(node)
+          add_offense(node, message: 'Integer') { |corrector| corrector.replace(node, '2') }
+        end
+      end
+    end
+
+    let!(:declaring_cop) do
+      stub_cop_class('Test::DeclaringCop') do
+        extend RuboCop::Cop::AutoCorrector
+
+        def self.autocorrect_incompatible_with
+          [Test::IntegerCop]
+        end
+
+        def on_send(node)
+          add_offense(node, message: 'Send') do |corrector|
+            corrector.replace(node.loc.selector, 'bar')
+          end
+        end
+      end
+    end
+
+    before { create_file(file_path, 'foo(1)') }
+
+    context 'when the declaring cop runs first' do
+      let(:cop_classes) { RuboCop::Cop::Registry.new([declaring_cop, integer_cop]) }
+
+      it 'skips the correction of the other cop in the same pass' do
+        team.investigate(source)
+        expect(File.read(file_path)).to eq("bar(1)\n")
+      end
+    end
+
+    context 'when the declaring cop runs last' do
+      let(:cop_classes) { RuboCop::Cop::Registry.new([integer_cop, declaring_cop]) }
+
+      it 'skips the correction of the declaring cop in the same pass' do
+        team.investigate(source)
+        expect(File.read(file_path)).to eq("foo(2)\n")
+      end
+    end
+  end
+
   describe '#autocorrect?' do
     subject { team.autocorrect? }
 
