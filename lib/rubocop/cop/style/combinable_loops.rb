@@ -118,6 +118,8 @@ module RuboCop
 
         def combinable_blocks?(node, sibling)
           return false unless node.arguments == sibling.arguments
+          # Numbered and `it` parameters are implicit, so `arguments` is empty for both.
+          return false unless node.argument_list == sibling.argument_list
 
           !node.body.type?(:rescue, :ensure) && !sibling.body.type?(:rescue, :ensure)
         end

@@ -185,6 +185,36 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'registers an offense and does not correct when a numbered block is followed by an `it` block', :ruby34 do
+      expect_offense(<<~RUBY)
+        items.each { foo(_1) }
+        items.each { bar(it) }
+        ^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense and does not correct when numbered blocks use different numbered parameters' do
+      expect_offense(<<~RUBY)
+        items.each { foo(_1) }
+        items.each { bar(_1, _2) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense and does not correct when a numbered block is followed by a block with explicit parameters' do
+      expect_offense(<<~RUBY)
+        items.each { foo(_1) }
+        items.each { |item| bar(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'registers an offense when looping over the same data as previous loop in `do`...`end` and `{`...`}` blocks' do
       expect_offense(<<~RUBY)
         items.each do |item| do_something(item) end
