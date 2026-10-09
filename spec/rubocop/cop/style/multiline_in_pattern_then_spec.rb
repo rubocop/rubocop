@@ -156,5 +156,14 @@ RSpec.describe RuboCop::Cop::Style::MultilineInPatternThen, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when the pattern ends with an endless range' do
+      expect_no_offenses(<<~RUBY)
+        case foo
+        in 500.. then
+          do_something
+        end
+      RUBY
+    end
   end
 end
