@@ -48,6 +48,7 @@ module RuboCop
       #       end
       class Lambda < Base
         include ConfigurableEnforcedStyle
+        include PatternMatchingHelp
         include RescueNode
         extend AutoCorrector
 
@@ -61,11 +62,6 @@ module RuboCop
             line_count_dependent: { single_line: 'lambda', multiline: '->' }
           }
         }.freeze
-
-        PATTERN_TYPES = %i[
-          array_pattern array_pattern_with_tail begin const_pattern find_pattern hash_pattern
-          match_alt match_as pair
-        ].freeze
 
         def self.autocorrect_incompatible_with
           [Style::SymbolProc]
@@ -104,25 +100,6 @@ module RuboCop
           return false unless rescue_or_ensure_clause?(node.body)
 
           LambdaLiteralToMethodCorrector.new(node).replace_delimiters?
-        end
-
-        def in_pattern?(node)
-          child = node
-
-          node.each_ancestor do |ancestor|
-            case ancestor.type
-            when :in_pattern
-              return ancestor.pattern.equal?(child)
-            when :match_pattern, :match_pattern_p
-              return ancestor.children[1].equal?(child)
-            when *PATTERN_TYPES
-              child = ancestor
-            else
-              return false
-            end
-          end
-
-          false
         end
 
         def rescue_or_ensure_clause?(body)

@@ -65,6 +65,7 @@ module RuboCop
     autoload :OnNormalIfUnless, "#{__dir__}/mixin/on_normal_if_unless"
     autoload :OrderedGemNode, "#{__dir__}/mixin/ordered_gem_node"
     autoload :Parentheses, "#{__dir__}/mixin/parentheses"
+    autoload :PatternMatchingHelp, "#{__dir__}/mixin/pattern_matching_help"
     autoload :PercentArray, "#{__dir__}/mixin/percent_array"
     autoload :PercentLiteral, "#{__dir__}/mixin/percent_literal"
     autoload :PrecedingFollowingAlignment, "#{__dir__}/mixin/preceding_following_alignment"
