@@ -72,6 +72,10 @@ module RuboCop
           (send {str dstr} :% !#autocorrectable?)
         PATTERN
 
+        def on_new_investigation
+          @corrected_ranges = nil
+        end
+
         def on_send(node)
           formatter(node) do |selector|
             detected_style = selector == :% ? :percent : selector
@@ -103,7 +107,9 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          return if variable_argument?(node)
+          return if variable_argument?(node) || within_corrected_range?(node)
+
+          corrected_ranges << node.source_range
 
           case node.method_name
           when :%
@@ -116,6 +122,14 @@ module RuboCop
               corrector.replace(node.loc.selector, style.to_s)
             end
           end
+        end
+
+        def within_corrected_range?(node)
+          corrected_ranges.any? { |range| range.contains?(node.source_range) }
+        end
+
+        def corrected_ranges
+          @corrected_ranges ||= []
         end
 
         def autocorrect_from_percent(corrector, node)
