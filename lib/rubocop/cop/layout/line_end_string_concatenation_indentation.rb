@@ -114,7 +114,9 @@ module RuboCop
           base_column = children[start_index - 1].loc.column
           same_column_runs(children[start_index..]).each do |run|
             column = run.first.loc.column
-            register_misaligned_run(run, target_column - column) if column != base_column
+            if column != base_column && column != target_column
+              register_misaligned_run(run, target_column - column)
+            end
             base_column = column
           end
         end

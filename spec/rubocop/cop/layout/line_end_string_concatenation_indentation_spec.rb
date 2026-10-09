@@ -234,13 +234,12 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
       RUBY
     end
 
-    it 'registers an offense for third part of a string if it is aligned only with the first' do
+    it 'registers an offense only for the second part when the third is already aligned with the first' do
       expect_offense(<<~'RUBY')
         puts 'a' \
           'b' \
           ^^^ Align parts of a string concatenated with backslash.
              'c'
-             ^^^ Align parts of a string concatenated with backslash.
       RUBY
 
       expect_correction(<<~'RUBY')
@@ -296,6 +295,21 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
           'c' \
           'd' \
           'e'
+      RUBY
+    end
+
+    it 'registers an offense only for the second part when the third is already indented' do
+      expect_offense(<<~'RUBY')
+        puts 'a' \
+            'b' \
+            ^^^ Indent the first part of a string concatenated with backslash.
+          'c'
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        puts 'a' \
+          'b' \
+          'c'
       RUBY
     end
 
