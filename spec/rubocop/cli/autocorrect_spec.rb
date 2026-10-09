@@ -6271,4 +6271,23 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       expect(File.stat('example.rb').mode & 0o777).to eq(0o755)
     end
   end
+
+  it 'does not cause an infinite loop between `Style/RedundantBegin` and `Style/MultilineMemoization` with a multiline `||`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo ||= begin
+        bar ||
+        baz
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only Style/RedundantBegin,Style/MultilineMemoization])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo ||= bar ||
+        baz
+
+    RUBY
+  end
 end
