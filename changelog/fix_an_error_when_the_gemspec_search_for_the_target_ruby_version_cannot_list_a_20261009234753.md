@@ -1,0 +1,1 @@
+* [#15968](https://github.com/rubocop/rubocop/issues/15968): Fix an error when the target Ruby version lookup cannot list a directory for a gemspec or read a version file or lockfile, and stop the gemspec search at the project root. ([@koic][])
