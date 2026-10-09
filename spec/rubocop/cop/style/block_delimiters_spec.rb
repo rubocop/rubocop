@@ -573,6 +573,31 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
+    it 'autocorrects do-end with `rescue` to {} after a heredoc that ends the block body' do
+      expect_offense(<<~RUBY)
+        x = map do |a|
+                ^^ Prefer `{...}` over `do...end` for functional blocks.
+          do_something
+        rescue StandardError => e
+          puts <<~MSG
+            oh no
+          MSG
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = map { |a|
+          begin
+        do_something
+        rescue StandardError => e
+          puts <<~MSG
+            oh no
+          MSG
+        end
+        }
+      RUBY
+    end
+
     it 'autocorrects do-end with `ensure` to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         x = map do |a|
