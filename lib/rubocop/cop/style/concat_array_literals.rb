@@ -23,6 +23,7 @@ module RuboCop
       #   list.push(qux, quux, corge)
       #
       class ConcatArrayLiterals < Base
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
@@ -68,11 +69,7 @@ module RuboCop
               # `concat([], [b])` -> `push(, b)`), so rebuild the call instead.
               corrector.replace(offense, preferred_method(node))
             else
-              corrector.replace(node.loc.selector, 'push')
-              node.arguments.each do |argument|
-                corrector.remove(argument.loc.begin)
-                corrector.remove(argument.loc.end)
-              end
+              remove_brackets(corrector, node)
             end
           end
         end
@@ -101,6 +98,27 @@ module RuboCop
           node.arguments.select(&:percent_literal?).all? do |arg|
             arg.children.all? { |child| child.type?(:str, :sym) }
           end
+        end
+
+        def remove_brackets(corrector, node)
+          closing_ranges = node.arguments.map { |argument| closing_bracket_range(node, argument) }
+          # A comment or a heredoc body there can't be moved out of the way.
+          return unless closing_ranges.all? { |range| range.source.match?(/\A[\s,]*\]\z/) }
+
+          corrector.replace(node.loc.selector, 'push')
+          node.arguments.zip(closing_ranges) do |argument, closing_range|
+            corrector.remove(argument.loc.begin)
+            corrector.remove(closing_range)
+          end
+        end
+
+        # Whatever sits between the last element and the `]` of an array that isn't the
+        # last argument would end up before the following comma (a newline before it is a
+        # syntax error), so it's removed along with the `]`.
+        def closing_bracket_range(node, argument)
+          return argument.loc.end if argument.equal?(node.last_argument)
+
+          range_between(argument.children.last.source_range.end_pos, argument.loc.end.end_pos)
         end
       end
     end
