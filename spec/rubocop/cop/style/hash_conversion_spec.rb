@@ -130,6 +130,50 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'adds parentheses when a method chain on multi-argument `Hash[]` is a method argument' do
+    expect_offense(<<~RUBY)
+      do_something Hash[a, b].merge(c)
+                   ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something({a => b}.merge(c))
+    RUBY
+  end
+
+  it 'adds parentheses when a method call on hash argument `Hash[]` is a method argument' do
+    expect_offense(<<~RUBY)
+      do_something Hash[a => b].size
+                   ^^^^^^^^^^^^ Prefer literal hash to `Hash[key: value, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something({a => b}.size)
+    RUBY
+  end
+
+  it 'adds parentheses when a safe navigation call on multi-argument `Hash[]` is a method argument' do
+    expect_offense(<<~RUBY)
+      do_something Hash[a, b]&.merge(c)
+                   ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something({a => b}&.merge(c))
+    RUBY
+  end
+
+  it 'adds parentheses when a block call on multi-argument `Hash[]` is a method argument' do
+    expect_offense(<<~RUBY)
+      do_something Hash[a, b].map { |k, v| k }
+                   ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something({a => b}.map { |k, v| k })
+    RUBY
+  end
+
   it 'reports different offense for empty Hash[]' do
     expect_offense(<<~RUBY)
       Hash[]

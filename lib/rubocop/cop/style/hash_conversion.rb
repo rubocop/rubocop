@@ -105,13 +105,19 @@ module RuboCop
           end
         end
 
-        # Without parentheses, a hash literal as the first argument would be parsed as a block.
+        # Without parentheses, a hash literal at the start of the first argument would be
+        # parsed as a block. That includes an argument like `Hash[a, b].merge(c)`.
         def add_parentheses_to_parent_call(node, corrector)
+          node = node.parent while starts_parent?(node)
           parent = node.parent
-          return unless parent&.type?(:call, :super, :yield) && !node.equal?(parent.receiver)
+          return unless parent&.type?(:call, :super, :yield)
           return if parent.parenthesized? || operator_syntax?(parent)
 
           add_parentheses(parent, corrector)
+        end
+
+        def starts_parent?(node)
+          node.parent && node.parent.source_range.begin_pos == node.source_range.begin_pos
         end
 
         # `foo[x]`, `foo.bar = x` and `foo == x` take a hash literal as it is.
