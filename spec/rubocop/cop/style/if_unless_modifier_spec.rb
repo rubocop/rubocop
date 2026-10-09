@@ -170,8 +170,138 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
           expect_correction(<<~RUBY)
             if condition
               fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS)
-                string
+              string
+            EOS
+            end
+          RUBY
+        end
+      end
+
+      context 'when using a heredoc nested in an argument' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            raise Errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr.new(<<~EOS.squish) if condition
+                                                                                             ^^ Modifier form of `if` makes the line too long.
+              string
+            EOS
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              raise Errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr.new(<<~EOS.squish)
+              string
+            EOS
+            end
+          RUBY
+        end
+      end
+
+      context 'when using a heredoc with an empty body' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS) if condition
+                                                                                 ^^ Modifier form of `if` makes the line too long.
+            EOS
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS)
+            EOS
+            end
+          RUBY
+        end
+      end
+
+      context 'when using several heredocs in the branch body' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS, <<~EOT) if condition
+                                                                                         ^^ Modifier form of `if` makes the line too long.
+              string
+            EOS
+              text
+            EOT
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS, <<~EOT)
+              string
+            EOS
+              text
+            EOT
+            end
+          RUBY
+        end
+      end
+
+      context 'when using a heredoc whose body lines have different indentation' do
+        it 'registers an offense and keeps the heredoc body as is' do
+          expect_offense(<<~RUBY)
+            def do_something
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(bar(<<~EOS)) if condition
+                                                                                      ^^ Modifier form of `if` makes the line too long.
+                first
+                  second
               EOS
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def do_something
+              if condition
+                fooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(bar(<<~EOS))
+                first
+                  second
+              EOS
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when using a dash heredoc' do
+        it 'registers an offense and keeps the heredoc body as is' do
+          expect_offense(<<~RUBY)
+            def do_something
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(bar(<<-EOS)) if condition
+                                                                                      ^^ Modifier form of `if` makes the line too long.
+              string
+              EOS
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def do_something
+              if condition
+                fooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(bar(<<-EOS))
+              string
+              EOS
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when using a heredoc whose terminator has to begin its line' do
+        it 'registers an offense and keeps the heredoc body as is' do
+          expect_offense(<<~RUBY)
+            def do_something
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(bar(<<EOS)) if condition
+                                                                                       ^^ Modifier form of `if` makes the line too long.
+            string
+            EOS
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def do_something
+              if condition
+                fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(bar(<<EOS))
+            string
+            EOS
+              end
             end
           RUBY
         end
