@@ -259,6 +259,50 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'does not add parentheses when multi-argument `Hash[]` is an index argument' do
+    expect_offense(<<~RUBY)
+      foo[Hash[a, b]]
+          ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo[{a => b}]
+    RUBY
+  end
+
+  it 'does not add parentheses when hash argument `Hash[]` is assigned with a setter' do
+    expect_offense(<<~RUBY)
+      foo.bar = Hash[a => b]
+                ^^^^^^^^^^^^ Prefer literal hash to `Hash[key: value, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.bar = {a => b}
+    RUBY
+  end
+
+  it 'does not add parentheses when multi-argument `Hash[]` is an operand of a binary operator' do
+    expect_offense(<<~RUBY)
+      foo == Hash[a, b]
+             ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo == {a => b}
+    RUBY
+  end
+
+  it 'adds parentheses when multi-argument `Hash[]` is an argument of an operator method called with a dot' do
+    expect_offense(<<~RUBY)
+      foo.[] Hash[a, b]
+             ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.[]({a => b})
+    RUBY
+  end
+
   context 'AllowSplatArgument: true' do
     let(:cop_config) { { 'AllowSplatArgument' => true } }
 

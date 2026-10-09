@@ -109,9 +109,14 @@ module RuboCop
         def add_parentheses_to_parent_call(node, corrector)
           parent = node.parent
           return unless parent&.send_type? && !node.equal?(parent.receiver)
-          return if parent.parenthesized?
+          return if parent.parenthesized? || operator_syntax?(parent)
 
           add_parentheses(parent, corrector)
+        end
+
+        # `foo[x]`, `foo.bar = x` and `foo == x` take a hash literal as it is.
+        def operator_syntax?(call)
+          call.setter_method? || (call.operator_method? && !call.loc?(:dot))
         end
 
         def register_offense_for_zip_method(node, zip_method)
