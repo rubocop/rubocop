@@ -4,11 +4,11 @@ RSpec.describe RuboCop::Cop::Style::CollectionQuerying, :config do
   it 'registers an offense for `.count.positive?`' do
     expect_offense(<<~RUBY)
       x.count.positive?
-        ^^^^^^^^^^^^^^^ Use `any?` instead.
+        ^^^^^^^^^^^^^^^ Use `!empty?` instead.
     RUBY
 
     expect_correction(<<~RUBY)
-      x.any?
+      !x.empty?
     RUBY
   end
 
@@ -16,13 +16,86 @@ RSpec.describe RuboCop::Cop::Style::CollectionQuerying, :config do
     expect_offense(<<~RUBY)
       x
         .count
-         ^^^^^ Use `any?` instead.
+         ^^^^^ Use `!empty?` instead.
         .positive?
     RUBY
 
     expect_correction(<<~RUBY)
-      x
-        .any?
+      !x
+        .empty?
+    RUBY
+  end
+
+  it 'registers an offense for `.count > 0`' do
+    expect_offense(<<~RUBY)
+      x.count > 0
+        ^^^^^^^^^ Use `!empty?` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !x.empty?
+    RUBY
+  end
+
+  it 'registers an offense for `.count != 0`' do
+    expect_offense(<<~RUBY)
+      x.count != 0
+        ^^^^^^^^^^ Use `!empty?` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !x.empty?
+    RUBY
+  end
+
+  it 'registers an offense for `.count.zero?`' do
+    expect_offense(<<~RUBY)
+      x.count.zero?
+        ^^^^^^^^^^^ Use `empty?` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.empty?
+    RUBY
+  end
+
+  it 'registers an offense for `.count == 0`' do
+    expect_offense(<<~RUBY)
+      x.count == 0
+        ^^^^^^^^^^ Use `empty?` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.empty?
+    RUBY
+  end
+
+  it 'registers an offense for parenthesized `.count > 0` with a further call' do
+    expect_offense(<<~RUBY)
+      (x.count > 0).to_s
+         ^^^^^^^^^ Use `!empty?` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (!x.empty?).to_s
+    RUBY
+  end
+
+  it 'does not register an offense for `.count == 1`' do
+    expect_no_offenses(<<~RUBY)
+      x.count == 1
+    RUBY
+  end
+
+  it 'does not register an offense for `.count.positive?` used as a receiver' do
+    expect_no_offenses(<<~RUBY)
+      x.count.positive?.to_s
+    RUBY
+  end
+
+  it 'does not register an offense for negated `.count.positive?`' do
+    expect_no_offenses(<<~RUBY)
+      !x.count.positive?
     RUBY
   end
 
@@ -84,11 +157,11 @@ RSpec.describe RuboCop::Cop::Style::CollectionQuerying, :config do
   it 'registers an offense for `&.count.positive?`' do
     expect_offense(<<~RUBY)
       x&.count.positive?
-         ^^^^^^^^^^^^^^^ Use `any?` instead.
+         ^^^^^^^^^^^^^^^ Use `!empty?` instead.
     RUBY
 
     expect_correction(<<~RUBY)
-      x&.any?
+      !x&.empty?
     RUBY
   end
 
@@ -160,6 +233,12 @@ RSpec.describe RuboCop::Cop::Style::CollectionQuerying, :config do
 
       expect_correction(<<~RUBY)
         x.many?(&:foo?)
+      RUBY
+    end
+
+    it 'does not register an offense for `.count > 1` without a block' do
+      expect_no_offenses(<<~RUBY)
+        x.count > 1
       RUBY
     end
   end
