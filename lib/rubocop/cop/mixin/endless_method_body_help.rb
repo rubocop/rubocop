@@ -9,10 +9,16 @@ module RuboCop
 
       def endless_method_body?(body)
         return false if body.type?(:begin, :kwbegin, :rescue, :ensure, :masgn)
+        return false if low_precedence_body?(body)
         return false if ends_with_omitted_hash_value?(body) || ends_with_anonymous_argument?(body)
         return false if body.assignment? && multiple_values?(assigned_value(body))
 
         !command_disallowed_in_endless_body?(body)
+      end
+
+      def low_precedence_body?(body)
+        (body.type?(:and, :or) && body.semantic_operator?) ||
+          (body.type?(:if, :while, :until) && body.modifier_form?)
       end
 
       # `foo = 1, 2` and `foo = *bar` assign an array without brackets.

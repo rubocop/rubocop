@@ -264,6 +264,22 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
     context 'EnforcedStyle: require_single_line' do
       let(:cop_config) { { 'EnforcedStyle' => 'require_single_line' } }
 
+      it 'does not register an offense when the body is a modifier `if`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x if y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the body is a keyword `and`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            super and x
+          end
+        RUBY
+      end
+
       it 'does not register an offense for a single line endless method' do
         expect_no_offenses(<<~RUBY)
           def my_method() = x
@@ -767,6 +783,22 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
 
     context 'EnforcedStyle: require_always' do
       let(:cop_config) { { 'EnforcedStyle' => 'require_always' } }
+
+      it 'does not register an offense when the body is a modifier `if`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x if y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the body is a keyword `and`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            super and x
+          end
+        RUBY
+      end
 
       it 'does not register an offense for a method with a `rescue` body' do
         expect_no_offenses(<<~RUBY)
