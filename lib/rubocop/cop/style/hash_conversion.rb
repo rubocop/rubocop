@@ -108,7 +108,7 @@ module RuboCop
         # Without parentheses, a hash literal as the first argument would be parsed as a block.
         def add_parentheses_to_parent_call(node, corrector)
           parent = node.parent
-          return unless parent&.send_type? && !node.equal?(parent.receiver)
+          return unless parent&.type?(:call, :super, :yield) && !node.equal?(parent.receiver)
           return if parent.parenthesized? || operator_syntax?(parent)
 
           add_parentheses(parent, corrector)
