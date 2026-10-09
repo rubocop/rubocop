@@ -967,7 +967,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           1  Layout/SpaceAroundOperators [Safe Correctable]
           1  Layout/TrailingWhitespace [Safe Correctable]
           --
-          6  Total in 1 files
+          6  Total in 1 file
 
         RESULT
       end
@@ -992,7 +992,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             1  Style/FrozenStringLiteralComment [Unsafe Correctable]
             1  Style/NumericLiterals [Safe Correctable]
             --
-            7  Total in 1 files
+            7  Total in 1 file
 
           RESULT
       end
@@ -1127,7 +1127,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             1  Style/FrozenStringLiteralComment [Unsafe Correctable]
             1  Style/NumericPredicate [Unsafe Correctable]
             --
-            5  Total in 1 files
+            5  Total in 1 file
 
           RESULT
       end
@@ -1152,7 +1152,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             1  Style/FrozenStringLiteralComment [Unsafe Correctable]
             1  Style/NumericPredicate [Unsafe Correctable]
             --
-            9  Total in 1 files
+            9  Total in 1 file
 
           RESULT
       end
@@ -1170,7 +1170,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         expect($stderr.string).to eq('')
         expect(without_option.split($RS) - with_option.split($RS))
-          .to eq(['1  Style/IfUnlessModifier [Safe Correctable]', '7  Total in 1 files'])
+          .to eq(['1  Style/IfUnlessModifier [Safe Correctable]', '7  Total in 1 file'])
       end
     end
 
@@ -1197,7 +1197,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               1  Style/FrozenStringLiteralComment [Unsafe Correctable]
               1  Style/NumericLiterals [Safe Correctable]
               --
-              4  Total in 1 files
+              4  Total in 1 file
 
             RESULT
         end

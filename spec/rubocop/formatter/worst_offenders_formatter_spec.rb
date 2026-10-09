@@ -35,5 +35,25 @@ RSpec.describe RuboCop::Formatter::WorstOffendersFormatter do
         OUTPUT
       end
     end
+
+    context 'when the offenses are all in one file' do
+      let(:offense) { instance_double(RuboCop::Cop::Offense) }
+
+      before do
+        formatter.started(files)
+        formatter.file_finished(files.first, [offense] * 2)
+      end
+
+      it 'does not pluralize the file count' do
+        formatter.finished(files)
+        expect(output.string).to eq(<<~OUTPUT)
+
+          2  lib/rubocop.rb
+          --
+          2  Total in 1 file
+
+        OUTPUT
+      end
+    end
   end
 end
