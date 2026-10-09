@@ -551,15 +551,8 @@ module RuboCop
           # `Max` - end delimiter (quote) - continuation characters (space and slash)
           max_length = max - 3
           # Offset by the string's starting column so the broken line actually fits
-          # within `Max`. When on the same line as its parent, use the column difference;
-          # otherwise the string is indented on its own line, so subtract that indentation.
-          # (Without this, an indented string under a multi-line parent never shortens
-          # below `Max` and the autocorrect loops, inserting empty `"" \` fragments.)
-          max_length -= if same_line?(node, node.parent)
-                          column_offset_between(node.loc, node.parent.loc)
-                        else
-                          node.loc.column
-                        end
+          # within `Max`, whatever precedes the string on its line.
+          max_length -= node.loc.column
 
           node.source[0, [max_length, 0].max]
         end
