@@ -65,6 +65,73 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfModifier, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when a heredoc is opened on the modifier line' do
+      expect_offense(<<~RUBY)
+        items.each { |item|
+        ^^^^^^^^^^^^^^^^^^^ Favor a normal if-statement over a modifier clause in a multiline statement.
+          foo(item, <<~EOS) } if cond
+          text
+        EOS
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          items.each { |item|
+            foo(item, <<~EOS) }
+          text
+        EOS
+        end
+      RUBY
+    end
+
+    it 'registers an offense when a heredoc in the condition is opened on the modifier line' do
+      expect_offense(<<~RUBY)
+        foo(bar,
+        ^^^^^^^^ Favor a normal if-statement over a modifier clause in a multiline statement.
+            baz) if cond?(<<~EOS)
+          text
+        EOS
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond?(<<~EOS)
+          text
+        EOS
+          foo(bar,
+              baz)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when several heredocs are opened on the modifier line' do
+      expect_offense(<<~'RUBY')
+        foo(bar,
+        ^^^^^^^^ Favor a normal if-statement over a modifier clause in a multiline statement.
+            <<~A, <<~B) if cond
+          #{baz(<<~C)}
+            c
+          C
+        A
+          b
+        B
+        qux
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        if cond
+          foo(bar,
+              <<~A, <<~B)
+          #{baz(<<~C)}
+            c
+          C
+        A
+          b
+        B
+        end
+        qux
+      RUBY
+    end
   end
 
   context 'unless guard clause' do
