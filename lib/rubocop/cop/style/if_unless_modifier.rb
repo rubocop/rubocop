@@ -159,7 +159,7 @@ module RuboCop
           corrector.replace(node, replacement)
         end
 
-        def replacement_for_modifier_form(corrector, node) # rubocop:disable Metrics/AbcSize
+        def replacement_for_modifier_form(corrector, node)
           comment = comment_on_node_line(node)
           if comment && too_long_due_to_comment_after_modifier?(node, comment)
             remove_comment(corrector, node, comment)
@@ -167,12 +167,11 @@ module RuboCop
             return to_modifier_form_with_move_comment(node, indent(node), comment)
           end
 
-          last_argument = node.if_branch.last_argument if node.if_branch.send_type?
-          if last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
-            heredoc = extract_heredoc_from(last_argument)
-            remove_heredoc(corrector, heredoc)
+          heredoc_ranges = heredoc_ranges_in(node.if_branch)
+          unless heredoc_ranges.empty?
+            remove_heredoc(corrector, heredoc_ranges)
 
-            return to_normal_form_with_heredoc(node, indent(node), heredoc)
+            return to_normal_form_with_heredoc(node, indent(node), heredoc_ranges)
           end
 
           to_normal_form(node, indent(node))
@@ -275,14 +274,19 @@ module RuboCop
           RUBY
         end
 
-        def to_normal_form_with_heredoc(node, indentation, heredoc)
-          heredoc_body, heredoc_end = heredoc
+        def remove_heredoc(corrector, heredoc_ranges)
+          heredoc_ranges.each do |range|
+            corrector.remove(range_by_whole_lines(range, include_final_newline: true))
+          end
+        end
+
+        def to_normal_form_with_heredoc(node, indentation, heredoc_ranges)
+          heredoc_lines = heredoc_ranges.map(&:source)
 
           <<~RUBY.chomp
             #{node.keyword} #{node.condition.source}
             #{indentation}  #{node.body.source}
-            #{indentation}  #{heredoc_body.source.chomp}
-            #{indentation}  #{heredoc_end.source.chomp}
+            #{heredoc_lines.join("\n")}
             #{indentation}end
           RUBY
         end
@@ -294,16 +298,9 @@ module RuboCop
           RUBY
         end
 
-        def extract_heredoc_from(last_argument)
-          heredoc_body = last_argument.loc.heredoc_body
-          heredoc_end = last_argument.loc.heredoc_end
-
-          [heredoc_body, heredoc_end]
-        end
-
-        def remove_heredoc(corrector, heredoc)
-          heredoc.each do |range|
-            corrector.remove(range_by_whole_lines(range, include_final_newline: true))
+        def heredoc_ranges_in(body)
+          body.each_node(:any_str).select(&:heredoc?).map do |heredoc|
+            range_by_whole_lines(heredoc.loc.heredoc_body.join(heredoc.loc.heredoc_end))
           end
         end
 
