@@ -49,7 +49,7 @@ module RuboCop
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::ReturnNilInPredicateMethodDefinition]
         end
 
         def on_and(node)
