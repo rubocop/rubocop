@@ -124,13 +124,14 @@ module RuboCop
         end
 
         def starts_interpolation_after_hash_sign?(begin_node, value)
-          return false unless value.start_with?('{', '@', '$')
-
           source = processed_source.buffer.source
-          begin_pos = begin_node.source_range.begin_pos
-          return false unless source[begin_pos - 1] == '#'
+          range = begin_node.source_range
+          # Removing an empty value puts the `#` right before what follows the interpolation.
+          following = "#{value}#{source[range.end_pos]}"
+          return false unless following.start_with?('{', '@', '$')
+          return false unless source[range.begin_pos - 1] == '#'
 
-          unescaped_hash_sign?(source[0...begin_pos])
+          unescaped_hash_sign?(source[0...range.begin_pos])
         end
 
         def autocorrected_value_for_string(node)

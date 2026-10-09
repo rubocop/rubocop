@@ -441,6 +441,35 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
+  it 'does not register an offense when removing an empty string would join a preceding `#` and a following `{`' do
+    expect_no_offenses(<<~'RUBY')
+      "##{''}{foo}"
+    RUBY
+  end
+
+  it 'does not register an offense when removing `nil` would join a preceding `#` and a following `@`' do
+    expect_no_offenses(<<~'RUBY')
+      "##{nil}@foo"
+    RUBY
+  end
+
+  it 'does not register an offense when removing `nil` would join a preceding `#` and a following `{` in a regexp' do
+    expect_no_offenses(<<~'RUBY')
+      /##{nil}{2}/
+    RUBY
+  end
+
+  it 'registers an offense when removing an empty string leaves an escaped `#` before a `{`' do
+    expect_offense(<<~'RUBY')
+      "\##{''}{foo}"
+           ^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "\#{foo}"
+    RUBY
+  end
+
   it 'handles backslash in single quotes when autocorrecting' do
     expect_offense(<<~'RUBY')
       x = "ABC".gsub(/(A)(B)(C)/, "D#{'\2'}F")
