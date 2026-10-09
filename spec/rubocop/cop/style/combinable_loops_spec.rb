@@ -248,6 +248,61 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'closes the combined loop with `}` when a disabled `{`...`}` loop follows a `do`...`end` loop' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each { |item| bar(item) } # rubocop:disable Style/CombinableLoops
+        items.each { |item| baz(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each { |item| bar(item) # rubocop:disable Style/CombinableLoops
+        baz(item) }
+      RUBY
+    end
+
+    it 'closes the combined loop with `end` when the last loop after a `do`...`end` loop is disabled' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each { |item| bar(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        items.each { |item| baz(item) } # rubocop:disable Style/CombinableLoops
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        bar(item)  end
+        items.each { |item| baz(item) } # rubocop:disable Style/CombinableLoops
+      RUBY
+    end
+
+    it 'closes the combined loop with `end` when a `do`...`end` loop is disabled on its last line' do
+      expect_offense(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each do |item|
+          bar(item)
+        end # rubocop:disable Style/CombinableLoops
+        items.each { |item| baz(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each do |item|
+          bar(item) # rubocop:disable Style/CombinableLoops
+        baz(item)  end
+      RUBY
+    end
+
     context 'Ruby 2.7' do
       it 'registers an offense when looping over the same data as previous loop in numblocks' do
         expect_offense(<<~RUBY)

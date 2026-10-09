@@ -141,6 +141,8 @@ module RuboCop
         def combined_with_right_sibling?(node)
           sibling = node.right_sibling
           return false unless sibling&.any_block_type?
+          # A disabled loop isn't corrected, so it doesn't get merged into this one.
+          return false unless enabled_lines?(sibling.source_range)
 
           same_collection_looping_block?(sibling, node) && sibling.body &&
             combinable_blocks?(sibling, node)
@@ -149,7 +151,7 @@ module RuboCop
         def first_combined_block(node)
           first = node.left_sibling
 
-          while (previous = first.left_sibling) &&
+          while (previous = first.left_sibling) && enabled_lines?(first.source_range) &&
                 combinable_looping_blocks?(first, previous) && combinable_blocks?(first, previous)
             first = previous
           end
