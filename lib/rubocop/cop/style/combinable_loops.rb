@@ -64,12 +64,10 @@ module RuboCop
 
         MSG = 'Combine this loop with the previous loop.'
 
-        # rubocop:disable-next Metrics/CyclomaticComplexity
         def on_block(node)
           return unless node.parent&.begin_type?
           return unless collection_looping_method?(node)
-          return unless same_collection_looping_block?(node, node.left_sibling)
-          return unless node.body && node.left_sibling.body
+          return unless combinable_looping_blocks?(node, node.left_sibling)
 
           add_offense(node) do |corrector|
             next unless combinable_blocks?(node, node.left_sibling)
@@ -110,6 +108,10 @@ module RuboCop
             sibling.send_node.arguments == node.send_node.arguments
         end
 
+        def combinable_looping_blocks?(node, sibling)
+          same_collection_looping_block?(node, sibling) && node.body && sibling.body
+        end
+
         def same_collection_looping_for?(node, sibling)
           sibling&.for_type? && node.collection == sibling.collection
         end
@@ -131,7 +133,7 @@ module RuboCop
           return unless node.left_sibling.respond_to?(:braces?)
           return if combined_with_right_sibling?(node)
 
-          end_of_block = node.left_sibling.braces? ? '}' : ' end'
+          end_of_block = first_combined_block(node).braces? ? '}' : ' end'
           corrector.remove(node.loc.end)
           corrector.insert_before(node.source_range.end, end_of_block)
         end
@@ -142,6 +144,17 @@ module RuboCop
 
           same_collection_looping_block?(sibling, node) && sibling.body &&
             combinable_blocks?(sibling, node)
+        end
+
+        def first_combined_block(node)
+          first = node.left_sibling
+
+          while (previous = first.left_sibling) &&
+                combinable_looping_blocks?(first, previous) && combinable_blocks?(first, previous)
+            first = previous
+          end
+
+          first
         end
       end
     end

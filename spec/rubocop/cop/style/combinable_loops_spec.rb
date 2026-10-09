@@ -211,6 +211,43 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'registers an offense and closes the combined loop with `}` when a `do`...`end` loop is between `{`...`}` loops' do
+      expect_offense(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(item)
+        end
+        items.each { |item| baz(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { |item| foo(item)
+        bar(item)
+        baz(item) }
+      RUBY
+    end
+
+    it 'registers an offense and closes the combined loop with `end` when `{`...`}` loops follow a `do`...`end` loop' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each { |item| bar(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        items.each { |item| baz(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        bar(item)
+        baz(item)  end
+      RUBY
+    end
+
     context 'Ruby 2.7' do
       it 'registers an offense when looping over the same data as previous loop in numblocks' do
         expect_offense(<<~RUBY)
