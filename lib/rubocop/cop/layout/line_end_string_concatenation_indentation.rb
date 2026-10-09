@@ -87,10 +87,10 @@ module RuboCop
           return if children.empty?
 
           if style == :aligned && !always_indented?(node)
-            check_aligned(children, 1)
+            check_aligned(children, 1, children[0].loc.column)
           else
             check_indented(children)
-            check_aligned(children, 2)
+            check_aligned(children, 2, indented_column(children))
           end
         end
 
@@ -110,19 +110,33 @@ module RuboCop
           PARENT_TYPES_FOR_INDENTED.include?(dstr_node.parent&.type)
         end
 
-        def check_aligned(children, start_index)
+        def check_aligned(children, start_index, target_column)
           base_column = children[start_index - 1].loc.column
-          children[start_index..].each do |child|
-            @column_delta = base_column - child.loc.column
-            add_offense_and_correction(child, MSG_ALIGN) if @column_delta != 0
-            base_column = child.loc.column
+          same_column_runs(children[start_index..]).each do |run|
+            column = run.first.loc.column
+            register_misaligned_run(run, target_column - column) if column != base_column
+            base_column = column
+          end
+        end
+
+        def same_column_runs(parts)
+          parts.chunk_while { |a, b| a.loc.column == b.loc.column }
+        end
+
+        def register_misaligned_run(run, column_delta)
+          @column_delta = column_delta
+          add_offense(run.first, message: MSG_ALIGN) do |corrector|
+            run.each { |child| autocorrect(corrector, child) }
           end
         end
 
         def check_indented(children)
-          @column_delta = base_column(children[0]) + configured_indentation_width -
-                          children[1].loc.column
+          @column_delta = indented_column(children) - children[1].loc.column
           add_offense_and_correction(children[1], MSG_INDENT) if @column_delta != 0
+        end
+
+        def indented_column(children)
+          base_column(children[0]) + configured_indentation_width
         end
 
         def base_column(child)
