@@ -428,9 +428,9 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         CONSTANT = <<~EOS
           str
         EOS
-
         def do_something
         end
+
       end
     RUBY
   end
@@ -453,9 +453,9 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         CONSTANT = <<~EOS
           #{str}
         EOS
-
         def do_something
         end
+
       end
     RUBY
   end
@@ -478,8 +478,58 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         CONSTANT = <<~`EOS`
           str
         EOS
-
         def do_something
+        end
+
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when heredoc constant is the last element without a preceding blank line' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def do_something
+        end
+        CONSTANT = <<~EOS
+        ^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          str
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        CONSTANT = <<~EOS
+          str
+        EOS
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when heredoc constant is followed by another element' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def do_something
+        end
+        CONSTANT = <<~EOS
+        ^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          str
+        EOS
+        def do_something_else
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        CONSTANT = <<~EOS
+          str
+        EOS
+        def do_something
+        end
+        def do_something_else
         end
       end
     RUBY

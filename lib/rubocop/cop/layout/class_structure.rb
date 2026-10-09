@@ -431,7 +431,7 @@ module RuboCop
         def end_position_for(node)
           if node.casgn_type?
             heredoc = find_heredoc(node)
-            return heredoc.location.heredoc_end.end_pos + 1 if heredoc
+            return heredoc.location.heredoc_end.end_pos if heredoc
           end
 
           end_line = buffer.line_for_position(node.source_range.end_pos)
