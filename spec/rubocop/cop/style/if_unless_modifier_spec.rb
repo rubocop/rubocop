@@ -236,6 +236,31 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'when using a heredoc inside the interpolation of another heredoc' do
+        it 'registers an offense and moves the inner heredoc only once' do
+          expect_offense(<<~'RUBY')
+            fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS) if condition
+                                                                                 ^^ Modifier form of `if` makes the line too long.
+              #{bar(<<~EOT)}
+                inner
+              EOT
+              outer
+            EOS
+          RUBY
+
+          expect_correction(<<~'RUBY')
+            if condition
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS)
+              #{bar(<<~EOT)}
+                inner
+              EOT
+              outer
+            EOS
+            end
+          RUBY
+        end
+      end
+
       context 'when using a heredoc whose body lines have different indentation' do
         it 'registers an offense and keeps the heredoc body as is' do
           expect_offense(<<~RUBY)
