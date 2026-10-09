@@ -4,6 +4,14 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
   context 'when style is set to call' do
     let(:cop_config) { { 'EnforcedStyle' => 'call' } }
 
+    it 'does not register an offense when an argument is a heredoc' do
+      expect_no_offenses(<<~RUBY)
+        x.(<<~TEXT)
+          text
+        TEXT
+      RUBY
+    end
+
     it 'registers an offense for x.()' do
       expect_offense(<<~RUBY)
         x.(a, b)
@@ -151,6 +159,16 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
           a,
           # important comment
           b
+        )
+      RUBY
+    end
+
+    it 'does not register an offense when an argument is a heredoc' do
+      expect_no_offenses(<<~RUBY)
+        x.call(
+          a: <<~TEXT.chomp
+            text
+          TEXT
         )
       RUBY
     end

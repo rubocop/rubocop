@@ -28,8 +28,9 @@ module RuboCop
         def on_send(node)
           return unless node.receiver
           # Rewriting the call rebuilds it as a single expression, which would drop
-          # any comments inside the argument list, so leave it to be fixed manually.
-          return if comments_in_node?(node)
+          # any comments or heredoc bodies inside the argument list, so leave it to be
+          # fixed manually.
+          return if comments_in_node?(node) || heredoc_argument?(node)
 
           if offense?(node)
             prefer = prefer(node)
@@ -57,6 +58,10 @@ module RuboCop
             range.begin_pos <= comment.source_range.begin_pos &&
               comment.source_range.end_pos <= range.end_pos
           end
+        end
+
+        def heredoc_argument?(node)
+          node.arguments.any? { |argument| argument.each_node(:any_str).any?(&:heredoc?) }
         end
 
         def offense?(node)
