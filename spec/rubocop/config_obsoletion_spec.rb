@@ -86,6 +86,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/UselessComparison' => { Enabled: true },
           'Lint/RescueWithoutErrorClass' => { Enabled: true },
           'Lint/SpaceBeforeFirstArg' => { Enabled: true },
+          'Style/BracesAroundHashParameters' => { Enabled: true },
           'Style/SpaceAfterControlKeyword' => { Enabled: true },
           'Style/SpaceBeforeModifierKeyword' => { Enabled: true },
           'Style/TrailingComma' => { Enabled: true },
@@ -202,6 +203,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Lint/SpaceBeforeFirstArg` cop has been removed since it was a duplicate of `Layout/SpaceBeforeFirstArg`. Please use `Layout/SpaceBeforeFirstArg` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UselessComparison` cop has been removed since it has been superseded by `Lint/BinaryOperatorWithIdenticalOperands`. Please use `Lint/BinaryOperatorWithIdenticalOperands` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/BracesAroundHashParameters` cop has been removed.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodMissingSuper` cop has been removed since it has been superseded by `Lint/MissingSuper`. Please use `Lint/MissingSuper` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
