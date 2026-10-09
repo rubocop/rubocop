@@ -26,6 +26,31 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
       RUBY
     end
 
+    it 'registers an offense for fetch with a leading dot on its own line' do
+      expect_offense(<<~RUBY)
+        do_something(
+          hash
+            .fetch(key)
+             ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(
+          hash[key]
+        )
+      RUBY
+    end
+
+    it 'does not register an offense for fetch with a comment before a leading dot' do
+      expect_no_offenses(<<~RUBY)
+        do_something(
+          hash # comment
+            .fetch(key)
+        )
+      RUBY
+    end
+
     it 'accepts bracket access' do
       expect_no_offenses('hash[key]')
     end

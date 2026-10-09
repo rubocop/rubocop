@@ -86,7 +86,15 @@ module RuboCop
           return false if !node.method?(:fetch) || !node.arguments.one?
           return false if node.block_literal? || node.csend_type?
 
-          !env_fetch_preferred?(node.receiver)
+          !exempt_from_brackets?(node)
+        end
+
+        def exempt_from_brackets?(node)
+          comment_before_dot?(node) || env_fetch_preferred?(node.receiver)
+        end
+
+        def comment_before_dot?(node)
+          processed_source.contains_comment?(node.receiver.source_range.end.join(node.loc.dot))
         end
 
         def env_fetch_preferred?(receiver)
@@ -105,7 +113,7 @@ module RuboCop
         def correct_fetch_to_brackets(corrector, node)
           key = node.first_argument.source
 
-          corrector.replace(node.loc.dot.join(node.source_range.end), "[#{key}]")
+          corrector.replace(node.receiver.source_range.end.join(node.source_range.end), "[#{key}]")
         end
 
         def correct_brackets_to_fetch(corrector, node)
