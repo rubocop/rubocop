@@ -560,7 +560,8 @@ module RuboCop
                         else
                           node.loc.column
                         end
-          node.source[0...(max_length)]
+
+          node.source[0, [max_length, 0].max]
         end
       end
     end
