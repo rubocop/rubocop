@@ -136,9 +136,17 @@ module RuboCop
 
         def autocorrect(corrector, range)
           case range.source
-          when /\s/ then corrector.remove(range)
+          when /\s/ then corrector.remove(with_line_continuation(range))
           else           corrector.insert_before(range, ' ')
           end
+        end
+
+        def with_line_continuation(range)
+          return range unless range.source.include?("\n")
+
+          begin_pos = range.begin_pos
+          begin_pos -= 1 while processed_source.buffer.source[begin_pos - 1].match?(/[ \t\\]/)
+          range_between(begin_pos, range.end_pos)
         end
 
         def style_for_empty_braces
