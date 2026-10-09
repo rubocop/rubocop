@@ -88,6 +88,8 @@ module RuboCop
           return unless previous_older_sibling
 
           add_offense(node, message: format(MSG, name: node.method_name)) do |corrector|
+            next unless own_lines?(previous_older_sibling) && own_lines?(search_node(node))
+
             autocorrect(corrector, node, previous_older_sibling)
           end
         end
@@ -110,6 +112,13 @@ module RuboCop
 
             node.first_argument.value < sibling.first_argument.value
           end
+        end
+
+        def own_lines?(node)
+          range = node.source_range
+          rest_of_line = range.source_buffer.source_line(range.last_line)[range.last_column..]
+
+          begins_its_line?(range) && rest_of_line.match?(/\A\s*(#.*)?\z/)
         end
 
         def autocorrect(corrector, node, previous_older_sibling)

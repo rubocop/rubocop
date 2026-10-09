@@ -320,4 +320,23 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
       RUBY
     end
   end
+
+  it 'registers an offense but does not correct `require`s on the same line' do
+    expect_offense(<<~RUBY)
+      require 'b'; require 'a'
+                   ^^^^^^^^^^^ Sort `require` in alphabetical order.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense but does not correct a `require` that shares its line with other code' do
+    expect_offense(<<~RUBY)
+      foo -> { require 'b'
+               require 'a' }
+               ^^^^^^^^^^^ Sort `require` in alphabetical order.
+    RUBY
+
+    expect_no_corrections
+  end
 end
