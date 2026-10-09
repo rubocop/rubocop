@@ -162,12 +162,18 @@ module RuboCop
         def format_single_parameter(arg)
           # `format(fmt, *args)` is equivalent to `fmt % args`, so unwrap the splat
           # and render the argument it splats.
-          return format_single_parameter(arg.children.first) if arg.splat_type?
+          return format_splatted_parameter(arg.children.first) if arg.splat_type?
 
           source = arg.source
           return "{ #{source} }" if arg.hash_type? && !arg.braces?
 
           requires_parentheses?(arg) ? "(#{source})" : source
+        end
+
+        def format_splatted_parameter(arg)
+          return "#{arg.source}.to_a" if arg.hash_type?
+
+          format_single_parameter(arg)
         end
 
         # An argument that binds looser than `%` (a ternary, range, assignment, or

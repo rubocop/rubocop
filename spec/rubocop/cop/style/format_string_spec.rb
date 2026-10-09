@@ -422,6 +422,17 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
+    it 'registers an offense for format with a splatted hash literal argument' do
+      expect_offense(<<~RUBY)
+        format(something, *{ a: 10, b: 11 })
+        ^^^^^^ Favor `String#%` over `format`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        something % { a: 10, b: 11 }.to_a
+      RUBY
+    end
+
     it 'registers an offense for format nested in the arguments of format' do
       expect_offense(<<~RUBY)
         format(something, a: format(other, b: 1))
