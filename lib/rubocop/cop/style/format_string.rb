@@ -165,7 +165,7 @@ module RuboCop
           return format_single_parameter(arg.children.first) if arg.splat_type?
 
           source = arg.source
-          return "{ #{source} }" if arg.hash_type?
+          return "{ #{source} }" if arg.hash_type? && !arg.braces?
 
           requires_parentheses?(arg) ? "(#{source})" : source
         end
