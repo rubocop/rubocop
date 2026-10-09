@@ -56,6 +56,13 @@ module RuboCop
         ARG_MSG = 'Block argument expression is not on the same line as the block start.'
         PIPE_SIZE = '|'.length
 
+        # `Style/Lambda` moves the block arguments of `lambda` into `->(...)`, and
+        # `Style/ItBlockParameter` and `Style/HashEachMethods` remove some or all of them,
+        # in the same pass, while this cop moves them next to the block start.
+        def self.autocorrect_incompatible_with
+          [Style::HashEachMethods, Style::ItBlockParameter, Style::Lambda]
+        end
+
         def on_block(node)
           return if node.single_line?
 
