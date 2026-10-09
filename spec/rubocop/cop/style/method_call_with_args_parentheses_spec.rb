@@ -1367,6 +1367,35 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         RUBY
       end
 
+      it 'accepts parens when a comment follows the opening parenthesis' do
+        expect_no_offenses(<<~RUBY)
+          do_something( # comment
+            :bar, :baz)
+        RUBY
+      end
+
+      it 'accepts parens when a comment precedes the first argument on its own line' do
+        expect_no_offenses(<<~RUBY)
+          do_something(
+            # comment
+            :bar, :baz
+          )
+        RUBY
+      end
+
+      it 'registers an offense when a comment follows the first argument' do
+        expect_offense(<<~RUBY)
+          do_something(:bar, # comment
+                      ^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+            :baz)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something :bar, # comment
+            :baz
+        RUBY
+      end
+
       it 'registers an offense without a line continuation when the opening parenthesis of an argument ends the line' do
         expect_offense(<<~RUBY)
           if foo(bar(

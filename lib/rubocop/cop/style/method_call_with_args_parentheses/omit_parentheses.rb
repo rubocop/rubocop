@@ -41,6 +41,7 @@ module RuboCop
             return if allowed_camel_case_method_call?(node)
             return if allowed_string_interpolation_method_call?(node)
             return if code_after_closing_parenthesis_on_its_own_line?(node)
+            return if comment_before_first_argument?(node)
 
             (@pending_omit_offenses ||= []) << node
           end
@@ -112,6 +113,15 @@ module RuboCop
             rest = closing.source_line[(closing.column + 1)..].strip
 
             !rest.empty? && !rest.start_with?('#')
+          end
+
+          # Without the parentheses, a comment before the first argument would end the call there,
+          # and a line continuation can't carry the call past a comment.
+          def comment_before_first_argument?(node)
+            return false unless (first_argument = node.first_argument)
+
+            lines = node.loc.begin.line...first_argument.first_line
+            processed_source.each_comment_in_lines(lines).any?
           end
 
           def parentheses_at_the_end_of_multiline_call?(node)
