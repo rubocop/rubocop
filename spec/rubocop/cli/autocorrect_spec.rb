@@ -948,6 +948,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/HashConversion`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+    YAML
+
+    create_file('example.rb', <<~RUBY)
+      foo(Hash[bar => baz], qux)
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect-all', '--only', 'Style/HashConversion,Style/MethodCallWithArgsParentheses']
+      )
+    ).to eq(0)
+
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo({bar => baz}, qux)
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/AndOr`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

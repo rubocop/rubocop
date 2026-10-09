@@ -53,6 +53,12 @@ module RuboCop
         # @!method hash_from_array?(node)
         def_node_matcher :hash_from_array?, '(send (const {nil? cbase} :Hash) :[] ...)'
 
+        # A hash literal as the first argument needs the parentheses of the call,
+        # which `Style/MethodCallWithArgsParentheses` removes in the same pass.
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_send(node)
           return if part_of_ignored_node?(node) || !hash_from_array?(node)
 
