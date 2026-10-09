@@ -50,9 +50,16 @@ module RuboCop
           unless when_node.conditions.first.first_line == when_node.conditions.last.last_line
             return true
           end
+          return true if ends_with_endless_range?(when_node.conditions.last)
           return false unless when_node.body
 
           same_line?(when_node, when_node.body)
+        end
+
+        def ends_with_endless_range?(node)
+          node.each_node(:range).any? do |range|
+            range.end.nil? && range.source_range.end_pos == node.source_range.end_pos
+          end
         end
       end
     end
