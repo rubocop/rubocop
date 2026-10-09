@@ -102,8 +102,9 @@ module RuboCop
           "#{method_source(if_body)}(#{if_body.arguments.map(&:source).join(', ')})"
         elsif (value = wrapped_value(if_body))
           prefix = if_body.source_range.begin.join(value.source_range.begin).source
+          suffix = value.source_range.end.join(if_body.source_range.end).source
 
-          "#{prefix}#{if_body_source(value)}"
+          "#{prefix}#{if_body_source(value)}#{suffix}"
         else
           if_body.source
         end
