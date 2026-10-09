@@ -243,10 +243,10 @@ module RuboCop
           body = node.body.children.last
           return unless body
 
-          last_child_leading_spaces = leading_spaces(body)
-          return if spaces_size(leading_spaces(node)) == spaces_size(last_child_leading_spaces)
+          node_indentation = spaces_size(leading_spaces(node))
+          body_indentation = spaces_size(leading_spaces(body))
 
-          configured_indentation_width - spaces_size(last_child_leading_spaces)
+          node_indentation + configured_indentation_width - body_indentation
         end
 
         def unindentable_range(body)
