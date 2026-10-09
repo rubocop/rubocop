@@ -326,6 +326,25 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         RUBY
       end
     end
+
+    context 'and has `next` with a parenthesized value' do
+      it 'registers an offense and keeps the closing parenthesis' do
+        expect_offense(<<~RUBY)
+          items.each do |item|
+            if condition
+            ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+              next(item.foo)
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each do |item|
+            next(item.foo) if condition
+          end
+        RUBY
+      end
+    end
   end
 
   context 'modifier if that does not fit on one line, but is not the only statement on the line' do
