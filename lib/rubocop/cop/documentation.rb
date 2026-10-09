@@ -14,7 +14,7 @@ module RuboCop
       # @api private
       def url_for(cop_class, config = nil)
         base = department_to_basename(cop_class.department)
-        fragment = cop_class.cop_name.downcase.gsub(/[^a-z]/, '')
+        fragment = cop_class.cop_name.downcase.delete('/')
         base_url = base_url_for(cop_class, config)
         extension = extension_for(cop_class, config)
 

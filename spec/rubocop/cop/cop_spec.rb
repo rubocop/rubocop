@@ -27,6 +27,12 @@ RSpec.describe RuboCop::Cop::Cop, :config do
         it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength -- the expected URL is verbatim
       end
 
+      describe 'for a builtin cop class with a digit in its name' do
+        let(:cop_class) { RuboCop::Cop::Lint::UselessRuby2Keywords }
+
+        it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_lint.html#lintuselessruby2keywords' } # rubocop:disable Layout/LineLength -- the expected URL is verbatim
+      end
+
       describe 'for a custom cop class without DocumentationBaseURL', :restore_registry do
         let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
 

@@ -1,0 +1,1 @@
+* [#16009](https://github.com/rubocop/rubocop/pull/16009): Fix the documentation URL of cops with digits in their names, such as `Lint/UselessRuby2Keywords`, which dropped the digits from the anchor. ([@bbatsov][])
