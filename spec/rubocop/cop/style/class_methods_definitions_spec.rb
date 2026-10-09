@@ -290,6 +290,22 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
       RUBY
     end
 
+    it 'does not register an offense when `private` names several methods of `class << self`' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          class << self
+            def one
+            end
+
+            def two
+            end
+
+            private :one, :two
+          end
+        end
+      RUBY
+    end
+
     it 'does not register an offense when class << self does not contain methods' do
       expect_no_offenses(<<~RUBY)
         class A

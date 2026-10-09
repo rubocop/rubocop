@@ -1,0 +1,1 @@
+* [#15745](https://github.com/rubocop/rubocop/pull/15745): Make `Layout/ClassStructure` aware of the symbol-list forms of visibility modifiers, such as `private :foo, :bar` and `private_class_method :foo`. ([@dduugg][])
