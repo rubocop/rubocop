@@ -832,6 +832,43 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       end
     end
 
+    context 'multiline array with the opening bracket apart from the first element' do
+      it 'does not register an offense for the closing bracket on its own line' do
+        expect_no_offenses(<<~RUBY)
+          multiline = [
+            { a: 1 },
+            [ 3, 4 ]
+          ]
+        RUBY
+      end
+
+      it 'does not register an offense for the closing bracket on its own line after a comment' do
+        expect_no_offenses(<<~RUBY)
+          multiline = [ # comment
+            [ 1, 2 ],
+            [ 3, 4 ]
+          ]
+        RUBY
+      end
+
+      it 'keeps the closing bracket on its own line when correcting the opening bracket' do
+        expect_offense(<<~RUBY)
+          multiline = [# comment
+                      ^ #{use_space_message}
+            { a: 1 },
+            [ 3, 4 ]
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          multiline = [ # comment
+            { a: 1 },
+            [ 3, 4 ]
+          ]
+        RUBY
+      end
+    end
+
     it 'registers an offense and corrects 2-dimensional array with extra spaces' do
       expect_offense(<<~RUBY)
         [ [ a, b ], [ 1, 7 ] ]

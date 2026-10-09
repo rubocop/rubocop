@@ -1250,6 +1250,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/MultilineArrayBraceLayout` and ' \
+     '`Layout/SpaceInsideArrayLiteralBrackets` with `EnforcedStyle: compact`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceInsideArrayLiteralBrackets:
+        EnforcedStyle: compact
+    YAML
+    create_file('example.rb', <<~RUBY)
+      x = [
+        { a: 1 },
+        [3, 4]
+      ]
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Layout/MultilineArrayBraceLayout,Layout/SpaceInsideArrayLiteralBrackets']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      x = [
+        { a: 1 },
+        [ 3, 4 ]
+      ]
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifierOfIfUnless` with `Style/SoleNestedConditional` ' \
      'without duplicating the outer condition' do
     create_file('example.rb', <<~RUBY)
