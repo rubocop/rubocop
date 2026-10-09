@@ -116,6 +116,51 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when calling `[]` with empty brackets' do
+    expect_offense(<<~RUBY)
+      def do_something
+        foo[] { |row| yield row }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_something(&block)
+        foo[&block]
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when calling `[]` with a dot and no arguments' do
+    expect_offense(<<~RUBY)
+      def do_something
+        foo.[] { |row| yield row }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_something(&block)
+        foo.[](&block)
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the method is named `[]`' do
+    expect_offense(<<~RUBY)
+      def []
+        foo { |row| yield row }
+        ^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def [](&block)
+        foo(&block)
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when method contains multiple `yield`s' do
     expect_offense(<<~RUBY)
       def m

@@ -142,6 +142,8 @@ module RuboCop
             insert_argument(node, corrector, block_name)
           elsif empty_arguments?(node)
             corrector.replace(node.arguments, "(&#{block_name})")
+          elsif index_call?(node)
+            corrector.replace(node.loc.selector, "[&#{block_name}]")
           elsif call_like?(node)
             correct_call_node(node, corrector, block_name)
           else
@@ -152,6 +154,10 @@ module RuboCop
         def empty_arguments?(node)
           # Is there an arguments node with only parentheses?
           node.arguments.is_a?(RuboCop::AST::Node) && node.arguments.loc.begin
+        end
+
+        def index_call?(node)
+          node.send_type? && node.method?(:[]) && !node.loc?(:dot)
         end
 
         def call_like?(node)
