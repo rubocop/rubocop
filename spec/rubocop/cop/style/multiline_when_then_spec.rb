@@ -156,4 +156,13 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when the condition ends with an endless range' do
+    expect_no_offenses(<<~RUBY)
+      case foo
+      when 500.. then
+        do_something
+      end
+    RUBY
+  end
 end

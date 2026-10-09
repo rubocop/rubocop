@@ -50,9 +50,16 @@ module RuboCop
         # Requires `then` for write `in` and its body on the same line.
         def require_then?(in_pattern_node)
           return true unless in_pattern_node.pattern.single_line?
+          return true if ends_with_endless_range?(in_pattern_node.pattern)
           return false unless in_pattern_node.body
 
           same_line?(in_pattern_node, in_pattern_node.body)
+        end
+
+        def ends_with_endless_range?(node)
+          node.each_node(:range).any? do |range|
+            range.end.nil? && range.source_range.end_pos == node.source_range.end_pos
+          end
         end
       end
     end
