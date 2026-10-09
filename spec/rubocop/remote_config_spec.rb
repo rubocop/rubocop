@@ -305,4 +305,12 @@ RSpec.describe RuboCop::RemoteConfig do
       end
     end
   end
+
+  it 'does not load net/http until a remote config is fetched' do
+    lib = File.expand_path('../../lib', __dir__)
+    script = "require 'rubocop'; print defined?(Net::HTTP).inspect"
+    output, _status = Open3.capture2(RbConfig.ruby, '-I', lib, '-e', script)
+
+    expect(output).to eq('nil')
+  end
 end
