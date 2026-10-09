@@ -25,8 +25,10 @@ module RuboCop
 
         MSG = 'Put method call on a separate line if chained to a single line block.'
 
+        # `Style/NilComparison` replaces a chained `.nil?` with `== nil` in the same pass,
+        # which must not start a line of its own.
         def self.autocorrect_incompatible_with
-          [Style::MapToHash]
+          [Style::MapToHash, Style::NilComparison]
         end
 
         def on_send(node)

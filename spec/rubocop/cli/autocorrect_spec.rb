@@ -4398,6 +4398,23 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: comparison` of `Style/NilComparison` and `Layout/SingleLineBlockChain` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/NilComparison:
+        EnforcedStyle: comparison
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      obj.find { |i| foo(i) }.nil?
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/NilComparison,Layout/SingleLineBlockChain'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      obj.find { |i| foo(i) } == nil
+    RUBY
+  end
+
   it 'corrects `Style/BlockDelimiters` with `EnforcedStyle: braces_for_chaining` and `Style/RedundantBegin` offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/BlockDelimiters:
