@@ -735,6 +735,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/LineLength` with `Style/MultilineIfModifier` when a heredoc is opened on the modifier line' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 40
+    YAML
+    create_file('example.rb', <<~RUBY)
+      items.each { |item| foo(item, <<~EOS) } if condition
+        text
+      EOS
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/LineLength,Style/MultilineIfModifier'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if condition
+        items.each { |item|
+         foo(item, <<~EOS) }
+        text
+      EOS
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

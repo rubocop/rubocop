@@ -17,6 +17,7 @@ module RuboCop
       class MultilineIfModifier < Base
         include StatementModifier
         include Alignment
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Favor a normal %<keyword>s-statement over a modifier ' \
@@ -27,19 +28,42 @@ module RuboCop
           return unless node.modifier_form? && node.body.multiline?
 
           add_offense(node, message: format(MSG, keyword: node.keyword)) do |corrector|
-            corrector.replace(node, to_normal_if(node))
+            autocorrect(corrector, node)
           end
           ignore_node(node)
         end
 
         private
 
-        def to_normal_if(node)
+        def autocorrect(corrector, node)
+          condition_heredoc, body_heredoc = [node.condition, node.body].map do |part|
+            next unless (range = heredoc_after(part, node))
+
+            corrector.remove(range)
+            range.source.chomp
+          end
+          corrector.replace(node, to_normal_if(node, condition_heredoc, body_heredoc))
+        end
+
+        # Heredocs opened on the modifier line have their bodies after it, so
+        # they are moved along with the part of the `if` they belong to.
+        def heredoc_after(part, node)
+          ranges = part.each_node(:any_str).select(&:heredoc?).map do |heredoc|
+            heredoc.loc.heredoc_body.join(heredoc.loc.heredoc_end)
+          end
+          ranges.select! { |range| range.line > node.last_line }
+          return if ranges.empty?
+
+          range_by_whole_lines(ranges.reduce(:join), include_final_newline: true)
+        end
+
+        def to_normal_if(node, condition_heredoc, body_heredoc)
           indented_body = indented_body(node.body, node)
           condition = "#{node.keyword} #{node.condition.source}"
           indented_end = "#{offset(node)}end"
 
-          [condition, indented_body, indented_end].join("\n")
+          lines = [condition, condition_heredoc, indented_body, body_heredoc, indented_end]
+          lines.compact.join("\n")
         end
 
         def indented_body(body, node)
