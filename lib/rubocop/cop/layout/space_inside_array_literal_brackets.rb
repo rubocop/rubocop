@@ -117,7 +117,7 @@ module RuboCop
           elsif style == :space
             SpaceCorrector.add_space(processed_source, corrector, left, right)
           else
-            compact_corrections(corrector, tokens, left, right)
+            compact_corrections(corrector, node, tokens, left, right)
           end
         end
 
@@ -178,6 +178,8 @@ module RuboCop
             space_offenses(node, left, nil, MSG, start_ok: start_ok, end_ok: true)
           end
 
+          return if closing_bracket_kept_apart?(node, tokens, left, right)
+
           if qualifies_for_compact?(tokens, right)
             compact_offense(node, right)
           elsif !multi_dimensional_array?(tokens, right)
@@ -212,12 +214,23 @@ module RuboCop
           end
         end
 
-        def compact_corrections(corrector, tokens, left, right)
+        # A closing bracket on its own line is only collapsed when the opening
+        # bracket ends up on the first element's line, so that the brackets
+        # stay symmetrical (see `Layout/MultilineArrayBraceLayout`).
+        def closing_bracket_kept_apart?(node, tokens, left, right)
+          end_has_own_line?(right) &&
+            !multi_dimensional_array?(tokens, left, side: :left) &&
+            !same_line?(left, node.children.first)
+        end
+
+        def compact_corrections(corrector, node, tokens, left, right)
           if multi_dimensional_array?(tokens, left, side: :left)
             compact(corrector, left, :right)
           elsif !left.space_after?
             corrector.insert_after(left.pos, ' ')
           end
+
+          return if closing_bracket_kept_apart?(node, tokens, left, right)
 
           if multi_dimensional_array?(tokens, right)
             compact(corrector, right, :left)
