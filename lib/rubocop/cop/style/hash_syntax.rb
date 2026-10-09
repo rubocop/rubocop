@@ -142,8 +142,11 @@ module RuboCop
         MSG_HASH_ROCKETS = 'Use hash rockets syntax.'
         NO_MIXED_KEYS_STYLES = %i[ruby19_no_mixed_keys no_mixed_keys].freeze
 
+        # Omitting the last hash value of a call without parentheses adds the parentheses,
+        # which `Style/MethodCallWithArgsParentheses` and `Style/SuperWithArgsParentheses`
+        # would add again in the same pass.
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::SuperWithArgsParentheses]
         end
 
         def on_hash(node)

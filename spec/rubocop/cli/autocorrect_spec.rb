@@ -385,6 +385,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not double the closing parenthesis when `Style/HashSyntax` and `Style/SuperWithArgsParentheses` both add parentheses' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+      Style/HashSyntax:
+        EnforcedShorthandSyntax: always
+      Style/SuperWithArgsParentheses:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def initialize(bar:)
+        super bar: bar
+        baz
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect', '--only', 'Style/HashSyntax,Style/SuperWithArgsParentheses']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def initialize(bar:)
+        super(bar:)
+        baz
+      end
+    RUBY
+  end
+
   it 'does not double the closing parenthesis when `Layout/MultilineMethodDefinitionBraceLayout` ' \
      'and `Style/MultilineMethodSignature` both move it' do
     create_file('.rubocop.yml', <<~YAML)
