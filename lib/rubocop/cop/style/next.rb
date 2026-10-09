@@ -181,11 +181,11 @@ module RuboCop
         def autocorrect_modifier(corrector, node)
           body = node.if_branch || node.else_branch
 
-          replacement =
-            "next #{node.inverse_keyword} #{node.condition.source}\n" \
-            "#{' ' * node.source_range.column}#{body.source}"
+          next_code = "next #{node.inverse_keyword} #{node.condition.source}\n" \
+                      "#{' ' * node.source_range.column}"
 
-          corrector.replace(node, replacement)
+          corrector.insert_before(node, next_code)
+          corrector.remove(range_between(body.source_range.end_pos, node.source_range.end_pos))
         end
 
         def autocorrect_block(corrector, node)
