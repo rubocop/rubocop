@@ -44,6 +44,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.receiver
+          return if prefer_comparison? && comment_before_dot?(node)
 
           style_check?(node) do
             add_offense(node.loc.selector) do |corrector|
@@ -58,8 +59,14 @@ module RuboCop
 
         private
 
+        def comment_before_dot?(node)
+          return false unless node.loc.dot
+
+          processed_source.contains_comment?(node.receiver.source_range.end.join(node.loc.dot))
+        end
+
         def autocorrect_to_comparison(corrector, node)
-          range = node.loc.dot.join(node.loc.selector.end)
+          range = node.receiver.source_range.end.join(node.loc.selector.end)
           corrector.replace(range, ' == nil')
 
           return if !operator_expression?(node.parent) && !receiver_of_parent?(node)
