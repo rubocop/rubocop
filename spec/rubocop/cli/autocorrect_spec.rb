@@ -4476,6 +4476,23 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/SingleLineBlockChain` with `EnforcedStyle: right_coerce` of `Style/FloatDivision`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/FloatDivision:
+        EnforcedStyle: right_coerce
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      obj.count { |i| foo(i) }.to_f / bar
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/SingleLineBlockChain,Style/FloatDivision'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      obj.count { |i| foo(i) } / bar.to_f
+    RUBY
+  end
+
   it 'corrects `Style/BlockDelimiters` with `EnforcedStyle: braces_for_chaining` and `Style/RedundantBegin` offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/BlockDelimiters:
