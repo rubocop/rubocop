@@ -406,6 +406,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       RUBY
     end
 
+    it 'accepts a space between left brace and a comment' do
+      expect_no_offenses(<<~RUBY)
+        foo { # comment
+          bar}
+      RUBY
+    end
+
     it 'accepts left brace without outer space' do
       expect_no_offenses('each{puts}')
     end

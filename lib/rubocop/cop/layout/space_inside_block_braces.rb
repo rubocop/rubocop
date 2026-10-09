@@ -204,16 +204,26 @@ module RuboCop
                       'Space between { and | detected.')
             end
           else
-            brace_with_space = range_with_surrounding_space(left_brace, side: :right)
-            return if brace_with_space.source.match?(/\R/)
-
-            space(brace_with_space.begin_pos + 1, brace_with_space.end_pos,
-                  'Space inside { detected.')
+            space_after_left_brace(left_brace)
           end
         end
 
         def pipe?(args_delimiter)
           args_delimiter&.is?('|')
+        end
+
+        def space_after_left_brace(left_brace)
+          brace_with_space = range_with_surrounding_space(left_brace, side: :right)
+          return if brace_with_space.source.match?(/\R/)
+          return if comment_at?(brace_with_space.end_pos)
+
+          space(
+            brace_with_space.begin_pos + 1, brace_with_space.end_pos, 'Space inside { detected.'
+          )
+        end
+
+        def comment_at?(pos)
+          processed_source.comments.any? { |comment| comment.source_range.begin_pos == pos }
         end
 
         def space_inside_right_brace(inner, right_brace, column)
