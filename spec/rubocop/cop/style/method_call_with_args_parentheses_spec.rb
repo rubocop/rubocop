@@ -1366,6 +1366,23 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
            # comment
         RUBY
       end
+
+      it 'registers an offense without a line continuation when the opening parenthesis of an argument ends the line' do
+        expect_offense(<<~RUBY)
+          if foo(bar(
+                ^^^^^ Omit parentheses for method calls with arguments.
+            baz))
+            qux
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if foo bar(
+            baz)
+            qux
+          end
+        RUBY
+      end
     end
 
     context 'allowing parens in multi-line calls' do

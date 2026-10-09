@@ -115,10 +115,11 @@ module RuboCop
           end
 
           def parentheses_at_the_end_of_multiline_call?(node)
-            node.multiline? &&
-              node.loc.begin.source_line
-                  .gsub(TRAILING_WHITESPACE_REGEX, '')
-                  .end_with?('(')
+            return false unless node.multiline?
+
+            opening = node.loc.begin
+
+            opening.source_line[(opening.column + 1)..].gsub(TRAILING_WHITESPACE_REGEX, '').empty?
           end
 
           def legitimate_call_with_parentheses?(node) # rubocop:disable Metrics/PerceivedComplexity
