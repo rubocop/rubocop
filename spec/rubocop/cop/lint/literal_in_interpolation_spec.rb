@@ -413,6 +413,34 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
+  it 'escapes a trailing `#` that the following `{` would turn into an interpolation' do
+    expect_offense(<<~'RUBY')
+      /^(#{'#'}{1,6})\s/
+           ^^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      /^(\#{1,6})\s/
+    RUBY
+  end
+
+  it 'escapes a trailing `#` that the following `@` would turn into an interpolation in a string' do
+    expect_offense(<<~'RUBY')
+      "#{'#'}@foo"
+         ^^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "\#@foo"
+    RUBY
+  end
+
+  it 'does not register an offense when a preceding `#` would turn the value into an interpolation' do
+    expect_no_offenses(<<~'RUBY')
+      "##{'{'}foo}"
+    RUBY
+  end
+
   it 'handles backslash in single quotes when autocorrecting' do
     expect_offense(<<~'RUBY')
       x = "ABC".gsub(/(A)(B)(C)/, "D#{'\2'}F")

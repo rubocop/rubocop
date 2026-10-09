@@ -24,19 +24,10 @@ module RuboCop
         MSG = 'Literal interpolation detected.'
         COMPOSITE = %i[array hash pair irange erange].freeze
 
-        # rubocop:disable-next Metrics/AbcSize
         def on_interpolation(begin_node)
           final_node = begin_node.children.last
           return unless offending?(final_node)
-
-          # %W and %I split the content into words before expansion
-          # treating each interpolation as a word component, so
-          # interpolation should not be removed if the expanded value
-          # contains a space character.
-          expanded_value = autocorrected_value(final_node)
-          expanded_value = handle_special_regexp_chars(begin_node, expanded_value)
-
-          return if in_array_percent_literal?(begin_node) && /\s|\A\z/.match?(expanded_value)
+          return unless (expanded_value = correctable_value(begin_node, final_node))
 
           add_offense(final_node) do |corrector|
             next if final_node.dstr_type? # nested, fixed in next iteration
@@ -71,6 +62,22 @@ module RuboCop
         def array_in_regexp?(node)
           grandparent = node.parent.parent
           node.array_type? && grandparent.regexp_type?
+        end
+
+        def correctable_value(begin_node, final_node)
+          value = autocorrected_value(final_node)
+          value = handle_special_regexp_chars(begin_node, value)
+          return if starts_interpolation_after_hash_sign?(begin_node, value)
+
+          value = escape_trailing_hash_sign(begin_node, value)
+
+          # %W and %I split the content into words before expansion
+          # treating each interpolation as a word component, so
+          # interpolation should not be removed if the expanded value
+          # contains a space character.
+          return if in_array_percent_literal?(begin_node) && /\s|\A\z/.match?(value)
+
+          value
         end
 
         # rubocop:disable-next Metrics/MethodLength, Metrics/CyclomaticComplexity
@@ -114,6 +121,16 @@ module RuboCop
 
             "#{'\\' * needed_backslashes}/"
           end
+        end
+
+        def starts_interpolation_after_hash_sign?(begin_node, value)
+          return false unless value.start_with?('{', '@', '$')
+
+          source = processed_source.buffer.source
+          begin_pos = begin_node.source_range.begin_pos
+          return false unless source[begin_pos - 1] == '#'
+
+          unescaped_hash_sign?(source[0...begin_pos])
         end
 
         def autocorrected_value_for_string(node)
@@ -200,6 +217,17 @@ module RuboCop
 
           grandparent = parent.parent
           grandparent&.array_type? && grandparent.percent_literal?
+        end
+
+        def escape_trailing_hash_sign(begin_node, value)
+          following = processed_source.buffer.source[begin_node.source_range.end_pos]
+          return value unless %w[{ @ $].include?(following) && unescaped_hash_sign?(value)
+
+          "#{value.delete_suffix('#')}\\#"
+        end
+
+        def unescaped_hash_sign?(text)
+          text.end_with?('#') && text.delete_suffix('#')[/\\*\z/].length.even?
         end
       end
     end
