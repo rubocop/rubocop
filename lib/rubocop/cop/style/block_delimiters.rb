@@ -294,7 +294,7 @@ module RuboCop
           corrector.replace(b, '{')
           corrector.replace(e, '}')
 
-          corrector.wrap(node.body, "begin\n", "\nend") if begin_required?(node)
+          wrap_body_with_begin(corrector, node.body) if begin_required?(node)
         end
 
         def whitespace_before?(range)
@@ -495,6 +495,16 @@ module RuboCop
 
         def array_or_range?(node)
           node.type?(:array, :range)
+        end
+
+        def wrap_body_with_begin(corrector, body)
+          heredoc_ends = body.each_node(:any_str).select(&:heredoc?).map do |str|
+            str.loc.heredoc_end
+          end
+          body_end = [body.source_range, *heredoc_ends].max_by(&:end_pos)
+
+          corrector.insert_before(body, "begin\n")
+          corrector.insert_after(body_end, "\nend")
         end
 
         def begin_required?(block_node)
