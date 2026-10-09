@@ -377,6 +377,7 @@ module RuboCop
         def add_parens_if_missing(node, corrector)
           return if parentheses?(node)
           return if node.send_type? && node.method?(:[])
+          return unless (@parenthesized_nodes ||= Set.new.compare_by_identity).add?(node)
 
           add_parentheses(node, corrector)
         end
