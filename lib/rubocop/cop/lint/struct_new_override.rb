@@ -54,7 +54,7 @@ module RuboCop
         def on_send(node)
           return unless struct_new(node)
 
-          node.arguments.each_with_index do |arg, index|
+          node.arguments.each.with_index do |arg, index|
             # Ignore if the first argument is a class name
             next if index.zero? && arg.str_type?
 
