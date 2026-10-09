@@ -86,6 +86,36 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using the shorthand call syntax with empty parentheses' do
+    expect_offense(<<~RUBY)
+      def do_something
+        callable.() { |row| yield row }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_something(&block)
+        callable.(&block)
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when calling a method with empty parentheses' do
+    expect_offense(<<~RUBY)
+      def do_something
+        array.each() { |row| yield row }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_something(&block)
+        array.each(&block)
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when method contains multiple `yield`s' do
     expect_offense(<<~RUBY)
       def m

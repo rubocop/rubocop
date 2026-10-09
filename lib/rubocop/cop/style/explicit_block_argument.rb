@@ -170,13 +170,11 @@ module RuboCop
                           else
                             "&#{block_name}"
                           end
-          corrector.insert_after(node, "(#{new_arguments})")
-          return unless node.parenthesized?
-
-          args_begin = Util.args_begin(node)
-          args_end = Util.args_end(node)
-          range = range_between(args_begin.begin_pos, args_end.end_pos)
-          corrector.remove(range)
+          if node.parenthesized?
+            corrector.replace(node.loc.begin.join(node.loc.end), "(#{new_arguments})")
+          else
+            corrector.insert_after(node, "(#{new_arguments})")
+          end
         end
 
         def build_new_arguments_for_zsuper(node)
