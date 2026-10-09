@@ -865,6 +865,36 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
                                    d))
       RUBY
     end
+
+    it 'registers an offense for each expression when joining all of them fits' do
+      expect_offense(<<~RUBY)
+        [foo(a,
+         ^^^^^^ Redundant line break detected.
+             b), bar(c,
+                 ^^^^^^ Redundant line break detected.
+                     d)]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [foo(a, b), bar(c, d)]
+      RUBY
+    end
+
+    it 'registers an offense only for the expressions whose combined line still fits' do
+      expect_offense(<<~RUBY)
+        [fooo(a,
+         ^^^^^^^ Redundant line break detected.
+              b), baar(c,
+                  ^^^^^^^ Redundant line break detected.
+                       d), baaz(e,
+                                f)]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [fooo(a, b), baar(c, d), baaz(e,
+                                f)]
+      RUBY
+    end
   end
 
   context 'when `Layout/LineLength` is disabled' do
