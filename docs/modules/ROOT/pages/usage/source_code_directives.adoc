@@ -36,7 +36,8 @@ You can also disable _all_ cops with
 
 In cases where you want to differentiate intentionally-disabled cops vs. cops
 you'd like to revisit later, you can use `rubocop:todo` as an alias of
-`rubocop:disable`.
+`rubocop:disable`. The corresponding next-statement and whole-file aliases
+are `rubocop:todo-next` and `rubocop:todo-file`.
 
 [source,ruby]
 ----
@@ -52,6 +53,32 @@ comment.
 ----
 for x in (0..19) # rubocop:disable Style/For
 ----
+
+== Disabling Cops for the Whole File
+
+An explicit `disable-file` directive suppresses the listed cops for the whole
+physical file, from the first line through the end of the file. It has no
+matching `enable`: later `enable`, `enable-next`, or `pop` directives do not
+narrow its scope.
+
+[source,ruby]
+----
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# rubocop:disable-file Metrics/MethodLength, Style/StringLiterals -- generated file
+----
+
+Place a file directive on its own line in the file header, before any Ruby
+code. A shebang, magic comments, other comments, and blank lines may precede
+it. A misplaced file directive still suppresses the whole physical file, but
+`Lint/CopDirectiveSyntax` reports its placement so that the directive's scope
+is visible where readers expect it.
+
+Like other disabling directives, `disable-file` accepts individual cops,
+departments, `all`, comma-separated lists, and a trailing `--` reason.
+`todo-file` is the equivalent of `rubocop:todo`. `--auto-gen-config` never
+generates file directives, so both forms are only ever written by hand.
 
 == Disabling Cops for the Next Statement
 
@@ -354,9 +381,12 @@ as the code around it changes:
   restored exactly, including inside nested scopes. Unlike a
   `disable`/`enable` pair, `pop` cannot get the restored state wrong,
   because it never states it - it restores whatever was saved.
+* *`disable-file`* - the whole physical file. Put it in the file header; it
+  has no closing directive and cannot be narrowed later.
 
-`todo` and `todo-next` are aliases of `disable` and `disable-next` that mark
-a suppression you intend to revisit rather than a deliberate exception.
+`todo`, `todo-next` and `todo-file` are aliases of `disable`, `disable-next`
+and `disable-file` that mark a suppression you intend to revisit rather than
+a deliberate exception.
 
 The `Style/DirectiveScope` cop can enforce the tightest-form preference: it
 flags `disable`/`enable` and `enable`/`disable` pairs as well as `push`/`pop`
@@ -376,8 +406,10 @@ last two are on by default, so most of this happens without any configuration.
 | A directive RuboCop cannot act on: a missing or misspelled mode, cop names
   that are not comma-separated, a trailing comment that does not start with
   `--`, a second directive on the same line, or a cop name that does not
-  exist. These suppress nothing, silently, which is what makes them worth
-  reporting.
+  exist. It also reports next-statement directives at the end of a code line
+  and file directives outside the file header. Malformed directives suppress
+  nothing silently; misplaced file directives retain whole-file scope but are
+  reported because their placement obscures it.
 | Enabled
 
 | xref:cops_migration.adoc#migrationdepartmentname[`Migration/DepartmentName`]
@@ -385,9 +417,9 @@ last two are on by default, so most of this happens without any configuration.
 | Enabled
 
 | xref:cops_lint.adoc#lintredundantcopdisabledirective[`Lint/RedundantCopDisableDirective`]
-| A `disable` that is no longer suppressing anything - the offense it was
-  hiding is gone. Autocorrection removes the directive along with its `--`
-  reason.
+| A `disable`, `disable-next`, or file directive that is no longer suppressing
+  anything - the offense it was hiding is gone. Autocorrection removes the
+  directive along with its `--` reason.
 | Enabled
 
 | xref:cops_lint.adoc#lintredundantcopenabledirective[`Lint/RedundantCopEnableDirective`]
@@ -397,7 +429,8 @@ last two are on by default, so most of this happens without any configuration.
 | xref:cops_lint.adoc#lintmissingcopenabledirective[`Lint/MissingCopEnableDirective`]
 | A `disable` that is never closed, so it runs to the end of the file.
   `MaxRangeSize` bounds how many lines a region may span before it is
-  reported.
+  reported. An explicit `disable-file` scope never requires an enable and is
+  not reported.
 | Enabled
 
 | xref:cops_style.adoc#styledirectivescope[`Style/DirectiveScope`]

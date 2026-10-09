@@ -2226,7 +2226,7 @@ Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
   VersionAdded: '0.52'
-  VersionChanged: '1.90'
+  VersionChanged: '<<next>>'
   # Maximum number of consecutive lines the cop can be disabled for.
   # 0 allows only single-line disables
   # 1 would mean the maximum allowed is the following:
@@ -2405,6 +2405,7 @@ Lint/RedundantCopDisableDirective:
                  It must be explicitly disabled.
   Enabled: true
   VersionAdded: '0.76'
+  VersionChanged: '<<next>>'
 
 Lint/RedundantCopEnableDirective:
   Description: Checks for rubocop:enable comments that can be removed.
@@ -4155,7 +4156,8 @@ Style/DisableCopsWithinSourceCodeDirective:
   # forbidding directives outright.
   AllowWithReason: false
   # Directive forms this cop ignores entirely. One or more of `disable`,
-  # `todo`, `disable-next`, `todo-next`, `push`, `next`.
+  # `todo`, `disable-next`, `todo-next`, `disable-file`, `todo-file`, `push`,
+  # `next`.
   AllowedDirectives: []
 
 Style/DocumentDynamicEvalDefinition:

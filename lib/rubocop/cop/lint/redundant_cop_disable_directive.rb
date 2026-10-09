@@ -112,6 +112,7 @@ module RuboCop
             # prepare the code for the moment the cop gets enabled.
             next if pending_cop_not_run?(cop)
 
+            each_duplicate_file_disable(cop, line_ranges, &block)
             each_already_disabled(cop, line_ranges, &block)
             each_line_range(cop, line_ranges, &block)
           end
@@ -188,6 +189,34 @@ module RuboCop
           else
             find_redundant_cop(cop, line_range)
           end
+        end
+
+        # File directives all produce the same physical-file range. Once one
+        # exists for a cop, every later file directive for that cop is
+        # redundant even when the shared range contains an offense.
+        def each_duplicate_file_disable(cop, line_ranges)
+          file_ranges = line_ranges.select { |range| file_directive_range?(range) }
+
+          file_ranges.drop(1).each do |range|
+            next if ignore_offense?(range)
+
+            comment = directive_comment(range)
+            yield comment, redundant_file_disable(cop, comment)
+          end
+        end
+
+        def redundant_file_disable(cop, comment)
+          if all_disabled?(comment)
+            'all'
+          elsif department_disabled?(cop, comment)
+            add_department_marker(cop.split('/').first)
+          else
+            cop
+          end
+        end
+
+        def file_directive_range?(range)
+          range.respond_to?(:directive) && range.directive.disable_file?
         end
 
         # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -296,12 +325,9 @@ module RuboCop
           location = directive.range
           cop_names = cops.sort.map { |c| describe(c) }.join(', ')
 
-          # An unknown cop may just not be loaded in this run (e.g. a custom
-          # cop whose configuration failed to load) - removing its directive
-          # would destroy something that cannot be restored, so only report.
-          # A misplaced EOL `disable-next` should be moved, not deleted.
+          # A misplaced next or file directive should be moved, not deleted.
           message = message(cop_names, enabling: directive.enable_next?)
-          if any_unknown_cop?(cops) || misplaced_next_directive?(comment)
+          if any_unknown_cop?(cops) || misplaced_directive?(comment)
             return add_offense(location, message: message)
           end
 
@@ -326,15 +352,16 @@ module RuboCop
           cop_ranges = cops.map { |c| [c, cop_range(comment, c)] }
           cop_ranges.sort_by! { |_, r| r.begin_pos }
           ranges = cop_ranges.map { |_, r| r }
+          correctable = !misplaced_file_directive?(comment)
 
           cop_ranges.each do |cop, range|
-            add_offense_for_cop_in_list(cop, range, ranges)
+            add_offense_for_cop_in_list(cop, range, ranges, correctable: correctable)
           end
         end
 
-        def add_offense_for_cop_in_list(cop, range, ranges)
+        def add_offense_for_cop_in_list(cop, range, ranges, correctable: true)
           cop_name = describe(cop)
-          return add_offense(range, message: message(cop_name)) if unknown_cop?(cop)
+          return add_offense(range, message: message(cop_name)) if unknown_cop?(cop) || !correctable
 
           add_offense(range, message: message(cop_name)) do |corrector|
             corrector.remove(directive_range_in_list(range, ranges))
@@ -345,10 +372,20 @@ module RuboCop
           cops.any? { |cop| unknown_cop?(cop) }
         end
 
+        def misplaced_directive?(comment)
+          misplaced_next_directive?(comment) || misplaced_file_directive?(comment)
+        end
+
         def misplaced_next_directive?(comment)
           directive = DirectiveComment.new(comment)
           (directive.disable_next? || directive.next? || directive.enable_next?) &&
             !processed_source.comment_config.comment_only_line?(directive.line_number)
+        end
+
+        def misplaced_file_directive?(comment)
+          directive = DirectiveComment.new(comment)
+          directive.disable_file? &&
+            !processed_source.comment_config.file_directive_valid_placement?(directive)
         end
 
         def unknown_cop?(cop)

@@ -661,4 +661,42 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to eq(%w[Style Lint/Void]) }
     end
   end
+
+  describe 'file directives' do
+    def file_directive(text)
+      source = RuboCop::ProcessedSource.new("#{text}\n", RUBY_VERSION.to_f)
+      described_class.new(source.comments.first)
+    end
+
+    it 'recognizes `disable-file` as a disabling whole-file directive' do
+      directive = file_directive(
+        '# rubocop:disable-file Metrics/AbcSize, Metrics/MethodLength -- legacy file'
+      )
+
+      expect(directive.mode).to eq('disable-file')
+      expect(directive).to be_disabled
+      expect(directive).to be_disable_file
+      expect(directive.raw_cop_names).to eq(%w[Metrics/AbcSize Metrics/MethodLength])
+      expect(directive.reason).to eq('legacy file')
+      expect(directive).not_to respond_to(:multiline?)
+      expect(directive).not_to be_malformed
+    end
+
+    it 'recognizes `todo-file` as an alias of `disable-file`' do
+      directive = file_directive('# rubocop:todo-file Metrics/AbcSize -- revisit later')
+
+      expect(directive.mode).to eq('todo-file')
+      expect(directive).to be_disabled
+      expect(directive).to be_disable_file
+      expect(directive).not_to be_disable_next
+      expect(directive.raw_cop_names).to eq(%w[Metrics/AbcSize])
+      expect(directive.reason).to eq('revisit later')
+      expect(directive).not_to be_malformed
+    end
+
+    it 'uses the existing malformed handling when the cop name is missing' do
+      expect(file_directive('# rubocop:disable-file')).to be_malformed
+      expect(file_directive('# rubocop:todo-file')).to be_malformed
+    end
+  end
 end
