@@ -188,11 +188,12 @@ module RuboCop
 
         MSG = '`%<category>s` is supposed to appear before `%<previous>s`.'
 
-        # A moved element is inserted before the line break that precedes its anchor. When
-        # the anchor follows a blank line, `Layout/EmptyLines` or `Layout/EmptyLinesAroundClassBody`
+        # A moved element is inserted before the line break that precedes its anchor.
+        # When the anchor follows a blank line, `Layout/EmptyLines`,
+        # `Layout/EmptyLinesAroundAccessModifier` or `Layout/EmptyLinesAroundClassBody`
         # may remove that line break in the same pass.
         def self.autocorrect_incompatible_with
-          [Layout::EmptyLines, Layout::EmptyLinesAroundClassBody]
+          [Layout::EmptyLines, Layout::EmptyLinesAroundAccessModifier, Layout::EmptyLinesAroundClassBody]
         end
 
         # Validates code style on class declaration.

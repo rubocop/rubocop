@@ -2822,6 +2822,38 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/ClassStructure` with `EnforcedStyle: only_before` of `Layout/EmptyLinesAroundAccessModifier`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundAccessModifier:
+        EnforcedStyle: only_before
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo
+        private
+
+        def bar
+        end
+        BAZ = 1
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Layout/ClassStructure,Layout/EmptyLinesAroundAccessModifier']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo
+        private
+        BAZ = 1
+        def bar
+        end
+      end
+    RUBY
+  end
+
   # A case where two cops, EmptyLinesAroundBody and EmptyLines, try to
   # remove the same line in autocorrect.
   it 'can correct two empty lines at end of class body' do
