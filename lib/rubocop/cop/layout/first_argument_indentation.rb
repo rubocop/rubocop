@@ -189,6 +189,7 @@ module RuboCop
           return false unless style == :special_for_inner_method_call_in_parentheses
           return false unless inner_call?(top_level_send)
           return false unless display_column(send_node.source_range) < column_delta.abs
+          return false if column_delta.positive? && begins_its_line?(top_level_send.source_range)
 
           top_level_send != send_node || begins_its_line?(top_level_send.loc.end)
         end
