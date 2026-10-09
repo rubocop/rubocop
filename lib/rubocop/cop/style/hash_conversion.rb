@@ -101,10 +101,17 @@ module RuboCop
         def register_offense_for_hash(node, hash_argument)
           add_offense(node, message: MSG_LITERAL_HASH_ARG) do |corrector|
             corrector.replace(node, "{#{hash_argument.source}}")
-
-            parent = node.parent
-            add_parentheses(parent, corrector) if parent&.send_type? && !parent.parenthesized?
+            add_parentheses_to_parent_call(node, corrector)
           end
+        end
+
+        # Without parentheses, a hash literal as the first argument would be parsed as a block.
+        def add_parentheses_to_parent_call(node, corrector)
+          parent = node.parent
+          return unless parent&.send_type? && !node.equal?(parent.receiver)
+          return if parent.parenthesized?
+
+          add_parentheses(parent, corrector)
         end
 
         def register_offense_for_zip_method(node, zip_method)
@@ -141,11 +148,7 @@ module RuboCop
         def correct_multi_argument(node)
           add_offense(node, message: MSG_LITERAL_MULTI_ARG) do |corrector|
             corrector.replace(node, args_to_hash(node.arguments))
-
-            parent = node.parent
-            if parent&.send_type? && !parent.method?(:to_h) && !parent.parenthesized?
-              add_parentheses(parent, corrector)
-            end
+            add_parentheses_to_parent_call(node, corrector)
           end
         end
 

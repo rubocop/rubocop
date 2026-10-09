@@ -226,6 +226,39 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'does not add parentheses to a method called on multi-argument `Hash[]`' do
+    expect_offense(<<~RUBY)
+      Hash[a, b].size
+      ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {a => b}.size
+    RUBY
+  end
+
+  it 'does not add parentheses to a unary operator called on hash argument `Hash[]`' do
+    expect_offense(<<~RUBY)
+      !Hash[a => b]
+       ^^^^^^^^^^^^ Prefer literal hash to `Hash[key: value, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !{a => b}
+    RUBY
+  end
+
+  it 'adds parentheses when multi-argument `Hash[]` is an argument of `to_h`' do
+    expect_offense(<<~RUBY)
+      to_h Hash[a, b]
+           ^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      to_h({a => b})
+    RUBY
+  end
+
   context 'AllowSplatArgument: true' do
     let(:cop_config) { { 'AllowSplatArgument' => true } }
 
