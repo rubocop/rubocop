@@ -265,6 +265,41 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
     RUBY
   end
 
+  it 'does not register an offense when the body follows `then` on the last line of a multiline `when` condition' do
+    expect_no_offenses(<<~RUBY)
+      case x
+      when foo,
+          bar then do_something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the body follows `then` on the last line of a multiline `if` condition' do
+    expect_no_offenses(<<~RUBY)
+      if foo &&
+         bar then do_something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the body follows `do` on the last line of a multiline `while` condition' do
+    expect_no_offenses(<<~RUBY)
+      while foo &&
+            bar do do_something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the body follows `then` on the last line of multiline `rescue` exceptions' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      rescue FooError,
+        BarError then handle_error
+      end
+    RUBY
+  end
+
   it 'does not register an offense for `when` with singleline condition' do
     expect_no_offenses(<<~RUBY)
       case x

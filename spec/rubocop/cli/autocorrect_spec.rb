@@ -4647,6 +4647,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/EmptyLineAfterMultilineCondition` and `Layout/EmptyLinesAroundArguments`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      case x
+      when foo,
+           bar then do_something(argument,
+                                 other_argument)
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only
+         Layout/EmptyLineAfterMultilineCondition,Layout/EmptyLinesAroundArguments]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      case x
+      when foo,
+           bar then do_something(argument,
+                                 other_argument)
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop error for `Style/MultilineTernaryOperator`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

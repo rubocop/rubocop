@@ -63,14 +63,14 @@ module RuboCop
           if node.modifier_form?
             check_condition(node.condition) if node.right_sibling
           else
-            check_condition(node.condition)
+            check_condition(node.condition, node.if_branch)
           end
         end
 
         def on_while(node)
           return if node.modifier_form? && !node.right_sibling
 
-          check_condition(node.condition)
+          check_condition(node.condition, node.modifier_form? ? nil : node.body)
         end
         alias on_until on_while
 
@@ -86,7 +86,8 @@ module RuboCop
             last_condition = when_node.conditions.last
 
             next if !multiline_when_condition?(when_node) ||
-                    next_line_empty?(last_condition.last_line)
+                    next_line_empty?(last_condition.last_line) ||
+                    body_on_line?(when_node.body, last_condition.last_line)
 
             add_offense(when_node, &autocorrect(last_condition))
           end
@@ -96,7 +97,8 @@ module RuboCop
           node.resbody_branches.each do |resbody|
             rescued_exceptions = resbody.exceptions
             next if !multiline_rescue_exceptions?(rescued_exceptions) ||
-                    next_line_empty?(rescued_exceptions.last.last_line)
+                    next_line_empty?(rescued_exceptions.last.last_line) ||
+                    body_on_line?(resbody.body, rescued_exceptions.last.last_line)
 
             add_offense(resbody, &autocorrect(rescued_exceptions.last))
           end
@@ -104,15 +106,20 @@ module RuboCop
 
         private
 
-        def check_condition(condition)
+        def check_condition(condition, body = nil)
           return unless condition.multiline?
           return if next_line_empty?(condition.last_line)
+          return if body_on_line?(body, condition.last_line)
 
           add_offense(condition, &autocorrect(condition))
         end
 
         def next_line_empty?(line)
           processed_source[line].blank?
+        end
+
+        def body_on_line?(body, line)
+          body&.first_line == line
         end
 
         def multiline_when_condition?(when_node)
