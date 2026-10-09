@@ -827,7 +827,8 @@ RSpec.describe RuboCop::Config do
         { 'Bar' => 46, 'Baz' => 1000, 'Enabled' => false }
       )
       expect($stderr.string.chomp).to eq(
-        'Warning: Using `Lint/OldCop` configuration in example/.rubocop.yml for `Lint/NewCop`.'
+        'Warning: `Lint/OldCop` has been renamed to `Lint/NewCop`; ' \
+        'its configuration is being applied to `Lint/NewCop`.'
       )
     end
   end

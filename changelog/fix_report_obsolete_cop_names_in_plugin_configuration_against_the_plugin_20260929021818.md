@@ -1,0 +1,1 @@
+* [#14045](https://github.com/rubocop/rubocop/issues/14045): Report an obsolete cop name found in a plugin's configuration against the plugin's file instead of the user's `.rubocop.yml`, and say that the cop has been renamed. ([@ihamzatarar][])
