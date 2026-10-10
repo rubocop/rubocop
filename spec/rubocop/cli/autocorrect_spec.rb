@@ -4486,6 +4486,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop for `Layout/RedundantLineBreak` with `Layout/ExtraSpacing` and `Layout/LineLength`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ExtraSpacing:
+        ForceEqualSignAlignment: true
+      Layout/LineLength:
+        Max: 40
+      Layout/RedundantLineBreak:
+        Enabled: true
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo ? something = [
+        bar, baz
+      ] : x = y
+    RUBY
+
+    status = cli.run(
+      ['-A', '--only', 'Layout/ExtraSpacing,Layout/LineLength,Layout/RedundantLineBreak']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo ? something = [
+        bar, baz
+      ] : x           = y
+    RUBY
+  end
+
   it 'corrects `Layout/DotPosition` and `Layout/SingleLineBlockChain` offenses' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
