@@ -23,14 +23,20 @@ module RuboCop
       #   foo = bar unless condition
       #
       class RedundantSelfAssignmentBranch < Base
+        include RescueNode
         extend AutoCorrector
 
         MSG = 'Remove the self-assignment branch.'
+
+        STATEMENT_BODY_TYPES = %i[
+          kwbegin def defs block numblock itblock class module sclass rescue ensure
+        ].freeze
 
         def on_lvasgn(node)
           expression = node.expression
 
           return unless use_if_and_else_branch?(expression)
+          return unless statement?(node)
 
           if_branch = expression.if_branch
           else_branch = expression.else_branch
@@ -49,6 +55,28 @@ module RuboCop
           return false unless expression&.if_type?
 
           !expression.ternary? || !expression.else?
+        end
+
+        def statement?(node)
+          parent = node.parent
+          return true if parent.nil? || parent.type?(*STATEMENT_BODY_TYPES)
+          return parent.loc.begin.nil? if parent.begin_type?
+          return !rescue_modifier?(parent) if parent.resbody_type?
+
+          statement_branch?(node, parent)
+        end
+
+        def statement_branch?(node, parent)
+          case parent.type
+          when :if
+            !parent.ternary? && !node.equal?(parent.condition)
+          when :when, :in_pattern, :while, :until, :for
+            node.equal?(parent.body)
+          when :case, :case_match
+            node.equal?(parent.else_branch)
+          else
+            false
+          end
         end
 
         def inconvertible_to_modifier?(if_branch, else_branch)
