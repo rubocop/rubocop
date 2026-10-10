@@ -132,6 +132,69 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfModifier, :config do
         qux
       RUBY
     end
+
+    it 'registers an offense when the body contains a `<<-` heredoc' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Favor a normal if-statement over a modifier clause in a multiline statement.
+          foo(item, <<-EOS)
+          text
+          EOS
+        end if cond
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          items.each do |item|
+            foo(item, <<-EOS)
+          text
+          EOS
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the body contains a `<<` heredoc' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Favor a normal if-statement over a modifier clause in a multiline statement.
+          foo(item, <<EOS)
+          text
+        EOS
+        end if cond
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          items.each do |item|
+            foo(item, <<EOS)
+          text
+        EOS
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the body contains a squiggly heredoc' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Favor a normal if-statement over a modifier clause in a multiline statement.
+          foo(item, <<~EOS)
+            text
+          EOS
+        end if cond
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          items.each do |item|
+            foo(item, <<~EOS)
+              text
+            EOS
+          end
+        end
+      RUBY
+    end
   end
 
   context 'unless guard clause' do

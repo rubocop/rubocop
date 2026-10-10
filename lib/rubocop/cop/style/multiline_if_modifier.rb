@@ -68,13 +68,24 @@ module RuboCop
 
         def indented_body(body, node)
           body_source = "#{offset(node)}#{body.source}"
-          body_source.each_line.map do |line|
-            if line == "\n"
+          verbatim_lines = verbatim_heredoc_lines(body)
+          body_source.each_line.with_index(body.first_line).map do |line, line_number|
+            if line == "\n" || verbatim_lines.include?(line_number)
               line
             else
               line.sub(/^\s{#{offset(node).length}}/, indentation(node))
             end
           end.join
+        end
+
+        # Only squiggly heredocs strip their bodies' indentation, and a `<<`
+        # terminator has to stay at the start of its line.
+        def verbatim_heredoc_lines(body)
+          body.each_node(:any_str).select(&:heredoc?).flat_map do |heredoc|
+            next [] if heredoc.source.start_with?('<<~')
+
+            (heredoc.loc.heredoc_body.line..heredoc.loc.heredoc_end.line).to_a
+          end
         end
       end
     end
