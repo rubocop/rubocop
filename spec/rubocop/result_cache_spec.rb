@@ -476,6 +476,23 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       expect($stdout.string).to eq("Removing the 2 oldest files from #{custom_rubocop_cache_dir}\n")
     end
 
+    shared_examples 'unwritable cache' do |error|
+      it 'leaves the cache as it is' do
+        cache.save(offenses)
+        described_class.new('other.rb', team, options, config_store, cache_root).save(offenses)
+        allow(File).to receive(:delete).and_raise(error)
+
+        expect { cache.class.cleanup(config_store, false, cache_root) }.not_to raise_error
+        expect(Dir["#{rubocop_cache_dir}/*/*/*"].size).to eq(2)
+      end
+    end
+
+    context 'when the cache is not writable' do
+      it_behaves_like 'unwritable cache', Errno::EACCES
+      it_behaves_like 'unwritable cache', Errno::EPERM
+      it_behaves_like 'unwritable cache', Errno::EROFS
+    end
+
     context 'when MaxFilesInCache is `false`' do
       let(:max_files_in_cache) { false }
 
