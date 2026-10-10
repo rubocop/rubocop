@@ -73,15 +73,9 @@ namespace :cut_release do
   end
 
   def create_release_notes(version)
-    release_notes = new_version_changes.strip
-    contributor_links = user_links(release_notes)
+    release_notes = inline_user_links(new_version_changes.strip)
 
-    File.open("relnotes/v#{version}.md", 'w') do |file|
-      file << release_notes
-      file << "\n\n"
-      file << contributor_links
-      file << "\n"
-    end
+    File.write("relnotes/v#{version}.md", "#{release_notes}\n")
   end
 
   def new_version_changes
@@ -90,9 +84,13 @@ namespace :cut_release do
     new_changes
   end
 
-  def user_links(text)
-    names = text.scan(/\[@(\S+)\]\[\]/).map(&:first).uniq
-    names.map { |name| "[@#{name}]: https://github.com/#{name}" }.join("\n")
+  # GitHub's list of releases shows only the first 10,000 or so characters of
+  # each one, so link definitions at the end of long notes get cut off there.
+  def inline_user_links(text)
+    text.gsub(/\[@(\S+?)\]\[\]/) do
+      name = Regexp.last_match(1)
+      "[@#{name}](https://github.com/#{name})"
+    end
   end
 
   def run(release_type)
