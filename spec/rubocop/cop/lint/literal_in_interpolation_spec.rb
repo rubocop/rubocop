@@ -470,6 +470,42 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
+  it 'does not join a `#` and a `{` from two adjacent interpolations' do
+    expect_offense(<<~'RUBY')
+      "#{'#'}#{'{'}foo}"
+         ^^^ Literal interpolation detected.
+               ^^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "##{'{'}foo}"
+    RUBY
+  end
+
+  it 'does not join a `#` and a `{` across an adjacent empty interpolation' do
+    expect_offense(<<~'RUBY')
+      "#{'#'}#{''}{foo}"
+         ^^^ Literal interpolation detected.
+               ^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "##{''}{foo}"
+    RUBY
+  end
+
+  it 'registers an offense and corrects two adjacent interpolations' do
+    expect_offense(<<~'RUBY')
+      "#{1}#{2}"
+         ^ Literal interpolation detected.
+             ^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~RUBY, loop: false)
+      "12"
+    RUBY
+  end
+
   it 'handles backslash in single quotes when autocorrecting' do
     expect_offense(<<~'RUBY')
       x = "ABC".gsub(/(A)(B)(C)/, "D#{'\2'}F")

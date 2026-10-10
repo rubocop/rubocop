@@ -31,14 +31,9 @@ module RuboCop
 
           add_offense(final_node) do |corrector|
             next if final_node.dstr_type? # nested, fixed in next iteration
+            next if follows_literal_interpolation?(begin_node)
 
-            replacement = if final_node.str_type? && !final_node.value.valid_encoding?
-                            final_node.source.delete_prefix('"').delete_suffix('"')
-                          else
-                            expanded_value
-                          end
-
-            corrector.replace(final_node.parent, replacement)
+            corrector.replace(final_node.parent, replacement(final_node, expanded_value))
           end
         end
 
@@ -229,6 +224,23 @@ module RuboCop
 
         def unescaped_hash_sign?(text)
           text.end_with?('#') && text.delete_suffix('#')[/\\*\z/].length.even?
+        end
+
+        # Each interpolation is checked against the original source, so correcting it in the
+        # same pass as a preceding one that leaves a `#` (or nothing) could join that `#` and
+        # a `{` from this one. It's left for the next iteration instead.
+        def follows_literal_interpolation?(begin_node)
+          previous = begin_node.left_sibling
+          return false unless previous&.begin_type? && offending?(previous.children.last)
+
+          value = correctable_value(previous, previous.children.last)
+          value && (value.empty? || value.end_with?('#'))
+        end
+
+        def replacement(node, expanded_value)
+          return expanded_value unless node.str_type? && !node.value.valid_encoding?
+
+          node.source.delete_prefix('"').delete_suffix('"')
         end
       end
     end
