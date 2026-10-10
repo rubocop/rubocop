@@ -46,6 +46,7 @@ module RuboCop
       def command_disallowed_in_endless_body?(body)
         return true if body.assignment? && command_call?(assigned_value(body))
         return true if command_body_in_argument?(body)
+        return true if negated_command_call?(body)
 
         body.each_node(:any_block).any? do |block|
           block.keywords? && command_call?(block.send_node)
@@ -76,6 +77,10 @@ module RuboCop
         return false unless node.type?(:call, :super, :yield)
 
         node.arguments? && !node.parenthesized? && !node.operator_method? && !node.setter_method?
+      end
+
+      def negated_command_call?(node)
+        node.send_type? && node.prefix_bang? && command_call?(node.receiver)
       end
     end
   end

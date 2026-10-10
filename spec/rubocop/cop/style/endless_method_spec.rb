@@ -1312,6 +1312,27 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       RUBY
     end
 
+    it 'does not register an offense for a negated command call' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          !obj.do_something bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a negated parenthesized call' do
+      expect_offense(<<~RUBY)
+        def foo
+        ^^^^^^^ Use endless method definitions.
+          !obj.do_something(bar)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo = !obj.do_something(bar)
+      RUBY
+    end
+
     it 'registers an offense for an assignment whose value is a parenthesized call' do
       expect_offense(<<~RUBY)
         def foo
@@ -1349,6 +1370,14 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         expect_no_offenses(<<~RUBY)
           def foo
             @foo ||= bar baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a negated command call' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            !obj.do_something bar
           end
         RUBY
       end
