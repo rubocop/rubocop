@@ -118,12 +118,15 @@ module RuboCop
         def handle_return(return_node)
           return unless return_nil?(return_node)
 
-          replacement = logical_operand?(return_node) ? '(return false)' : 'return false'
+          replacement = requires_parentheses?(return_node) ? '(return false)' : 'return false'
           register_offense(return_node, replacement)
         end
 
-        def logical_operand?(node)
-          node.parent&.operator_keyword? && node.parent.logical_operator?
+        def requires_parentheses?(node)
+          parent = node.parent
+
+          (parent.operator_keyword? && parent.logical_operator?) ||
+            (parent.if_type? && parent.ternary?)
         end
 
         def handle_nil(nil_node)
