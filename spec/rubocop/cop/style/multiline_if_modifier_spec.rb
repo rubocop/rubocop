@@ -195,6 +195,27 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfModifier, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when the body contains multiline strings' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Favor a normal if-statement over a modifier clause in a multiline statement.
+          foo(item, "a
+          b", %q(c
+          d))
+        end if cond
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          items.each do |item|
+            foo(item, "a
+          b", %q(c
+          d))
+          end
+        end
+      RUBY
+    end
   end
 
   context 'unless guard clause' do

@@ -68,7 +68,7 @@ module RuboCop
 
         def indented_body(body, node)
           body_source = "#{offset(node)}#{body.source}"
-          verbatim_lines = verbatim_heredoc_lines(body)
+          verbatim_lines = verbatim_lines_in(body)
           body_source.each_line.with_index(body.first_line).map do |line, line_number|
             if line == "\n" || verbatim_lines.include?(line_number)
               line
@@ -78,13 +78,18 @@ module RuboCop
           end.join
         end
 
-        # Only squiggly heredocs strip their bodies' indentation, and a `<<`
-        # terminator has to stay at the start of its line.
-        def verbatim_heredoc_lines(body)
-          body.each_node(:any_str).select(&:heredoc?).flat_map do |heredoc|
-            next [] if heredoc.source.start_with?('<<~')
+        def verbatim_lines_in(body)
+          body.each_node(:any_str).filter_map { |str| verbatim_line_range(str) }.flat_map(&:to_a)
+        end
 
-            (heredoc.loc.heredoc_body.line..heredoc.loc.heredoc_end.line).to_a
+        # The indentation of a line that starts inside a string is part of the
+        # string. Only squiggly heredocs strip it from their bodies, and a `<<`
+        # terminator has to stay at the start of its line.
+        def verbatim_line_range(str)
+          if str.heredoc?
+            str.loc.heredoc_body.line..str.loc.heredoc_end.line unless str.source.start_with?('<<~')
+          elsif str.loc?(:begin) && str.loc?(:end)
+            (str.first_line + 1)..str.last_line
           end
         end
       end
