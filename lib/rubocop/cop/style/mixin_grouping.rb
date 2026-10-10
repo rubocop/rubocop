@@ -117,17 +117,26 @@ module RuboCop
 
         def separate_mixins(node)
           arguments = node.arguments.reverse
-          mixins = ["#{node.method_name} #{arguments.first.source}"]
+          mixins = [mixin_call(node.method_name, arguments.first.source, node.parenthesized?)]
 
           arguments[1..].inject(mixins) do |replacement, arg|
-            replacement << "#{indent(node)}#{node.method_name} #{arg.source}"
+            call = mixin_call(node.method_name, arg.source, node.parenthesized?)
+            replacement << "#{indent(node)}#{call}"
           end.join("\n")
         end
 
         def group_mixins(node, mixins)
           mixin_names = mixins.reverse.flat_map { |mixin| mixin.arguments.map(&:source) }
 
-          "#{node.method_name} #{mixin_names.join(', ')}"
+          mixin_call(node.method_name, mixin_names.join(', '), mixins.any?(&:parenthesized?))
+        end
+
+        def mixin_call(method_name, arguments_source, parenthesized)
+          if parenthesized
+            "#{method_name}(#{arguments_source})"
+          else
+            "#{method_name} #{arguments_source}"
+          end
         end
       end
     end

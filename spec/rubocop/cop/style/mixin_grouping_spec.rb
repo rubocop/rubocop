@@ -43,6 +43,26 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
         RUBY
       end
 
+      it 'keeps parentheses when a mixin argument has a `do`...`end` block' do
+        expect_offense(<<~RUBY)
+          class Foo
+            include(Bar, Module.new do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^ Put `include` mixins in separate statements.
+              do_something
+            end)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            include(Module.new do
+              do_something
+            end)
+            include(Bar)
+          end
+        RUBY
+      end
+
       it 'does not register an offense when `include` has no arguments' do
         expect_no_offenses(<<~RUBY)
           class Foo
@@ -170,6 +190,27 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
         expect_correction(<<~RUBY)
           class Foo
             include Qux, FooBarBaz, FooBar, FooBaz, Bar, Baz
+          end
+        RUBY
+      end
+
+      it 'keeps parentheses when a mixin argument has a `do`...`end` block' do
+        expect_offense(<<~RUBY)
+          class Foo
+            include Bar
+            ^^^^^^^^^^^ Put `include` mixins in a single statement.
+            include(Module.new do
+            ^^^^^^^^^^^^^^^^^^^^^ Put `include` mixins in a single statement.
+              do_something
+            end)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            include(Module.new do
+              do_something
+            end, Bar)
           end
         RUBY
       end
