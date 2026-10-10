@@ -190,4 +190,55 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak, :config do
       RUBY
     end
   end
+
+  context 'when `Layout/SpaceInsideArrayLiteralBrackets` uses the `compact` style' do
+    let(:other_cops) do
+      {
+        'Layout/SpaceInsideArrayLiteralBrackets' => {
+          'Enabled' => true, 'EnforcedStyle' => 'compact'
+        }
+      }
+    end
+
+    it 'does not register an offense when the first element is an array literal' do
+      expect_no_offenses(<<~RUBY)
+        [[:a, :b],
+         [:c, :d]]
+      RUBY
+    end
+
+    it 'registers an offense when the first element is not an array literal' do
+      expect_offense(<<~RUBY)
+        [:a,
+         ^^ Add a line break before the first element of a multi-line array.
+         [:c, :d]]
+      RUBY
+    end
+
+    it 'registers an offense for an implicit array whose first element is an array literal' do
+      expect_offense(<<~RUBY)
+        x = [1, 2],
+            ^^^^^^ Add a line break before the first element of a multi-line array.
+          [3, 4]
+      RUBY
+    end
+  end
+
+  context 'when `Layout/SpaceInsideArrayLiteralBrackets` uses the `no_space` style' do
+    let(:other_cops) do
+      {
+        'Layout/SpaceInsideArrayLiteralBrackets' => {
+          'Enabled' => true, 'EnforcedStyle' => 'no_space'
+        }
+      }
+    end
+
+    it 'registers an offense when the first element is an array literal' do
+      expect_offense(<<~RUBY)
+        [[:a, :b],
+         ^^^^^^^^ Add a line break before the first element of a multi-line array.
+         [:c, :d]]
+      RUBY
+    end
+  end
 end
