@@ -22,6 +22,13 @@ module RuboCop
       # passing the `create_additions` keyword argument emits a deprecation warning, with the
       # goal of being secure by default in the next major version 3.0.0.
       #
+      # NOTE: Before `json` gem version 2.17.0, `JSON.load` only takes options as its third
+      # argument. A hash passed as the second argument is taken as the `proc` argument, so
+      # its `create_additions` option is ignored. Which `json` version runs can't be told
+      # statically (the lockfile may resolve a newer one than the default gem loaded in
+      # production), so options passed as the second argument are always reported. Pass
+      # `nil` as the second argument instead.
+      #
       # @safety
       #   This cop's autocorrection is unsafe because it's potentially dangerous.
       #   If using a stream, like `JSON.load(open('file'))`, you will need to call
@@ -33,13 +40,16 @@ module RuboCop
       #   JSON.load('{}')
       #   JSON.restore('{}')
       #
+      #   # bad - ignored by `json` older than 2.17.0
+      #   JSON.load('{}', create_additions: false)
+      #
       #   # good
       #   JSON.parse('{}')
       #   JSON.unsafe_load('{}')
       #
       #   # good - explicit use of `create_additions` option
-      #   JSON.load('{}', create_additions: true)
-      #   JSON.load('{}', create_additions: false)
+      #   JSON.load('{}', nil, create_additions: true)
+      #   JSON.load('{}', nil, create_additions: false)
       #
       class JSONLoad < Base
         extend AutoCorrector
@@ -51,8 +61,10 @@ module RuboCop
         def_node_matcher :insecure_json_load, <<~PATTERN
           (
             send (const {nil? cbase} :JSON) ${:load :restore}
-            ...
-            !`(pair (sym :create_additions) _)
+            {
+              _ hash
+            | ... !`(pair (sym :create_additions) _)
+            }
           )
         PATTERN
 

@@ -15,16 +15,37 @@ RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
     RUBY
   end
 
-  it 'registers no offense when `create_additions` option is passed' do
+  it 'registers no offense when `create_additions` option is passed as the third argument' do
     expect_no_offenses(<<~RUBY)
-      JSON.load(arg, create_additions: true)
-      ::JSON.load(arg, create_additions: false)
-      JSON.load(arg, { allow_nan: false, create_additions: true })
-      ::JSON.load(arg, { allow_nan: false, create_additions: true })
+      JSON.load(arg, nil, create_additions: false)
+      ::JSON.load(arg, nil, create_additions: true)
       JSON.load(arg, proc {}, create_additions: false, max_nesting: 19)
       ::JSON.load(arg, proc {}, create_additions: false, max_nesting: 19)
       JSON.load(arg, -> {}, { max_nesting: 19, create_additions: false, allow_nan: true })
       ::JSON.load(arg, -> {}, { max_nesting: 19, create_additions: false, allow_nan: true })
+    RUBY
+  end
+
+  it 'registers an offense when `create_additions` option is passed as the second argument' do
+    expect_offense(<<~RUBY)
+      JSON.load(arg, create_additions: false)
+           ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      ::JSON.load(arg, { create_additions: false })
+             ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      JSON.load(arg, create_additions: true)
+           ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      JSON.load(arg, { allow_nan: false, create_additions: true })
+           ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      JSON.restore(arg, create_additions: false)
+           ^^^^^^^ Prefer `JSON.parse` over `JSON.restore`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      JSON.parse(arg, create_additions: false)
+      ::JSON.parse(arg, { create_additions: false })
+      JSON.parse(arg, create_additions: true)
+      JSON.parse(arg, { allow_nan: false, create_additions: true })
+      JSON.parse(arg, create_additions: false)
     RUBY
   end
 
