@@ -140,6 +140,26 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
         RUBY
       end
     end
+
+    context 'escaped multibyte character in a character class' do
+      # See https://github.com/ammar/regexp_parser/issues/104
+      it 'does not register an offense' do
+        expect_no_offenses(<<~'RUBY')
+          /[\§]/
+        RUBY
+      end
+
+      it 'registers an offense and corrects an unescaped bracket after the class' do
+        expect_offense(<<~'RUBY')
+          /[\é]]/
+               ^ Regular expression has `]` without escape.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /[\é]\]/
+        RUBY
+      end
+    end
   end
 
   context '%r{} Regexp' do
