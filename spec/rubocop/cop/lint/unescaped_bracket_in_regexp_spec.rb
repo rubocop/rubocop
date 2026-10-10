@@ -242,6 +242,19 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
         end
       end
 
+      context 'unescaped bracket in a double-quoted string' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY, method: method)
+            Regexp.#{method}("abc]123")
+                   _{method}     ^ Regular expression has `]` without escape.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            Regexp.#{method}("abc\\\\]123")
+          RUBY
+        end
+      end
+
       context 'unescaped bracket in regexp with regexp options' do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY, method: method)
