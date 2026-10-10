@@ -1,1 +1,0 @@
-* [#15782](https://github.com/rubocop/rubocop/pull/15782): Fix the SARIF formatter giving repeated offenses of a cop on identical line text the same fingerprint, which let GitHub code scanning merge them into one alert. ([@bbatsov][])

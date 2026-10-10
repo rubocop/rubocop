@@ -1,1 +1,0 @@
-* [#15777](https://github.com/rubocop/rubocop/pull/15777): Fix an incorrect autocorrect for `Layout/LineLength` with `SplitStrings: true` when an interpolation in the string contains a block. ([@Starlexxx][])

@@ -1,1 +1,0 @@
-* [#15813](https://github.com/rubocop/rubocop/pull/15813): Fix an incorrect autocorrect for `Layout/LineLength` when `SplitStrings: true` would split a string inside an escape sequence such as `\000`. ([@koic][])

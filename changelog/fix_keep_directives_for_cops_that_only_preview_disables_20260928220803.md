@@ -1,1 +1,0 @@
-* [#15363](https://github.com/rubocop/rubocop/issues/15363): Fix `Lint/RedundantCopDisableDirective` reporting directives for cops that only the preview defaults disable, which are needed again once preview is off. ([@bbatsov][])

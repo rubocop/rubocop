@@ -1,1 +1,0 @@
-* [#15844](https://github.com/rubocop/rubocop/pull/15844): Fix an incorrect autocorrect for `Layout/LineLength` cop when `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: omit_parentheses` removes the parentheses it breaks after. ([@Starlexxx][])

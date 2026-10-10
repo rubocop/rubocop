@@ -1,1 +1,0 @@
-* [#15932](https://github.com/rubocop/rubocop/pull/15932): Fix an incorrect autocorrect for `Layout/MultilineHashBraceLayout` with `Style/HashAsLastArrayItem` and `Style/RedundantDoubleSplatHashBraces`. ([@koic][])

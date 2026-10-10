@@ -1,1 +1,0 @@
-* [#15826](https://github.com/rubocop/rubocop/pull/15826): Fix an incorrect autocorrect for `Style/MethodCallWithArgsParentheses` when `Style/TernaryParentheses` also parenthesizes the arguments of a ternary condition. ([@koic][])

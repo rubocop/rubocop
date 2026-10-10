@@ -1,1 +1,0 @@
-* [#15839](https://github.com/rubocop/rubocop/pull/15839): Fix an incorrect autocorrect for `Style/IfWithSemicolon` when the condition or a branch binds looser than the ternary operator. ([@bbatsov][])

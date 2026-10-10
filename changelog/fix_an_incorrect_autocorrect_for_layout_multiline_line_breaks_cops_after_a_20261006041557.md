@@ -1,1 +1,0 @@
-* [#15906](https://github.com/rubocop/rubocop/pull/15906): Fix an incorrect autocorrect for `Layout/MultilineArrayLineBreaks`, `Layout/MultilineHashKeyLineBreaks`, `Layout/MultilineMethodArgumentLineBreaks` and `Layout/MultilineMethodParameterLineBreaks` after a heredoc opener. ([@koic][])

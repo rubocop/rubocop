@@ -1,1 +1,0 @@
-* [#15832](https://github.com/rubocop/rubocop/pull/15832): Fix an incorrect autocorrect for `Layout/MultilineArrayBraceLayout`, `Layout/MultilineHashBraceLayout`, `Layout/MultilineMethodCallBraceLayout`, and `Layout/MultilineMethodDefinitionBraceLayout` when a heredoc is opened on the line of the closing brace. ([@koic][])

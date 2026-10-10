@@ -1,1 +1,0 @@
-* [#15838](https://github.com/rubocop/rubocop/pull/15838): Fix an incorrect autocorrect for `Style/TrailingUnderscoreVariable` with a nested group of underscores or a bracketless list of values. ([@bbatsov][])

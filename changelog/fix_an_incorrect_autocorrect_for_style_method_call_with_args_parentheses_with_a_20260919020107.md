@@ -1,1 +1,0 @@
-* [#15824](https://github.com/rubocop/rubocop/pull/15824): Fix an incorrect autocorrect for `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: omit_parentheses` when a call is assigned before the `and` or `or` keyword. ([@koic][])

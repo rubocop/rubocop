@@ -1,1 +1,0 @@
-* [#15854](https://github.com/rubocop/rubocop/pull/15854): Fix an incorrect autocorrect for `Style/IfWithSemicolon` when a branch is a `begin`/`end` loop with a `while` or `until` modifier. ([@koic][])

@@ -1,1 +1,0 @@
-* [#16011](https://github.com/rubocop/rubocop/pull/16011): Fix an error for the `pacman` formatter, which crashed with `undefined method 'winsize'` whether or not the output was a terminal. ([@bbatsov][])

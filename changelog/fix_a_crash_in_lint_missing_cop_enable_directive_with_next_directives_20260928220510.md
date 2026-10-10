@@ -1,1 +1,0 @@
-* [#15780](https://github.com/rubocop/rubocop/pull/15780): Fix an error for `Lint/MissingCopEnableDirective` when an `enable-next` or `next +Cop` directive suspends an open `rubocop:disable`, and a false positive for `next -Cop` scopes larger than `MaxRangeSize`. ([@bbatsov][])

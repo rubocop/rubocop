@@ -1,1 +1,0 @@
-* [#15840](https://github.com/rubocop/rubocop/pull/15840): Fix an incorrect autocorrect for `Style/IfUnlessModifier` and `Style/WhileUntilModifier` with a conditional or loop in a call argument, ternary branch or endless method body. ([@bbatsov][])

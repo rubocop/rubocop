@@ -1,1 +1,0 @@
-* [#15784](https://github.com/rubocop/rubocop/pull/15784): Fix `Style/DisableCopsWithinSourceCodeDirective` ignoring `AllowedCops` for `rubocop:push`/`rubocop:next` arguments and leaving an orphan `rubocop:pop` when correcting a `rubocop:push`. ([@bbatsov][])

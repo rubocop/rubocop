@@ -1,1 +1,0 @@
-* [#15775](https://github.com/rubocop/rubocop/pull/15775): Fix an incorrect autocorrect for `Style/EndlessMethod` when `Naming/BlockForwarding` or `Style/ArgumentsForwarding` adds parentheses to the same method definition. ([@Starlexxx][])

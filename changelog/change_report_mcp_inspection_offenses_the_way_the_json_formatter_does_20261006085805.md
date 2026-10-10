@@ -1,1 +1,0 @@
-* [#15896](https://github.com/rubocop/rubocop/pull/15896): Report offenses from the MCP server's `rubocop_inspection` tool in the `--format json` shape instead of as LSP diagnostics, with inline code results in the same files-and-summary form as file results. ([@bbatsov][])

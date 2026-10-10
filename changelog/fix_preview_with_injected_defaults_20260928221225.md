@@ -1,1 +1,0 @@
-* [#15363](https://github.com/rubocop/rubocop/issues/15363): Fix `AllCops: Preview` being ignored, and `--preview` leaking into the default configuration, when an extension injects defaults via `ConfigLoader.inject_defaults!` or a plugin is loaded. ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15842](https://github.com/rubocop/rubocop/pull/15842): Fix an incorrect autocorrect for `Style/ExplicitBlockArgument` when `super` without arguments is called in a method with keyword or block parameters. ([@bbatsov][])

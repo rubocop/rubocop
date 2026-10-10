@@ -1,1 +1,0 @@
-* [#15816](https://github.com/rubocop/rubocop/pull/15816): Fix an infinite loop for `Layout/SpaceInsideBlockBraces` with `Layout/BlockAlignment` when a leading-dot chained block has its closing brace on its own line. ([@viralpraxis][])

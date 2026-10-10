@@ -1,1 +1,0 @@
-* [#15710](https://github.com/rubocop/rubocop/pull/15710): Fix an incorrect autocorrect for `Style/EndlessMethod` when the method body passes a multiline or xstring heredoc to a method call. ([@viralpraxis][])

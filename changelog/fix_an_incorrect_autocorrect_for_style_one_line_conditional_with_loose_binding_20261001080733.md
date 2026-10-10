@@ -1,1 +1,0 @@
-* [#15839](https://github.com/rubocop/rubocop/pull/15839): Fix an incorrect autocorrect for `Style/OneLineConditional` when a branch uses a modifier `rescue`/`while`/`until` or a one-line pattern match, or when the conditional is the receiver of a method call. ([@bbatsov][])

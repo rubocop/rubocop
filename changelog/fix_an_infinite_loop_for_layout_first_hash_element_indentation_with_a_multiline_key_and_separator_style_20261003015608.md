@@ -1,1 +1,0 @@
-* [#15857](https://github.com/rubocop/rubocop/pull/15857): Fix an infinite loop for `Layout/FirstHashElementIndentation` when `Layout/HashAlignment` uses the separator style and a key spans several lines. ([@koic][])

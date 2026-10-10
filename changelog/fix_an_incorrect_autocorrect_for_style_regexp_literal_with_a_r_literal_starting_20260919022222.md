@@ -1,1 +1,0 @@
-* [#15819](https://github.com/rubocop/rubocop/pull/15819): Fix an incorrect autocorrect for `Style/RegexpLiteral` when a `%r` literal whose body starts with a newline is passed to a method without parentheses. ([@koic][])

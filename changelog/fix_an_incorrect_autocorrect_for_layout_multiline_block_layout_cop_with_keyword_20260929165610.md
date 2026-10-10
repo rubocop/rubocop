@@ -1,1 +1,0 @@
-* [#15789](https://github.com/rubocop/rubocop/pull/15789): Fix an incorrect autocorrect for `Layout/MultilineBlockLayout` cop adding a trailing comma when the only positional block argument is followed by keyword arguments. ([@Starlexxx][])

@@ -1,1 +1,0 @@
-* [#15797](https://github.com/rubocop/rubocop/pull/15797): Fix an error for `Style/RedundantCondition` when autocorrecting a redundant condition nested in the `else` branch of another one. ([@koic][])

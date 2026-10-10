@@ -1,1 +1,0 @@
-* [#15768](https://github.com/rubocop/rubocop/pull/15768): Fix an incorrect autocorrect for `Style/For` when `EnforcedStyle: for` and the block body abuts a brace, such as `c.each {d}`, which left `do` or `end` glued to the body. ([@viralpraxis][])

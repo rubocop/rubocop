@@ -1,1 +1,0 @@
-* [#15818](https://github.com/rubocop/rubocop/pull/15818): Fix an incorrect autocorrect for `Layout/ExtraSpacing` cop with `ForceEqualSignAlignment: true` when `Style/SelfAssignment` rewrites the same assignment. ([@Starlexxx][])

@@ -1,1 +1,0 @@
-* [#15750](https://github.com/rubocop/rubocop/pull/15750): Fix an error for `Style/ClassAndModuleChildren` when using `EnforcedStyle: compact` and the nested body is indented less than `Layout/IndentationWidth`'s `Width`. ([@viralpraxis][])

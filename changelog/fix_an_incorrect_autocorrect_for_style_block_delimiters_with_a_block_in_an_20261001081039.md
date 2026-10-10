@@ -1,1 +1,0 @@
-* [#15842](https://github.com/rubocop/rubocop/pull/15842): Fix an incorrect autocorrect for `Style/BlockDelimiters` with a multiline block in an argument of `yield` or `super` without parentheses. ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15786](https://github.com/rubocop/rubocop/pull/15786): Fix an incorrect autocorrect for `Lint/MisplacedMagicComment` that pushed an effective `encoding` comment off the first line when moving a `frozen_string_literal` comment. ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15735](https://github.com/rubocop/rubocop/pull/15735): Fix an incorrect autocorrect for `Layout/SpaceInsideBlockBraces` with `EnforcedStyle: no_space` when a multiline block's last line has code before the closing bracket. ([@viralpraxis][])

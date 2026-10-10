@@ -1,1 +1,0 @@
-* [#15779](https://github.com/rubocop/rubocop/pull/15779): Fix `--diff` writing the corrected file to disk, and leaving the removal out of the patch, when the file has a redundant `rubocop:disable`. ([@bbatsov][])
