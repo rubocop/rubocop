@@ -446,6 +446,12 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
       let(:endless_method_config) { { 'EnforcedStyle' => 'allow_single_line' } }
 
       it_behaves_like 'convert to endless method'
+
+      it 'corrects a method definition passed as an argument with a command body', :ruby34 do
+        expect_correction(<<~RUBY.strip, source: 'private def a(x); bar :baz, x; end')
+          private def a(x) = bar(:baz, x)
+        RUBY
+      end
     end
 
     context 'with `allow_always` style' do
