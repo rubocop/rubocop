@@ -310,3 +310,34 @@ Format (single line):
     the heading lowercased with everything but letters removed
     (`#allowmultilinefinalelement`), not Asciidoctor's `_`-prefixed default.
     When in doubt, put an explicit `[#my-anchor]` above the heading.
+17. **Removing a range that holds comments or heredoc bodies**: a correction
+    that deletes everything between two tokens also drops any comment,
+    directive or heredoc body in between. Shrink the range so they stay, or skip
+    the correction when one is there.
+18. **Assuming every call looks like `recv.meth args`**: `super` and `yield`
+    have a keyword instead of a selector (use `Util.args_begin`), and index,
+    setter and operator calls (`foo[x]`, `foo.bar = x`, `a == b`) can't just
+    have their arguments wrapped in parentheses (check `setter_method?` and
+    `operator_method?`). Inserting an expression may need
+    parentheses too: a hash literal as the first argument of a call without
+    parentheses is read as a block.
+19. **Line-based corrections on shared lines**: a correction that moves or
+    deletes whole lines breaks when the node shares its line with other code
+    (`a; b`, or a one-line `if ... then ... else ... end`). Check that the node
+    begins and ends its lines. If a correct correction is hard for such a rare
+    shape, register the offense without correcting it (`expect_no_corrections`
+    in the spec) rather than produce broken code.
+20. **Indexing the wrong source with node offsets**: `processed_source.raw_source`
+    keeps `\r\n` line endings, while node positions index
+    `processed_source.buffer.source`, which normalizes them. Likewise, a string
+    node's `value` differs from its source whenever it has escapes, so offsets
+    into one don't map onto the other.
+21. **Walking past a disabled node**: a correction that merges or moves
+    neighboring nodes has to stop at a node whose offense is disabled by a
+    directive (`enabled_lines?`), because that node keeps its source.
+22. **Declaring `autocorrect_incompatible_with` on both cops**: one side is
+    enough. When either cop of the pair has been applied, the team holds back
+    the other's corrections until the next pass.
+23. **Rescuing `Errno::EACCES` without `Errno::EPERM`**: sandboxes that only
+    allow the project directory, like the ones coding agents run in, fail
+    filesystem calls with `EPERM`.
