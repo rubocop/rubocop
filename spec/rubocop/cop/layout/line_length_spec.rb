@@ -1194,6 +1194,32 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             end
           end
 
+          context 'when only whitespace precedes the only space to break at' do
+            it 'breaks the string at the limit instead of splitting off a blank string' do
+              expect_offense(<<~RUBY)
+                x = " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                                                        ^^^^^^^ Line is too long. [47/40]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                x = " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \\
+                "aaaaaaaaa"
+              RUBY
+            end
+
+            it 'breaks the string at the limit when it is followed by an interpolation' do
+              expect_offense(<<~'RUBY')
+                x = " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa#{y}"
+                                                        ^^^^^^^^^^^ Line is too long. [51/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                x = " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "aaaaaaaaa#{y}"
+              RUBY
+            end
+          end
+
           context 'with interpolation' do
             it 'breaks the string before the interpolation' do
               expect_offense(<<~'RUBY')
@@ -1280,6 +1306,17 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               it 'registers an offense but does not correct' do
                 expect_offense(<<~'RUBY')
                   x = "#{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} bb"
+                                                          ^^^^^^^^^^ Line is too long. [50/40]
+                RUBY
+
+                expect_no_corrections
+              end
+            end
+
+            context 'when only whitespace precedes the interpolation' do
+              it 'registers an offense but does not correct' do
+                expect_offense(<<~'RUBY')
+                  x = " #{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} bb"
                                                           ^^^^^^^^^^ Line is too long. [50/40]
                 RUBY
 
