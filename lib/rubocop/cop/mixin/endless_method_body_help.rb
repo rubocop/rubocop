@@ -17,7 +17,8 @@ module RuboCop
       end
 
       def low_precedence_body?(body)
-        (body.type?(:and, :or) && body.semantic_operator?) ||
+        body.type?(:any_match_pattern, :while_post, :until_post) ||
+          (body.type?(:and, :or) && body.semantic_operator?) ||
           (body.type?(:if, :while, :until) && body.modifier_form?)
       end
 

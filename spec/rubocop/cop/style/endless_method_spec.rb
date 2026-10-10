@@ -800,6 +800,38 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense when the body is a one-line pattern match with `=>`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method(x)
+            x => Integer
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the body is a one-line pattern match with `in`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method?(x)
+            x in Integer
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the body is a `begin...end while` loop' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            begin x end while y
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the body is a `begin...end until` loop' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            begin x end until y
+          end
+        RUBY
+      end
+
       it 'does not register an offense for a method with a `rescue` body' do
         expect_no_offenses(<<~RUBY)
           def my_method
