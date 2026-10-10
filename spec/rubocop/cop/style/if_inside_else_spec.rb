@@ -396,6 +396,27 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         end
       RUBY
     end
+
+    it 'does not correct a modifier if on the same line as the else' do
+      expect_offense(<<~RUBY)
+        if a
+          blah
+        else foo if b
+                 ^^ Convert `if` nested inside `else` to `elsif`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct a modifier if inside a single-line else' do
+      expect_offense(<<~RUBY)
+        if a then blah else foo if b end
+                                ^^ Convert `if` nested inside `else` to `elsif`.
+      RUBY
+
+      expect_no_corrections
+    end
   end
 
   context 'when AllowIfModifier is true' do

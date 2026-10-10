@@ -86,12 +86,18 @@ module RuboCop
 
         # The `elsif` correction moves and removes whole lines, so it can't be applied when
         # the nested `if` condition, its `if` branch or its `end` shares a line with other code.
+        # A modifier `if` on the `else` line would leave its body on the `elsif` line.
         def shares_lines_with_other_code?(node)
-          return false if node.then? || node.modifier_form?
+          return false if node.then?
+          return !begins_its_line?(node.source_range) if node.modifier_form?
 
+          moved_ranges(node).any? { |range| !begins_its_line?(range) || !ends_its_line?(range) }
+        end
+
+        def moved_ranges(node)
           ranges = [if_condition_range(node, node.condition), find_end_range(node)]
           ranges << range_with_comments(node.if_branch) if node.if_branch
-          ranges.any? { |range| !begins_its_line?(range) || !ends_its_line?(range) }
+          ranges
         end
 
         def ends_its_line?(range)
