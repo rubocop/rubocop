@@ -16,6 +16,7 @@ module RuboCop
         !command_disallowed_in_endless_body?(body)
       end
 
+      # `def foo = bar and baz` parses as `(def foo = bar) and baz`.
       def low_precedence_body?(body)
         body.type?(:any_match_pattern, :while_post, :until_post) ||
           (body.type?(:and, :or) && body.semantic_operator?) ||
