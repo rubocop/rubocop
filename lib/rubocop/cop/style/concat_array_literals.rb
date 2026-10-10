@@ -63,11 +63,11 @@ module RuboCop
             if use_percent_literal
               next unless prefer
 
-              corrector.replace(offense, prefer)
+              rebuild_call(corrector, offense, prefer)
             elsif node.arguments.any? { |argument| argument.children.empty? }
               # In-place bracket removal would leave dangling commas (e.g.
               # `concat([], [b])` -> `push(, b)`), so rebuild the call instead.
-              corrector.replace(offense, preferred_method(node))
+              rebuild_call(corrector, offense, preferred_method(node))
             else
               remove_brackets(corrector, node)
             end
@@ -97,6 +97,19 @@ module RuboCop
         def percent_literals_includes_only_basic_literals?(node)
           node.arguments.select(&:percent_literal?).all? do |arg|
             arg.children.all? { |child| child.type?(:str, :sym) }
+          end
+        end
+
+        def rebuild_call(corrector, offense, replacement)
+          # The comments inside the call would be lost.
+          return if comment_in?(offense)
+
+          corrector.replace(offense, replacement)
+        end
+
+        def comment_in?(range)
+          processed_source.each_comment_in_lines(range.line..range.last_line).any? do |comment|
+            range.contains?(comment.source_range)
           end
         end
 
