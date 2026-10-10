@@ -167,11 +167,11 @@ module RuboCop
             return to_modifier_form_with_move_comment(node, indent(node), comment)
           end
 
-          heredoc_ranges = heredoc_ranges_in(node.if_branch)
+          heredoc_ranges = heredoc_ranges_in(node)
           unless heredoc_ranges.empty?
             remove_heredoc(corrector, heredoc_ranges)
 
-            return to_normal_form_with_heredoc(node, indent(node), heredoc_ranges)
+            return to_normal_form_with_heredoc(node, indent(node))
           end
 
           to_normal_form(node, indent(node))
@@ -280,15 +280,14 @@ module RuboCop
           end
         end
 
-        def to_normal_form_with_heredoc(node, indentation, heredoc_ranges)
-          heredoc_lines = heredoc_ranges.map(&:source)
-
-          <<~RUBY.chomp
-            #{node.keyword} #{node.condition.source}
-            #{indentation}  #{node.body.source}
-            #{heredoc_lines.join("\n")}
-            #{indentation}end
-          RUBY
+        def to_normal_form_with_heredoc(node, indentation)
+          [
+            "#{node.keyword} #{node.condition.source}",
+            *heredoc_ranges_in(node.condition).map(&:source),
+            "#{indentation}  #{node.body.source}",
+            *heredoc_ranges_in(node.if_branch).map(&:source),
+            "#{indentation}end"
+          ].join("\n")
         end
 
         def to_modifier_form_with_move_comment(node, indentation, comment)
