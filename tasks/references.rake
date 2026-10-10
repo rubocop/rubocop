@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'net/http'
+
 namespace :references do
   desc 'Verify configuration references availability'
   task :verify do |_task|
