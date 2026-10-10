@@ -118,7 +118,8 @@ module RuboCop
           # A comment or a heredoc body there can't be moved out of the way.
           return unless closing_ranges.all? { |range| range.source.match?(/\A[\s,]*\]\z/) }
 
-          corrector.replace(node.loc.selector, 'push')
+          replace_selector(corrector, node)
+
           node.arguments.zip(closing_ranges) do |argument, closing_range|
             corrector.remove(argument.loc.begin)
             corrector.remove(closing_range)
@@ -132,6 +133,17 @@ module RuboCop
           return argument.loc.end if argument.equal?(node.last_argument)
 
           range_between(argument.children.last.source_range.end_pos, argument.loc.end.end_pos)
+        end
+
+        def replace_selector(corrector, node)
+          if node.parenthesized? || node.single_line?
+            corrector.replace(node.loc.selector, 'push')
+          else
+            range = node.loc.selector.join(node.first_argument.source_range.begin)
+
+            corrector.replace(range, 'push(')
+            corrector.insert_after(node.last_argument.loc.end, ')')
+          end
         end
       end
     end
