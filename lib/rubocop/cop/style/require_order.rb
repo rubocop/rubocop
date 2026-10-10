@@ -101,17 +101,19 @@ module RuboCop
         end
 
         def find_previous_older_sibling(node) # rubocop:disable Metrics
-          search_node(node).left_siblings.reverse.find do |sibling|
+          oldest = nil
+          search_node(node).left_siblings.reverse_each do |sibling|
             next unless sibling.is_a?(AST::Node)
 
-            sibling = sibling_node(sibling)
-            break unless sibling&.send_type? && sibling.method?(node.method_name)
-            break unless sibling.arguments? && !sibling.receiver
-            break unless in_same_section?(sibling, node)
-            break unless node.first_argument.str_type? && sibling.first_argument.str_type?
+            required = sibling_node(sibling)
+            break unless required&.send_type? && required.method?(node.method_name)
+            break unless required.arguments? && !required.receiver
+            break unless in_same_section?(required, node)
+            break unless node.first_argument.str_type? && required.first_argument.str_type?
 
-            node.first_argument.value < sibling.first_argument.value
+            oldest = sibling if node.first_argument.value < required.first_argument.value
           end
+          oldest
         end
 
         def own_lines?(node)

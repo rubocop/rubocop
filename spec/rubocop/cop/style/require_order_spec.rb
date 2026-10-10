@@ -50,6 +50,21 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
         require 'b'
       RUBY
     end
+
+    it 'moves a `require` above every greater `require` before it in a single pass' do
+      expect_offense(<<~RUBY)
+        require 'b'
+        require 'c'
+        require 'a'
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+      RUBY
+
+      expect_correction(<<~RUBY, loop: false)
+        require 'a'
+        require 'b'
+        require 'c'
+      RUBY
+    end
   end
 
   context 'when unsorted `require` has some inline comments' do
