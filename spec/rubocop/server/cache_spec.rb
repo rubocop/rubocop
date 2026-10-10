@@ -223,6 +223,14 @@ RSpec.describe RuboCop::Server::Cache do
         end
         expect(described_class).not_to be_pid_running
       end
+
+      it 'works properly when a sandbox denies access to the configuration file' do
+        cache_class.cache_root_path = nil
+        allow(RuboCop::CacheConfig)
+          .to receive(:root_dir_from_toplevel_config).and_raise(Errno::EPERM)
+
+        expect(described_class).not_to be_pid_running
+      end
     end
   end
 end

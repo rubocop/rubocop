@@ -23,6 +23,8 @@ module RuboCop
         Util.replace_file_contents(file, content)
       rescue Errno::EACCES
         raise RuboCop::Error, "Permission denied: #{file}"
+      rescue Errno::EPERM
+        raise RuboCop::Error, "Operation not permitted: #{file}"
       rescue Errno::ENOSPC
         raise RuboCop::Error, "No space left on device: #{file}"
       rescue Errno::EROFS
