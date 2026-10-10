@@ -73,10 +73,7 @@ module RuboCop
           !unsupported_endless_method_body?(body_node) && endless_method_body?(body_node)
         end
 
-        # `def foo = bar and baz` parses as `(def foo = bar) and baz`.
         def unsupported_endless_method_body?(body_node)
-          return true if body_node.type?(:and, :or) && body_node.semantic_operator?
-
           body_node.basic_conditional? ||
             NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES.include?(body_node.type)
         end
