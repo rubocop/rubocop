@@ -401,6 +401,32 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it_behaves_like 'invalid cache location', Errno::EPERM, 'Operation not permitted'
       it_behaves_like 'invalid cache location', Errno::EROFS, 'Read-only file system'
     end
+
+    shared_examples 'unwritable cache file' do |error, message|
+      include_context 'mock console output'
+
+      it 'warns and leaves no cache file behind' do
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:open).with(start_with(cache.path), 'w', any_args) do |path|
+          # Fail partway through writing the preliminary file.
+          File.write(path, '{')
+          raise error
+        end
+
+        expect { cache.save(offenses) }.not_to raise_error
+        expect($stderr.string).to eq(<<~WARN)
+          Couldn't write cache file. Continuing without cache.
+            #{message}
+        WARN
+        expect(Dir.children(File.dirname(cache.path))).to be_empty
+      end
+    end
+
+    context 'when the cache file is not writable' do
+      it_behaves_like 'unwritable cache file', Errno::EACCES, 'Permission denied'
+      it_behaves_like 'unwritable cache file', Errno::EPERM, 'Operation not permitted'
+      it_behaves_like 'unwritable cache file', Errno::EROFS, 'Read-only file system'
+    end
   end
 
   describe '.cleanup' do
