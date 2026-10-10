@@ -59,9 +59,9 @@ module RuboCop
         puts "Removing the #{remove_count} oldest files from #{rubocop_cache_dir}" if verbose
         sorted = files.sort_by { |path| File.mtime(path) }
         remove_files(sorted, remove_count)
-      rescue Errno::ENOENT
+      rescue Errno::ENOENT, Errno::EACCES, Errno::EPERM, Errno::EROFS
         # This can happen if parallel RuboCop invocations try to remove the
-        # same files. No problem.
+        # same files, or if the cache can't be written to. No problem.
         puts $ERROR_INFO if verbose
       end
 
