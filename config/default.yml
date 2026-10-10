@@ -4144,7 +4144,7 @@ Style/DisableCopsWithinSourceCodeDirective:
                  Forbids disabling/enabling cops within source code.
   Enabled: false
   VersionAdded: '0.82'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.92'
   # Cop or department names. A directive is exempt only when everything it
   # disables is listed here.
   AllowedCops: []
@@ -5233,7 +5233,7 @@ Style/NegativeArrayIndex:
   Enabled: pending
   Safe: false
   VersionAdded: '1.84'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.92'
 
 Style/NestedFileDirname:
   Description: 'Checks for nested `File.dirname`.'

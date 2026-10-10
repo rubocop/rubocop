@@ -3907,7 +3907,7 @@ end
 | Yes
 | Always
 | 0.82
-| 1.90
+| 1.92
 |===
 
 Detects comments to enable/disable RuboCop.
@@ -3938,7 +3938,8 @@ With `AllowWithReason` set to `true`, a disable directive carrying
 a `--` trailing justification comment is allowed, so a team can require
 every disable to be documented instead of banning them outright. Enable
 directives are not checked in this mode, since they end a suppression
-rather than start one.
+rather than start one. Offenses in this mode are not autocorrected,
+since only a human can supply the missing justification.
 
 This cop cannot be disabled via directive comments when it is explicitly
 enabled with `Enabled: true`. This prevents users from bypassing the cop
@@ -5677,6 +5678,10 @@ end
 
 Checks for exact regexp match inside `Regexp` literals.
 
+`=~` returns an index and `match` returns `MatchData`, so they are only
+autocorrected when their value is used as a condition. The same goes for
+safe navigation calls, which return `nil` for a `nil` receiver.
+
 [#examples-styleexactregexpmatch]
 === Examples
 
@@ -5684,7 +5689,7 @@ Checks for exact regexp match inside `Regexp` literals.
 ----
 # bad
 string =~ /\Astring\z/
-string === /\Astring\z/
+/\Astring\z/ === string
 string.match(/\Astring\z/)
 string.match?(/\Astring\z/)
 
@@ -7764,6 +7769,9 @@ hash.fetch(key, default)
 
 # good - fetch with block is allowed
 hash.fetch(key) { default }
+
+# good - `ENV.fetch` is left to `Style/FetchEnvVar` when it is enabled
+ENV.fetch(key)
 ----
 
 [#enforcedstyle_-fetch-stylehashlookupmethod]
@@ -11512,7 +11520,8 @@ Checks for multi-line ternary op expressions.
 
 NOTE: `return if ... else ... end` is syntax error. If `return` is used before
 multiline ternary operator expression, it will be autocorrected to single-line
-ternary operator. The same is true for `break`, `next`, and method call.
+ternary operator. The same is true for `break`, `next`, `yield`, `super`,
+`defined?` without parentheses, and method call.
 
 [#examples-stylemultilineternaryoperator]
 === Examples
@@ -12169,10 +12178,10 @@ bar while !foo && baz
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
-| Yes
-| Always
+| No
+| Always (Unsafe)
 | 1.84
-| -
+| 1.92
 |===
 
 Identifies usages of `arr[arr.length - n]`, `arr[arr.size - n]`, or
@@ -12182,6 +12191,15 @@ Also handles range patterns like `arr[0..(arr.length - n)]`.
 The cop recognizes preserving methods (`sort`, `reverse`, `shuffle`, `rotate`)
 and their combinations, allowing safe replacement when the receiver matches.
 It works with variables, instance variables, class variables, and constants.
+
+[#safety-stylenegativearrayindex]
+=== Safety
+
+This cop is unsafe because the receiver may not be an Array. For a Hash,
+`hash[hash.size - 1]` looks up the key `hash.size - 1`, which `hash[-1]`
+does not. Even for an Array, `arr[arr.length - n]` wraps around to an
+element from the end when `n` exceeds the length, while `arr[-n]`
+returns `nil`.
 
 [#examples-stylenegativearrayindex]
 === Examples

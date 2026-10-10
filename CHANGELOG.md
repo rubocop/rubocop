@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.92.0 (2026-10-10)
+
 ### New features
 
 * [#15895](https://github.com/rubocop/rubocop/pull/15895): Add an MCP tool that explains what cops do. ([@bbatsov][])
