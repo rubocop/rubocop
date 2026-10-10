@@ -541,6 +541,36 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects a nested definition inside a namespace being compacted' do
+        expect_offense(<<~RUBY)
+          module Foo
+                 ^^^ Use compact module/class definition instead of nested style.
+          \tmodule Bar
+          \t\tdo_something
+
+          \t\tmodule Baz
+                   ^^^ Use compact module/class definition instead of nested style.
+          \t\t\tmodule Qux
+          \t\t\t\tdef quux
+          \t\t\t\tend
+          \t\t\tend
+          \t\tend
+          \tend
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module Foo::Bar
+          \tdo_something
+
+          \tmodule Baz::Qux
+          \t\tdef quux
+          \t\tend
+          \tend
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects a child whose body starts on the definition line' do
         expect_offense(<<~RUBY)
           module A
