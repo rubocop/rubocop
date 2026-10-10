@@ -58,6 +58,39 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
               end
             end
 
+            describe 'when followed by a matching `enable` with no code after it' do
+              it 'also removes the orphaned `enable`, since it no longer restores anything' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable Metrics/MethodLength
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+                  foo
+                  # rubocop:enable Metrics/MethodLength
+                RUBY
+
+                expect_correction(<<~RUBY)
+                  foo
+                RUBY
+              end
+            end
+
+            describe 'when followed by a matching `enable` with code after it' do
+              it 'removes only the `disable`, leaving the `enable` since it still protects real code' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable Metrics/MethodLength
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+                  foo
+                  # rubocop:enable Metrics/MethodLength
+                  bar
+                RUBY
+
+                expect_correction(<<~RUBY)
+                  foo
+                  # rubocop:enable Metrics/MethodLength
+                  bar
+                RUBY
+              end
+            end
+
             describe 'if that cop has offenses' do
               it 'returns an offense' do
                 expect_offense(<<~RUBY)
