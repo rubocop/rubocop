@@ -300,6 +300,30 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to multiline method definition when the body is a one-line pattern match with `=>`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(x); x => Integer; end')
+          def foo(x);#{trailing_whitespace}
+            x => Integer;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body is a one-line pattern match with `in`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo?(x); x in Integer; end')
+          def foo?(x);#{trailing_whitespace}
+            x in Integer;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the body is a `begin...end while` loop' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; begin bar end while baz; end')
+          def foo;#{trailing_whitespace}
+            begin bar end while baz;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
       it 'corrects to an endless method definition when the body is a `&&` operation' do
         expect_correction(<<~RUBY.strip, source: 'def foo; bar && baz; end')
           def foo() = bar && baz
