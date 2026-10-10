@@ -311,6 +311,72 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     RUBY
   end
 
+  it 'does not correct an `if` nested inside an `else` on a single line' do
+    expect_offense(<<~RUBY)
+      if a then foo else if b; bar else baz end; end
+                         ^^ Convert `if` nested inside `else` to `elsif`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not correct a nested `if` whose branch is on the condition line' do
+    expect_offense(<<~RUBY)
+      if a
+        blah
+      else
+        if b; foo; end
+        ^^ Convert `if` nested inside `else` to `elsif`.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not correct a nested `if` whose `else` is on the condition line' do
+    expect_offense(<<~RUBY)
+      if a
+        blah
+      else
+        if b; else
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          foo
+        end
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not correct a nested `if` whose `end` shares a line with other code' do
+    expect_offense(<<~RUBY)
+      if a
+        blah
+      else
+        if b
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          foo
+        else bar end
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not correct a nested `if` on the same line as the `else`' do
+    expect_offense(<<~RUBY)
+      if a
+        blah
+      else if b
+           ^^ Convert `if` nested inside `else` to `elsif`.
+          foo
+        end
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   context 'when AllowIfModifier is false' do
     it 'catches a modifier if nested inside an else' do
       expect_offense(<<~RUBY)
