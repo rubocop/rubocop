@@ -408,6 +408,57 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'registers an offense and keeps comments after the opening of the loop' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        end
+        items.each do |item| # second loop
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          # explain
+          bar(item)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item)
+        # second loop
+          # explain
+          bar(item)
+         end
+      RUBY
+    end
+
+    it 'registers an offense and keeps comments after the opening of a numbered block' do
+      expect_offense(<<~RUBY)
+        items.each { foo(_1) }
+        items.each { # second loop
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(_1)
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { foo(_1)
+        # second loop
+          bar(_1)
+        }
+      RUBY
+    end
+
+    it 'registers an offense and does not correct when a directive follows the opening of the loop' do
+      expect_offense(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each do |item| # rubocop:disable Lint/ShadowingOuterLocalVariable
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(item)
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'registers an offense when the previous loop body ends with a heredoc' do
       expect_offense(<<~RUBY)
         items.each do |item|
@@ -542,6 +593,40 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
         bar(item)
         end
       RUBY
+    end
+
+    it 'registers an offense and keeps comments after the opening of the loop' do
+      expect_offense(<<~RUBY)
+        for item in items
+          foo(item)
+        end
+        for item in items # second loop
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          # explain
+          bar(item)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for item in items
+          foo(item)
+        # second loop
+          # explain
+          bar(item)
+        end
+      RUBY
+    end
+
+    it 'registers an offense and does not correct when a directive follows the opening of the loop' do
+      expect_offense(<<~RUBY)
+        for item in items do foo(item) end
+        for item in items do # rubocop:disable Lint/Void
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(item)
+        end
+      RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register an offense when the same loops are interleaved with some code' do
