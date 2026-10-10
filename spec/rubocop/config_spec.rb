@@ -1267,6 +1267,48 @@ RSpec.describe RuboCop::Config do
     end
   end
 
+  describe '#direct_gem_versions_in_target', :isolated_environment do
+    let(:base_path) { configuration.base_dir_for_path_parameters }
+    let(:lockfile_path) { File.join(base_path, 'Gemfile.lock') }
+
+    context 'and a lockfile exists' do
+      it 'returns the locked versions of the directly depended-on gems only' do
+        content =
+          <<~LOCKFILE
+            GEM
+              remote: https://rubygems.org/
+              specs:
+                a (1.1.1)
+                b (2.2.2)
+                c (3.3.3)
+                  a (= 1.1.1)
+                  b (>= 1.1.1, < 3.3.3)
+
+            PLATFORMS
+              ruby
+
+            DEPENDENCIES
+              a
+              c
+
+            BUNDLED WITH
+              2.4.19
+          LOCKFILE
+
+        expected = { 'a' => Gem::Version.new('1.1.1'), 'c' => Gem::Version.new('3.3.3') }
+
+        create_file(lockfile_path, content)
+        expect(configuration.direct_gem_versions_in_target).to eq expected
+      end
+    end
+
+    context 'and neither Gemfile.lock nor gems.locked exist' do
+      it 'returns nil' do
+        expect(configuration.direct_gem_versions_in_target).to be_nil
+      end
+    end
+  end
+
   describe '#target_rails_version', :isolated_environment do
     let(:base_path) { configuration.base_dir_for_path_parameters }
     let(:lockfile_path) { File.join(base_path, 'Gemfile.lock') }

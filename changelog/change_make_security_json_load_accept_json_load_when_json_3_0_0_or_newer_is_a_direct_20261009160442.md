@@ -1,0 +1,1 @@
+* [#15866](https://github.com/rubocop/rubocop/pull/15866): Make `Security/JSONLoad` accept `JSON.load` when `json` 3.0.0 or newer is a direct dependency of the target, since that release removed the `create_additions` option. ([@viralpraxis][])

@@ -97,4 +97,119 @@ RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
       ::JSON.dump(arg)
     RUBY
   end
+
+  context 'when the target depends on a `json` without `create_additions`' do
+    let(:gem_versions) { { 'json' => '3.0.0' } }
+
+    it 'registers no offense for JSON.load' do
+      expect_no_offenses(<<~RUBY)
+        JSON.load(arg)
+        ::JSON.load(arg)
+      RUBY
+    end
+
+    it 'registers no offense for JSON.load with an unrelated option' do
+      expect_no_offenses(<<~RUBY)
+        JSON.load(arg, max_nesting: 1)
+        ::JSON.load(arg, max_nesting: 1)
+      RUBY
+    end
+
+    it 'registers an offense and corrects JSON.restore' do
+      expect_offense(<<~RUBY)
+        JSON.restore(arg)
+             ^^^^^^^ Prefer `JSON.parse` over `JSON.restore`.
+        ::JSON.restore(arg)
+               ^^^^^^^ Prefer `JSON.parse` over `JSON.restore`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        JSON.parse(arg)
+        ::JSON.parse(arg)
+      RUBY
+    end
+  end
+
+  context 'when the target depends on a `json` prerelease without `create_additions`' do
+    let(:gem_versions) { { 'json' => '3.0.0.rc1' } }
+
+    it 'registers no offense for JSON.load' do
+      expect_no_offenses(<<~RUBY)
+        JSON.load(arg)
+      RUBY
+    end
+  end
+
+  context 'when the target depends on a `json` with `create_additions`' do
+    let(:gem_versions) { { 'json' => '2.21.2' } }
+
+    it 'registers an offense and corrects JSON.load' do
+      expect_offense(<<~RUBY)
+        JSON.load(arg)
+             ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        JSON.parse(arg)
+      RUBY
+    end
+
+    it 'registers no offense when `create_additions` option is passed as the third argument' do
+      expect_no_offenses(<<~RUBY)
+        JSON.load(arg, nil, create_additions: false)
+      RUBY
+    end
+
+    it 'registers an offense when `create_additions` option is passed as the second argument' do
+      expect_offense(<<~RUBY)
+        JSON.load(arg, create_additions: false)
+             ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        JSON.parse(arg, create_additions: false)
+      RUBY
+    end
+  end
+
+  context 'when another gem pulled in a `json` without `create_additions`' do
+    let(:gem_versions) { { 'json' => '3.0.0' } }
+    let(:direct_gem_versions) { {} }
+
+    it 'registers an offense and corrects JSON.load' do
+      expect_offense(<<~RUBY)
+        JSON.load(arg)
+             ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        JSON.parse(arg)
+      RUBY
+    end
+  end
+
+  describe '#external_dependency_checksum' do
+    context 'when the target depends on `json` directly' do
+      let(:gem_versions) { { 'json' => '3.0.0' } }
+
+      it 'returns the resolved version, so that the result cache tracks it' do
+        expect(cop.external_dependency_checksum).to eq('3.0.0')
+      end
+    end
+
+    context 'when only another gem pulled in `json`' do
+      let(:gem_versions) { { 'json' => '3.0.0' } }
+      let(:direct_gem_versions) { {} }
+
+      it 'returns nil' do
+        expect(cop.external_dependency_checksum).to be_nil
+      end
+    end
+
+    context 'when the target does not resolve `json`' do
+      it 'returns nil' do
+        expect(cop.external_dependency_checksum).to be_nil
+      end
+    end
+  end
 end
