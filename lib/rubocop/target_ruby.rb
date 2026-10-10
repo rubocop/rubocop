@@ -100,15 +100,15 @@ module RuboCop
       def gemspec_filepath
         return @gemspec_filepath if defined?(@gemspec_filepath)
 
-        @gemspec_filepath =
-          @config.traverse_directories_upwards(@config.base_dir_for_path_parameters) do |dir|
-            # NOTE: Can't use `dir.glob` because of JRuby 9.4.8.0 incompatibility:
-            # https://github.com/jruby/jruby/issues/8358
-            candidates = Pathname.glob("#{dir}/*.gemspec")
-            # Bundler will use a gemspec whatever the filename is, as long as its the only one in
-            # the folder.
-            break candidates.first if candidates.one?
-          end
+        @gemspec_filepath = @config.traverse_directories_upwards(
+          @config.base_dir_for_path_parameters, ConfigFinder.project_root
+        ) do |dir|
+          candidates = gemspec_candidates(dir)
+
+          # Bundler will use a gemspec whatever the filename is, as long as its the only one in
+          # the folder.
+          break candidates.first if candidates.one?
+        end
       end
 
       def version_from_gemspec_file(file)
@@ -154,6 +154,14 @@ module RuboCop
         KNOWN_RUBIES.detect do |v|
           requirement.satisfied_by?(Gem::Version.new("#{v}.99"))
         end
+      end
+
+      def gemspec_candidates(dir)
+        # NOTE: Can't use `dir.glob` because of JRuby 9.4.8.0 incompatibility:
+        # https://github.com/jruby/jruby/issues/8358
+        Pathname.glob("#{dir}/*.gemspec")
+      rescue SystemCallError
+        []
       end
     end
 
