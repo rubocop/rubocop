@@ -293,6 +293,15 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
         end
       end
 
+      context 'string with an escape sequence' do
+        # Offsets into the string's value would not match its source.
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            Regexp.#{method}("a\\\\.b]")
+          RUBY
+        end
+      end
+
       context 'invalid regular expressions' do
         %w[+ * {42} \xff].each do |invalid_regexp|
           it "does not register an offense for single invalid `/#{invalid_regexp}/` regexp`" do

@@ -53,11 +53,21 @@ module RuboCop
           return if node.each_descendant(:dstr).any?
 
           regexp_constructor(node) do |text|
+            next unless verbatim_string?(text)
+
             detect_offenses_in_tree(text, parse_regexp(text.value))
           end
         end
 
         private
+
+        # Offsets into the string's value only point at the right place in the source
+        # when the string has no escape sequences, so anything else is left alone.
+        def verbatim_string?(node)
+          return false unless node.loc?(:begin) && node.loc?(:end)
+
+          node.loc.begin.end.join(node.loc.end.begin).source == node.value
+        end
 
         # When a character class opens with a bare `]` (e.g. `[^]]`), `regexp_parser` parses
         # `[^]` / `[]` as an empty set and reports the closing `]` as a separate literal.
