@@ -86,9 +86,7 @@ module RuboCop
           return unless node.body && node.left_sibling.body
 
           add_offense(node) do |corrector|
-            # Combining loops with different iteration variables would leave the second
-            # body referencing an undefined variable, so only autocorrect when they match.
-            next unless node.variable == node.left_sibling.variable
+            next unless combinable_fors?(node, node.left_sibling)
 
             combine_with_left_sibling(corrector, node)
           end
@@ -121,13 +119,39 @@ module RuboCop
           return false unless node.arguments == sibling.arguments
           # Numbered and `it` parameters are implicit, so `arguments` is empty for both.
           return false unless node.argument_list == sibling.argument_list
+          return false if directive_after_opening?(node)
 
           !node.body.type?(:rescue, :ensure) && !sibling.body.type?(:rescue, :ensure)
         end
 
+        # Combining loops with different iteration variables would leave the second
+        # body referencing an undefined variable, so only autocorrect when they match.
+        def combinable_fors?(node, sibling)
+          node.variable == sibling.variable && !directive_after_opening?(node)
+        end
+
+        # The opening is removed, so a directive after it would end up on a line of
+        # its own, where it covers the rest of the file instead of a single line.
+        def directive_after_opening?(node)
+          opening_line = loop_opening(node).line
+          return false if opening_line == node.body.first_line
+
+          comment = processed_source.comment_at_line(opening_line)
+          comment && DirectiveComment.new(comment).start_with_marker?
+        end
+
+        # The block arguments or `{`/`do` of a block, or the `do` or collection of a `for` loop.
+        def loop_opening(node)
+          if node.for_type?
+            node.loc.begin || node.collection.source_range
+          else
+            (node.block_type? && node.arguments.source_range) || node.loc.begin
+          end
+        end
+
         def combine_with_left_sibling(corrector, node)
           corrector.remove(closing_with_preceding_space(node.left_sibling, node))
-          corrector.remove(node.source_range.begin.join(node.body.source_range.begin))
+          corrector.remove(opening_with_following_space(node))
 
           correct_end_of_block(corrector, node)
         end
@@ -141,6 +165,13 @@ module RuboCop
           range_with_surrounding_space(
             loop.loc.end, side: :left, newlines: separate_lines, whitespace: separate_lines
           )
+        end
+
+        # Comments between the opening and the body are kept.
+        def opening_with_following_space(node)
+          opening = node.source_range.begin.join(loop_opening(node))
+
+          range_with_surrounding_space(opening, side: :right, whitespace: true)
         end
 
         def correct_end_of_block(corrector, node)
