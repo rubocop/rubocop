@@ -60,6 +60,7 @@ module RuboCop
       #   end
       #
       class CombinableLoops < Base
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Combine this loop with the previous loop.'
@@ -125,10 +126,21 @@ module RuboCop
         end
 
         def combine_with_left_sibling(corrector, node)
-          corrector.remove(node.left_sibling.body.source_range.end.join(node.left_sibling.loc.end))
+          corrector.remove(closing_with_preceding_space(node.left_sibling, node))
           corrector.remove(node.source_range.begin.join(node.body.source_range.begin))
 
           correct_end_of_block(corrector, node)
+        end
+
+        # Comments and heredoc bodies before the closing delimiter are kept. When
+        # the next loop starts on the delimiter's line, the line break before the
+        # delimiter is kept too, so that a comment doesn't swallow the next loop.
+        def closing_with_preceding_space(loop, next_loop)
+          separate_lines = !same_line?(loop.loc.end, next_loop)
+
+          range_with_surrounding_space(
+            loop.loc.end, side: :left, newlines: separate_lines, whitespace: separate_lines
+          )
         end
 
         def correct_end_of_block(corrector, node)

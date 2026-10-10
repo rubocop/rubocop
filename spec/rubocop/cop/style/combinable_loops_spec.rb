@@ -333,6 +333,104 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'keeps a loop disabled on its last body line out of the combined loop' do
+      expect_offense(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each do |item|
+          bar(item) # rubocop:disable Style/CombinableLoops
+        end
+        items.each { |item| baz(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each do |item|
+          bar(item) # rubocop:disable Style/CombinableLoops
+        baz(item)  end
+      RUBY
+    end
+
+    it 'registers an offense and keeps comments before the closing `end` of the previous loop' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item) # important
+          # more
+        end
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(item)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item) # important
+          # more
+        bar(item)
+         end
+      RUBY
+    end
+
+    it 'registers an offense and keeps comments before the closing delimiters of a run of loops' do
+      expect_offense(<<~RUBY)
+        items.each { |item| foo(item) # first
+          # more
+        }
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(item) # second
+        end
+        items.each { |item| baz(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { |item| foo(item) # first
+          # more
+        bar(item) # second
+        baz(item) }
+      RUBY
+    end
+
+    it 'registers an offense when the next loop starts on the closing line of a previous loop with a comment' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(item) # important
+        end; items.each { |item| bar(item) }
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(item) # important
+        ; bar(item)  end
+      RUBY
+    end
+
+    it 'registers an offense when the previous loop body ends with a heredoc' do
+      expect_offense(<<~RUBY)
+        items.each do |item|
+          foo(<<~EOS)
+            text
+          EOS
+        end
+        items.each do |item|
+        ^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(item)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each do |item|
+          foo(<<~EOS)
+            text
+          EOS
+        bar(item)
+         end
+      RUBY
+    end
+
     context 'Ruby 2.7' do
       it 'registers an offense when looping over the same data as previous loop in numblocks' do
         expect_offense(<<~RUBY)
@@ -422,6 +520,27 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       expect_correction(<<~RUBY)
         for item in items do do_something(item)
         do_something_else(item, arg) end
+      RUBY
+    end
+
+    it 'registers an offense and keeps comments before the closing `end` of the previous loop' do
+      expect_offense(<<~RUBY)
+        for item in items do
+          foo(item) # important
+          # more
+        end
+        for item in items do
+        ^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+          bar(item)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for item in items do
+          foo(item) # important
+          # more
+        bar(item)
+        end
       RUBY
     end
 
