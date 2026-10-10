@@ -107,7 +107,7 @@ module RuboCop
             location = range_at_index(node, expr.ts, pos)
 
             add_offense(location) do |corrector|
-              corrector.replace(location, '\]')
+              corrector.replace(location, escaped_bracket(node))
             end
           end
 
@@ -117,6 +117,13 @@ module RuboCop
         def range_at_index(node, index, offset)
           adjustment = index + offset
           node.loc.begin.end.adjust(begin_pos: adjustment, end_pos: adjustment + 1)
+        end
+
+        # A double-quoted string turns `\]` into `]`, so its backslash needs escaping too.
+        def escaped_bracket(node)
+          return '\]' if node.regexp_type? || node.single_quoted? || node.percent_literal?(:q)
+
+          '\\\\]'
         end
       end
     end
