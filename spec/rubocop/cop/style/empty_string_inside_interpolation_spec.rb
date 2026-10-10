@@ -96,6 +96,53 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
         RUBY
       end
     end
+
+    it 'registers an offense when ternaries with an empty false outcome are used in nested string interpolations' do
+      expect_offense(<<~'RUBY')
+        "#{outer ? "foo#{inner ? 'bar' : ''}" : ''}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not return empty strings in string interpolation.
+                         ^^^^^^^^^^^^^^^^^^ Do not return empty strings in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{"foo#{'bar' if inner}" if outer}"
+      RUBY
+    end
+
+    it 'registers an offense when ternaries with an empty true outcome are used in nested string interpolations' do
+      expect_offense(<<~'RUBY')
+        "#{outer ? '' : "foo#{inner ? '' : 'bar'}"}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not return empty strings in string interpolation.
+                              ^^^^^^^^^^^^^^^^^^ Do not return empty strings in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{"foo#{'bar' unless inner}" unless outer}"
+      RUBY
+    end
+
+    it 'registers an offense when a ternary with an empty outcome is used in the condition of another one' do
+      expect_offense(<<~'RUBY')
+        "#{"#{inner ? 'bar' : ''}".empty? ? 'foo' : ''}"
+              ^^^^^^^^^^^^^^^^^^ Do not return empty strings in string interpolation.
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not return empty strings in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{'foo' if "#{'bar' if inner}".empty?}"
+      RUBY
+    end
+
+    it 'registers an offense when a ternary without an empty outcome is used in the condition of another one' do
+      expect_offense(<<~'RUBY')
+        "#{"#{inner ? 'bar' : 'baz'}".empty? ? 'foo' : ''}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not return empty strings in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{'foo' if "#{inner ? 'bar' : 'baz'}".empty?}"
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is ternary' do
@@ -120,6 +167,42 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
 
       expect_correction(<<~'RUBY')
         "#{condition ? '' : 'foo'}"
+      RUBY
+    end
+
+    it 'registers an offense when trailing conditionals are used in nested string interpolations' do
+      expect_offense(<<~'RUBY')
+        "#{"foo#{'bar' if inner}" if outer}"
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+               ^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{outer ? "foo#{inner ? 'bar' : ''}" : ''}"
+      RUBY
+    end
+
+    it 'registers an offense when trailing unless is used in nested string interpolations' do
+      expect_offense(<<~'RUBY')
+        "#{"foo#{'bar' unless inner}" unless outer}"
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+               ^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{outer ? '' : "foo#{inner ? '' : 'bar'}"}"
+      RUBY
+    end
+
+    it 'registers an offense when a trailing conditional is used in the condition of another one' do
+      expect_offense(<<~'RUBY')
+        "#{'foo' if "#{'bar' if inner}".empty?}"
+                     ^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{"#{inner ? 'bar' : ''}".empty? ? 'foo' : ''}"
       RUBY
     end
 
