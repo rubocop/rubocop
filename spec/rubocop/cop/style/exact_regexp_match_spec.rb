@@ -23,14 +23,20 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
     RUBY
   end
 
-  it 'registers an offense when using `string === /\Astring\z/`' do
+  it 'registers an offense when using `/\Astring\z/ === string`' do
     expect_offense(<<~'RUBY')
-      string === /\Astring\z/
+      /\Astring\z/ === string
       ^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
     RUBY
 
     expect_correction(<<~RUBY)
       string == 'string'
+    RUBY
+  end
+
+  it 'does not register an offense when using `string === /\Astring\z/`' do
+    expect_no_offenses(<<~'RUBY')
+      string === /\Astring\z/
     RUBY
   end
 
@@ -88,9 +94,9 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `string === /\A0+\z/` (literal with quantifier)' do
+  it 'does not register an offense when using `/\A0+\z/ === string` (literal with quantifier)' do
     expect_no_offenses(<<~'RUBY')
-      string === /\A0+\z/
+      /\A0+\z/ === string
     RUBY
   end
 

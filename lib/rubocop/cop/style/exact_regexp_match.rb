@@ -13,7 +13,7 @@ module RuboCop
       #
       #   # bad
       #   string =~ /\Astring\z/
-      #   string === /\Astring\z/
+      #   /\Astring\z/ === string
       #   string.match(/\Astring\z/)
       #   string.match?(/\Astring\z/)
       #
@@ -33,13 +33,13 @@ module RuboCop
         RESTRICT_ON_SEND = %i[=~ === !~ match match?].freeze
         BOOLEAN_METHODS = %i[=== !~ match?].to_set.freeze
 
+        # `String#===` is plain equality, so `===` only matches with the regexp as its receiver.
         # @!method exact_regexp_match(node)
         def_node_matcher :exact_regexp_match, <<~PATTERN
-          (call
-            _ {:=~ :=== :!~ :match :match?}
-            (regexp
-              (str $_)
-              (regopt)))
+          {
+            (call _ {:=~ :!~ :match :match?} (regexp (str $_) (regopt)))
+            (send (regexp (str $_) (regopt)) :=== _)
+          }
         PATTERN
 
         def on_send(node)
@@ -49,7 +49,8 @@ module RuboCop
           return unless exact_match_pattern?(parsed_regexp)
 
           string = escape_single_quotes(parsed_regexp[1].text)
-          prefer = "#{receiver.source} #{new_method(node)} '#{string}'"
+          subject = node.method?(:===) ? node.first_argument : receiver
+          prefer = "#{subject.source} #{new_method(node)} '#{string}'"
 
           add_offense(node, message: format(MSG, prefer: prefer)) do |corrector|
             autocorrect(corrector, node, prefer)
