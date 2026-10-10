@@ -398,6 +398,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       let(:cache_root) { '/permission_denied_dir' }
 
       it_behaves_like 'invalid cache location', Errno::EACCES, 'Permission denied'
+      it_behaves_like 'invalid cache location', Errno::EPERM, 'Operation not permitted'
       it_behaves_like 'invalid cache location', Errno::EROFS, 'Read-only file system'
     end
   end

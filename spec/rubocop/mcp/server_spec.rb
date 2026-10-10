@@ -1124,6 +1124,34 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment do
     end
   end
 
+  describe 'tools/call to autocorrection with operation not permitted' do
+    let(:file_path) { 'sandboxed_file.rb' }
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: '42',
+        method: 'tools/call',
+        params: {
+          name: 'rubocop_autocorrection',
+          arguments: { safety: true, path: file_path }
+        }
+      }]
+    end
+
+    before do
+      File.write(file_path, '?a')
+      # A sandbox denies the write with `EPERM` rather than `EACCES`.
+      allow(File).to receive(:write).and_raise(Errno::EPERM)
+    end
+
+    it 'returns operation not permitted error' do
+      expect(messages.count).to eq(1)
+      expect(response).to include(id: '42', jsonrpc: '2.0')
+      expect(response[:result][:isError]).to be true
+      expect(response[:result][:content].first[:text]).to include('Operation not permitted')
+    end
+  end
+
   describe 'tools/call to autocorrection with no space left on device' do
     let(:file_path) { 'test_file.rb' }
     let(:requests) do

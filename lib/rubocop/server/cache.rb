@@ -112,8 +112,8 @@ module RuboCop
 
         def pid_running?
           Process.kill(0, pid_path(create_dir: false).read.to_i) == 1
-        rescue Errno::ESRCH, Errno::ENOENT, Errno::EACCES, Errno::EROFS, Errno::ENAMETOOLONG,
-               Errno::ENOTDIR
+        rescue Errno::ESRCH, Errno::ENOENT, Errno::EACCES, Errno::EPERM, Errno::EROFS,
+               Errno::ENAMETOOLONG, Errno::ENOTDIR
           false
         end
 
