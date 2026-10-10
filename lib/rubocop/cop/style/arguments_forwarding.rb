@@ -376,10 +376,14 @@ module RuboCop
 
         def add_parens_if_missing(node, corrector)
           return if parentheses?(node)
-          return if node.send_type? && node.method?(:[])
+          return if node.call_type? && operator_or_setter_call?(node)
           return unless (@parenthesized_nodes ||= Set.new.compare_by_identity).add?(node)
 
           add_parentheses(node, corrector)
+        end
+
+        def operator_or_setter_call?(node)
+          node.setter_method? || (node.operator_method? && !node.loc.dot)
         end
 
         # Classifies send nodes for possible rest/kwrest/all (including block) forwarding.
