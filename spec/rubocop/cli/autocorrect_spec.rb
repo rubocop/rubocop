@@ -1363,6 +1363,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: no_braces` of `Style/HashAsLastArrayItem` with ' \
+     '`EnforcedStyleForMultiline: diff_comma` of `Style/TrailingCommaInArrayLiteral`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/HashAsLastArrayItem:
+        EnforcedStyle: no_braces
+      Style/TrailingCommaInArrayLiteral:
+        EnforcedStyleForMultiline: diff_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo = [
+        {
+          bar: 1
+        }
+      ]
+    RUBY
+    expect(
+      cli.run(['-A', '--only', 'Style/HashAsLastArrayItem,Style/TrailingCommaInArrayLiteral'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo = [
+       #{trailing_whitespace}
+          bar: 1,
+       #{trailing_whitespace}
+      ]
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineHashBraceLayout` with `EnforcedStyle: same_line` and `Style/RedundantDoubleSplatHashBraces`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineHashBraceLayout:

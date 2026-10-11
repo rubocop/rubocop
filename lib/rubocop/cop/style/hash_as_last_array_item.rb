@@ -44,6 +44,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArrayLiteral]
+        end
+
         def on_hash(node)
           return if node.children.first&.kwsplat_type?
           return unless (array = containing_array(node))
