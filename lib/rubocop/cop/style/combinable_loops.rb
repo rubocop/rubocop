@@ -65,6 +65,10 @@ module RuboCop
 
         MSG = 'Combine this loop with the previous loop.'
 
+        def self.autocorrect_incompatible_with
+          [Layout::BlockEndNewline]
+        end
+
         def on_block(node)
           return unless node.parent&.begin_type?
           return unless collection_looping_method?(node)
