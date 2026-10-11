@@ -142,7 +142,8 @@ module RuboCop
               allowed_multiline_call_with_parentheses?(node) ||
               allowed_chained_call_with_parentheses?(node) ||
               assignment_in_condition?(node) ||
-              forwards_anonymous_rest_arguments?(node)
+              forwards_anonymous_rest_arguments?(node) ||
+              trailing_comma?(node)
           end
 
           def call_in_literals?(node)
@@ -301,6 +302,14 @@ module RuboCop
 
               argument.hash_type? && argument.children.any?(&:forwarded_kwrestarg_type?)
             end
+          end
+
+          def trailing_comma?(node)
+            return false unless (last_argument = node.last_argument)
+
+            range = last_argument.source_range.end.join(node.loc.end.begin)
+
+            processed_source.tokens_within(range).any?(&:comma?)
           end
         end
       end

@@ -1383,6 +1383,28 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         RUBY
       end
 
+      it 'accepts parens when the last argument has a trailing comma' do
+        expect_no_offenses(<<~RUBY)
+          do_something(
+            :bar,
+            :baz,
+          )
+        RUBY
+      end
+
+      it 'registers an offense when a comma appears only in a comment after the last argument' do
+        expect_offense(<<~RUBY)
+          do_something(:bar, :baz # comment, with a comma
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something :bar, :baz # comment, with a comma
+
+        RUBY
+      end
+
       it 'registers an offense when a comment follows the first argument' do
         expect_offense(<<~RUBY)
           do_something(:bar, # comment
