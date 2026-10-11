@@ -332,6 +332,52 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'when using a heredoc in the condition' do
+        it 'registers an offense and moves the heredoc after the condition' do
+          expect_offense(<<~RUBY)
+            def do_something
+              return if foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS)
+                     ^^ Modifier form of `if` makes the line too long.
+                string
+              EOS
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def do_something
+              if foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS)
+                string
+              EOS
+                return
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when using heredocs in both the branch body and the condition' do
+        it 'registers an offense and moves each heredoc after its own line' do
+          expect_offense(<<~RUBY)
+            fooooooooooooooooooooooooooooooo(<<~EOS) if baaaaaaaaaaaaaaaaaaaaaaaaaaaaar(<<~EOT)
+                                                     ^^ Modifier form of `if` makes the line too long.
+              string
+            EOS
+              text
+            EOT
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if baaaaaaaaaaaaaaaaaaaaaaaaaaaaar(<<~EOT)
+              text
+            EOT
+              fooooooooooooooooooooooooooooooo(<<~EOS)
+              string
+            EOS
+            end
+          RUBY
+        end
+      end
+
       context 'when variable assignment is used in the branch body of if modifier' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
