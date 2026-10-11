@@ -2347,6 +2347,34 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'does not register an offense when another call forwards anonymous arguments without the block' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*, **, &)
+          if x
+            bar(*, **, &)
+          else
+            bar(*, **)
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when a chained call forwards all anonymous arguments' do
+      expect_offense(<<~RUBY)
+        def foo(*, **, &)
+                ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(*, **, &).baz
+              ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar(...).baz
+        end
+      RUBY
+    end
+
     it 'registers an offense if an additional positional parameter is present with anonymous arguments' do
       expect_offense(<<~RUBY)
         def foo(m, *, **, &)
