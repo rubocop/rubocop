@@ -27,10 +27,6 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        def self.autocorrect_incompatible_with
-          [Style::RedundantSelf]
-        end
-
         def on_send(node)
           return unless node.dot? || node.safe_navigation?
 
@@ -46,19 +42,33 @@ module RuboCop
 
         private
 
+        # The dot and the gap it moves across are replaced in one action, so that another
+        # correction that rewrites a range spanning the dot clashes with this one instead of
+        # leaving the moved dot behind.
         def autocorrect(corrector, dot, node)
-          dot_range = if processed_source[dot.line - 1].strip == '.'
-                        range_by_whole_lines(dot, include_final_newline: true)
-                      else
-                        dot
-                      end
-          corrector.remove(dot_range)
-          case style
-          when :leading
-            corrector.insert_before(selector_range(node), dot.source)
-          when :trailing
-            corrector.insert_after(node.receiver, dot.source)
+          dot_range = removed_dot_range(dot)
+
+          if style == :leading
+            move_dot_before_selector(corrector, dot, dot_range, selector_range(node))
+          else
+            move_dot_after_receiver(corrector, dot, dot_range, node.receiver)
           end
+        end
+
+        def removed_dot_range(dot)
+          return dot unless processed_source[dot.line - 1].strip == '.'
+
+          range_by_whole_lines(dot, include_final_newline: true)
+        end
+
+        def move_dot_before_selector(corrector, dot, dot_range, selector)
+          gap = range_between(dot_range.end_pos, selector.begin_pos)
+          corrector.replace(dot_range.join(gap), "#{gap.source}#{dot.source}")
+        end
+
+        def move_dot_after_receiver(corrector, dot, dot_range, receiver)
+          gap = range_between(receiver.source_range.end_pos, dot_range.begin_pos)
+          corrector.replace(gap.join(dot_range), "#{dot.source}#{gap.source}")
         end
 
         def message(dot)

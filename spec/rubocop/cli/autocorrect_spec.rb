@@ -4615,6 +4615,97 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(source_file.read).to eq("var = \n  do_something\n")
   end
 
+  it 'corrects `Layout/DotPosition` with `EnforcedStyle: trailing` and `Style/MapToHash` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/DotPosition:
+        EnforcedStyle: trailing
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.map { |k, v| [k, v] }
+        .to_h
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/DotPosition,Style/MapToHash'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo.to_h { |k, v| [k, v] }
+    RUBY
+  end
+
+  it 'corrects `Layout/DotPosition` with `EnforcedStyle: trailing` and `Style/HashLookupMethod` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/DotPosition:
+        EnforcedStyle: trailing
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo
+        .fetch(bar)
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/DotPosition,Style/HashLookupMethod'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo[bar]
+    RUBY
+  end
+
+  it 'corrects `Layout/DotPosition` with `EnforcedStyle: trailing` and `Style/RedundantSort` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/DotPosition:
+        EnforcedStyle: trailing
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.sort
+        .first
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/DotPosition,Style/RedundantSort'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo.min
+    RUBY
+  end
+
+  it 'corrects `Layout/DotPosition` with `EnforcedStyle: leading` and `Style/SafeNavigation` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/DotPosition:
+        EnforcedStyle: leading
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.
+        bar if foo
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/DotPosition,Style/SafeNavigation'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo
+        &.bar
+    RUBY
+  end
+
+  it 'corrects `Layout/DotPosition` with `EnforcedStyle: trailing` and `Style/RedundantFreeze` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/DotPosition:
+        EnforcedStyle: trailing
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      FOO = 1
+        .freeze
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/DotPosition,Style/RedundantFreeze'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      FOO = 1
+    RUBY
+  end
+
   it 'does not correct Style/IfUnlessModifier offense disabled by a comment directive and ' \
      'does not fire Lint/RedundantCopDisableDirective offense even though that directive ' \
      'would make the modifier form too long' do

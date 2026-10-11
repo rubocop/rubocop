@@ -29,8 +29,7 @@ module RuboCop
                          operation_produces_immutable_object?(node.receiver))
 
           add_offense(node) do |corrector|
-            corrector.remove(node.loc.dot)
-            corrector.remove(node.loc.selector)
+            corrector.remove(node.loc.dot.join(node.loc.selector))
           end
         end
 
