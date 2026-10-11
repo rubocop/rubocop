@@ -147,8 +147,10 @@ module RuboCop
 
         # `Style/MethodDefParentheses` adds the same parentheses a parameter list needs in
         # an endless definition, so letting both correct in the same pass would double them.
+        # `Style/GuardClause` turns a single `if` body into several statements,
+        # which an endless definition cannot hold.
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses]
+          [Style::GuardClause, Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses]
         end
 
         def on_def(node)
