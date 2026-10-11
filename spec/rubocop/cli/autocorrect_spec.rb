@@ -283,6 +283,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/FirstHashElementIndentation`, `Layout/SpaceAfterComma`, and `Layout/ExtraSpacing` with a double splat' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/FirstHashElementIndentation:
+        EnforcedStyle: align_braces
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x = { **foo.bar do
+        baz
+      end,'a' => 1 }
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all', '--only',
+        'Layout/FirstHashElementIndentation,Layout/SpaceAfterComma,Layout/ExtraSpacing'
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      x = { **foo.bar do
+        baz
+      end, 'a' => 1 }
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: hash_rockets` of `Style/HashSyntax` with `Layout/HashAlignment`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/HashSyntax:
