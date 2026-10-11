@@ -78,6 +78,7 @@ module RuboCop
 
           if style == :for
             return unless node.receiver
+            return if node.type?(:numblock, :itblock)
             return if rescue_or_ensure_body?(node) || do_end_block_in_collection?(node)
 
             add_offense(node, message: PREFER_FOR) do |corrector|
