@@ -177,13 +177,7 @@ module RuboCop
           when :keyword
             node
           when :variable
-            align_to = alignment_node_for_variable_style(node)
-
-            while (parent = align_to.parent) && parent.send_type? && same_line?(align_to, parent)
-              align_to = parent
-            end
-
-            align_to
+            alignment_node_for_variable_style(node)
           else
             start_line_range(node)
           end
@@ -213,6 +207,8 @@ module RuboCop
               leading_node(extract_rhs(ancestor)).equal?(node)
             elsif ancestor.send_type? && ancestor.operator_method?
               !leading_node(ancestor).equal?(node)
+            elsif ancestor.send_type?
+              leading_node(ancestor.last_argument).equal?(node)
             end
           end
         end

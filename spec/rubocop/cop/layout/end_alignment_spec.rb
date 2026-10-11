@@ -490,6 +490,51 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense when a parenthesized `if` is a method argument and `end` is not aligned' do
+      expect_offense(<<~RUBY)
+        foo(bar, (if baz
+                    qux
+                  end))
+                  ^^^ `end` at 3, 10 is not aligned with `foo(bar, (if` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(bar, (if baz
+                    qux
+        end))
+      RUBY
+    end
+
+    it 'registers an offense when an `if` with a method call chained is a method argument and `end` is not aligned' do
+      expect_offense(<<~RUBY)
+        foo(bar, (if baz
+                    qux
+                  end).to_s)
+                  ^^^ `end` at 3, 10 is not aligned with `foo(bar, (if` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(bar, (if baz
+                    qux
+        end).to_s)
+      RUBY
+    end
+
+    it 'registers an offense when an `if` is an argument of a method call nested in another one and `end` is not aligned' do
+      expect_offense(<<~RUBY)
+        foo bar.baz(qux, if quux
+                           corge
+                         end)
+                         ^^^ `end` at 3, 17 is not aligned with `bar.baz(qux, if` at 1, 4.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo bar.baz(qux, if quux
+                           corge
+            end)
+      RUBY
+    end
+
     it 'registers an offense when using a conditional statement in a method argument and `end` is not aligned' do
       expect_offense(<<~RUBY)
         format(
