@@ -618,6 +618,129 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'adds a trailing comma to a destructuring block parameter with a single variable' do
+      expect_offense(<<~RUBY)
+        foo.each do |(x)|
+        ^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for (x,) in foo do
+          bar(x)
+        end
+      RUBY
+    end
+
+    it 'adds a trailing comma to a nested destructuring block parameter with a single variable' do
+      expect_offense(<<~RUBY)
+        foo.each do |x, (y)|
+        ^^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x, y)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for x, (y,) in foo do
+          bar(x, y)
+        end
+      RUBY
+    end
+
+    it 'does not add a trailing comma to a destructuring block parameter with a single splat' do
+      expect_offense(<<~RUBY)
+        foo.each do |(*x)|
+        ^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for (*x) in foo do
+          bar(x)
+        end
+      RUBY
+    end
+
+    it 'keeps the trailing comma of a block parameter' do
+      expect_offense(<<~RUBY)
+        foo.each do |x,|
+        ^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for x, in foo do
+          bar(x)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a block parameter has a default value' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x = 1|
+          bar(x)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a block has a keyword parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x, y:|
+          bar(x, y)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a block has a keyword rest parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x, **y|
+          bar(x, y)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a block has a block parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x, &y|
+          bar(x, y)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a block has a block-local variable' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x; y|
+          bar(x)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a block has only a splat parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |*x|
+          bar(x)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when a block has a splat parameter with another parameter' do
+      expect_offense(<<~RUBY)
+        foo.each do |*x, y|
+        ^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x, y)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for *x, y in foo do
+          bar(x, y)
+        end
+      RUBY
+    end
+
     it 'registers an offense and corrects a multiline `each` with braces' do
       expect_offense(<<~RUBY)
         c.each { |d|
