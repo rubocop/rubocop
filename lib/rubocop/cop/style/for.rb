@@ -56,8 +56,10 @@ module RuboCop
 
         # `Style/RedundantBegin` removes the `begin` of a block body in the same pass,
         # leaving a `rescue` or `ensure` clause directly in the `for` body.
+        # `Style/ItBlockParameter` replaces block parameter references in the body
+        # with `it` in the same pass, while they become `for` loop variables.
         def self.autocorrect_incompatible_with
-          [Style::RedundantBegin]
+          [Style::RedundantBegin, Style::ItBlockParameter]
         end
 
         def on_for(node)
