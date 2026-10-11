@@ -1270,6 +1270,42 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Style/IfUnlessModifier` and `Layout/SpaceInsideParens` with `EnforcedStyle: space` and hash value omission' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Layout/LineLength:
+        Max: 54
+      Layout/SpaceInsideParens:
+        EnforcedStyle: space
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo
+        if condition
+          return bar( aaa, bbb: true, ccc:, ddd: )
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all', '--only',
+        'Style/IfUnlessModifier,Layout/SpaceInsideParens,Layout/LineLength,' \
+        'Style/MultilineIfModifier,Layout/RedundantLineBreak'
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo
+        if condition
+          return bar( aaa, bbb: true, ccc:, ddd: )
+        end
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineArrayBraceLayout` with `Layout/MultilineHashBraceLayout` with `EnforcedStyle: same_line`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineArrayBraceLayout:
