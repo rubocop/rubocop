@@ -204,15 +204,13 @@ module RuboCop
         def autocorrect(corrector, node, condition, replacement, guard)
           corrector.replace(node.loc.keyword.join(condition.source_range), replacement)
 
-          if_branch = node.if_branch
-          else_branch = node.else_branch
-
           corrector.replace(node.loc.begin, "\n") if node.then?
 
-          if (if_heredoc = find_heredoc_argument(if_branch))
-            autocorrect_heredoc_argument(corrector, node, if_heredoc, else_branch, guard)
-          elsif (else_heredoc = find_heredoc_argument(else_branch))
-            autocorrect_heredoc_argument(corrector, node, else_heredoc, if_branch, guard)
+          branches = [node.if_branch, node.else_branch]
+          guard_branch, leave_branch = guard == :else ? branches.reverse : branches
+
+          if (heredoc = find_heredoc_argument(guard_branch))
+            autocorrect_heredoc_argument(corrector, node, heredoc, leave_branch, guard)
           else
             corrector.remove(node.loc.end)
             return unless node.else?

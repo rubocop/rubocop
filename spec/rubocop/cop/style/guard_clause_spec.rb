@@ -722,6 +722,60 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
+  it 'registers an offense when using heredoc in the branch that is not the guard clause' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise 'oops' if condition`) instead of wrapping the code inside a conditional expression.
+          raise 'oops'
+        else
+          do_something(<<~TEXT)
+            text
+          TEXT
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        raise 'oops' if condition
+      #{trailing_whitespace * 4}
+      #{trailing_whitespace * 2}
+          do_something(<<~TEXT)
+            text
+          TEXT
+      #{trailing_whitespace * 2}
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using heredoc in `then` branch and the guard clause is in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise 'oops' unless condition`) instead of wrapping the code inside a conditional expression.
+          do_something(<<~TEXT)
+            text
+          TEXT
+        else
+          raise 'oops'
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        raise 'oops' unless condition
+          do_something(<<~TEXT)
+            text
+          TEXT
+      #{trailing_whitespace * 2}
+      #{trailing_whitespace * 4}
+      #{trailing_whitespace * 2}
+      end
+    RUBY
+  end
+
   it 'registers an offense when using lvar as an argument of raise in `else` branch' do
     expect_offense(<<~RUBY)
       if condition
