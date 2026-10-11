@@ -1160,6 +1160,34 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           RUBY
         end
       end
+
+      context 'with a heredoc in the guard clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def test
+              if something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              ^^ Use a guard clause (`if something_that_makes_the_guard_clause_too_long_to_fit_on_one_line; raise <<~MESSAGE; end`) instead of wrapping the code inside a conditional expression.
+                raise <<~MESSAGE
+                  oops
+                MESSAGE
+              else
+                work
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def test
+              if something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              raise <<~MESSAGE
+                  oops
+                MESSAGE
+            end
+            work
+            end
+          RUBY
+        end
+      end
     end
   end
 
