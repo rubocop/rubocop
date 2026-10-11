@@ -76,8 +76,8 @@ module RuboCop
       end
 
       def remove_trailing_whitespace(corrector)
-        size = block_begin.begin_pos - arguments.source_range.end_pos - 1
-        corrector.remove_preceding(block_begin, size) if size.positive?
+        whitespace = arguments.source_range.end.join(block_begin.begin)
+        corrector.replace(whitespace, ' ') if whitespace.size > 1
       end
 
       def replace_delimiters(corrector)

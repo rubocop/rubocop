@@ -592,6 +592,24 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'keeps a space before `do` when `Style/Lambda` and `Layout/ExtraSpacing` correct the same lambda' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/Lambda:
+        EnforcedStyle: lambda
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo(-> x  do
+        bar(x)
+      end)
+    RUBY
+    expect(cli.run(%w[--autocorrect-all --only Style/Lambda,Layout/ExtraSpacing])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(lambda do |x|
+        bar(x)
+      end)
+    RUBY
+  end
+
   it 'does not leave empty parentheses when `Style/StabbyLambdaParentheses` wraps the parameter in the same pass' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
