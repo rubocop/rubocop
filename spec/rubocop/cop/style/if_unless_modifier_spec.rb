@@ -1830,6 +1830,58 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
+  context 'when multiple if/unless modifier forms are operands of a logical operator' do
+    context 'when the line is too long' do
+      it 'does not register an offense for `||`' do
+        expect_no_offenses(<<~RUBY)
+          x = (fooooooooooo if condition_onnnnnnnnnnne) || (baaaaaar if condition_twwwwwwwwwwo)
+        RUBY
+      end
+
+      it 'does not register an offense for `&&`' do
+        expect_no_offenses(<<~RUBY)
+          x = (fooooooooooo if condition_onnnnnnnnnnne) && (baaaaaar unless condition_twwwwwwwwwwo)
+        RUBY
+      end
+
+      it 'does not register an offense for chained `||`' do
+        expect_no_offenses(<<~RUBY)
+          x = (foooooooo if condition_onnnnne) || (baaaar if condition_twwwo) || (baz if qux)
+        RUBY
+      end
+    end
+  end
+
+  context 'when multiple if/unless normal forms are operands of a logical operator' do
+    it 'accepts multiline if when sibling if starts on end line' do
+      expect_no_offenses(<<~RUBY)
+        x = (if condition1
+               foo
+             end) || (if condition2
+                        bar
+                      end)
+      RUBY
+    end
+
+    it 'registers an offense and corrects when the operands are on separate lines' do
+      expect_offense(<<~RUBY)
+        x = (if condition1
+             ^^ Favor modifier `if` usage [...]
+               foo
+             end) ||
+            (if condition2
+             ^^ Favor modifier `if` usage [...]
+               bar
+             end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = (foo if condition1) ||
+            (bar if condition2)
+      RUBY
+    end
+  end
+
   context 'when multiple if/unless normal forms are in an array literal' do
     context 'when the normal form fits on single lines' do
       it 'registers an offense and corrects' do

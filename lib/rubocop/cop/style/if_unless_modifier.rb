@@ -100,6 +100,7 @@ module RuboCop
                     pattern_matching_nodes(condition).any?
 
           return unless (msg = message(node))
+          return if modifier_sharing_line_in_logical_operator?(node)
 
           add_offense(node.loc.keyword, message: format(msg, keyword: node.keyword)) do |corrector|
             next if part_of_ignored_node?(node)
@@ -233,9 +234,16 @@ module RuboCop
         end
 
         def collection_from_ancestor(node)
-          return node if node&.type?(:array, :call)
+          return node if node&.type?(:array, :call, :and, :or)
 
           node.parent if node&.type?(:pair)
+        end
+
+        def modifier_sharing_line_in_logical_operator?(node)
+          collection = find_containing_collection(node)
+          return false if !node.modifier_form? || !collection&.operator_keyword?
+
+          another_modifier_if_on_same_line?(node)
         end
 
         def another_modifier_if_on_same_line?(node)
