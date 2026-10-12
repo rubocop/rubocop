@@ -149,8 +149,10 @@ module RuboCop
         # an endless definition, so letting both correct in the same pass would double them.
         # `Style/GuardClause` turns a single `if` body into several statements,
         # which an endless definition cannot hold.
+        # `Style/RaiseArgs` would drop the parentheses of a `raise` that becomes
+        # the body in the same pass, which a method passed as an argument needs.
         def self.autocorrect_incompatible_with
-          [Style::GuardClause, Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses]
+          [Style::GuardClause, Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses, Style::RaiseArgs]
         end
 
         def on_def(node)
