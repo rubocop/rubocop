@@ -6845,6 +6845,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/LineLength` with `SplitStrings: true` and ' \
+     '`Layout/LineContinuationLeadingSpace` with `EnforcedStyle: leading`' do
+    skip 'LineContinuationLeadingSpace does not handle CRLF' if RuboCop::Platform.windows?
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 26
+        SplitStrings: true
+      Layout/LineContinuationLeadingSpace:
+        EnforcedStyle: leading
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      foo = bar || "image #{index + 1}"
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only] << %w[
+      Layout/LineLength
+      Layout/LineContinuationLeadingSpace
+      Layout/LineEndStringConcatenationIndentation
+    ].join(','))
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      foo = bar || "image" \
+                   " #{index + 1}"
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Style/IfUnlessModifier` and `Layout/EndAlignment`, `Layout/IndentationWidth`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/LineLength:

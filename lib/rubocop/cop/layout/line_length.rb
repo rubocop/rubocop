@@ -301,7 +301,28 @@ module RuboCop
           return unless (pos = breakable_string_range(node))
 
           content_begin_pos = node.loc?(:begin) ? node.loc.begin.end_pos : source_range.begin_pos
-          pos.end_pos if pos.end_pos > content_begin_pos
+          if blank_left_part?(node, content_begin_pos, pos)
+            pos = breakable_string_range_at_limit(source_range)
+          end
+          pos.end_pos if pos && pos.end_pos > content_begin_pos
+        end
+
+        def blank_left_part?(node, content_begin_pos, pos)
+          return false unless pos.end_pos > content_begin_pos
+          return false unless starts_after_quote?(node)
+
+          blank_between?(content_begin_pos, pos.end_pos)
+        end
+
+        def starts_after_quote?(node)
+          return true if node.loc?(:begin)
+
+          quote = node.parent&.loc&.begin if node.parent&.dstr_type?
+          quote ? quote.end_pos == node.source_range.begin_pos : false
+        end
+
+        def blank_between?(begin_pos, end_pos)
+          range_between(begin_pos, end_pos).source.strip.empty?
         end
 
         # Locate where to break a string that is too long, ensuring that escape characters
@@ -360,7 +381,9 @@ module RuboCop
         def opens_string?(begin_node)
           quote = begin_node.parent.loc.begin
 
-          quote && quote.end_pos == begin_node.source_range.begin_pos
+          return false unless quote
+
+          blank_between?(quote.end_pos, begin_node.source_range.begin_pos)
         end
 
         def breakable_range_by_line_index
