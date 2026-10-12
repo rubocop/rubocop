@@ -794,6 +794,23 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         bar = obj.do_something(foo:) if condition
       RUBY
     end
+
+    it 'registers an offense and keeps the spacing inside existing parentheses' do
+      expect_offense(<<~RUBY)
+        def do_something(foo)
+          if condition
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            return obj.do_something( bar, foo: )
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def do_something(foo)
+          return obj.do_something( bar, foo: ) if condition
+        end
+      RUBY
+    end
   end
 
   context 'multiline `if` that fits on one line and using dot method call with hash value omission syntax', :ruby31 do

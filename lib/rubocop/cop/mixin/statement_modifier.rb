@@ -98,7 +98,7 @@ module RuboCop
 
       # rubocop:disable-next Metrics/AbcSize
       def if_body_source(if_body)
-        if if_body.call_type? && !if_body.method?(:[]=) && omitted_value_in_last_hash_arg?(if_body)
+        if unparenthesized_call_with_omitted_value?(if_body)
           "#{method_source(if_body)}(#{if_body.arguments.map(&:source).join(', ')})"
         elsif (value = wrapped_value(if_body))
           prefix = if_body.source_range.begin.join(value.source_range.begin).source
@@ -110,7 +110,8 @@ module RuboCop
         end
       end
 
-      def omitted_value_in_last_hash_arg?(if_body)
+      def unparenthesized_call_with_omitted_value?(if_body)
+        return false if !if_body.call_type? || if_body.method?(:[]=) || if_body.parenthesized?
         return false unless (last_argument = if_body.last_argument)
 
         last_argument.hash_type? && last_argument.pairs.last&.value_omission?
