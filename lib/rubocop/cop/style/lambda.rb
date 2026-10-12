@@ -129,10 +129,17 @@ module RuboCop
 
           return unless node.arguments?
 
-          arg_str = "(#{lambda_arg_string(node.arguments)})"
+          arg_str = lambda_arg_string(node.arguments)
+          arg_str = " #{arg_str} " if space_inside_parens?
 
-          corrector.insert_after(node.send_node, arg_str)
+          corrector.insert_after(node.send_node, "(#{arg_str})")
           corrector.remove(arguments_with_whitespace(node))
+        end
+
+        def space_inside_parens?
+          return false unless config.cop_enabled?('Layout/SpaceInsideParens')
+
+          %w[space compact].include?(config.for_cop('Layout/SpaceInsideParens')['EnforcedStyle'])
         end
 
         def arguments_with_whitespace(node)

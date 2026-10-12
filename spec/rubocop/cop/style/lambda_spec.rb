@@ -344,6 +344,40 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
           RUBY
         end
       end
+
+      context 'when `Layout/SpaceInsideParens` is `EnforcedStyle: space`' do
+        let(:other_cops) do
+          { 'Layout/SpaceInsideParens' => { 'Enabled' => true, 'EnforcedStyle' => 'space' } }
+        end
+
+        it 'registers an offense and corrects with spaces inside the parentheses' do
+          expect_offense(<<~RUBY)
+            f = lambda { |x, y| x }
+                ^^^^^^ Use the `-> { ... }` lambda literal syntax for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = ->( x, y ) { x }
+          RUBY
+        end
+      end
+
+      context 'when `Layout/SpaceInsideParens` is `EnforcedStyle: space` but disabled' do
+        let(:other_cops) do
+          { 'Layout/SpaceInsideParens' => { 'Enabled' => false, 'EnforcedStyle' => 'space' } }
+        end
+
+        it 'registers an offense and corrects without spaces inside the parentheses' do
+          expect_offense(<<~RUBY)
+            f = lambda { |x, y| x }
+                ^^^^^^ Use the `-> { ... }` lambda literal syntax for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = ->(x, y) { x }
+          RUBY
+        end
+      end
     end
 
     context 'with a multiline lambda method call' do
