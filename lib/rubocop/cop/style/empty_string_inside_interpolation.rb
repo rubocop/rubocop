@@ -45,6 +45,8 @@ module RuboCop
         MSG_TRAILING_CONDITIONAL = 'Do not use trailing conditionals in string interpolation.'
         MSG_TERNARY = 'Do not return empty strings in string interpolation.'
 
+        INTERPOLATED_TYPES = %i[dstr dsym regexp xstr].freeze
+
         def on_interpolation(node)
           node.each_child_node(:if) do |child_node|
             if style == :trailing_conditional
@@ -63,26 +65,36 @@ module RuboCop
           return if child_node.modifier_form?
 
           if empty_if_outcome?(child_node)
-            ternary_style_autocorrect(child_node, child_node.else_branch.source, 'unless')
+            ternary_style_autocorrect(child_node, child_node.else_branch, 'unless')
           end
 
           return unless empty_else_outcome?(child_node)
 
-          ternary_style_autocorrect(child_node, child_node.if_branch.source, 'if')
+          ternary_style_autocorrect(child_node, child_node.if_branch, 'if')
         end
 
         def ternary_correction(node, child_node)
           return unless child_node.modifier_form?
 
-          ternary_component = if child_node.unless?
-                                "'' : #{child_node.if_branch.source}"
-                              else
-                                "#{child_node.if_branch.source} : ''"
-                              end
-
           add_offense(node, message: MSG_TRAILING_CONDITIONAL) do |corrector|
-            corrector.replace(node, "\#{#{child_node.condition.source} ? #{ternary_component}}")
+            next if trailing_conditional_in_condition?(child_node)
+
+            autocorrect_to_ternary(corrector, child_node)
           end
+        end
+
+        def trailing_conditional_in_condition?(if_node)
+          if_node.condition.each_descendant(:if).any? do |node|
+            node.modifier_form? && node.parent.parent&.type?(*INTERPOLATED_TYPES)
+          end
+        end
+
+        def autocorrect_to_ternary(corrector, if_node)
+          branch = if_node.if_branch
+          prefix, suffix = if_node.unless? ? ["'' : ", ''] : ['', " : ''"]
+
+          corrector.insert_before(branch, "#{if_node.condition.source} ? #{prefix}")
+          corrector.replace(branch.source_range.end.join(if_node.source_range.end), suffix)
         end
 
         def empty_if_outcome?(node)
@@ -99,9 +111,23 @@ module RuboCop
           branch.nil_type? || (branch.str_type? && branch.value.empty?)
         end
 
-        def ternary_style_autocorrect(node, outcome, condition)
+        def ternary_style_autocorrect(node, outcome, keyword)
           add_offense(node, message: MSG_TERNARY) do |corrector|
-            corrector.replace(node, "#{outcome} #{condition} #{node.condition.source}")
+            next if empty_string_conditional_in_condition?(node)
+
+            head = node.source_range.begin.join(outcome.source_range.begin)
+            tail = outcome.source_range.end.join(node.source_range.end)
+
+            corrector.remove(head)
+            corrector.replace(tail, " #{keyword} #{node.condition.source}")
+          end
+        end
+
+        def empty_string_conditional_in_condition?(if_node)
+          if_node.condition.each_descendant(:if).any? do |node|
+            next false if node.modifier_form? || !node.parent.parent&.type?(*INTERPOLATED_TYPES)
+
+            empty_if_outcome?(node) || empty_else_outcome?(node)
           end
         end
       end
