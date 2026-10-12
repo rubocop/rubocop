@@ -442,6 +442,39 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
+    it 'does not register an offense for a hash as the right operand of a binary operator' do
+      expect_no_offenses(<<~RUBY)
+        foo << {
+                 a: 1
+               } <<
+          {
+            b: 2,
+            c: 3
+          }
+      RUBY
+    end
+
+    it 'registers an offense for a hash as the argument of an operator method called with a dot' do
+      expect_offense(<<~RUBY)
+        foo.<<(
+                {
+                ^ Use one level of indentation for arguments following the first line of a multi-line method call.
+                  b: 2,
+                  c: 3
+                }
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.<<(
+          {
+            b: 2,
+            c: 3
+          }
+        )
+      RUBY
+    end
+
     context 'when `Layout/HashAlignment` is set to `EnforcedColonStyle: separator`' do
       let(:config) do
         RuboCop::Config.new('Layout/ArgumentAlignment' => cop_config,

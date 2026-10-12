@@ -53,7 +53,7 @@ module RuboCop
 
         def on_send(node)
           return if !multiple_arguments?(node) || (node.call_type? && node.method?(:[]=)) ||
-                    autocorrect_incompatible_with_other_cops?
+                    binary_operator_call?(node) || autocorrect_incompatible_with_other_cops?
 
           items = flattened_arguments(node)
 
@@ -63,6 +63,10 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def binary_operator_call?(node)
+          node.binary_operation? && !node.method?(:[]) && !node.loc.dot
+        end
 
         def autocorrect_incompatible_with_other_cops?
           with_first_argument_style? && enforce_hash_argument_with_separator?
