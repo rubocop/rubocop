@@ -102,7 +102,7 @@ module RuboCop
         def autocorrect(corrector, node)
           if @send_node.block_node
             correct_selector_only(corrector, node)
-            correct_block(corrector, @send_node.block_node)
+            correct_block(corrector, @send_node.block_node, node.first_line)
           else
             AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
           end
@@ -114,10 +114,21 @@ module RuboCop
           AlignmentCorrector.correct(corrector, processed_source, selector_range, @column_delta)
         end
 
-        def correct_block(corrector, block_node)
-          AlignmentCorrector.correct(corrector, processed_source, block_node.body, @column_delta)
-          end_range = range_by_whole_lines(block_node.loc.end, include_final_newline: false)
-          AlignmentCorrector.correct(corrector, processed_source, end_range, @column_delta)
+        def correct_block(corrector, block_node, selector_line)
+          lines_to_shift = block_lines(block_node) - [selector_line]
+
+          lines_to_shift.each do |line|
+            line_range = processed_source.buffer.line_range(line)
+
+            AlignmentCorrector.correct(corrector, processed_source, line_range, @column_delta)
+          end
+        end
+
+        def block_lines(block_node)
+          body = block_node.body
+          lines = body ? (body.first_line..body.last_line).to_a : []
+
+          (lines << block_node.loc.end.line).uniq
         end
 
         def relevant_node?(send_node)

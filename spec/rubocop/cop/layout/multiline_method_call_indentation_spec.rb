@@ -1562,7 +1562,6 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         end
       RUBY
 
-      # NOTE: There's a minor issue where the space after |entry| gets removed
       expect_correction(<<~RUBY)
         def targets_for(path)
           fullpath = fullpath_for(path)
@@ -1570,7 +1569,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
             Dir.glob(fullpath),
           ].flatten
            .uniq
-           .delete_if { |entry|dot_directory?(entry) }
+           .delete_if { |entry| dot_directory?(entry) }
         end
       RUBY
     end
@@ -2166,6 +2165,34 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       expect_no_offenses(<<~RUBY)
         (0..foo).bar
           .qux { quux }
+      RUBY
+    end
+
+    it 'registers an offense and corrects a method call with a single-line `do`...`end` block' do
+      expect_offense(<<~RUBY)
+        foo.bar do |x| x end
+        .baz do |x| do_something(x) end
+        ^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY, loop: false)
+        foo.bar do |x| x end
+          .baz do |x| do_something(x) end
+      RUBY
+    end
+
+    it 'registers an offense and corrects a method call with a block whose body ends on the line of its closing brace' do
+      expect_offense(<<~RUBY)
+        foo.bar
+        .baz { |x|
+        ^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+          do_something(x) }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar
+          .baz { |x|
+            do_something(x) }
       RUBY
     end
 

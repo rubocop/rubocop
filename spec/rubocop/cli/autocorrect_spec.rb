@@ -162,6 +162,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineMethodCallIndentation` and `Layout/ExtraSpacing` offenses with a single-line `do`...`end` block' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/MultilineMethodCallIndentation:
+        EnforcedStyle: indented
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.bar do |x| x end
+      .baz do  do_something end
+    RUBY
+
+    expect(
+      cli.run(
+        ['-a', '--only', 'Layout/ExtraSpacing,Layout/MultilineMethodCallIndentation']
+      )
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo.bar do |x| x end
+        .baz do do_something end
+    RUBY
+  end
+
   it 'does not correct SpaceAroundOperators in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
       Style/HashSyntax:
@@ -251,11 +274,12 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file(source_file, <<~RUBY)
       def foo
         @foo_foo_foo_foo_foo_foo_foo ||= bar_bar_bar_bar.
-          where{{baz_bar[:qux_qux] => 'p', quux_quux_q(self.corge[:grault], garply[:waldo]) => /garply/i}}.
-          select{
-            [
-            ]
-          }
+                                         where{{
+      baz_bar[:qux_qux] => 'p', quux_quux_q(self.corge[:grault], garply[:waldo]) => /garply/i}}.
+                                         select{
+                                           [
+                                           ]
+                                         }
       end
     RUBY
 
