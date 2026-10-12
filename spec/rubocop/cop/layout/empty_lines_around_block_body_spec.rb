@@ -212,4 +212,57 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       RUBY
     end
   end
+
+  context 'when `EnforcedStyle` is `empty_lines` and the block arguments span multiple lines' do
+    let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
+
+    it 'registers an offense and inserts the blank line after the block arguments' do
+      expect_offense(<<~RUBY)
+        foo do |bar,
+                baz|
+          do_something
+        ^ Empty line missing at block body beginning.
+        end
+        ^ Empty line missing at block body end.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo do |bar,
+                baz|
+
+          do_something
+
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the block arguments and the body are on the line after `{`' do
+      expect_no_offenses(<<~RUBY)
+        foo {
+          |bar| do_something }
+      RUBY
+    end
+  end
+
+  context 'when `EnforcedStyle` is `no_empty_lines` and the block arguments span multiple lines' do
+    let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
+
+    it 'registers an offense and removes the blank line after the block arguments' do
+      expect_offense(<<~RUBY)
+        foo do |bar,
+                baz|
+
+        ^{} Extra empty line detected at block body beginning.
+          do_something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo do |bar,
+                baz|
+          do_something
+        end
+      RUBY
+    end
+  end
 end
