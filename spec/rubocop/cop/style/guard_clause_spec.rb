@@ -722,6 +722,60 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
+  it 'registers an offense when using heredoc in the branch that is not the guard clause' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise 'oops' if condition`) instead of wrapping the code inside a conditional expression.
+          raise 'oops'
+        else
+          do_something(<<~TEXT)
+            text
+          TEXT
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        raise 'oops' if condition
+      #{trailing_whitespace * 4}
+      #{trailing_whitespace * 2}
+          do_something(<<~TEXT)
+            text
+          TEXT
+      #{trailing_whitespace * 2}
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using heredoc in `then` branch and the guard clause is in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise 'oops' unless condition`) instead of wrapping the code inside a conditional expression.
+          do_something(<<~TEXT)
+            text
+          TEXT
+        else
+          raise 'oops'
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        raise 'oops' unless condition
+          do_something(<<~TEXT)
+            text
+          TEXT
+      #{trailing_whitespace * 2}
+      #{trailing_whitespace * 4}
+      #{trailing_whitespace * 2}
+      end
+    RUBY
+  end
+
   it 'registers an offense when using lvar as an argument of raise in `else` branch' do
     expect_offense(<<~RUBY)
       if condition
@@ -1103,6 +1157,34 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
 
              #{trailing_whitespace}
 
+          RUBY
+        end
+      end
+
+      context 'with a heredoc in the guard clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def test
+              if something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              ^^ Use a guard clause (`if something_that_makes_the_guard_clause_too_long_to_fit_on_one_line; raise <<~MESSAGE; end`) instead of wrapping the code inside a conditional expression.
+                raise <<~MESSAGE
+                  oops
+                MESSAGE
+              else
+                work
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def test
+              if something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              raise <<~MESSAGE
+                  oops
+                MESSAGE
+            end
+            work
+            end
           RUBY
         end
       end

@@ -186,40 +186,37 @@ module RuboCop
             return if trivial?(node)
 
             example = "#{conditional_keyword} #{condition.source}; #{scope_exiting_keyword}; end"
-            replacement = <<~RUBY.chomp
-              #{conditional_keyword} #{condition.source}
-                #{scope_exiting_keyword}
-              end
-            RUBY
+            replacement = "#{conditional_keyword} #{condition.source}\n  #{scope_exiting_keyword}"
           end
 
           add_offense(node.loc.keyword, message: format(MSG, example: example)) do |corrector|
             next if node.else? && guard.nil?
 
-            autocorrect(corrector, node, condition, replacement || example, guard)
+            autocorrect(corrector, node, example, replacement, guard)
           end
         end
 
         # rubocop:disable-next Metrics/AbcSize
-        def autocorrect(corrector, node, condition, replacement, guard)
-          corrector.replace(node.loc.keyword.join(condition.source_range), replacement)
-
-          if_branch = node.if_branch
-          else_branch = node.else_branch
-
+        def autocorrect(corrector, node, example, multiline_replacement, guard)
+          range = node.loc.keyword.join(node.condition.source_range)
+          corrector.replace(range, multiline_replacement || example)
           corrector.replace(node.loc.begin, "\n") if node.then?
 
-          if (if_heredoc = find_heredoc_argument(if_branch))
-            autocorrect_heredoc_argument(corrector, node, if_heredoc, else_branch, guard)
-          elsif (else_heredoc = find_heredoc_argument(else_branch))
-            autocorrect_heredoc_argument(corrector, node, else_heredoc, if_branch, guard)
-          else
-            corrector.remove(node.loc.end)
-            return unless node.else?
+          branches = [node.if_branch, node.else_branch]
+          guard_branch, leave_branch = guard == :else ? branches.reverse : branches
 
-            corrector.remove(node.loc.else)
-            corrector.remove(range_of_branch_to_remove(node, guard))
+          heredoc = find_heredoc_argument(guard_branch)
+          close_multiline_guard_clause(corrector, range, heredoc, guard) if multiline_replacement
+
+          if heredoc
+            return autocorrect_heredoc_argument(corrector, node, heredoc, leave_branch, guard)
           end
+
+          corrector.remove(node.loc.end)
+          return unless node.else?
+
+          corrector.remove(node.loc.else)
+          corrector.remove(range_of_branch_to_remove(node, guard))
         end
 
         def heredoc?(argument)
@@ -239,6 +236,10 @@ module RuboCop
           end
 
           find_heredoc_argument(node.receiver)
+        end
+
+        def close_multiline_guard_clause(corrector, range, heredoc, guard)
+          corrector.insert_after(guard && heredoc ? heredoc.loc.heredoc_end : range, "\nend")
         end
 
         def autocorrect_heredoc_argument(corrector, node, heredoc_node, leave_branch, guard)
