@@ -56,15 +56,21 @@ module RuboCop
           add_offense(rescue_node) do |corrector|
             # The heredoc body would be left behind when the rescue body is moved.
             next if heredoc_end(node)
+            next if inside_corrected_rescue_body?(rescue_node)
 
             parenthesized = parenthesized?(rescue_node)
 
             correct_rescue_block(corrector, rescue_node, parenthesized)
             ParenthesesCorrector.correct(corrector, rescue_node.parent) if parenthesized
+            ignore_node(rescue_node)
           end
         end
 
         private
+
+        def inside_corrected_rescue_body?(node)
+          node.each_ancestor(:resbody).any? { |resbody| ignored_node?(resbody.parent) }
+        end
 
         def parenthesized?(node)
           node.parent && parentheses?(node.parent)

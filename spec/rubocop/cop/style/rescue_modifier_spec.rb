@@ -377,6 +377,22 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
         end
       RUBY
     end
+
+    it 'corrects a rescue modifier nested in the rescue body of another one' do
+      expect_offense(<<~RUBY)
+        foo rescue (bar rescue baz)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+                    ^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+      RUBY
+
+      expect_correction(<<~RUBY, loop: false)
+        begin
+          foo
+        rescue
+          (bar rescue baz)
+        end
+      RUBY
+    end
   end
 
   describe 'excluded file', :config do
