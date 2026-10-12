@@ -64,6 +64,10 @@ module RuboCop
           undef unless until when while yield
         ].freeze
 
+        def self.autocorrect_incompatible_with
+          [Layout::MultilineMethodArgumentLineBreaks]
+        end
+
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return if allow_send? && !node.method?(:public_send)

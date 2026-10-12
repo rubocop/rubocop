@@ -4921,6 +4921,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/SendWithLiteralMethodName` and `Layout/MultilineMethodArgumentLineBreaks` for a call without parentheses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/SendWithLiteralMethodName:
+        AllowSend: false
+      Layout/MultilineMethodArgumentLineBreaks:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      obj.send :do_something, foo,
+        bar
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Style/SendWithLiteralMethodName,Layout/MultilineMethodArgumentLineBreaks']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      obj.do_something foo,
+        bar
+    RUBY
+  end
+
   it 'avoids adding extra spaces when both `Style/Semicolon` and `Style/SingleLineMethods`' \
      'both apply' do
     source_file = Pathname('example.rb')
