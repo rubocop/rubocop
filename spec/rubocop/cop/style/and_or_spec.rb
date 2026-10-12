@@ -409,6 +409,32 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'with obj&.method arg on right' do
+      it 'autocorrects "and" with && and adds parens' do
+        expect_offense(<<~RUBY)
+          x and obj&.method arg
+            ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x && obj&.method(arg)
+        RUBY
+      end
+    end
+
+    context 'with !obj&.method arg on right' do
+      it 'autocorrects "and" with && and adds parens' do
+        expect_offense(<<~RUBY)
+          x and !obj&.method arg
+            ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x && !obj&.method(arg)
+        RUBY
+      end
+    end
+
     context 'with !obj.method arg on left' do
       it 'autocorrects "and" with && and adds parens' do
         expect_offense(<<~RUBY)
