@@ -675,19 +675,10 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     context 'Ruby 2.7', :ruby27 do
-      it 'registers an offense for each without an item and uses _ as the item' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for each with a numbered parameter' do
+        expect_no_offenses(<<~RUBY)
           def func
             [1, 2, 3].each do
-            ^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
-              puts _1
-            end
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          def func
-            for _ in [1, 2, 3] do
               puts _1
             end
           end
@@ -696,19 +687,10 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     context 'Ruby 3.4', :ruby34 do
-      it 'registers an offense for each without an item and uses _ as the item' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for each with an `it` parameter' do
+        expect_no_offenses(<<~RUBY)
           def func
             [1, 2, 3].each do
-            ^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
-              puts it
-            end
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          def func
-            for _ in [1, 2, 3] do
               puts it
             end
           end
