@@ -152,7 +152,11 @@ module RuboCop
         end
 
         def requires_parens?(parent)
-          parent.operator_keyword? || (parent.if_type? && parent.ternary?)
+          return true if parent.operator_keyword?
+          return true if parent.type?(:call, :super, :yield, :array, :pair)
+          return true if parent.any_def_type? && parent.endless?
+
+          parent.if_type? && parent.ternary?
         end
       end
     end

@@ -219,6 +219,123 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           RUBY
         end
       end
+
+      context 'when used as a method argument' do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            foo bar, raise(Ex.new('error'))
+                     ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo bar, raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when used as a method receiver' do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            raise(Ex.new('error')).foo
+            ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            raise(Ex, 'error').foo
+          RUBY
+        end
+      end
+
+      context 'when used as an array element' do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            [raise(Ex.new('error'))]
+             ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [raise(Ex, 'error')]
+          RUBY
+        end
+      end
+
+      context 'when used as a hash value' do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            { foo: raise(Ex.new('error')) }
+                   ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            { foo: raise(Ex, 'error') }
+          RUBY
+        end
+      end
+
+      context 'when used as the body of an endless method passed as an argument', :ruby30 do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            private def foo = raise(Ex.new('error'))
+                              ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            private def foo = raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when used as the body of an endless singleton method', :ruby30 do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            private def self.foo = raise(Ex.new('error'))
+                                   ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            private def self.foo = raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when used as an argument of `super`' do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            super bar, raise(Ex.new('error'))
+                       ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            super bar, raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when used as an argument of `yield`' do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            yield bar, raise(Ex.new('error'))
+                       ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            yield bar, raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when used as the body of an endless method', :ruby30 do
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY)
+            def foo = raise(Ex.new('error'))
+                      ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo = raise(Ex, 'error')
+          RUBY
+        end
+      end
     end
 
     context 'with opposite + correct' do
