@@ -29,13 +29,28 @@ module RuboCop
                     format(
                       CORRECTION_WITH_ARGUMENTS,
                       collection: collection_node.source,
-                      variables: argument_node.children.map(&:source).join(', ')
+                      variables: loop_variables
                     )
                   else
                     format(CORRECTION_WITHOUT_ARGUMENTS, enumerable: collection_node.source)
                   end
 
         padding_needed?(offending_range.end_pos) ? "#{keyword} " : keyword
+      end
+
+      def loop_variables
+        variables = argument_node.children.map { |argument| loop_variable(argument) }.join(', ')
+
+        argument_node.source.match?(/,\s*\|\z/) ? "#{variables}," : variables
+      end
+
+      def loop_variable(argument)
+        return argument.source unless argument.mlhs_type?
+
+        variables = argument.children.map { |child| loop_variable(child) }.join(', ')
+        lone_target = argument.children.one? && !argument.children.first.restarg_type?
+
+        lone_target ? "(#{variables},)" : "(#{variables})"
       end
 
       def closing_keyword

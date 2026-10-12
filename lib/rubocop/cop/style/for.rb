@@ -80,7 +80,7 @@ module RuboCop
 
           if style == :for
             return unless node.receiver
-            return if node.type?(:numblock, :itblock)
+            return unless convertible_to_for?(node)
             return if rescue_or_ensure_body?(node) || do_end_block_in_collection?(node)
 
             add_offense(node, message: PREFER_FOR) do |corrector|
@@ -124,6 +124,16 @@ module RuboCop
 
         def suspect_enumerable?(node)
           node.multiline? && node.method?(:each) && !node.send_node.arguments?
+        end
+
+        def convertible_to_for?(node)
+          return false if node.type?(:numblock, :itblock)
+          return true unless node.arguments?
+
+          arguments = node.arguments
+          return false if arguments.children.one? && arguments.children.first.restarg_type?
+
+          arguments.each_descendant.all? { |arg| arg.type?(:arg, :restarg, :mlhs) }
         end
 
         def rescue_or_ensure_body?(node)
