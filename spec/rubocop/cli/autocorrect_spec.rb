@@ -2289,6 +2289,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: for` of `Style/For` with `EnforcedStyle: always` of `Style/ItBlockParameter`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/For:
+        EnforcedStyle: for
+      Style/ItBlockParameter:
+        EnforcedStyle: always
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.each do |x|
+        bar(x)
+      end
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only', 'Style/For,Style/ItBlockParameter'])
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      for x in foo do
+        bar(x)
+      end
+    RUBY
+  end
+
   it 'corrects `Style/RedundantBegin` with `Style/MultilineMemoization`' do
     source = <<~RUBY
       @memo ||= begin
