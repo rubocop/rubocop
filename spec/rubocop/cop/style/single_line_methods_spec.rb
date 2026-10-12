@@ -368,6 +368,14 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to multiline method definition when the body negates a command call' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; !obj.do_something bar; end')
+          def foo;#{trailing_whitespace}
+            !obj.do_something bar;#{trailing_whitespace}
+          end
+        RUBY
+      end
+
       it 'does not to an endless class method definition when using `return`' do
         expect_correction(<<~RUBY.strip, source: 'def foo(argument) return bar(argument); end')
           def foo(argument)#{trailing_whitespace}
