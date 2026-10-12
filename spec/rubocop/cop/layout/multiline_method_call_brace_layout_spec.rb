@@ -117,6 +117,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
           ham)) # comment
       RUBY
     end
+
+    context 'with EnforcedStyle: same_line' do
+      let(:enforced_style) { 'same_line' }
+
+      it 'registers an offense and corrects when the last argument is a hash whose last element has a comment' do
+        expect_offense(<<~RUBY)
+          foo(
+            {
+              bar: 1 # comment
+            }
+          )
+          ^ Closing method call brace must be on the same line as the last argument.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(
+            {
+              bar: 1 # comment
+            })
+        RUBY
+      end
+    end
   end
 
   context 'with safe navigation' do

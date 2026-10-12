@@ -65,4 +65,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
       RUBY
     end
   end
+
+  context 'when EnforcedStyle is same_line' do
+    let(:cop_config) { { 'EnforcedStyle' => 'same_line' } }
+
+    it 'registers an offense and corrects a nested array whose closing bracket follows a comment line' do
+      expect_offense(<<~RUBY)
+        foo = [
+          [
+            1,
+            # comment
+          ]
+          ^ The closing array brace must be on the same line as the last array element.
+        ]
+        ^ The closing array brace must be on the same line as the last array element.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = [
+          [
+            1,]]
+            # comment
+      RUBY
+    end
+  end
 end

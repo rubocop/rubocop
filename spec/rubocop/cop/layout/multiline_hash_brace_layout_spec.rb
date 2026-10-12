@@ -55,4 +55,26 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
       'Closing hash brace must be on the same line as the last hash element.'
     end
   end
+
+  context 'when EnforcedStyle is same_line' do
+    let(:cop_config) { { 'EnforcedStyle' => 'same_line' } }
+
+    it 'registers an offense and corrects a nested hash whose last element has a comment' do
+      expect_offense(<<~RUBY)
+        foo = {
+          bar: {
+            baz: 1 # comment
+          }
+          ^ Closing hash brace must be on the same line as the last hash element.
+        }
+        ^ Closing hash brace must be on the same line as the last hash element.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = {
+          bar: {
+            baz: 1}} # comment
+      RUBY
+    end
+  end
 end
