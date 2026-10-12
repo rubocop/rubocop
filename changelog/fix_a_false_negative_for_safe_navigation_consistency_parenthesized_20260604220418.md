@@ -1,0 +1,1 @@
+* [#15232](https://github.com/rubocop/rubocop/pull/15232): Fix a false negative for `Lint/SafeNavigationConsistency` when a method call is wrapped in parentheses (e.g. `foo&.bar || (foo.baz)`). ([@bbatsov][])
