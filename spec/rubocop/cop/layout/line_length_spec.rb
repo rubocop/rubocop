@@ -1182,6 +1182,44 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             end
           end
 
+          context 'when the limit falls inside a run of spaces' do
+            it 'breaks the string at the last space followed by a word' do
+              expect_offense(<<~RUBY)
+                'aaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbb          ccc'
+                                                        ^^^^^^^^ Line is too long. [48/40]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                'aaaaaaaaaa ' \\
+                'bbbbbbbbbbbbbbbbbbbbbb          ccc'
+              RUBY
+            end
+
+            it 'does not split off trailing spaces' do
+              expect_offense(<<~RUBY)
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa        '
+                                                        ^^^^^^ Line is too long. [46/40]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \\
+                'a        '
+              RUBY
+            end
+
+            it 'moves the cut back before the last non-space character when the limit falls inside a run of spaces' do
+              expect_offense(<<~RUBY)
+                x = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa      bbbbbbbbbbbb'
+                                                        ^^^^^^^^^^^^^ Line is too long. [53/40]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                x = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaa' \\
+                'a      bbbbbbbbbbbb'
+              RUBY
+            end
+          end
+
           context 'when the limit falls right after the opening quote' do
             it 'does not split off an empty string' do
               expect_offense(<<~RUBY)

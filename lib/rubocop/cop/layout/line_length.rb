@@ -304,7 +304,11 @@ module RuboCop
           if blank_left_part?(node, content_begin_pos, pos)
             pos = breakable_string_range_at_limit(source_range)
           end
-          pos.end_pos if pos && pos.end_pos > content_begin_pos
+          pos.end_pos if pos && leaves_two_parts?(node, content_begin_pos, pos)
+        end
+
+        def leaves_two_parts?(node, content_begin_pos, pos)
+          pos.end_pos > content_begin_pos && !blank_rest?(node, pos.end_pos)
         end
 
         def blank_left_part?(node, content_begin_pos, pos)
@@ -346,9 +350,15 @@ module RuboCop
 
         def breakable_space_position(node, substr)
           limit = string_content_length(node) - 1
-          space_pos = substr.rindex(/\s/)
-          space_pos = substr[0, limit].rindex(/\s/) if space_pos && space_pos + 1 > limit
+          space_pos = space_before_word(node, substr.length - 1)
+          space_pos = space_before_word(node, limit - 1) if space_pos && space_pos + 1 > limit
           space_pos
+        end
+
+        def space_before_word(node, max_pos)
+          return if max_pos.negative?
+
+          node.source.rindex(/\s(?=\S)/, max_pos)
         end
 
         def escape_sequence_start(text)
@@ -360,8 +370,23 @@ module RuboCop
           return if adjustment.abs > source_range.size
 
           cut = source_range.adjust(end_pos: adjustment)
+          cut = cut.resize(size_before_whitespace_run(source_range.source, cut.size))
           escape_pos = escape_sequence_start(cut.source)
+
           escape_pos ? source_range.resize(escape_pos) : cut
+        end
+
+        def size_before_whitespace_run(text, size)
+          return size if size.zero?
+          return size unless text[size]&.match?(/\s/)
+
+          text.rindex(/\S/, size - 1) || size
+        end
+
+        def blank_rest?(node, break_pos)
+          offset = break_pos - node.source_range.begin_pos
+
+          node.source[offset...string_content_length(node)].strip.empty?
         end
 
         def string_content_length(node)

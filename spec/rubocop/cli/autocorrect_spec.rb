@@ -6684,6 +6684,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/LineLength` and `Layout/LineContinuationLeadingSpace` when the limit falls inside a run of spaces' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 40
+        SplitStrings: true
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      'aaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbb          '
+    RUBY
+
+    status = cli.run(
+      %w[
+        --autocorrect-all
+        --only Layout/LineLength,Layout/LineContinuationLeadingSpace
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      'aaaaaaaaaa ' \\
+      'bbbbbbbbbbbbbbbbbbbbbb          '
+    RUBY
+  end
+
   it 'corrects `Style/RedundantRegexpEscape` with `Style/RegexpLiteral` changing the delimiters' do
     create_file('example.rb', <<~'RUBY')
       RE = /a([^\}]*)<\/b/
