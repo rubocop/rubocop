@@ -378,6 +378,42 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
           RUBY
         end
       end
+
+      context 'when `Layout/SpaceInLambdaLiteral` is `EnforcedStyle: require_space`' do
+        let(:other_cops) do
+          { 'Layout/SpaceInLambdaLiteral' => { 'Enabled' => true,
+                                               'EnforcedStyle' => 'require_space' } }
+        end
+
+        it 'registers an offense and corrects with a space before the parentheses' do
+          expect_offense(<<~RUBY)
+            f = lambda { |x, y| x }
+                ^^^^^^ Use the `-> { ... }` lambda literal syntax for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = -> (x, y) { x }
+          RUBY
+        end
+      end
+
+      context 'when `Layout/SpaceInLambdaLiteral` is `EnforcedStyle: require_space` but disabled' do
+        let(:other_cops) do
+          { 'Layout/SpaceInLambdaLiteral' => { 'Enabled' => false,
+                                               'EnforcedStyle' => 'require_space' } }
+        end
+
+        it 'registers an offense and corrects without a space before the parentheses' do
+          expect_offense(<<~RUBY)
+            f = lambda { |x, y| x }
+                ^^^^^^ Use the `-> { ... }` lambda literal syntax for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = ->(x, y) { x }
+          RUBY
+        end
+      end
     end
 
     context 'with a multiline lambda method call' do

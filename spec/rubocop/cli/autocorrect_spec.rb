@@ -710,6 +710,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Style/Lambda`, `Layout/RedundantLineBreak`, and `Layout/SpaceInLambdaLiteral` with `EnforcedStyle: require_space`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 40
+      Layout/RedundantLineBreak:
+        InspectBlocks: true
+      Layout/SpaceInLambdaLiteral:
+        EnforcedStyle: require_space
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foobar =
+        lambda { |a, b| do_something(a, b) }
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all', '--only',
+        'Layout/ExtraSpacing,Layout/LineLength,Layout/MultilineAssignmentLayout,' \
+        'Layout/RedundantLineBreak,Layout/SpaceInLambdaLiteral,Style/Lambda'
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foobar =
+        -> (a, b) { do_something(a, b) }
+    RUBY
+  end
+
   it 'does not leave empty parentheses when `Style/StabbyLambdaParentheses` wraps the parameter in the same pass' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
