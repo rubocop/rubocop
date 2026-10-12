@@ -156,14 +156,20 @@ module RuboCop
           if first_pair
             return if same_line?(first_pair, left_brace)
 
-            if separator_style?(first_pair)
-              check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
-            else
-              check_first(first_pair, left_brace, left_parenthesis, 0)
-            end
+            check_first_pair(hash_node, first_pair, left_brace, left_parenthesis)
           end
 
           check_right_brace(hash_node.loc.end, first_pair, left_brace, left_parenthesis)
+        end
+
+        def check_first_pair(hash_node, first_pair, left_brace, left_parenthesis)
+          return unless begins_its_line?(first_pair.source_range)
+
+          if separator_style?(first_pair)
+            check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
+          else
+            check_first(first_pair, left_brace, left_parenthesis, 0)
+          end
         end
 
         def check_right_brace(right_brace, first_pair, left_brace, left_parenthesis)
