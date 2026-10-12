@@ -5568,6 +5568,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/EmptyLineAfterMultilineCondition` and `Layout/EmptyLinesAroundExceptionHandlingKeywords`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def foo
+        do_something if multiline &&
+                        condition
+      rescue
+        handle_error
+      end
+    RUBY
+
+    status = cli.run(
+      %w[
+        --autocorrect-all
+        --only
+        Layout/EmptyLineAfterMultilineCondition,Layout/EmptyLinesAroundExceptionHandlingKeywords
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      def foo
+        do_something if multiline &&
+                        condition
+      rescue
+        handle_error
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/SpaceInsideBlockBraces` with `EnforcedStyle: no_space` and `Layout/SpaceBeforeComment`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/SpaceInsideBlockBraces:

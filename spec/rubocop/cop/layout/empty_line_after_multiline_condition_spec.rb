@@ -72,6 +72,39 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
     RUBY
   end
 
+  it 'does not register an offense when modifier `if` with multiline condition is followed by `rescue`' do
+    expect_no_offenses(<<~RUBY)
+      def m
+        do_something if multiline &&
+                        condition
+      rescue
+        handle_error
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when modifier `while` with multiline condition is followed by `rescue`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something while multiline &&
+                           condition
+      rescue
+        handle_error
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when modifier `if` with multiline condition is followed by `ensure`' do
+    expect_no_offenses(<<~RUBY)
+      def m
+        do_something if multiline &&
+                        condition
+      ensure
+        do_something_else
+      end
+    RUBY
+  end
+
   it 'does not register an offense when `if` at the top level' do
     expect_no_offenses(<<~RUBY)
       do_something if condition
