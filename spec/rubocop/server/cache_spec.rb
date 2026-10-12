@@ -178,6 +178,21 @@ RSpec.describe RuboCop::Server::Cache do
 
         it { expect(restart_key).to eq(hexdigest) }
       end
+
+      context 'when args_config_file_path does not exist' do
+        let(:args_config_file_path) { 'missing.yml' }
+        let(:contents) { RuboCop::Version::STRING }
+
+        it { expect(restart_key).to eq(hexdigest) }
+      end
+
+      context 'when .rubocop.yml is empty' do
+        let(:contents) { RuboCop::Version::STRING + File.read('.rubocop.yml') }
+
+        before { create_empty_file('.rubocop.yml') }
+
+        it { expect(restart_key).to eq(hexdigest) }
+      end
     end
 
     describe '.pid_running?', :isolated_environment do
