@@ -75,7 +75,10 @@ module RuboCop
           return unless def_nodes(node).all? { |def_node| no_code_after?(def_node.source_range) }
 
           add_offense(node, message: MSG_SCLASS) do |corrector|
+            next if inside_corrected_sclass?(node)
+
             autocorrect_sclass(node, corrector)
+            ignore_node(node)
           end
         end
 
@@ -118,6 +121,10 @@ module RuboCop
           trailing = trailing.sub(/\A;+\s*/, '')
 
           trailing.empty? || trailing.start_with?('#')
+        end
+
+        def inside_corrected_sclass?(node)
+          node.each_ancestor(:sclass).any? { |ancestor| ignored_node?(ancestor) }
         end
 
         def autocorrect_sclass(node, corrector)
