@@ -1478,6 +1478,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/AccessModifierDeclarations` with `EnforcedStyle: inline` and `Style/EndlessMethod`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/AccessModifierDeclarations:
+        EnforcedStyle: inline
+      Style/EndlessMethod:
+        EnforcedStyle: require_always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      module M
+        module_function
+
+        def debug(message)
+          log :debug, message
+        end
+      end
+    RUBY
+    expect(
+      cli.run(['-A', '--only', 'Style/AccessModifierDeclarations,Style/EndlessMethod'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      module M
+        module_function def debug(message)
+          log :debug, message
+        end
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineHashBraceLayout` with `EnforcedStyle: same_line` and `Style/RedundantDoubleSplatHashBraces`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineHashBraceLayout:

@@ -169,6 +169,10 @@ module RuboCop
             (send nil? :alias_method _ _))
         PATTERN
 
+        def self.autocorrect_incompatible_with
+          [Style::EndlessMethod, Style::SingleLineMethods]
+        end
+
         def on_send(node)
           return if allowed?(node)
 

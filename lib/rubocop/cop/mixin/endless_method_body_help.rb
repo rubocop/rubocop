@@ -45,10 +45,23 @@ module RuboCop
 
       def command_disallowed_in_endless_body?(body)
         return true if body.assignment? && command_call?(assigned_value(body))
+        return true if command_body_in_argument?(body)
 
         body.each_node(:any_block).any? do |block|
           block.keywords? && command_call?(block.send_node)
         end
+      end
+
+      # `private def foo = bar baz` parses only on Ruby 4.0+, and only as the sole argument.
+      def command_body_in_argument?(body)
+        return false unless command_call?(body)
+
+        def_node = body.parent
+        call = def_node.parent
+        return false unless call&.call_type?
+        return false unless call.arguments.any? { |argument| argument.equal?(def_node) }
+
+        target_ruby_version < 4.0 || !call.arguments.one?
       end
 
       def assigned_value(node)

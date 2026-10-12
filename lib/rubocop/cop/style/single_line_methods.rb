@@ -78,6 +78,11 @@ module RuboCop
             NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES.include?(body_node.type)
         end
 
+        # The body gets parenthesized when it becomes endless, so it is no longer a command.
+        def command_body_in_argument?(body)
+          !require_parentheses?(body) && super
+        end
+
         def correct_to_multiline(corrector, node)
           if (body = node.body) && body.begin_type? && body.parenthesized_call?
             break_line_before(corrector, node, body)

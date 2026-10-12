@@ -1283,6 +1283,35 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       RUBY
     end
 
+    it 'does not register an offense for a command call in a method definition passed as an argument' do
+      expect_no_offenses(<<~RUBY)
+        private def foo(x)
+          bar :baz, x
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a command call in a method definition passed as the only argument', :ruby40 do
+      expect_offense(<<~RUBY)
+        private def foo(x)
+                ^^^^^^^^^^ Use endless method definitions.
+          bar :baz, x
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private def foo(x) = bar :baz, x
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition passed with other arguments', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        qux 1, def foo(x)
+          bar :baz, x
+        end
+      RUBY
+    end
+
     it 'registers an offense for an assignment whose value is a parenthesized call' do
       expect_offense(<<~RUBY)
         def foo
