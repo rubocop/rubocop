@@ -48,6 +48,7 @@ module RuboCop
       register_cop :CommentedKeyword, "#{__dir__}/style/commented_keyword"
       register_cop :ComparableBetween, "#{__dir__}/style/comparable_between"
       register_cop :ComparableClamp, "#{__dir__}/style/comparable_clamp"
+      register_cop :ComplexUnless, "#{__dir__}/style/complex_unless"
       register_cop :ConcatArrayLiterals, "#{__dir__}/style/concat_array_literals"
       register_cop :ConditionalAssignment, "#{__dir__}/style/conditional_assignment"
       register_cop :ConstantVisibility, "#{__dir__}/style/constant_visibility"

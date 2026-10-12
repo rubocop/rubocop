@@ -61,7 +61,7 @@ module RuboCop
         private
 
         def autocorrect(corrector, node, prefer)
-          return unless boolean_result?(node) || truthiness_only?(node)
+          return if !boolean_result?(node) && !truthiness_only?(node)
 
           corrector.replace(node, parenthesize?(node) ? "(#{prefer})" : prefer)
         end

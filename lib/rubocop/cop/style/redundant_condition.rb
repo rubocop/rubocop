@@ -187,9 +187,9 @@ module RuboCop
             !use_hash_key_access?(if_branch)
         end
 
-        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
         def if_branch_is_true_type_and_else_is_not?(node)
-          return false unless node.ternary? || node.if?
+          return false if !node.ternary? && !node.if?
 
           cond = node.condition
           return false unless cond.call_type?

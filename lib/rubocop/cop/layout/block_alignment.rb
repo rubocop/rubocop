@@ -123,7 +123,7 @@ module RuboCop
 
           start_node = start_for_line_node(block_node) if style == :start_of_line
           start_loc = start_node.source_range
-          return unless start_loc.column != end_loc.column || style == :start_of_block
+          return if start_loc.column == end_loc.column && style != :start_of_block
 
           do_source_line_column = compute_do_source_line_column(block_node, end_loc)
           return unless do_source_line_column

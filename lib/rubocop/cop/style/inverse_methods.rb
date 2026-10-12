@@ -130,7 +130,7 @@ module RuboCop
         end
 
         def keep_parentheses?(node, method_call)
-          return false unless node.receiver.begin_type? || node.parenthesized?
+          return false if !node.receiver.begin_type? && !node.parenthesized?
           return false unless method_call.operator_method?
           return false unless (parent = node.parent)&.call_type?
 
@@ -208,7 +208,7 @@ module RuboCop
         end
 
         def remove_end_parenthesis(corrector, node, method, method_call)
-          return unless EQUALITY_METHODS.include?(method) || method_call.parent.begin_type?
+          return if !EQUALITY_METHODS.include?(method) && !method_call.parent.begin_type?
 
           corrector.remove(end_parentheses(node, method_call))
         end

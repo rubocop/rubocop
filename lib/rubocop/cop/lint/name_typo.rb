@@ -246,7 +246,7 @@ module RuboCop
         def constant_member_names(namespace)
           namespace.members.filter_map do |member|
             name = member.name
-            name.split('::').last unless name.include?('#') || name.include?('<')
+            name.split('::').last if !name.include?('#') && !name.include?('<')
           end
         end
 

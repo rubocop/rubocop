@@ -279,7 +279,7 @@ module RuboCop
 
           delimiter = node.delimiters.first
 
-          delimiter unless delimiter == '/' || DELIMITERS_KEEPING_ESCAPE.include?(delimiter)
+          delimiter if delimiter != '/' && !DELIMITERS_KEEPING_ESCAPE.include?(delimiter)
         end
 
         def escaped_delimiter_indices(text, delimiter)

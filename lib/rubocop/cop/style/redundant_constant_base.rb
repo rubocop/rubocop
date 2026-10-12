@@ -53,7 +53,7 @@ module RuboCop
 
         def on_cbase(node)
           return if lint_constant_resolution_cop_enabled?
-          return unless bad?(node) || provably_unshadowed?(node)
+          return if !bad?(node) && !provably_unshadowed?(node)
 
           add_offense(node) do |corrector|
             corrector.remove(node)
