@@ -829,6 +829,32 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             RUBY
           end
 
+          it 'breaks a string that needs several pieces in a single pass' do
+            expect_offense(<<~RUBY)
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccc'
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [86/40]
+            RUBY
+
+            expect_correction(<<~'RUBY', loop: false)
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
+              'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' \
+              'cccccccccccc'
+            RUBY
+          end
+
+          it 'breaks a double-quoted string with escapes that needs several pieces in a single pass' do
+            expect_offense(<<~'RUBY')
+              x = "\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13"
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [82/40]
+            RUBY
+
+            expect_correction(<<~'RUBY', loop: false)
+              x = "\x01\x02\x03\x04\x05\x06\x07" \
+              "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f" \
+              "\x10\x11\x12\x13"
+            RUBY
+          end
+
           it 'breaks an indented string under a multi-line parent without looping' do
             expect_offense(<<~RUBY)
               foo(
