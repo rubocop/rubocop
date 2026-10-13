@@ -27,6 +27,7 @@ module RuboCop
           # corrected. The user must handle the delicate decision of where to
           # put the comment.
           return if new_line_needed_before_closing_brace?(node)
+          return if nested_closing_bracket_moved_before_comment?
 
           end_range = last_element_range_with_trailing_comma(node).end
 
@@ -41,6 +42,39 @@ module RuboCop
 
       def correct_same_line_brace(corrector)
         corrector.insert_before(node.loc.end, "\n")
+      end
+
+      def nested_closing_bracket_moved_before_comment?
+        last_element = children(node).last
+        return false unless (comment = processed_source.comment_at_line(last_element.last_line - 1))
+        return false unless (nested = nested_literal_with_closing_bracket_on_own_line(last_element))
+
+        own_line_comment?(comment) || !(nested.chained? || nested.argument?)
+      end
+
+      def nested_literal_with_closing_bracket_on_own_line(last_element)
+        last_line = last_element.last_line
+
+        last_element.each_node.find do |descendant|
+          same_kind_as_node?(descendant) && closing_bracket_on_own_line?(descendant, last_line)
+        end
+      end
+
+      def same_kind_as_node?(descendant)
+        descendant.type == node.type || (descendant.call_type? && node.call_type?)
+      end
+
+      def closing_bracket_on_own_line?(descendant, line)
+        return false unless descendant.loc?(:end) && descendant.loc.end.is?('}', ']', ')')
+
+        closing_bracket = descendant.loc.end
+        return false if closing_bracket.line != line
+
+        closing_bracket.source_line[0...closing_bracket.column].strip.empty?
+      end
+
+      def own_line_comment?(comment)
+        comment.source_range.source_line.lstrip.start_with?('#')
       end
 
       def correct_next_line_brace(corrector, end_range)

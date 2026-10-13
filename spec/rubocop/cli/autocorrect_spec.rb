@@ -1483,6 +1483,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineHashBraceLayout` with `Layout/MultilineMethodCallBraceLayout` with `EnforcedStyle: same_line`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/MultilineHashBraceLayout:
+        EnforcedStyle: same_line
+      Layout/MultilineMethodCallBraceLayout:
+        EnforcedStyle: same_line
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo = {
+        bar: baz(
+          1 # comment
+        )
+      }
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Layout/MultilineHashBraceLayout,Layout/MultilineMethodCallBraceLayout']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo = {
+        bar: baz(
+          1)} # comment
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineArrayBraceLayout` with `EnforcedStyle: same_line` and `Style/ConcatArrayLiterals`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineArrayBraceLayout:

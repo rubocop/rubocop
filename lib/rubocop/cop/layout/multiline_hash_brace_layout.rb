@@ -106,11 +106,13 @@ module RuboCop
         ALWAYS_SAME_LINE_MESSAGE = 'Closing hash brace must be on the same ' \
                                    'line as the last hash element.'
 
-        # Moving the closing brace while `Style/HashAsLastArrayItem` or
-        # `Style/RedundantDoubleSplatHashBraces` removes the braces in the same pass leaves
-        # the brace behind.
+        # Moving the closing brace after a method call value while
+        # `Layout/MultilineMethodCallBraceLayout` moves that call's closing parenthesis
+        # before a comment in the same pass places the brace after the comment.
+        # Moving it while `Style/HashAsLastArrayItem` or `Style/RedundantDoubleSplatHashBraces`
+        # removes the braces in the same pass leaves the brace behind.
         def self.autocorrect_incompatible_with
-          [Style::HashAsLastArrayItem, Style::RedundantDoubleSplatHashBraces]
+          [Layout::MultilineMethodCallBraceLayout, Style::HashAsLastArrayItem, Style::RedundantDoubleSplatHashBraces]
         end
 
         def on_hash(node)
