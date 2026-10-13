@@ -38,13 +38,19 @@ module RuboCop
         KIND = 'block'
 
         def on_block(node)
-          first_line = node.loc.begin.line
-
-          check(node, node.body, adjusted_first_line: first_line)
+          check(node, node.body, adjusted_first_line: body_start_line(node))
         end
 
         alias on_numblock on_block
         alias on_itblock on_block
+
+        private
+
+        def body_start_line(node)
+          return node.loc.begin.line unless node.arguments?
+
+          [node.loc.begin.line, node.arguments.last_line].max
+        end
       end
     end
   end

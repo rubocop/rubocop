@@ -5608,6 +5608,31 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/EmptyLinesAroundBlockBody` and `Layout/SpaceInsideBlockBraces` when the block arguments are on the line after `{`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundBlockBody:
+        EnforcedStyle: empty_lines
+      Layout/SpaceInsideBlockBraces:
+        SpaceBeforeBlockParameters: false
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo {
+      |bar| do_something }
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only Layout/EmptyLinesAroundBlockBody,Layout/SpaceInsideBlockBraces]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo {|bar| do_something }
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/EmptyLineAfterMultilineCondition` and `Layout/EmptyLinesAroundArguments`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
