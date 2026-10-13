@@ -5479,6 +5479,19 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/SingleLineBlockChain` with `Style/RedundantSort`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x = obj.sort { |a, b| a <=> b }.first if foo
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/SingleLineBlockChain,Style/RedundantSort'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      x = obj.min { |a, b| a <=> b } if foo
+    RUBY
+  end
+
   it 'corrects `Style/BlockDelimiters` with `EnforcedStyle: braces_for_chaining` and `Style/RedundantBegin` offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/BlockDelimiters:
