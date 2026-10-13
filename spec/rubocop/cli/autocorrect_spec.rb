@@ -5352,6 +5352,19 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RedundantSort` and `Layout/SingleLineBlockChain` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x = foo.sort { |a, b| a <=> b }.first unless x
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/RedundantSort,Layout/SingleLineBlockChain'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      x = foo.min { |a, b| a <=> b } unless x
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: comparison` of `Style/NilComparison` and `Layout/SingleLineBlockChain` offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/NilComparison:
