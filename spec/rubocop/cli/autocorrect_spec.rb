@@ -592,6 +592,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/CombinableLoops` with `Layout/RedundantLineBreak`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/RedundantLineBreak:
+        InspectBlocks: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      items.each do |item|
+        foo(item)
+      end
+
+      items.each do |item|
+        bar(item)
+        baz(item)
+      end
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/CombinableLoops,Layout/RedundantLineBreak'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      items.each do |item| foo(item)
+
+      bar(item)
+        baz(item)
+       end
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineBlockLayout` with `EnforcedStyle: literal` of `Style/Lambda`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/Lambda:

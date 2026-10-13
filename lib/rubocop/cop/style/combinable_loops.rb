@@ -66,7 +66,7 @@ module RuboCop
         MSG = 'Combine this loop with the previous loop.'
 
         def self.autocorrect_incompatible_with
-          [Layout::BlockEndNewline]
+          [Layout::BlockEndNewline, Layout::RedundantLineBreak]
         end
 
         def on_block(node)
