@@ -147,11 +147,18 @@ module RuboCop
 
         def autocorrect(corrector, node, sort_node, sorter, accessor)
           # Remove accessor, e.g. `first` or `[-1]`.
-          corrector.remove(range_between(accessor_start(node), node.source_range.end_pos))
+          corrector.remove(accessor_range(node))
           # Replace "sort" or "sort_by" with the appropriate min/max method.
           corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
           # Replace to avoid syntax errors when followed by a logical operator.
           replace_with_logical_operator(corrector, node) if with_logical_operator?(node)
+        end
+
+        def accessor_range(node)
+          range = range_between(accessor_start(node), node.source_range.end_pos)
+          return range if with_logical_operator?(node)
+
+          range_with_surrounding_space(range, side: :left)
         end
 
         def replace_with_logical_operator(corrector, node)

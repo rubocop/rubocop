@@ -12,6 +12,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     RUBY
   end
 
+  it 'registers an offense when `first` is called on the next line' do
+    expect_offense(<<~RUBY)
+      x = foo.sort { |a, b| a <=> b }
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use `min` instead of `sort...first`.
+        .first unless x
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = foo.min { |a, b| a <=> b } unless x
+    RUBY
+  end
+
   it 'registers an offense when `first` is called with safe navigation `sort`' do
     expect_offense(<<~RUBY)
       [1, 2, 3]&.sort.first
@@ -155,7 +167,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     expect_correction(<<~RUBY)
       [1, 2, 3]
         .min_by { |x| x.length }
-      #{'  '}
     RUBY
   end
 
