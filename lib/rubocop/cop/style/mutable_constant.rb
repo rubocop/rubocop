@@ -228,15 +228,20 @@ module RuboCop
             return
           end
 
-          if node.array_type? && !node.bracketed?
-            corrector.wrap(expr, '[', ']')
-          elsif requires_parentheses?(node)
-            corrector.wrap(expr, '(', ')')
-          end
-
+          wrap_for_freeze(corrector, node, expr)
           corrector.insert_after(expr, '.freeze')
 
           freeze_nested_literals(corrector, node) if recursive?
+        end
+
+        def wrap_for_freeze(corrector, node, expr)
+          if node.array_type? && !node.bracketed?
+            corrector.wrap(expr, '[', ']')
+          elsif node.hash_type? && !node.braces?
+            corrector.wrap(expr, '{ ', ' }')
+          elsif requires_parentheses?(node)
+            corrector.wrap(expr, '(', ')')
+          end
         end
 
         # Recursively freezes every nested mutable literal inside an array or
