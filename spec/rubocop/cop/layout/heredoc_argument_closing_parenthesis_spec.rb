@@ -165,6 +165,29 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
         RUBY
       end
 
+      it 'accepts a HEREDOC in a hash followed by another pair' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(
+            baz: <<-SQL,
+              foo
+            SQL
+            qux: 1
+          )
+        RUBY
+      end
+
+      it 'accepts a HEREDOC in a hash whose braces close after the HEREDOC' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(:baz,
+            foo: {
+              qux: <<-SQL,
+                foo
+              SQL
+            }
+          )
+        RUBY
+      end
+
       context 'invocation after the HEREDOC' do
         it 'ignores tr' do
           expect_no_offenses(<<~RUBY)

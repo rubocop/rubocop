@@ -3852,6 +3852,38 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/HeredocArgumentClosingParenthesis` and ' \
+     '`Layout/MultilineMethodCallBraceLayout` with a HEREDOC followed by another hash pair' do
+    create_file('example.rb', <<~RUBY)
+      foo(
+        bar: <<~SQL,
+          SELECT * FROM baz
+        SQL
+        qux: 1
+      )
+    RUBY
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/HeredocArgumentClosingParenthesis:
+        Enabled: true
+    YAML
+
+    expect(
+      cli.run(
+        %w[--autocorrect-all --only
+           Layout/HeredocArgumentClosingParenthesis,Layout/MultilineMethodCallBraceLayout]
+      )
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(
+        bar: <<~SQL,
+          SELECT * FROM baz
+        SQL
+        qux: 1
+      )
+    RUBY
+  end
+
   it 'corrects `Style/InverseMethods` offenses when specifying `IncludeSemanticChanges: false` of ' \
      '`Style/NonNilCheck` and `EnforcedStyle: comparison` of `Style/NilComparison`' do
     create_file('example.rb', <<~RUBY)
