@@ -51,9 +51,9 @@ module RuboCop
             Pathname(project_dir).join(lockfile_name)
           end.find(&:exist?)
           version_data = lockfile_path&.read || RuboCop::Version::STRING
-          config_data = Pathname(
-            args_config_file_path || ConfigFinder.find_config_path(Dir.pwd)
-          ).read
+          config_path = Pathname(args_config_file_path || ConfigFinder.find_config_path(Dir.pwd))
+          # NOTE: A missing config file is reported by `RuboCop::CLI` with a friendly message.
+          config_data = config_path.exist? ? config_path.read : ''
           yaml = load_erb_templated_yaml(config_data)
 
           inherit_from_data = inherit_from_data(yaml)
@@ -181,7 +181,7 @@ module RuboCop
           yaml_code = ERB.new(content).result
 
           require 'yaml'
-          YAML.safe_load(yaml_code, permitted_classes: [Regexp, Symbol], aliases: true)
+          YAML.safe_load(yaml_code, permitted_classes: [Regexp, Symbol], aliases: true) || {}
         end
       end
     end
