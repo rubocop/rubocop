@@ -60,8 +60,9 @@ module RuboCop
 
         def deltas(first_pair, current_pair)
           key_delta = key_delta(first_pair, current_pair)
-          separator_delta = separator_delta(first_pair, current_pair, key_delta)
-          value_delta = value_delta(first_pair, current_pair) - key_delta - separator_delta
+          shift = separator_shift(current_pair, key_delta)
+          separator_delta = separator_delta(first_pair, current_pair, shift)
+          value_delta = value_delta(first_pair, current_pair) - shift - separator_delta
 
           { key: key_delta, separator: separator_delta, value: value_delta }
         end
@@ -78,9 +79,13 @@ module RuboCop
           pair.value && pair.key.last_line != pair.value.first_line
         end
 
-        def separator_delta(first_pair, current_pair, key_delta)
+        def separator_shift(current_pair, key_delta)
+          current_pair.key.multiline? ? 0 : key_delta
+        end
+
+        def separator_delta(first_pair, current_pair, shift)
           if current_pair.hash_rocket?
-            hash_rocket_delta(first_pair, current_pair) - key_delta
+            hash_rocket_delta(first_pair, current_pair) - shift
           else
             0
           end

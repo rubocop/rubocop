@@ -1170,6 +1170,26 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects a misaligned key spanning multiple lines without moving its separator' do
+      expect_offense(<<~RUBY)
+        hash = {
+          a => 1,
+          ^^^^^^ Align the keys and values of a hash literal if they span more than one line.
+        [:b,
+        ^^^^ Align the keys and values of a hash literal if they span more than one line.
+         :c] => 2
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        hash = {
+          a  => 1,
+          [:b,
+         :c] => 2
+        }
+      RUBY
+    end
+
     it 'accepts a multiline hash with no single-line keys' do
       expect_no_offenses(<<~RUBY)
         hash = {
