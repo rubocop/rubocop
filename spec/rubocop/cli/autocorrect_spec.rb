@@ -1219,6 +1219,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/StructInheritance`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+    YAML
+
+    create_file('example.rb', <<~RUBY, retain_line_terminators: true)
+      class Foo < Struct.new(
+        :bar
+      )
+        def baz
+        end
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect-all', '--only',
+         'Style/MethodCallWithArgsParentheses,Style/StructInheritance']
+      )
+    ).to eq(0)
+
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      Foo = Struct.new :bar do
+
+        def baz
+        end
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/AndOr`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

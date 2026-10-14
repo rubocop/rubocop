@@ -41,6 +41,12 @@ module RuboCop
         MSG = "Don't extend an instance initialized by `Struct.new`. " \
               'Use a block to customize the struct.'
 
+        # When the closing parenthesis of `Struct.new` is on its own line, omitting the
+        # parentheses in the same pass leaves a line break before the appended `do`.
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_class(node)
           return unless struct_constructor?(node.parent_class)
           return if defines_constants?(node.body)
