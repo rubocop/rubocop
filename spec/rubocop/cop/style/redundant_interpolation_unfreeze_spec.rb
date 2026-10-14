@@ -113,6 +113,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolationUnfreeze, :config do
       RUBY
     end
 
+    it 'registers an offense for an unfrozen string interpolated into another one' do
+      expect_offense(<<~'RUBY')
+        +"#{String.new("#{foo}")} #{"#{bar}".dup}"
+        ^ Don't unfreeze interpolated strings as they are already unfrozen.
+            ^^^^^^^^^^ Don't unfreeze interpolated strings as they are already unfrozen.
+                                             ^^^ Don't unfreeze interpolated strings as they are already unfrozen.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{"#{foo}"} #{"#{bar}"}"
+      RUBY
+    end
+
     it 'registers no offense for uninterpolated heredoc' do
       expect_no_offenses(<<~'RUBY')
         foo(+<<~'MSG')

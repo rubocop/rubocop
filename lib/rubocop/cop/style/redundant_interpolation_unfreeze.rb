@@ -43,7 +43,7 @@ module RuboCop
           return unless redundant_unfreeze?(node.parent)
 
           add_offense(offense_range(node.parent)) do |corrector|
-            corrector.replace(node.parent, node.source)
+            remove_unfreeze(corrector, node.parent, node)
           end
         end
 
@@ -55,6 +55,13 @@ module RuboCop
           else
             node.loc.selector
           end
+        end
+
+        # Only the parts around the string are removed, so that an unfrozen string
+        # interpolated into it can be corrected in the same pass.
+        def remove_unfreeze(corrector, node, string)
+          corrector.remove(node.source_range.begin.join(string.source_range.begin))
+          corrector.remove(string.source_range.end.join(node.source_range.end))
         end
       end
     end
