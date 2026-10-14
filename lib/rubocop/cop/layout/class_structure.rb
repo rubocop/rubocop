@@ -429,12 +429,9 @@ module RuboCop
         end
 
         def end_position_for(node)
-          if node.casgn_type?
-            heredoc = find_heredoc(node)
-            return heredoc.location.heredoc_end.end_pos if heredoc
-          end
+          heredoc_end_lines = heredocs(node).map { |heredoc| heredoc.loc.heredoc_end.line }
+          end_line = [node.last_line, *heredoc_end_lines].max
 
-          end_line = buffer.line_for_position(node.source_range.end_pos)
           buffer.line_range(end_line).end_pos
         end
 
@@ -457,8 +454,8 @@ module RuboCop
           buffer.line_range(node.loc.line).begin_pos - 1
         end
 
-        def find_heredoc(node)
-          node.each_node(:any_str).find(&:heredoc?)
+        def heredocs(node)
+          node.each_node(:any_str).select(&:heredoc?)
         end
 
         def buffer

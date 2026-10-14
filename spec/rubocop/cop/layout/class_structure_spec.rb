@@ -535,6 +535,62 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when constant has code after a heredoc' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def do_something
+        end
+
+        CONSTANT = {
+        ^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          foo: <<~EOS,
+            str
+          EOS
+          bar: 1
+        }.freeze
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        CONSTANT = {
+          foo: <<~EOS,
+            str
+          EOS
+          bar: 1
+        }.freeze
+        def do_something
+        end
+
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when macro has a heredoc argument after public method' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def do_something
+        end
+
+        include Module.new(<<~EOS)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ `module_inclusion` is supposed to appear before `public_methods`.
+          str
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        include Module.new(<<~EOS)
+          str
+        EOS
+        def do_something
+        end
+
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when public class method with heredoc after instance method' do
     expect_offense(<<~RUBY)
       class Foo
