@@ -6885,6 +6885,42 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/IndentationConsistency` and `Layout/IndentationWidth` disabled on the first member line' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/ModuleFunction:
+        EnforcedStyle: extend_self
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      module Foo
+      module_function # rubocop:disable Layout/IndentationWidth
+
+        def bar
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only] << %w[
+        Layout/IndentationConsistency
+        Layout/IndentationWidth
+        Style/ModuleFunction
+      ].join(',')
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      module Foo
+        extend self # rubocop:disable Layout/IndentationWidth
+
+        def bar
+        end
+      end
+    RUBY
+  end
+
   it 'does not trigger `Style/SingleArgumentDig` when `Style/DigChain` is enabled and will correct' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
