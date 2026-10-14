@@ -60,7 +60,7 @@ module RuboCop
 
             rest_operands = grouped_operands[begin_of_rest_operands..]
             rest_operands.each do |operand|
-              next if already_appropriate_call?(operand, dot_op)
+              next unless offense?(operand, dot_op, grouped_operands)
 
               register_offense(operand, dot_op)
             end
@@ -97,6 +97,28 @@ module RuboCop
             send_in_or < csend_in_or ? ['.', send_in_or + 1] : ['&.', csend_in_or + 1]
           elsif send_in_and && csend_in_or && send_in_and < csend_in_or
             ['.', csend_in_or]
+          end
+        end
+
+        def offense?(operand, dot_op, grouped_operands)
+          return false if already_appropriate_call?(operand, dot_op)
+
+          dot_op == '&.' || receiver_checked_before?(operand, grouped_operands)
+        end
+
+        # A receiver is known to be non-nil when an earlier call on it used `.`, or
+        # used `&.` and was truthy, which only holds when that call is on the left
+        # of an `&&` containing the operand, not in another branch of an `||`.
+        def receiver_checked_before?(operand, grouped_operands)
+          grouped_operands.take_while { |other| !other.equal?(operand) }.any? do |other|
+            !nilable?(other) || (other.csend_type? && common_ancestor(other, operand).and_type?)
+          end
+        end
+
+        def common_ancestor(node, other)
+          other_ancestors = other.each_ancestor.to_a
+          node.each_ancestor.find do |ancestor|
+            other_ancestors.any? { |outer| outer.equal?(ancestor) }
           end
         end
 

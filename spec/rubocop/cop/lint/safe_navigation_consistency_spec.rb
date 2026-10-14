@@ -331,6 +331,23 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
     RUBY
   end
 
+  it 'does not register an offense when safe navigation is used in `&&` operands of different `||` branches' do
+    expect_no_offenses(<<~RUBY)
+      id == 'x' && str&.empty? || id == 'y' && str&.empty?
+    RUBY
+  end
+
+  it 'registers an offense and corrects when safe navigation is used in the same `&&` within an `||` branch' do
+    expect_offense(<<~RUBY)
+      a || foo&.bar && foo&.baz
+                          ^^ Use `.` instead of unnecessary `&.`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a || foo&.bar && foo.baz
+    RUBY
+  end
+
   it 'registers a single offense and corrects when safe navigation is used multiple times' do
     expect_offense(<<~RUBY)
       foo&.bar && foo&.baz || foo.qux

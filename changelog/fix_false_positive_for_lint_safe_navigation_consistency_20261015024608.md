@@ -1,0 +1,1 @@
+* [#16083](https://github.com/rubocop/rubocop/issues/16083): Fix a false positive for `Lint/SafeNavigationConsistency` when safe navigation is used in `&&` operands of different `||` branches. ([@ozenyunus35][])
