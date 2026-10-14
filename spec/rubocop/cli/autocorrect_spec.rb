@@ -4873,6 +4873,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(status).to eq(0)
   end
 
+  it 'corrects an omitted hash value with `Style/MutableConstant` and `Style/HashSyntax` (`EnforcedShorthandSyntax: never`)' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/MutableConstant:
+        EnforcedStyle: strict
+        Recursive: true
+      Style/HashSyntax:
+        EnforcedShorthandSyntax: never
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      FOO = { bar:, baz: 1 }.freeze
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only', 'Style/MutableConstant,Style/HashSyntax'])
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      FOO = { bar: (bar).freeze, baz: 1 }.freeze
+    RUBY
+  end
+
   it 'corrects `Recursive: true` of `Style/MutableConstant` with TrailingCommaIn(Array|Hash)Literal' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MutableConstant:
