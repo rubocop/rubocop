@@ -79,7 +79,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
             {
               code: 'Style/FrozenStringLiteralComment',
               codeDescription: {
-                href: 'https://docs.rubocop.org/rubocop/cops_style.html#stylefrozenstringliteralcomment'
+                href: 'https://docs.rubocop.org/rubocop/latest/cops_style.html#stylefrozenstringliteralcomment'
               },
               data: {
                 code_actions: [
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
             }, {
               code: 'Layout/SpaceInsideArrayLiteralBrackets',
               codeDescription: {
-                href: 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutspaceinsidearrayliteralbrackets'
+                href: 'https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutspaceinsidearrayliteralbrackets'
               },
               data: {
                 code_actions: [
@@ -354,7 +354,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
             {
               code: 'Lint/Syntax',
               codeDescription: {
-                href: 'https://docs.rubocop.org/rubocop/cops_lint.html#lintsyntax'
+                href: 'https://docs.rubocop.org/rubocop/latest/cops_lint.html#lintsyntax'
               },
               data: {
                 code_actions: [

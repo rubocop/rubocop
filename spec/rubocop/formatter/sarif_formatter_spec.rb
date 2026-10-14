@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Formatter::SARIFFormatter do
                                .for_cop('Style/StringLiterals')['Description']
         )
         expect(rule['helpUri']).to eq(
-          'https://docs.rubocop.org/rubocop/cops_style.html#stylestringliterals'
+          'https://docs.rubocop.org/rubocop/latest/cops_style.html#stylestringliterals'
         )
         expect(rule['help']['markdown']).to include('[Documentation](')
       end

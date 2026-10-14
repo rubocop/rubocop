@@ -238,7 +238,7 @@ If specified under `AllCops`, all cops are targeted.
 [source,yaml]
 ----
 AllCops:
-  DocumentationBaseURL: https://docs.rubocop.org/rubocop
+  DocumentationBaseURL: https://docs.rubocop.org/rubocop/latest
 ----
 
 If specified under a specific department, it takes precedence over `AllCops`.

@@ -1606,7 +1606,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect(stdout).to include('Style/StringLiterals')
       expect(stdout).to include('Checks if uses of quotes match the configured preference.')
       expect(stdout).to include('Autocorrect: safe, applied by -a')
-      expect(stdout).to include('https://docs.rubocop.org/rubocop/cops_style.html#stylestringliterals')
+      expect(stdout).to include('https://docs.rubocop.org/rubocop/latest/cops_style.html#stylestringliterals')
     end
 
     it 'reports the configurable options with their current values' do
@@ -1778,7 +1778,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       it 'returns base url to documentation' do
         cmd
         expect(stdout).to eq(<<~RESULT)
-          https://docs.rubocop.org/rubocop
+          https://docs.rubocop.org/rubocop/latest
 
         RESULT
       end
@@ -1790,7 +1790,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       it 'returns documentation url for given cop' do
         cmd
         expect(stdout).to eq(<<~RESULT)
-          https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+          https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutindentationstyle
 
         RESULT
       end
@@ -1802,8 +1802,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       it 'returns documentation urls for given cops' do
         cmd
         expect(stdout).to eq(<<~RESULT)
-          https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
-          https://docs.rubocop.org/rubocop/cops_layout.html#layoutlinelength
+          https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutindentationstyle
+          https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutlinelength
 
         RESULT
       end
@@ -1814,7 +1814,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it 'skips the unknown cop' do
           cmd
           expect(stdout).to eq(<<~RESULT)
-            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+            https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutindentationstyle
 
           RESULT
         end
@@ -1833,7 +1833,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it 'builds the doc url using value supplied' do
           cmd
           expect(stdout).to eq(<<~RESULT)
-            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+            https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutindentationstyle
             https://docs.rubocop.org/rubocop-style/cops_style.html#styleasciicomments
 
           RESULT
@@ -1846,7 +1846,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it 'skips the cop without documentation url' do
           cmd
           expect(stdout).to eq(<<~RESULT)
-            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+            https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutindentationstyle
 
           RESULT
         end
@@ -1865,7 +1865,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it 'builds the doc urls' do
           cmd
           expect(stdout).to eq(<<~RESULT)
-            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+            https://docs.rubocop.org/rubocop/latest/cops_layout.html#layoutindentationstyle
             https://example.com/cops_test.html#testalignmentdirective
 
           RESULT

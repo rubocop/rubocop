@@ -65,7 +65,7 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       expect(first_item.range.end.to_hash).to eq({ line: 0, character: 1 })
       expect(first_item.severity).to eq RubyLsp::Constant::DiagnosticSeverity::INFORMATION
       expect(first_item.code).to eq 'Style/FrozenStringLiteralComment'
-      expect(first_item.code_description.href).to eq 'https://docs.rubocop.org/rubocop/cops_style.html#stylefrozenstringliteralcomment'
+      expect(first_item.code_description.href).to eq 'https://docs.rubocop.org/rubocop/latest/cops_style.html#stylefrozenstringliteralcomment'
       expect(first_item.source).to eq 'RuboCop'
       expect(first_item.message).to eq <<~MESSAGE.chop
         Style/FrozenStringLiteralComment: Missing frozen string literal comment.
@@ -78,7 +78,7 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       expect(second_item.range.end.to_hash).to eq({ line: 0, character: 11 })
       expect(second_item.severity).to eq RubyLsp::Constant::DiagnosticSeverity::INFORMATION
       expect(second_item.code).to eq 'Style/StringLiterals'
-      expect(second_item.code_description.href).to eq 'https://docs.rubocop.org/rubocop/cops_style.html#stylestringliterals'
+      expect(second_item.code_description.href).to eq 'https://docs.rubocop.org/rubocop/latest/cops_style.html#stylestringliterals'
       expect(second_item.source).to eq 'RuboCop'
       expect(second_item.message).to eq <<~MESSAGE.chop
         Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.

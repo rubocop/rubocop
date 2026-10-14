@@ -45,7 +45,7 @@ module RuboCop
 
       # @api private
       def default_base_url
-        'https://docs.rubocop.org/rubocop'
+        'https://docs.rubocop.org/rubocop/latest'
       end
 
       # @api private

@@ -1,0 +1,1 @@
+* [#16087](https://github.com/rubocop/rubocop/issues/16087): Fix documentation URLs, such as the one printed by `--show-docs-url`, so that they link to the cop's section of the latest docs instead of the top of the page. ([@ozenyunus35][])
