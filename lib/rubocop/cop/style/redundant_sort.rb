@@ -123,10 +123,27 @@ module RuboCop
         end
 
         def register_offense(node, sort_node, sorter, accessor)
+          return if code_after_accessor_kept_apart?(node)
+
           message = message(node, sorter, accessor)
           add_offense(offense_range(sort_node, node), message: message) do |corrector|
             autocorrect(corrector, node, sort_node, sorter, accessor)
           end
+        end
+
+        def code_after_accessor_kept_apart?(node)
+          return false if with_logical_operator?(node)
+
+          source = before_accessor_source(node)
+          return false if !source.include?("\n") || source.strip.empty?
+
+          rest = code_after_accessor(node)
+
+          !rest.empty? && !rest.match?(/\A(#|&?\.|[)\]},])/)
+        end
+
+        def code_after_accessor(node)
+          processed_source.lines[node.last_line - 1][node.source_range.last_column..].strip
         end
 
         def offense_range(sort_node, node)
@@ -146,12 +163,29 @@ module RuboCop
         end
 
         def autocorrect(corrector, node, sort_node, sorter, accessor)
-          # Remove accessor, e.g. `first` or `[-1]`.
-          corrector.remove(range_between(accessor_start(node), node.source_range.end_pos))
           # Replace "sort" or "sort_by" with the appropriate min/max method.
           corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
-          # Replace to avoid syntax errors when followed by a logical operator.
-          replace_with_logical_operator(corrector, node) if with_logical_operator?(node)
+          remove_accessor(corrector, node)
+        end
+
+        def remove_accessor(corrector, node)
+          if removable_line_break_before_accessor?(node)
+            corrector.remove(node.receiver.source_range.end.join(node.source_range.end))
+          else
+            corrector.remove(range_between(accessor_start(node), node.source_range.end_pos))
+
+            replace_with_logical_operator(corrector, node) if with_logical_operator?(node)
+          end
+        end
+
+        def removable_line_break_before_accessor?(node)
+          source = before_accessor_source(node)
+
+          source.include?("\n") && source.strip.empty?
+        end
+
+        def before_accessor_source(node)
+          node.receiver.source_range.end.join((node.loc.dot || node.loc.selector).begin).source
         end
 
         def replace_with_logical_operator(corrector, node)

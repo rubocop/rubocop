@@ -155,7 +155,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     expect_correction(<<~RUBY)
       [1, 2, 3]
         .min_by { |x| x.length }
-      #{'  '}
     RUBY
   end
 
@@ -169,8 +168,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
 
     expect_correction(<<~RUBY)
       [1, 2, 3]
-        .min_by { |x| x.length } ||
-          []
+        .min_by { |x| x.length } || []
     RUBY
   end
 
@@ -184,8 +182,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
 
     expect_correction(<<~RUBY)
       [1, 2, 3]
-        .min_by { |x| x.length } &&
-          []
+        .min_by { |x| x.length } && []
     RUBY
   end
 
@@ -199,8 +196,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
 
     expect_correction(<<~RUBY)
       [1, 2, 3]
-        .min_by { |x| x.length } or
-          []
+        .min_by { |x| x.length } or []
     RUBY
   end
 
@@ -214,8 +210,96 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
 
     expect_correction(<<~RUBY)
       [1, 2, 3]
-        .min_by { |x| x.length } and
+        .min_by { |x| x.length } and []
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort with a line break and a modifier `if`' do
+    expect_offense(<<~RUBY)
+      x = obj.sort { |a, b| a <=> b }
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use `min` instead of `sort...first`.
+        .first if foo
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = obj.min { |a, b| a <=> b } if foo
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort with a line break and a modifier `unless` in safe navigation' do
+    expect_offense(<<~RUBY)
+      x = obj&.sort
+               ^^^^ Use `min` instead of `sort...first`.
+        &.first unless foo
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = obj&.min unless foo
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort_by with a heredoc before the line break' do
+    expect_offense(<<~RUBY)
+      x = obj.sort_by { |a| a.include?(<<~STR) }
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
+        foo
+      STR
+        .first
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = obj.min_by { |a| a.include?(<<~STR) }
+        foo
+      STR
+      #{'  '}
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort with a comment before the line break' do
+    expect_offense(<<~RUBY)
+      obj.sort # comment
+          ^^^^^^^^^^^^^^ Use `min` instead of `sort...first`.
+        .first || []
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.min || # comment
           []
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort with a comment before the line break and nothing after it' do
+    expect_offense(<<~RUBY)
+      x = obj.sort # comment
+              ^^^^^^^^^^^^^^ Use `min` instead of `sort...first`.
+        .first
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = obj.min # comment
+      #{'  '}
+    RUBY
+  end
+
+  it 'does not register an offense when first is called on sort with a comment before the line break and a modifier `if`' do
+    expect_no_offenses(<<~RUBY)
+      x = obj.sort # comment
+        .first if foo
+    RUBY
+  end
+
+  it 'does not register an offense when first is called on sort with a comment line before the line break and a modifier `if`' do
+    expect_no_offenses(<<~RUBY)
+      x = obj.sort
+        # comment
+        .first if foo
+    RUBY
+  end
+
+  it 'does not register an offense when first is called on sort with a comment before the line break and a binary operator' do
+    expect_no_offenses(<<~RUBY)
+      x = obj.sort # comment
+        .first + 1
     RUBY
   end
 
