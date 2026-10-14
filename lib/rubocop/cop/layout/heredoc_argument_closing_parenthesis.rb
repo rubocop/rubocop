@@ -231,8 +231,8 @@ module RuboCop
         end
 
         def find_most_bottom_of_heredoc_end(arguments)
-          arguments.filter_map do |argument|
-            argument.loc.heredoc_end.end_pos if argument.loc?(:heredoc_end)
+          arguments.flat_map { |argument| argument.each_node(:any_str).to_a }.filter_map do |node|
+            node.loc.heredoc_end.end_pos if node.loc?(:heredoc_end)
           end.max
         end
 
