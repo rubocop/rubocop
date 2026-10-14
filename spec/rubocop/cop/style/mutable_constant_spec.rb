@@ -898,6 +898,28 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       RUBY
     end
 
+    it 'wraps a nested hash without braces in braces when freezing' do
+      expect_offense(<<~RUBY)
+        CONST = [foo, a => []]
+                ^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        CONST = [foo, { a => [].freeze }.freeze].freeze
+      RUBY
+    end
+
+    it 'wraps a hash without braces in an already-frozen array in braces when freezing' do
+      expect_offense(<<~RUBY)
+        CONST = [foo, a => []].freeze
+                      ^^^^^^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        CONST = [foo, { a => [].freeze }.freeze].freeze
+      RUBY
+    end
+
     context 'with frozen_string_literal: true' do
       it 'does not add .freeze to nested string literals' do
         expect_offense(<<~RUBY)
