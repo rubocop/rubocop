@@ -150,7 +150,13 @@ module RuboCop
             next false unless to_f_method?(operand)
 
             range = operand.receiver.source_range.end.join(operand.loc.selector.begin)
-            processed_source.contains_comment?(range)
+            comment_in_range?(range)
+          end
+        end
+
+        def comment_in_range?(range)
+          processed_source.each_comment_in_lines(range.line..range.last_line).any? do |comment|
+            range.contains?(comment.source_range)
           end
         end
 
