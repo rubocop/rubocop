@@ -1616,6 +1616,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RedundantInterpolationUnfreeze` with `Layout/MultilineMethodCallBraceLayout` with `EnforcedStyle: same_line`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Layout/MultilineMethodCallBraceLayout:
+        EnforcedStyle: same_line
+    YAML
+    create_file('example.rb', <<~'RUBY')
+      x = String.new(
+        "#{foo} bar"
+      )
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Style/RedundantInterpolationUnfreeze'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~'RUBY')
+      x = "#{foo} bar"
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineArrayBraceLayout` with `EnforcedStyle: same_line` and `Style/ConcatArrayLiterals`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineArrayBraceLayout:
