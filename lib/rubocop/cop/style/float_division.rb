@@ -146,11 +146,26 @@ module RuboCop
         end
 
         def comment_before_to_f?(node)
+          return true if comment_around_fdiv_operator?(node)
+
           operands_losing_to_f(node).any? do |operand|
             next false unless to_f_method?(operand)
 
             range = operand.receiver.source_range.end.join(operand.loc.selector.begin)
-            processed_source.contains_comment?(range)
+            comment_in_range?(range)
+          end
+        end
+
+        def comment_around_fdiv_operator?(node)
+          return false unless style == :fdiv
+
+          range = node.receiver.source_range.end.join(node.first_argument.source_range.begin)
+          comment_in_range?(range)
+        end
+
+        def comment_in_range?(range)
+          processed_source.each_comment_in_lines(range.line..range.last_line).any? do |comment|
+            range.contains?(comment.source_range)
           end
         end
 
