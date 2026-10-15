@@ -132,7 +132,7 @@ module RuboCop
       #     private alias_method :qux, :foo
       #
       #   end
-      class AccessModifierDeclarations < Base
+      class AccessModifierDeclarations < Base # rubocop:disable Metrics/ClassLength
         extend AutoCorrector
 
         include ConfigurableEnforcedStyle
