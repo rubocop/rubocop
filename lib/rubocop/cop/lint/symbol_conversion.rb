@@ -185,6 +185,7 @@ module RuboCop
             ignore_node(key)
 
             next if requires_quotes?(key)
+            next if key.parent.value_omission?
             next if properly_quoted?(key.source, %("#{key.value}"))
 
             correction = %("#{key.value}")
