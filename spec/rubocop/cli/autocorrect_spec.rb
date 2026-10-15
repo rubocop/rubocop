@@ -4941,6 +4941,52 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Recursive: true` of `Style/MutableConstant` with `Style/HashAsLastArrayItem` (`EnforcedStyle: no_braces`)' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MutableConstant:
+        Recursive: true
+      Style/HashAsLastArrayItem:
+        EnforcedStyle: no_braces
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      FOO = [bar, {baz: []}]
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Style/MutableConstant,Style/HashAsLastArrayItem']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      FOO = [bar, { baz: [].freeze }.freeze].freeze
+    RUBY
+  end
+
+  it 'corrects `Recursive: true` of `Style/MutableConstant` with `Style/HashAsLastArrayItem` (`EnforcedStyle: braces`)' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MutableConstant:
+        Recursive: true
+      Style/HashAsLastArrayItem:
+        EnforcedStyle: braces
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      FOO = [bar, baz: []]
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Style/MutableConstant,Style/HashAsLastArrayItem']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      FOO = [bar, {baz: [].freeze}.freeze].freeze
+    RUBY
+  end
+
   it 'corrects TrailingCommaIn(Array|Hash)Literal and Multiline(Array|Hash)BraceLayout offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/TrailingCommaInArrayLiteral:
