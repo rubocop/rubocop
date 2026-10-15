@@ -132,7 +132,7 @@ module RuboCop
             opening.source_line[(opening.column + 1)..].gsub(TRAILING_WHITESPACE_REGEX, '').empty?
           end
 
-          def legitimate_call_with_parentheses?(node) # rubocop:disable Metrics/PerceivedComplexity
+          def legitimate_call_with_parentheses?(node) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
             call_in_literals?(node) ||
               node.parent&.when_type? ||
               call_with_ambiguous_arguments?(node) ||
@@ -142,6 +142,7 @@ module RuboCop
               allowed_multiline_call_with_parentheses?(node) ||
               allowed_chained_call_with_parentheses?(node) ||
               assignment_in_condition?(node) ||
+              command_assignment_in_expression?(node) ||
               forwards_anonymous_rest_arguments?(node) ||
               trailing_comma?(node)
           end
@@ -279,7 +280,7 @@ module RuboCop
           end
 
           def assigned_before?(node, target)
-            node.assignment? && node.loc.operator.begin < target.loc.begin
+            node.assignment? && node.loc.operator.begin < target.source_range.begin
           end
 
           def inside_string_interpolation?(node)
@@ -294,6 +295,27 @@ module RuboCop
             return false unless grandparent
 
             parent.assignment? && (grandparent.conditional? || grandparent.when_type?)
+          end
+
+          # rubocop:disable-next Metrics/PerceivedComplexity
+          def command_assignment_in_expression?(node)
+            value = node.parent&.type?(:any_block, :rescue) ? node.parent : node
+            assignment = outermost_assignment(value)
+            return false if assignment.equal?(value)
+
+            call_in_literals?(assignment) ||
+              call_in_logical_operators?(assignment) ||
+              call_in_optional_arguments?(assignment) ||
+              call_as_argument_or_chain?(assignment) ||
+              assignment.parent&.type?(:masgn, :return, :next, :break, :defined?)
+          end
+
+          def outermost_assignment(value)
+            parent = value.parent
+            return value if !parent&.assignment? || parent.masgn_type?
+            return value unless assigned_before?(parent, value)
+
+            outermost_assignment(parent)
           end
 
           def forwards_anonymous_rest_arguments?(node)
