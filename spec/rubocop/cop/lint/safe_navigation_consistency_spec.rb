@@ -341,4 +341,38 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
       foo&.bar && foo.baz || foo.qux
     RUBY
   end
+
+  it 'does not register an offense when safe navigation is used in both `&&` branches of `||`' do
+    expect_no_offenses(<<~RUBY)
+      bar && foo&.baz || qux && foo&.baz
+    RUBY
+  end
+
+  it 'does not register an offense when the dot method call is not always evaluated before safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      bar && foo.baz || foo&.qux
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the dot method call is always evaluated before safe navigation' do
+    expect_offense(<<~RUBY)
+      foo.bar && baz || foo&.qux
+                           ^^ Use `.` instead of unnecessary `&.`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.bar && baz || foo.qux
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the dot method call must have been evaluated for safe navigation to be reached' do
+    expect_offense(<<~RUBY)
+      bar || foo.baz && qux || foo&.quux
+                                  ^^ Use `.` instead of unnecessary `&.`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      bar || foo.baz && qux || foo.quux
+    RUBY
+  end
 end

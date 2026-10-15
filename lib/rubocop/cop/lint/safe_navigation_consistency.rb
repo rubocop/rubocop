@@ -60,7 +60,7 @@ module RuboCop
 
             rest_operands = grouped_operands[begin_of_rest_operands..]
             rest_operands.each do |operand|
-              next if already_appropriate_call?(operand, dot_op)
+              next unless correction_needed?(operand, dot_op, grouped_operands)
 
               register_offense(operand, dot_op)
             end
@@ -100,10 +100,56 @@ module RuboCop
           end
         end
 
+        def correction_needed?(operand, dot_op, grouped_operands)
+          return false if already_appropriate_call?(operand, dot_op)
+
+          dot_op == '&.' || receiver_guaranteed?(operand, grouped_operands)
+        end
+
         def already_appropriate_call?(operand, dot_op)
           return true if operand.safe_navigation? && dot_op == '&.'
 
           (operand.dot? || operand.operator_method?) && dot_op == '.'
+        end
+
+        def receiver_guaranteed?(operand, grouped_operands)
+          grouped_operands.take_while { |guard| !guard.equal?(operand) }.any? do |guard|
+            guaranteed_by?(guard, operand)
+          end
+        end
+
+        def guaranteed_by?(guard, operand)
+          return false unless (path = logical_path(guard, operand))
+
+          truthiness = path.last.first.and_type? ? :truthy : :falsey
+          path[0...-1].reverse_each do |node, child|
+            return false unless (truthiness = child_truthiness(node, child, truthiness))
+          end
+
+          !guard.csend_type? || truthiness == :truthy
+        end
+
+        def logical_path(guard, operand)
+          path = []
+          child = guard
+
+          guard.each_ancestor do |node|
+            unless node.begin_type?
+              return nil unless node.operator_keyword?
+
+              path << [node, child]
+            end
+            return path if operand.each_ancestor.any? { |ancestor| ancestor.equal?(node) }
+
+            child = node
+          end
+        end
+
+        def child_truthiness(node, child, truthiness)
+          deciding = node.and_type? ? :truthy : :falsey
+          return truthiness == deciding ? deciding : :unknown if node.lhs.equal?(child)
+
+          deciding if truthiness == deciding
         end
 
         def register_offense(operand, dot_operator)
