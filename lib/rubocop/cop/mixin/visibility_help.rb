@@ -63,9 +63,10 @@ module RuboCop
         (send nil? VISIBILITY_SCOPES def)
       PATTERN
 
+      # A modifier applies to every symbol it is given, not only to a sole argument.
       # @!method visibility_inline_on_method_name?(node, method_name:)
       def_node_matcher :visibility_inline_on_method_name?, <<~PATTERN
-        (send nil? VISIBILITY_SCOPES (sym %method_name))
+        (send nil? VISIBILITY_SCOPES <(sym %method_name) ...>)
       PATTERN
     end
   end

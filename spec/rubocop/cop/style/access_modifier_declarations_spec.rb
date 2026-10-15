@@ -837,6 +837,46 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
+      it "does not register an offense when #{access_modifier} groups an endless method with a command body", :ruby34 do
+        expect_no_offenses(<<~RUBY)
+          class Test
+            #{access_modifier}
+
+            def foo = raise Error, self
+          end
+        RUBY
+      end
+
+      ['bar baz rescue nil', 'obj.bar baz rescue nil', 'super baz rescue nil',
+       'yield baz rescue nil', 'not bar'].each do |body|
+        it "does not register an offense when #{access_modifier} groups an endless method with `#{body}`", :ruby34 do
+          expect_no_offenses(<<~RUBY)
+            class Test
+              #{access_modifier}
+
+              def foo = #{body}
+            end
+          RUBY
+        end
+      end
+
+      it "registers an offense when #{access_modifier} groups an endless method with a command body", :ruby40 do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class Test
+            %{access_modifier}
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+
+            def foo = raise Error, self
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+            #{access_modifier} def foo = raise Error, self
+          end
+        RUBY
+      end
+
       context 'when methods are modified by group modifier' do
         it 'registers and autocorrects an offense' do
           expect_offense(<<~RUBY, access_modifier: access_modifier)

@@ -6,6 +6,10 @@ module RuboCop
       # Checks for a line break before the first element in a
       # multi-line array.
       #
+      # NOTE: An array whose first element is an array literal is not checked when
+      # `Layout/SpaceInsideArrayLiteralBrackets` is enabled with `EnforcedStyle: compact`,
+      # since that style joins the two opening brackets.
+      #
       # @example
       #
       #   # bad
@@ -70,6 +74,7 @@ module RuboCop
         def on_array(node)
           return if !node.loc.begin && !assignment_on_same_line?(node)
           return if allow_implicit_array_brackets? && !node.bracketed?
+          return if compact_nested_array?(node)
 
           check_children_line_break(node, node.children, ignore_last: ignore_last_element?)
         end
@@ -83,6 +88,16 @@ module RuboCop
 
         def allow_implicit_array_brackets?
           !!cop_config['AllowImplicitArrayLiterals']
+        end
+
+        def compact_nested_array?(node)
+          node.square_brackets? && node.children.first&.source&.start_with?('[') &&
+            compact_array_brackets_enforced?
+        end
+
+        def compact_array_brackets_enforced?
+          config.cop_enabled?('Layout/SpaceInsideArrayLiteralBrackets') &&
+            config.for_cop('Layout/SpaceInsideArrayLiteralBrackets')['EnforcedStyle'] == 'compact'
         end
 
         def ignore_last_element?
