@@ -108,14 +108,9 @@ module RuboCop
         end
 
         def left_ref_bracket(node, tokens)
-          current_token = tokens.reverse.find(&:left_ref_bracket?)
-          previous_token = previous_token(current_token)
+          bracket_pos = node.loc.selector.begin_pos
 
-          if node.method?(:[]=) || (previous_token && !previous_token.right_bracket?)
-            tokens.find(&:left_ref_bracket?)
-          else
-            current_token
-          end
+          tokens.find { |token| token.left_ref_bracket? && token.begin_pos == bracket_pos }
         end
 
         def closing_bracket(tokens, opening_bracket)
@@ -127,11 +122,6 @@ module RuboCop
             inner_left_brackets_needing_closure -= 1 if token.right_bracket?
             return token if inner_left_brackets_needing_closure.zero? && token.right_bracket?
           end
-        end
-
-        def previous_token(current_token)
-          index = processed_source.tokens.index(current_token)
-          index.nil? || index.zero? ? nil : processed_source.tokens[index - 1]
         end
 
         def empty_config
