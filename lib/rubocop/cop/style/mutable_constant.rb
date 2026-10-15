@@ -267,13 +267,14 @@ module RuboCop
         # Returns the child literals of an array or hash node that may
         # themselves need freezing. For hashes, both keys and values are
         # included. Percent-literal arrays (e.g. `%w(a b)`) are skipped because
-        # `.freeze` cannot be appended to their contents.
+        # `.freeze` cannot be appended to their contents. Splat elements are
+        # skipped because the splatted object is not stored in the array.
         def literal_children(node)
           case node.type
           when :array
             return [] if node.percent_literal?
 
-            node.children
+            node.children.reject(&:splat_type?)
           when :hash
             node.children.flat_map { |child| child.pair_type? ? child.children : [] }
           else
