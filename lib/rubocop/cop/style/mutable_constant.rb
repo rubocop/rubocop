@@ -228,10 +228,22 @@ module RuboCop
             return
           end
 
+          return expand_omitted_hash_value(corrector, node.parent) if omitted_hash_value?(node)
+
           wrap_for_freeze(corrector, node, expr)
           corrector.insert_after(expr, '.freeze')
 
           freeze_nested_literals(corrector, node) if recursive?
+        end
+
+        def omitted_hash_value?(node)
+          node.parent&.pair_type? && node.parent.value_omission?
+        end
+
+        def expand_omitted_hash_value(corrector, pair)
+          key = pair.key.value
+
+          corrector.replace(pair, "#{key}: #{key}.freeze")
         end
 
         def wrap_for_freeze(corrector, node, expr)

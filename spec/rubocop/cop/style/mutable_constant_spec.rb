@@ -961,6 +961,17 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       RUBY
     end
 
+    it 'registers an offense and expands an omitted hash value in an already-frozen hash', :ruby31 do
+      expect_offense(<<~RUBY)
+        CONST = { foo:, bar: 1 }.freeze
+                  ^^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        CONST = { foo: foo.freeze, bar: 1 }.freeze
+      RUBY
+    end
+
     it 'descends into an already-frozen outer literal in strict mode' do
       expect_offense(<<~RUBY)
         CONST = [Something.new].freeze
