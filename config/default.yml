@@ -3438,9 +3438,10 @@ Security/JSONLoad:
   References:
     - 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load'
     - 'https://bugs.ruby-lang.org/issues/19528'
+    - 'https://github.com/ruby/json/blob/master/CHANGES.md#2026-08-11-300rc1'
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '1.22'
+  VersionChanged: '<<next>>'
   # Autocorrect here will change to a method that may cause crashes depending
   # on the value of the argument.
   SafeAutoCorrect: false

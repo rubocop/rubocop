@@ -365,6 +365,14 @@ module RuboCop
       @gem_versions_in_target ||= read_gem_versions_from_target_lockfile
     end
 
+    # Returns target's locked versions of the gems it depends on directly (i.e. those listed
+    # in the `Gemfile` itself, rather than pulled in by another gem).
+    # @returns [Hash{String => Gem::Version}, nil] The locked gem versions, keyed by the gems'
+    #   names, or nil without a lockfile.
+    def direct_gem_versions_in_target
+      @direct_gem_versions_in_target ||= read_direct_gem_versions_from_target_lockfile
+    end
+
     # Returns the names of the target's gems that are sourced from a local path
     # (i.e. `path:` dependencies and the project's own gem when the `Gemfile`
     # uses `gemspec`), whose code therefore lives in the project itself.
@@ -415,6 +423,15 @@ module RuboCop
       return nil unless lockfile_path
 
       Lockfile.new(lockfile_path).gem_versions
+    end
+
+    # @returns [Hash{String => Gem::Version}, nil] The locked versions of the directly
+    #   depended-on gems, keyed by the gems' names.
+    def read_direct_gem_versions_from_target_lockfile
+      lockfile_path = bundler_lock_file_path
+      return nil unless lockfile_path
+
+      Lockfile.new(lockfile_path).gem_versions(include_transitive_dependencies: false)
     end
 
     # @returns [Array<String>, nil] The names of the gems sourced from a local path.
