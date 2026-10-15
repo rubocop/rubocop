@@ -2446,6 +2446,71 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_no_corrections
         end
       end
+
+      context 'when `Layout/SpaceInsideArrayLiteralBrackets` uses the `compact` style' do
+        let(:other_cops) do
+          {
+            'Layout/SpaceInsideArrayLiteralBrackets' => {
+              'Enabled' => true, 'EnforcedStyle' => 'compact'
+            }
+          }
+        end
+
+        it 'does not break before the first element when it is an array literal' do
+          expect_offense(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [[1, 2], [3, 4]]
+                                                    ^^^^^^^^^^^^^^^^ Line is too long. [56/40]
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'breaks before the first element when it is not an array literal' do
+          expect_offense(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [1, [3, 4]]
+                                                    ^^^^^^^^^^^ Line is too long. [51/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [
+            1, [3, 4]]
+          RUBY
+        end
+
+        it 'breaks before a later element of a nested array' do
+          expect_offense(<<~RUBY)
+            [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]]
+                                                    ^^^^^^^^^^^ Line is too long. [51/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [[1, 2], [3, 4], [5, 6], [7, 8],#{trailing_whitespace}
+            [9, 10], [11, 12]]
+          RUBY
+        end
+      end
+
+      context 'when `Layout/SpaceInsideArrayLiteralBrackets` uses the `no_space` style' do
+        let(:other_cops) do
+          {
+            'Layout/SpaceInsideArrayLiteralBrackets' => {
+              'Enabled' => true, 'EnforcedStyle' => 'no_space'
+            }
+          }
+        end
+
+        it 'breaks before the first element when it is an array literal' do
+          expect_offense(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [[1, 2], [3, 4]]
+                                                    ^^^^^^^^^^^^^^^^ Line is too long. [56/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [
+            [1, 2], [3, 4]]
+          RUBY
+        end
+      end
     end
 
     context 'breakable collection' do

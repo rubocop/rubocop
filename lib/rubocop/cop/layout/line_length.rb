@@ -208,6 +208,7 @@ module RuboCop
         def check_for_breakable_node(node)
           breakable_node = extract_breakable_node(node, max)
           return if breakable_node.nil?
+          return if compact_nested_array_break?(node, breakable_node)
 
           line_index = breakable_node.first_line - 1
           range = breakable_node.source_range
@@ -216,6 +217,20 @@ module RuboCop
           return if existing
 
           breakable_range_by_line_index[line_index] = range
+        end
+
+        def compact_nested_array_break?(node, breakable_node)
+          return false if !node.array_type? || !node.square_brackets?
+          return false unless breakable_node.equal?(node.children.first)
+          return false unless breakable_node.source.start_with?('[')
+
+          compact_array_brackets_enforced?
+        end
+
+        def compact_array_brackets_enforced?
+          return false unless config.cop_enabled?('Layout/SpaceInsideArrayLiteralBrackets')
+
+          config.for_cop('Layout/SpaceInsideArrayLiteralBrackets')['EnforcedStyle'] == 'compact'
         end
 
         def check_for_breakable_semicolons(processed_source)

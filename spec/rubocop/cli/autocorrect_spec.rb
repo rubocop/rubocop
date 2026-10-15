@@ -931,6 +931,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/LineLength` with `EnforcedStyle: compact` of `Layout/SpaceInsideArrayLiteralBrackets` when the first element is an array literal' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 40
+      Layout/SpaceInsideArrayLiteralBrackets:
+        EnforcedStyle: compact
+    YAML
+    create_file('example.rb', <<~RUBY)
+      do_something(foooooooooooooo) if bar == [[1, 2], [3, 4]]
+    RUBY
+
+    status = cli.run(['-A', '--only', 'Layout/LineLength,Layout/SpaceInsideArrayLiteralBrackets'])
+
+    expect(status).to eq(1)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(foooooooooooooo) if bar == [[ 1, 2 ], [ 3, 4 ]]
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
