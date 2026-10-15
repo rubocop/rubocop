@@ -122,6 +122,7 @@ module RuboCop
         def on_new_investigation
           @breakable_range_by_line_index = {}
           @breakable_string_delimiters = {}
+          @breakable_strings = {}
           @endless_methods_by_line = {}
           @heredocs = nil
 
@@ -238,6 +239,7 @@ module RuboCop
           breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
         end
 
+        # rubocop:disable-next Metrics/AbcSize
         def check_for_breakable_str(node)
           line_index = node.loc.line - 1
           return if breakable_range_by_line_index[line_index]
@@ -248,6 +250,7 @@ module RuboCop
 
           breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
           breakable_string_delimiters[line_index] = delimiter
+          breakable_strings[line_index] = node
         end
 
         def check_for_breakable_dstr(node) # rubocop:disable Metrics/AbcSize
@@ -423,6 +426,10 @@ module RuboCop
           @breakable_string_delimiters ||= {}
         end
 
+        def breakable_strings
+          @breakable_strings ||= {}
+        end
+
         def heredocs
           @heredocs ||= extract_heredocs(processed_source.ast)
         end
@@ -479,8 +486,36 @@ module RuboCop
                           "\n"
                         end
 
-            corrector.insert_before(breakable_range, insertion) unless breakable_range.nil?
+            break_ranges(line_index).each do |range|
+              corrector.insert_before(range, insertion)
+            end
           end
+        end
+
+        def break_ranges(line_index)
+          return [] if breakable_range.nil?
+          return [breakable_range] unless (node = breakable_strings[line_index])&.loc?(:end)
+
+          string_break_ranges(node, breakable_string_delimiters[line_index])
+        end
+
+        def string_break_ranges(node, delimiter)
+          ranges = [breakable_range]
+          pos = breakable_range.begin_pos
+
+          while (pos = next_string_break_position(node, pos, delimiter))
+            ranges << range_between(pos, pos + 1)
+          end
+
+          ranges
+        end
+
+        def next_string_break_position(node, pos, delimiter)
+          rest = parse("#{delimiter}#{node.source_range.with(begin_pos: pos).source}").ast
+          return unless rest&.str_type?
+          return unless (rest_pos = breakable_string_position(rest))
+
+          pos + rest_pos - delimiter.length
         end
 
         def excess_range(uri_range, line, line_index)
