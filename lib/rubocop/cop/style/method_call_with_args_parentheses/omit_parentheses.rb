@@ -30,7 +30,7 @@ module RuboCop
 
           private
 
-          def omit_parentheses(node) # rubocop:disable Metrics/PerceivedComplexity
+          def omit_parentheses(node) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
             return unless node.parenthesized?
             return if inside_endless_method_def?(node)
             return if require_parentheses_for_hash_value_omission?(node)
@@ -42,6 +42,7 @@ module RuboCop
             return if allowed_string_interpolation_method_call?(node)
             return if code_after_closing_parenthesis_on_its_own_line?(node)
             return if comment_before_first_argument?(node)
+            return if args_parenthesized?(node)
 
             (@pending_omit_offenses ||= []) << node
           end
