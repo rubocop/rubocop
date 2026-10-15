@@ -590,6 +590,14 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           end
         end
 
+        context 'when the inline table uses `:` instead of `=`' do
+          let(:mise_toml) { ['[tools]', 'ruby = { version: "3.3.1", lazy: true }'] }
+
+          it 'uses the default ruby version' do
+            expect(target_ruby.version).to eq default_version
+          end
+        end
+
         context 'when the inline table has no version' do
           let(:mise_toml) { ['[tools]', 'ruby = { lazy = true }'] }
 

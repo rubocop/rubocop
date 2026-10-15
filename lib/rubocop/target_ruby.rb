@@ -223,7 +223,7 @@ module RuboCop
       end
 
       def pattern
-        /^ruby = (?:\{[^}]*\bversion\s*[=:]\s*)?["'](?<version>\d+\.\d+)/.freeze
+        /^ruby = (?:\{[^}]*\bversion\s*=\s*)?["'](?<version>\d+\.\d+)/.freeze
       end
     end
 
