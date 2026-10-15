@@ -126,9 +126,15 @@ module RuboCop
         def autocorrect(corrector, node, previous_older_sibling)
           range1 = range_with_comments_and_lines(previous_older_sibling)
           range2 = range_with_comments_and_lines(node.parent.if_type? ? node.parent : node)
+          source = range2.source
+
+          unless source.end_with?("\n")
+            source += "\n"
+            range2 = range2.with(begin_pos: range2.begin_pos - 1)
+          end
 
           corrector.remove(range2)
-          corrector.insert_before(range1, range2.source)
+          corrector.insert_before(range1.begin, source)
         end
 
         def search_node(node)
