@@ -149,11 +149,25 @@ module RuboCop
 
         # Whether the index can be trusted to list everything the namespace
         # defines. A name missing from an incomplete member list is not
-        # evidence of a typo, so both gaps have to be ruled out first:
+        # evidence of a typo, so every gap has to be ruled out first:
         # an ancestor that does not resolve may contribute the name, and so
-        # may a gem that reopens the namespace.
+        # may a gem that reopens the namespace or an RBS signature that does
+        # not declare all of it.
         def complete_index_members?(declaration)
-          fully_resolved_index_ancestry?(declaration) && !gem_owned_namespace?(declaration)
+          fully_resolved_index_ancestry?(declaration) &&
+            !gem_owned_namespace?(declaration) &&
+            !signature_only_namespace?(declaration)
+        end
+
+        # Whether everything the index knows about the namespace comes from RBS
+        # signatures (or Rubydex's built-in stubs) rather than from Ruby source.
+        # Ruby's core and standard library reach the index that way, and those
+        # signatures are curated rather than derived: they lag the implementation
+        # (`Net::HTTPClientException` is missing while its deprecated alias
+        # `HTTPServerException` is declared) and cannot show what a gem adds to a
+        # stdlib namespace at runtime.
+        def signature_only_namespace?(declaration)
+          declaration.definitions.none? { |definition| ruby_definition?(definition) }
         end
 
         # Whether the namespace's root segment names a gem in the bundle,
@@ -205,8 +219,7 @@ module RuboCop
           declaration = resolve_constant_in_index(node.receiver)
           return nil unless declaration.is_a?(Rubydex::Namespace)
           return nil if responds_in_index?(declaration, node.method_name.to_s, base)
-          return nil unless fully_resolved_index_ancestry?(declaration)
-          return nil if gem_owned_namespace?(declaration)
+          return nil unless complete_index_members?(declaration)
 
           declaration
         end
