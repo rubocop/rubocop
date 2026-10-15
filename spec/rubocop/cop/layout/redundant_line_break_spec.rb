@@ -516,6 +516,10 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
+      it 'accepts a string concatenation that is too long only when tabs are counted' do
+        expect_no_offenses("\t\tfoo('aaaaaaaaaaa' \\\n\t\t  'bbbbbbbbbb')\n")
+      end
+
       it 'accepts a quoted symbol with a single newline' do
         expect_no_offenses(<<~RUBY)
           foo(:"
