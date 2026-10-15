@@ -136,6 +136,7 @@ module RuboCop
         extend AutoCorrector
 
         include ConfigurableEnforcedStyle
+        include EndlessMethodBodyHelp
         include RangeHelp
 
         GROUP_STYLE_MESSAGE = [
@@ -252,8 +253,23 @@ module RuboCop
 
             access_modifier_is_inlined?(node) && !right_siblings_same_inline_method?(node)
           else
-            access_modifier_is_not_inlined?(node) && select_grouped_def_nodes(node).any?
+            access_modifier_is_not_inlined?(node) && inlinable?(select_grouped_def_nodes(node))
           end
+        end
+
+        # `private def foo = bar baz` parses only on Ruby 4.0+.
+        def inlinable?(def_nodes)
+          return false if def_nodes.empty?
+          return true if target_ruby_version >= 4.0
+
+          def_nodes.none? { |def_node| def_node.endless? && command_body?(def_node.body) }
+        end
+
+        def command_body?(body)
+          body = body.body while body.rescue_type?
+          return true if body.send_type? && body.prefix_not? && !body.parenthesized?
+
+          command_call?(body)
         end
 
         def correctable_group_offense?(node)

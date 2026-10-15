@@ -1434,6 +1434,87 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
           end
         RUBY
       end
+
+      it 'registers an offense only for the outer call when an assignment used as an argument assigns a call' do
+        expect_offense(<<~RUBY)
+          do_something(x = bar(1))
+                      ^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          do_something(x += bar(1))
+                      ^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          do_something(x ||= bar(1))
+                      ^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          do_something(x.y = bar(1))
+                      ^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          do_something(x = y = bar(1))
+                      ^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          do_something(x = bar(1) rescue nil)
+                      ^^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something x = bar(1)
+          do_something x += bar(1)
+          do_something x ||= bar(1)
+          do_something x.y = bar(1)
+          do_something x = y = bar(1)
+          do_something x = bar(1) rescue nil
+        RUBY
+      end
+
+      it 'accepts parens for the value of an assignment with a block used as an argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something(x = bar(1) do
+          end)
+        RUBY
+      end
+
+      it 'accepts parens for the value of an assignment used as an array element or a hash value' do
+        expect_no_offenses(<<~RUBY)
+          [x = bar(1)]
+          { key: x = bar(1) }
+        RUBY
+      end
+
+      it 'accepts parens for the value of an assignment used as an operand' do
+        expect_no_offenses(<<~RUBY)
+          foo && x = bar(1)
+          not x = bar(1)
+          1..x = bar(1)
+        RUBY
+      end
+
+      it 'accepts parens for the value of an assignment used as a default argument' do
+        expect_no_offenses(<<~RUBY)
+          def foo(arg = x = bar(1))
+          end
+        RUBY
+      end
+
+      it 'accepts parens for the value of an assignment used as a `return` value' do
+        expect_no_offenses(<<~RUBY)
+          return x = bar(1)
+        RUBY
+      end
+
+      it 'accepts parens for the value of an assignment used as the value of a multiple assignment' do
+        expect_no_offenses(<<~RUBY)
+          a, b = x = bar(1)
+        RUBY
+      end
+
+      it 'registers an offense for the value of chained assignments used as a statement' do
+        expect_offense(<<~RUBY)
+          x = y += bar(1)
+                      ^^^ Omit parentheses for method calls with arguments.
+          a, b = bar(1)
+                    ^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = y += bar 1
+          a, b = bar 1
+        RUBY
+      end
     end
 
     context 'allowing parens in multi-line calls' do

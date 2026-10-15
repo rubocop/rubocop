@@ -373,6 +373,54 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
       end
     end
 
+    context 'when the project root is known' do
+      let(:project_root) { File.expand_path('example') }
+      let(:content) do
+        <<~HEREDOC
+          Gem::Specification.new do |s|
+            s.name = 'test'
+            s.required_ruby_version = '~> 3.2.0'
+          end
+        HEREDOC
+      end
+
+      before { RuboCop::ConfigFinder.project_root = project_root }
+
+      after { RuboCop::ConfigFinder.project_root = nil }
+
+      it 'does not use a gemspec above the project root' do
+        create_file(File.join(File.dirname(project_root), 'other.gemspec'), content)
+
+        expect(target_ruby.version).to eq default_version
+      end
+
+      context 'when the configuration is in a subdirectory of the project root' do
+        let(:loaded_path) { 'example/sub/.rubocop.yml' }
+
+        it 'uses the gemspec in the project root' do
+          create_file(File.join(project_root, 'example.gemspec'), content)
+
+          expect(target_ruby.version).to eq 3.2
+        end
+      end
+    end
+
+    context 'when a directory searched for a gemspec cannot be listed' do
+      let(:unlistable_dir) do
+        File.dirname(File.expand_path(configuration.base_dir_for_path_parameters))
+      end
+
+      it 'treats it as having no gemspec' do
+        allow(Pathname).to receive(:glob).and_wrap_original do |original, pattern|
+          raise Errno::EPERM, unlistable_dir if pattern == "#{unlistable_dir}/*.gemspec"
+
+          original.call(pattern)
+        end
+
+        expect(target_ruby.version).to eq default_version
+      end
+    end
+
     context 'when .ruby-version is present' do
       before do
         dir = configuration.base_dir_for_path_parameters
@@ -418,6 +466,19 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         let(:ruby_version) { 'system' }
 
         it 'uses the default target ruby version' do
+          expect(target_ruby.version).to eq default_version
+        end
+      end
+
+      context 'when .ruby-version cannot be read' do
+        let(:ruby_version) { '2.4.10' }
+
+        it 'uses the default target ruby version' do
+          allow(File).to receive(:read).and_call_original
+          allow(File).to receive(:read).with(
+            a_string_ending_with('.ruby-version')
+          ).and_raise(Errno::EPERM)
+
           expect(target_ruby.version).to eq default_version
         end
       end
@@ -644,6 +705,16 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
                 1.16.1
             HEREDOC
             create_file(lock_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
+
+          it "uses the default Ruby when #{file_name} cannot be read" do
+            create_file(lock_file_path, ['RUBY VERSION', '  ruby 2.0.0p0'])
+            allow(File).to receive(:foreach).and_call_original
+            allow(File).to receive(:foreach).with(
+              a_string_ending_with(file_name)
+            ).and_raise(Errno::EPERM)
+
             expect(target_ruby.version).to eq default_version
           end
         end

@@ -150,7 +150,7 @@ module RuboCop
         # is the last element and spans multiple lines, the trailing comma lands between the literal
         # and the `.freeze` appended in the same pass.
         def self.autocorrect_incompatible_with
-          [Style::TrailingCommaInArrayLiteral, Style::TrailingCommaInHashLiteral]
+          [Style::HashAsLastArrayItem, Style::TrailingCommaInArrayLiteral, Style::TrailingCommaInHashLiteral]
         end
 
         def on_casgn(node)

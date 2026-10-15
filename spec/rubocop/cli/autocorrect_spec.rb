@@ -1808,6 +1808,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/FirstArrayElementLineBreak` with `EnforcedStyle: compact` of `Layout/SpaceInsideArrayLiteralBrackets`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceInsideArrayLiteralBrackets:
+        EnforcedStyle: compact
+    YAML
+    create_file('example.rb', <<~RUBY)
+      x = [
+        [1, 2],
+        [3, 4]
+      ]
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only',
+          'Layout/FirstArrayElementLineBreak,Layout/SpaceInsideArrayLiteralBrackets'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      x = [[ 1, 2 ],
+        [ 3, 4 ]]
+    RUBY
+  end
+
   it 'corrects `Style/SoleNestedConditional` with `Style/InverseMethods` and `Style/IfUnlessModifier`' do
     source = <<~RUBY
       unless foo.to_s == 'foo'
@@ -4941,6 +4967,52 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Recursive: true` of `Style/MutableConstant` with `Style/HashAsLastArrayItem` (`EnforcedStyle: no_braces`)' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MutableConstant:
+        Recursive: true
+      Style/HashAsLastArrayItem:
+        EnforcedStyle: no_braces
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      FOO = [bar, {baz: []}]
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Style/MutableConstant,Style/HashAsLastArrayItem']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      FOO = [bar, { baz: [].freeze }.freeze].freeze
+    RUBY
+  end
+
+  it 'corrects `Recursive: true` of `Style/MutableConstant` with `Style/HashAsLastArrayItem` (`EnforcedStyle: braces`)' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MutableConstant:
+        Recursive: true
+      Style/HashAsLastArrayItem:
+        EnforcedStyle: braces
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      FOO = [bar, baz: []]
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Style/MutableConstant,Style/HashAsLastArrayItem']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      FOO = [bar, {baz: [].freeze}.freeze].freeze
+    RUBY
+  end
+
   it 'corrects TrailingCommaIn(Array|Hash)Literal and Multiline(Array|Hash)BraceLayout offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/TrailingCommaInArrayLiteral:
@@ -5502,6 +5574,19 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     expect(source_file.read).to eq(<<~RUBY)
       obj.count { |i| foo(i) } / bar.to_f
+    RUBY
+  end
+
+  it 'corrects `Layout/SingleLineBlockChain` with `Style/RedundantSort`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x = obj.sort { |a, b| a <=> b }.first if foo
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/SingleLineBlockChain,Style/RedundantSort'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      x = obj.min { |a, b| a <=> b } if foo
     RUBY
   end
 

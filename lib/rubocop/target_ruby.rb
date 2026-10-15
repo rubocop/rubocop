@@ -100,15 +100,23 @@ module RuboCop
       def gemspec_filepath
         return @gemspec_filepath if defined?(@gemspec_filepath)
 
-        @gemspec_filepath =
-          @config.traverse_directories_upwards(@config.base_dir_for_path_parameters) do |dir|
-            # NOTE: Can't use `dir.glob` because of JRuby 9.4.8.0 incompatibility:
-            # https://github.com/jruby/jruby/issues/8358
-            candidates = Pathname.glob("#{dir}/*.gemspec")
-            # Bundler will use a gemspec whatever the filename is, as long as its the only one in
-            # the folder.
-            break candidates.first if candidates.one?
-          end
+        @gemspec_filepath = @config.traverse_directories_upwards(
+          @config.base_dir_for_path_parameters, ConfigFinder.project_root
+        ) do |dir|
+          candidates = gemspec_candidates(dir)
+
+          # Bundler will use a gemspec whatever the filename is, as long as its the only one in
+          # the folder.
+          break candidates.first if candidates.one?
+        end
+      end
+
+      def gemspec_candidates(dir)
+        # NOTE: Can't use `dir.glob` because of JRuby 9.4.8.0 incompatibility:
+        # https://github.com/jruby/jruby/issues/8358
+        Pathname.glob("#{dir}/*.gemspec")
+      rescue SystemCallError
+        []
       end
 
       def version_from_gemspec_file(file)
@@ -179,6 +187,8 @@ module RuboCop
         return unless file && File.file?(file)
 
         File.read(file).match(pattern) { |md| md[:version].to_f }
+      rescue SystemCallError
+        nil
       end
 
       def version_file
@@ -250,6 +260,8 @@ module RuboCop
           result = line.match(/^\s*ruby\s+(\d+\.\d+)[p.\d]*\s*$/)
           return result.captures.first.to_f if result
         end
+      rescue SystemCallError
+        nil
       end
 
       def bundler_lock_file_path

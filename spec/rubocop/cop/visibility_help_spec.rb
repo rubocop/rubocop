@@ -117,5 +117,18 @@ RSpec.describe RuboCop::Cop::VisibilityHelp do
 
       it { is_expected.to eq(:private) }
     end
+
+    context 'with inline private with symbols' do
+      let(:source) do
+        <<~RUBY
+          class A
+            def x; end
+            private :w, :x, :y
+          end
+        RUBY
+      end
+
+      it { is_expected.to eq(:private) }
+    end
   end
 end
