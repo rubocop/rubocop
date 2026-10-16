@@ -77,24 +77,40 @@ module RuboCop
           return unless child_node.modifier_form?
 
           add_offense(node, message: MSG_TRAILING_CONDITIONAL) do |corrector|
-            next if trailing_conditional_in_condition?(child_node)
+            next if nested_trailing_conditional?(child_node)
 
             autocorrect_to_ternary(corrector, child_node)
           end
         end
 
-        def trailing_conditional_in_condition?(if_node)
-          if_node.condition.each_descendant(:if).any? do |node|
+        def nested_trailing_conditional?(if_node)
+          if_node.each_descendant(:if).any? do |node|
             node.modifier_form? && node.parent.parent&.type?(*INTERPOLATED_TYPES)
           end
         end
 
         def autocorrect_to_ternary(corrector, if_node)
-          branch = if_node.if_branch
-          prefix, suffix = if_node.unless? ? ["'' : ", ''] : ['', " : ''"]
+          condition = if_node.condition.source
+          branch = ternary_branch_source(if_node.if_branch)
+          outcomes = if_node.unless? ? "'' : #{branch}" : "#{branch} : ''"
 
-          corrector.insert_before(branch, "#{if_node.condition.source} ? #{prefix}")
-          corrector.replace(branch.source_range.end.join(if_node.source_range.end), suffix)
+          corrector.replace(if_node, "#{condition} ? #{outcomes}")
+        end
+
+        def ternary_branch_source(branch)
+          return branch.source unless command_call?(branch)
+
+          arguments = branch.first_argument.source_range.join(branch.last_argument.source_range)
+          method = branch.source_range.begin.join(arguments.begin).source.rstrip
+
+          "#{method}(#{arguments.source})"
+        end
+
+        def command_call?(node)
+          return false unless node.type?(:call, :super, :yield) && node.arguments?
+          return false if node.call_type? && (node.operator_method? || node.setter_method?)
+
+          !node.parenthesized?
         end
 
         def empty_if_outcome?(node)
