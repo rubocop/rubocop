@@ -8,7 +8,11 @@ gem 'asciidoctor'
 gem 'bump', require: false
 gem 'fiddle', platform: :windows if RUBY_VERSION >= '3.4'
 gem 'irb'
-gem 'mcp', '~> 1.0'
+# FIXME: mcp 1.8.0 makes Ruby 2.7 print a keyword argument deprecation warning for every
+# stdio request, which fails the MCP server specs that expect a silent stderr.
+# Remove the exclusion once 1.8.1 ships the fix.
+# https://github.com/modelcontextprotocol/ruby-sdk/pull/621
+gem 'mcp', '~> 1.0', '!= 1.8.0'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
 gem 'rake', '~> 13.0'
 # FIXME: rdoc 8.0+ depends on rbs, whose released C extension fails to build on JRuby.
