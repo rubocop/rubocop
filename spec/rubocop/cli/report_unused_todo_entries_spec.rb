@@ -83,7 +83,10 @@ RSpec.describe 'RuboCop::CLI --report-unused-todo-entries', :isolated_environmen
       'spec/**/*.rb',
       'spec/nested/{clean,offending}_spec.rb',
       'spec/nested/offending_spec.?b',
-      'spec/nested/[co]*_spec.rb'
+      'spec/nested/[co]*_spec.rb',
+      '**/nested/*_spec.rb',
+      'spec/*/offending_spec.rb',
+      '{lib,spec}/nested/*_spec.rb'
     ].each do |glob|
       context "with #{glob.inspect}" do
         let(:pattern) { glob }

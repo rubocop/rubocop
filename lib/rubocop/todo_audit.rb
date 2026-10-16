@@ -75,19 +75,29 @@ module RuboCop
       files = File.file?(absolute_path) ? [absolute_path] : []
       return files unless PathUtil.glob?(path)
 
-      files | target_files(absolute_path).select do |file|
+      files | target_files(path).select do |file|
         PathUtil.match_path?(absolute_path, file)
       end
     end
 
+    # Scan from the longest glob-free prefix of the entry as written, so a
+    # glob in any directory segment (e.g. `**/models/*.rb`) is covered.
+    # Only the entry's own segments are inspected; metacharacters in the
+    # todo file's parent directories never move the scan root.
     def target_files(path)
-      directory = File.dirname(path)
-      # Only the basename can be a glob segment; climbing on parent-path
-      # metacharacters would scan unrelated roots (e.g. `/Users/me`).
-      directory = File.dirname(directory) while PathUtil.glob?(File.basename(directory))
+      directory = scan_root(path)
       @target_files ||= {}
       @target_files[directory] ||= TargetFinder.new(@config_store, @options)
                                                .target_files_in_dir(directory)
+    end
+
+    def scan_root(path)
+      segments = path.split('/', -1)
+      literal = segments.take_while { |segment| !PathUtil.glob?(segment) }
+      literal = segments[0...-1] if literal.size == segments.size
+      prefix = literal.join('/')
+      prefix = '/' if prefix.empty? && path.start_with?('/')
+      absolute(prefix.empty? ? '.' : prefix)
     end
 
     def inspect_file(file)
