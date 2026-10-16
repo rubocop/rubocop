@@ -128,7 +128,7 @@ module RuboCop
             if child_node.lvar_type?
               parent_node = child_node.parent
               if parent_node.respond_to?(:value_omission?) && parent_node.value_omission?
-                corrector.insert_after(parent_node.loc.operator, " #{preferred_name}")
+                corrector.replace(parent_node.loc.operator, ": #{preferred_name}")
               else
                 corrector.replace(child_node, preferred_name)
               end

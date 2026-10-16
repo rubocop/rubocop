@@ -357,6 +357,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: hash_rockets` of `Style/HashSyntax` with `Naming/RescuedExceptionsVariableName` for an omitted hash value' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+      Style/HashSyntax:
+        EnforcedStyle: hash_rockets
+    YAML
+    create_file('example.rb', <<~RUBY)
+      begin
+      rescue => error
+        do_something(error:)
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect-all', '--only', 'Naming/RescuedExceptionsVariableName,Style/HashSyntax']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      begin
+      rescue => e
+        do_something(:error => e)
+      end
+    RUBY
+  end
+
   it 'does not correct `AllowInMultilineConditions: true` of `Style/ParenthesesAroundCondition` with `Style/RedundantParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/ParenthesesAroundCondition:
