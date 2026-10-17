@@ -306,6 +306,8 @@ module RuboCop
         end
 
         def move_comment_before_block(corrector, comment, block_node, closing_brace)
+          return if directive_comment?(comment)
+
           range = block_node.chained? ? end_of_chain(block_node.parent).source_range : closing_brace
 
           # It is possible that there is code between the block and the comment
@@ -317,6 +319,10 @@ module RuboCop
           corrector.insert_after(pre_comment_range, "\n")
 
           corrector.insert_before(block_node, "#{comment.text}\n")
+        end
+
+        def directive_comment?(comment)
+          comment.text.match?(DirectiveComment::DIRECTIVE_COMMENT_REGEXP)
         end
 
         def source_range_before_comment(range, comment)

@@ -871,6 +871,19 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'keeps a directive comment after the closing brace in place' do
+        expect_offense(<<~RUBY)
+          baz.map { |x|
+                  ^ Avoid using `{...}` for multi-line blocks.
+          foo(x) }.max # rubocop:disable Style/ItBlockParameter
+        RUBY
+
+        expect_correction(<<~RUBY)
+          baz.map do |x|
+          foo(x) end.max # rubocop:disable Style/ItBlockParameter
+        RUBY
+      end
+
       it 'registers an offense when there is a comment after the closing brace and block body is empty' do
         expect_offense(<<~RUBY)
           baz.map { |x|
