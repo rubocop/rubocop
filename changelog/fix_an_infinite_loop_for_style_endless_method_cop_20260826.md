@@ -1,0 +1,1 @@
+* [#15609](https://github.com/rubocop/rubocop/pull/15609): Fix an infinite loop for `Style/EndlessMethod` with `Style/AmbiguousEndlessMethodDefinition` when a method definition is followed by a modifier or an operator, such as `end if foo` or `end && foo`. ([@Starlexxx][])
