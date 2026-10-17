@@ -1855,6 +1855,24 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/EndlessMethod` with `EnforcedStyle: require_always` and `Style/RaiseArgs`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/EndlessMethod:
+        EnforcedStyle: require_always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      private def foo
+        raise(Error.new(self))
+      end
+    RUBY
+    expect(cli.run(['-A', '--only', 'Style/EndlessMethod,Style/RaiseArgs'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      private def foo = raise(Error, self)
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineHashBraceLayout` with `EnforcedStyle: same_line` and `Style/RedundantDoubleSplatHashBraces`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineHashBraceLayout:
