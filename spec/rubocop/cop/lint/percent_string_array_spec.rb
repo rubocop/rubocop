@@ -61,6 +61,92 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray, :config do
           %#{char}(foo bar baz)
         RUBY
       end
+
+      it 'adds an offense and corrects to an array literal when quoted strings contain whitespace' do
+        expect_offense(<<~RUBY)
+          %#{char}('foo bar', 'baz')
+          ^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quoted strings are split at whitespace; use an array literal instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ['foo bar', 'baz']
+        RUBY
+      end
+
+      it 'adds an offense and corrects to an array literal when a single quoted string contains whitespace' do
+        expect_offense(<<~RUBY)
+          %#{char}('foo != ""',)
+          ^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quoted strings are split at whitespace; use an array literal instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ['foo != ""',]
+        RUBY
+      end
+
+      it 'adds an offense and corrects to a multiline array literal when quoted strings contain whitespace' do
+        expect_offense(<<~RUBY)
+          %#{char}[
+          ^^^ Within `%w`/`%W`, quoted strings are split at whitespace; use an array literal instead.
+            'foo bar',
+            "baz qux"
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            'foo bar',
+            "baz qux"
+          ]
+        RUBY
+      end
+
+      it 'adds an offense without correction when a comma is missing between quoted strings' do
+        expect_offense(<<~RUBY)
+          %#{char}('foo bar' 'baz')
+          ^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quoted strings are split at whitespace; use an array literal instead.
+        RUBY
+
+        # Adjacent strings in an array literal would be concatenated into one.
+        expect_no_corrections
+      end
+
+      it 'adds an offense without correction when a value is not a quoted string' do
+        expect_offense(<<~RUBY)
+          %#{char}('foo bar', baz)
+          ^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quoted strings are split at whitespace; use an array literal instead.
+        RUBY
+
+        # An unquoted value in an array literal would be a method call.
+        expect_no_corrections
+      end
+
+      it 'adds an offense without correction when the content does not read as an array literal' do
+        expect_offense(<<~RUBY)
+          %#{char}{'foo'] + ['bar baz'}
+          ^^^^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quoted strings are split at whitespace; use an array literal instead.
+        RUBY
+
+        # Wrapped in brackets, the content reads as an expression other than an array literal.
+        expect_no_corrections
+      end
+
+      it 'adds an offense without correction when the content contains a comment' do
+        expect_offense(<<~RUBY)
+          %#{char}[
+          ^^^ Within `%w`/`%W`, quoted strings are split at whitespace; use an array literal instead.
+            'foo bar', # baz
+            'qux'
+          ]
+        RUBY
+
+        # The comment in an array literal would swallow the values after it on the same line.
+        expect_no_corrections
+      end
+
+      it 'accepts an unclosed quote without a closing quote in a later token' do
+        expect_no_offenses("%#{char}('tis foo bar)")
+      end
     end
   end
 
