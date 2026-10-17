@@ -80,6 +80,90 @@ RSpec.describe RuboCop::Plugin::ConfigurationIntegrator, :isolated_environment d
       end
     end
 
+    # Not `default_configuration = nil`: the describe-level `after` would then rebuild the defaults
+    # while `ConfigObsoletion.files` is still stubbed, caching these rules for later specs.
+    context 'when a plugin configuration contains an obsolete cop name',
+            :mock_obsoletion, :restore_configuration do
+      let(:rubocop_config) { RuboCop::Config.new }
+      let(:fake_plugin) do
+        Class.new(LintRoller::Plugin) do
+          def about
+            LintRoller::About.new(name: 'rubocop-fake')
+          end
+
+          def rules(_context)
+            LintRoller::Rules.new(type: :path, config_format: :rubocop, value: 'default.yml')
+          end
+        end
+      end
+      let(:plugins) { [fake_plugin.new] }
+
+      before do
+        create_file(obsoletion_configuration_path, <<~YAML)
+          renamed:
+            Lint/ErrorCop: Lint/NewErrorCop
+            Lint/WarningCop:
+              new_name: Lint/NewWarningCop
+              severity: warning
+          extracted:
+            Foo/*: rubocop-foo
+        YAML
+      end
+
+      context 'when the obsoletion is a warning' do
+        before do
+          create_file('default.yml', <<~YAML)
+            Lint/WarningCop:
+              Enabled: false
+          YAML
+        end
+
+        it 'warns, naming the plugin and its configuration file' do
+          integrated_config
+
+          expect($stderr.string).to include(
+            "Warning: obsolete configuration found in the `rubocop-fake` plugin:\n" \
+            "The `Lint/WarningCop` cop has been renamed to `Lint/NewWarningCop`.\n" \
+            '(obsolete configuration found in default.yml, please update it)'
+          )
+        end
+      end
+
+      context 'when the obsoletion is an error' do
+        before do
+          create_file('default.yml', <<~YAML)
+            Lint/ErrorCop:
+              Enabled: false
+          YAML
+        end
+
+        it 'warns instead of raising, naming the plugin and its configuration file' do
+          expect { integrated_config }.not_to raise_error
+
+          expect($stderr.string).to include(
+            "Warning: obsolete configuration found in the `rubocop-fake` plugin:\n" \
+            "The `Lint/ErrorCop` cop has been renamed to `Lint/NewErrorCop`.\n" \
+            '(obsolete configuration found in default.yml, please update it)'
+          )
+        end
+      end
+
+      context 'when the obsoletion is a cop extracted to a gem' do
+        before do
+          create_file('default.yml', <<~YAML)
+            Foo/Bar:
+              Enabled: false
+          YAML
+        end
+
+        it 'does not warn, since the gem may be a plugin that has not loaded yet' do
+          integrated_config
+
+          expect($stderr.string).not_to include('obsolete configuration')
+        end
+      end
+    end
+
     context 'when a plugin declares a custom `AllCops` key alongside another plugin' do
       let(:rubocop_config) { RuboCop::Config.new }
       let(:declaring_plugin) do
