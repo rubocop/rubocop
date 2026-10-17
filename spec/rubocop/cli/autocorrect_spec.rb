@@ -642,6 +642,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/HeredocMethodCallPosition` with `Style/MethodCallWithArgsParentheses`' do
+    create_file('example.rb', <<~RUBY)
+      App.info '', <<~EOS
+        text
+      EOS
+        .indent(2)
+    RUBY
+
+    expect(cli.run([
+                     '--autocorrect-all', '--only',
+                     'Lint/HeredocMethodCallPosition,Style/MethodCallWithArgsParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      App.info('', <<~EOS.indent(2))
+        text
+      EOS
+    RUBY
+  end
+
   it 'corrects `Style/CombinableLoops` with `Layout/RedundantLineBreak`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/RedundantLineBreak:
