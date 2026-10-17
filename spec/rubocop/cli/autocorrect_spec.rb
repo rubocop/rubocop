@@ -2059,6 +2059,40 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/SymbolProc` with `EnforcedStyleForMultiline: consistent_comma` of `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo(bar,
+          baz) { |x| x.do_something }
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/SymbolProc,Style/TrailingCommaInArguments'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(bar,
+          baz, &:do_something)
+    RUBY
+  end
+
+  it 'corrects `Style/SymbolProc` with `EnforcedStyleForMultiline: no_comma` of `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: no_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo(bar,
+          baz,) { |x| x.do_something }
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/SymbolProc,Style/TrailingCommaInArguments'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(bar,
+          baz, &:do_something)
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Lint/AmbiguousOperator`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
