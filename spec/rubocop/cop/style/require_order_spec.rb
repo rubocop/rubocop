@@ -65,6 +65,11 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
         require 'c'
       RUBY
     end
+
+    # `expect_offense` cannot express a source without a trailing newline.
+    it 'autocorrects when the last `require` has no trailing newline' do
+      expect(autocorrect_source("require 'b'\nrequire 'a'")).to eq("require 'a'\nrequire 'b'")
+    end
   end
 
   context 'when unsorted `require` has some inline comments' do
