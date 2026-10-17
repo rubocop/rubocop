@@ -83,7 +83,7 @@ module RuboCop
           control_op_condition(cond) do |first_child, rest_children|
             return if require_parentheses?(node, first_child)
             return if semicolon_separated_expressions?(first_child, rest_children)
-            return if modifier_op?(first_child)
+            return if modifier_op?(first_child) || first_child.masgn_type?
             return if parens_allowed?(cond)
 
             message = message(cond)

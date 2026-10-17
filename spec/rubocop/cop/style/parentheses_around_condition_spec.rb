@@ -256,6 +256,20 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       RUBY
     end
 
+    it 'accepts multiple assignment in `if` condition surrounded with parentheses' do
+      expect_no_offenses(<<~RUBY)
+        if (a, b = foo)
+        end
+      RUBY
+    end
+
+    it 'accepts multiple assignment in `while` condition surrounded with parentheses' do
+      expect_no_offenses(<<~RUBY)
+        while (a, b = foo)
+        end
+      RUBY
+    end
+
     context 'when `Lint/AssignmentInCondition` allows safe assignment' do
       let(:config) do
         RuboCop::Config.new(
