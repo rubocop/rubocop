@@ -24,6 +24,23 @@ RSpec.describe RuboCop::StringInterpreter do
       expect(described_class.interpret('\\\\u{0068 0068}')).to eq('\\u{0068 0068}')
     end
 
+    it 'handles single extended unicode codepoints' do
+      expect(described_class.interpret('\u{68}')).to eq('h')
+    end
+
+    it 'handles multiple extended unicode codepoints' do
+      expect(described_class.interpret('\u{68 69}')).to eq('hi')
+    end
+
+    it 'ignores surrounding whitespace in extended unicode escapes like Ruby' do
+      expect(described_class.interpret('\u{  41  }')).to eq('A')
+    end
+
+    it 'treats empty extended unicode escapes as empty like Ruby' do
+      expect(described_class.interpret('\u{}')).to eq('')
+      expect(described_class.interpret('\u{ }')).to eq('')
+    end
+
     it_behaves_like 'simple escape', '\\\\a'
     it_behaves_like 'simple escape', '\\\\b'
     it_behaves_like 'simple escape', '\\\\e'
