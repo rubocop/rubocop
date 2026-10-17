@@ -30,6 +30,10 @@ module RuboCop
 
         minimum_target_ruby_version 3.0
 
+        def self.autocorrect_incompatible_with
+          [Layout::MultilineMethodCallBraceLayout]
+        end
+
         # @!method redundant_unfreeze?(node)
         def_node_matcher :redundant_unfreeze?, <<~PATTERN
           {
