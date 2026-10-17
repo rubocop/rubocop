@@ -61,6 +61,28 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall, :config do
     end
   end
 
+  context 'with `initialize` ending with setter call on local object' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def initialize
+          top = Top.new
+          top.attr = 5
+        end
+      RUBY
+    end
+  end
+
+  context 'with setter method ending with setter call on local object' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def value=(value)
+          top = Top.new
+          top.attr = value
+        end
+      RUBY
+    end
+  end
+
   context 'with method ending with ivar assignment' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
