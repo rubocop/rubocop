@@ -13,6 +13,53 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolationUnfreeze, :config do
       RUBY
     end
 
+    it 'does not register an offense when a comment follows the opening parenthesis of `String.new`' do
+      expect_no_offenses(<<~'RUBY')
+        String.new( # comment
+          "#{foo} bar"
+        )
+      RUBY
+    end
+
+    it 'does not register an offense when a comment follows the string in `String.new`' do
+      expect_no_offenses(<<~'RUBY')
+        String.new(
+          "#{foo} bar" # comment
+        )
+      RUBY
+    end
+
+    it 'does not register an offense when a comment is between the string and `dup`' do
+      expect_no_offenses(<<~'RUBY')
+        "#{foo} bar" # comment
+          .dup
+      RUBY
+    end
+
+    it 'registers an offense when a comment is inside the interpolation' do
+      expect_offense(<<~'RUBY')
+        "#{foo # comment
+        } bar".dup
+               ^^^ Don't unfreeze interpolated strings as they are already unfrozen.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{foo # comment
+        } bar"
+      RUBY
+    end
+
+    it 'registers an offense when a comment follows the unfreezing call' do
+      expect_offense(<<~'RUBY')
+        String.new("#{foo} bar") # comment
+        ^^^^^^^^^^ Don't unfreeze interpolated strings as they are already unfrozen.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{foo} bar" # comment
+      RUBY
+    end
+
     it 'registers an offense for `@+` as a normal method call' do
       expect_offense(<<~'RUBY')
         "#{foo} bar".+@

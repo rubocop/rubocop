@@ -45,6 +45,7 @@ module RuboCop
         def on_dstr(node)
           return if uninterpolated_string?(node) || uninterpolated_heredoc?(node)
           return unless redundant_unfreeze?(node.parent)
+          return if comment_outside_string?(node)
 
           add_offense(offense_range(node.parent)) do |corrector|
             remove_unfreeze(corrector, node.parent, node)
@@ -66,6 +67,17 @@ module RuboCop
         def remove_unfreeze(corrector, node, string)
           corrector.remove(node.source_range.begin.join(string.source_range.begin))
           corrector.remove(string.source_range.end.join(node.source_range.end))
+        end
+
+        def comment_outside_string?(node)
+          call_range = node.parent.source_range
+          string_range = node.source_range
+
+          processed_source.comments.any? do |comment|
+            range = comment.source_range
+
+            call_range.contains?(range) && !string_range.contains?(range)
+          end
         end
       end
     end
