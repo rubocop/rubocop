@@ -101,10 +101,7 @@ module RuboCop
             return if exception.send_type? && exception.first_argument&.hash_type?
 
             add_offense(node, message: format(COMPACT_MSG, method: node.method_name)) do |corrector|
-              replacement = correction_exploded_to_compact(node)
-
-              corrector.replace(node, replacement)
-              opposite_style_detected
+              replace_raise(corrector, node, correction_exploded_to_compact(node))
             end
           else
             correct_style_detected
@@ -121,11 +118,20 @@ module RuboCop
           return if allowed_non_exploded_type?(first_arg)
 
           add_offense(node, message: format(EXPLODED_MSG, method: node.method_name)) do |corrector|
-            replacement = correction_compact_to_exploded(node)
-
-            corrector.replace(node, replacement)
-            opposite_style_detected
+            replace_raise(corrector, node, correction_compact_to_exploded(node))
           end
+        end
+
+        def replace_raise(corrector, node, replacement)
+          opposite_style_detected
+          return if inside_corrected_raise?(node)
+
+          corrector.replace(node, replacement)
+          ignore_node(node)
+        end
+
+        def inside_corrected_raise?(node)
+          node.each_ancestor(:send).any? { |ancestor| ignored_node?(ancestor) }
         end
 
         def use_new_method?(first_arg)
