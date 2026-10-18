@@ -149,6 +149,18 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     it 'accepts exception constructor with keyword arguments and message argument' do
       expect_no_offenses('raise MyKwArgError.new(a: 1, b: 2), message')
     end
+
+    it 'registers an offense and corrects a raise nested in the arguments of another raise' do
+      expect_offense(<<~'RUBY')
+        raise Foo, "#{fetch { raise Bar, 'bad' }}"
+                              ^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        raise Foo.new("#{fetch { raise Bar.new('bad') }}")
+      RUBY
+    end
   end
 
   context 'when enforced style is exploded' do
@@ -465,6 +477,18 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     it 'accepts a raise with 2 args' do
       expect_no_offenses('raise RuntimeError, msg')
+    end
+
+    it 'registers an offense and corrects a raise nested in the arguments of another raise' do
+      expect_offense(<<~'RUBY')
+        raise Foo.new("#{fetch { raise Bar.new('bad') }}")
+                                 ^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        raise Foo, "#{fetch { raise Bar, 'bad' }}"
+      RUBY
     end
 
     it 'accepts a raise when exception object is assigned to a local variable' do
