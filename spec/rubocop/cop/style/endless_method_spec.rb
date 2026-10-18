@@ -1312,6 +1312,73 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       RUBY
     end
 
+    it 'does not register an offense for a `do...end` block in a method definition passed as an argument' do
+      expect_no_offenses(<<~RUBY)
+        private def foo
+          bar do
+            baz
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a nested `do...end` block in a method definition passed as an argument' do
+      expect_no_offenses(<<~RUBY)
+        private def foo
+          obj.bar do
+            baz
+          end.qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a `do...end` block in a method definition passed as a parenthesized argument' do
+      expect_offense(<<~RUBY)
+        private(def foo
+                ^^^^^^^ Use endless method definitions.
+          bar do
+            baz
+          end
+        end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private(def foo = bar do
+            baz
+          end)
+      RUBY
+    end
+
+    it 'registers an offense for a `{...}` block in a method definition passed as an argument' do
+      expect_offense(<<~RUBY)
+        private def foo
+                ^^^^^^^ Use endless method definitions.
+          bar { baz }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private def foo = bar { baz }
+      RUBY
+    end
+
+    it 'registers an offense for a lambda literal with `do...end` in a method definition passed as an argument' do
+      expect_offense(<<~RUBY)
+        private def foo
+                ^^^^^^^ Use endless method definitions.
+          -> do
+            baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private def foo = -> do
+            baz
+          end
+      RUBY
+    end
+
     it 'does not register an offense for a negated command call' do
       expect_no_offenses(<<~RUBY)
         def foo

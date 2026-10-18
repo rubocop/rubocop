@@ -460,6 +460,14 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
           private def a(x) = bar(:baz, x)
         RUBY
       end
+
+      it 'corrects a method definition passed as an argument with a `do...end` block body to a normal method' do
+        expect_correction(<<~RUBY.strip, source: 'private def a; bar do baz end; end')
+          private def a;#{trailing_whitespace}
+                    bar do baz end;#{trailing_whitespace}
+                  end
+        RUBY
+      end
     end
 
     context 'with `allow_always` style' do
