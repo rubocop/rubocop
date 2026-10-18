@@ -877,6 +877,47 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
+      it "does not register an offense when #{access_modifier} groups an endless method with a `do...end` block body", :ruby34 do
+        expect_no_offenses(<<~RUBY)
+          class Test
+            #{access_modifier}
+
+            def foo = bar do
+              baz
+            end
+          end
+        RUBY
+      end
+
+      it "does not register an offense when #{access_modifier} groups an endless method with a `do...end` block body on Ruby 4.0+", :ruby40 do
+        expect_no_offenses(<<~RUBY)
+          class Test
+            #{access_modifier}
+
+            def foo = bar do
+              baz
+            end
+          end
+        RUBY
+      end
+
+      it "registers an offense when #{access_modifier} groups an endless method with a `{...}` block body", :ruby34 do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class Test
+            %{access_modifier}
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+
+            def foo = bar { baz }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+            #{access_modifier} def foo = bar { baz }
+          end
+        RUBY
+      end
+
       context 'when methods are modified by group modifier' do
         it 'registers and autocorrects an offense' do
           expect_offense(<<~RUBY, access_modifier: access_modifier)
