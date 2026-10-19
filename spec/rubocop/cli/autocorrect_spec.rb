@@ -6109,6 +6109,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/EmptyLineAfterMultilineCondition` and `Layout/EmptyLinesAroundBlockBody` when a statement follows the condition on the same line' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo do
+        do_something if multiline &&
+                        condition; do_something_else
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all', '--only',
+        'Layout/EmptyLineAfterMultilineCondition,Layout/EmptyLinesAroundBlockBody'
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo do
+        do_something if multiline &&
+                        condition; do_something_else
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/EmptyLineAfterMultilineCondition` and `Layout/EmptyLinesAroundExceptionHandlingKeywords`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

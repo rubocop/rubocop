@@ -61,7 +61,7 @@ module RuboCop
           return if node.ternary?
 
           if node.modifier_form?
-            check_condition(node.condition) if followed_by_statement?(node)
+            check_condition(node.condition, node.right_sibling) if followed_by_statement?(node)
           else
             check_condition(node.condition, node.if_branch)
           end
@@ -70,14 +70,14 @@ module RuboCop
         def on_while(node)
           return if node.modifier_form? && !followed_by_statement?(node)
 
-          check_condition(node.condition, node.modifier_form? ? nil : node.body)
+          check_condition(node.condition, node.modifier_form? ? node.right_sibling : node.body)
         end
         alias on_until on_while
 
         def on_while_post(node)
           return unless followed_by_statement?(node)
 
-          check_condition(node.condition)
+          check_condition(node.condition, node.right_sibling)
         end
         alias on_until_post on_while_post
 
@@ -110,10 +110,10 @@ module RuboCop
           node.parent&.type?(:begin, :kwbegin) && node.right_sibling
         end
 
-        def check_condition(condition, body = nil)
+        def check_condition(condition, following_node)
           return unless condition.multiline?
           return if next_line_empty?(condition.last_line)
-          return if body_on_line?(body, condition.last_line)
+          return if body_on_line?(following_node, condition.last_line)
 
           add_offense(condition, &autocorrect(condition))
         end
