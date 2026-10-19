@@ -1636,6 +1636,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
         end
       end
+
+      context 'when over limit without parentheses' do
+        it 'does not move the first parameter to the next line' do
+          expect_offense(<<~RUBY)
+            def do_something_with_a_long_method_name foo:, bar: nil
+                                                    ^^^^^^^^^^^^^^^ Line is too long. [55/40]
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def do_something_with_a_long_method_name foo:,#{trailing_whitespace}
+            bar: nil
+            end
+          RUBY
+        end
+      end
     end
 
     context 'class method definition' do
@@ -1658,6 +1674,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_correction(<<~RUBY)
             def self.foo(abc: "100000",#{trailing_whitespace}
             def: "100000", ghi: "100000", jkl: "100000", mno: "100000")
+            end
+          RUBY
+        end
+      end
+
+      context 'when over limit without parentheses' do
+        it 'does not move the first parameter to the next line' do
+          expect_offense(<<~RUBY)
+            def self.do_something_with_a_long_name foo:, bar: nil
+                                                    ^^^^^^^^^^^^^ Line is too long. [53/40]
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def self.do_something_with_a_long_name foo:,#{trailing_whitespace}
+            bar: nil
             end
           RUBY
         end
