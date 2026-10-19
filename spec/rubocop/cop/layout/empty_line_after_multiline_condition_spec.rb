@@ -105,6 +105,32 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
     RUBY
   end
 
+  it 'does not register an offense when modifier `if` with multiline condition is followed by a statement on the same line' do
+    expect_no_offenses(<<~RUBY)
+      do_something if multiline &&
+                      condition; do_something_else
+      do_another_thing
+    RUBY
+  end
+
+  it 'does not register an offense when modifier `while` with multiline condition is followed by a statement on the same line' do
+    expect_no_offenses(<<~RUBY)
+      do_something while multiline &&
+                         condition; do_something_else
+      do_another_thing
+    RUBY
+  end
+
+  it 'does not register an offense when `begin...end while` with multiline condition is followed by a statement on the same line' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      end while multiline &&
+            condition; do_something_else
+      do_another_thing
+    RUBY
+  end
+
   it 'does not register an offense when `if` at the top level' do
     expect_no_offenses(<<~RUBY)
       do_something if condition
