@@ -1117,6 +1117,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
+    it 'accepts a hash rocket with extra spaces aligned with the hash rocket of a pair on a non-adjacent line' do
+      expect_no_offenses(<<~RUBY)
+        {
+          a    => 1,
+          bb => 'x' \\
+            'y',
+          ccc  => 2
+        }
+      RUBY
+    end
+
     context 'when does not allowed for alignment' do
       let(:allow_for_alignment) { false }
 

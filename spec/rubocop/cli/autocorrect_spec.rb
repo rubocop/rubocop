@@ -265,6 +265,39 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/HashAlignment` and `Layout/SpaceAroundOperators` when aligned hash rockets are not on adjacent lines' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/HashAlignment:
+        EnforcedHashRocketStyle: separator
+    YAML
+    create_file('example.rb', <<~RUBY)
+      {
+        aaaa     => 1,
+        bbbbbb => 'x' \\
+          'y',
+        ccccc     => 2,
+        ddddddddddddddd => 3,
+        eeeeee    => 4
+      }
+    RUBY
+
+    expect(
+      cli.run(['--autocorrect-all', '--only', 'Layout/HashAlignment,Layout/SpaceAroundOperators'])
+    ).to eq(0)
+
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      {
+        aaaa => 1,
+      bbbbbb => 'x' \\
+          'y',
+       ccccc => 2,
+        ddddddddddddddd => 3,
+      eeeeee => 4
+      }
+    RUBY
+  end
+
   it 'corrects `Layout/FirstHashElementIndentation` with `EnforcedHashRocketStyle: separator` of `Layout/HashAlignment` when `Layout/LineLength` breaks a key into several lines' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/HashAlignment:
