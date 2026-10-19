@@ -852,6 +852,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     expect_correction("\n  foo unless condition\n")
   end
 
+  it 'reports an offense when multi-line `begin` block is the condition of a modifier `if`' do
+    expect_offense(<<~RUBY)
+      foo if begin begin
+             ^^^^^ Redundant `begin` block detected.
+        bar
+      rescue
+        nil
+      end end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo if  begin
+        bar
+      rescue
+        nil
+      end#{' '}
+    RUBY
+  end
+
   it 'reports an offense when multi-line `begin` block has single statement and it is inside condition' do
     expect_offense(<<~RUBY)
       unless condition

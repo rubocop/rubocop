@@ -191,7 +191,8 @@ module RuboCop
         def use_modifier_form_after_multiline_begin_block?(node)
           return false unless (parent = node.parent)
 
-          node.multiline? && parent.if_type? && parent.modifier_form?
+          node.multiline? && parent.if_type? && parent.modifier_form? &&
+            !parent.condition.equal?(node)
         end
 
         def correct_modifier_form_after_multiline_begin_block(corrector, node)
