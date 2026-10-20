@@ -85,7 +85,7 @@ module RuboCop
         /xi.freeze
 
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses]
         end
 
         def on_block(node)

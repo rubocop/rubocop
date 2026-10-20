@@ -2258,6 +2258,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/LineLength` with `EnforcedStyle: require_no_parentheses` of `Style/MethodDefParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 30
+      Style/MethodDefParentheses:
+        EnforcedStyle: require_no_parentheses
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def do_something_long_name(foo, bar)
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Layout/LineLength,Style/MethodDefParentheses']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      def do_something_long_name(
+      foo, bar)
+      end
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Style/MethodDefParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
