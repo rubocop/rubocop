@@ -188,5 +188,7 @@ Reduced CI time by analyzing only changed files
 SketchUp Ruby API specific analysis
 * https://github.com/dblock/rubocop-exception_messages[rubocop-exception_messages] -
 Standardizes the style of raised exception messages (casing, punctuation, quoting of interpolated values)
+* https://github.com/dblock/rubocop-spellcheck[rubocop-spellcheck] -
+Spelling checks for Ruby comments, Markdown prose, and plain text using offline dictionaries
 
 Any plugins missing? Send us a Pull Request!
