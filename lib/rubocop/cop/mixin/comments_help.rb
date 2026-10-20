@@ -66,7 +66,7 @@ module RuboCop
       # the line at which the parent node ends.
       # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       def find_end_line(node)
-        if node.if_type?
+        if node.if_type? && !node.modifier_form?
           if node.else?
             node.loc.else.line
           elsif node.ternary?
