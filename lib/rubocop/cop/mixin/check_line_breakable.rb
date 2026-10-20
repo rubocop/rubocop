@@ -76,11 +76,7 @@ module RuboCop
       def extract_first_element_over_column_limit(node, elements, max)
         line = node.first_line
 
-        # If a `send` or `csend` node is not parenthesized, don't move the first element, because it
-        # can result in changed behavior or a syntax error.
-        if node.call_type? && !node.parenthesized? && !first_argument_is_heredoc?(node)
-          elements = elements.drop(1)
-        end
+        elements = elements.drop(1) unless first_element_movable?(node)
 
         i = 0
         i += 1 while within_column_limit?(elements[i], max, line)
@@ -93,7 +89,12 @@ module RuboCop
       end
 
       # @api private
-      def first_argument_is_heredoc?(node)
+      # If a method call or definition is not parenthesized, the first element cannot be moved,
+      # because it can result in changed behavior or a syntax error.
+      def first_element_movable?(node)
+        return !node.arguments.loc.begin.nil? if node.any_def_type?
+        return true if !node.call_type? || node.parenthesized?
+
         node.first_argument.respond_to?(:heredoc?) && node.first_argument.heredoc?
       end
 
