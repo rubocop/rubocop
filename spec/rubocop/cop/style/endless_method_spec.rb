@@ -582,6 +582,46 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for a method definition with a modifier `if`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end if y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition followed by `and`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end and y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition followed by `&&`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end && y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition followed by `||`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end || y
+        RUBY
+      end
+
+      it 'does not register an offense for a singleton method definition followed by `&&`' do
+        expect_no_offenses(<<~RUBY)
+          def self.my_method
+            x
+          end && y
+        RUBY
+      end
+
       it 'registers an offense and corrects for a single line method with access modifier' do
         expect_offense(<<~RUBY)
           private def my_method
@@ -1050,6 +1090,14 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
 
         expect_correction(<<~RUBY)
           def my_method = x
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition with a modifier `unless`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end unless y
         RUBY
       end
 
