@@ -59,12 +59,18 @@ module RuboCop
         MSG_AVOID_IT_PARAMETER = 'Avoid using `it` block parameter.'
         MSG_AVOID_IT_PARAMETER_MULTILINE = 'Avoid using `it` block parameter for multi-line blocks.'
 
+        SCOPE_TYPES = %i[any_def class module sclass].freeze
+
         minimum_target_ruby_version 3.4
 
         # `Style/StabbyLambdaParentheses` wraps the parameter this cop removes in the same pass,
         # which would leave an empty parameter list that forbids `it`.
         def self.autocorrect_incompatible_with
           [Style::Lambda, Style::StabbyLambdaParentheses]
+        end
+
+        def on_new_investigation
+          @it_variable_definitions = nil
         end
 
         def on_block(node)
@@ -116,13 +122,46 @@ module RuboCop
         private
 
         def find_block_variables(node, block_argument_name)
-          return [] unless node.body
+          return [] if !node.body || it_variable_in_scope?(node)
 
           ranges = inner_block_ranges(node.body)
 
           block_variables(node.body, block_argument_name).reject do |variable|
             ranges.any? { |range| range.contains?(variable.source_range) }
           end
+        end
+
+        def it_variable_in_scope?(node)
+          scope = nearest_scope(node)
+          return true if it_argument_in_scope?(node, scope)
+
+          it_variable_definitions.any? do |definition|
+            nearest_scope(definition).equal?(scope) && visible_in_block?(definition, node)
+          end
+        end
+
+        def it_variable_definitions
+          @it_variable_definitions ||=
+            variable_definitions(processed_source.ast).filter_map do |name, definition|
+              definition if name == 'it'
+            end
+        end
+
+        def nearest_scope(node)
+          node.each_ancestor(*SCOPE_TYPES).first
+        end
+
+        def it_argument_in_scope?(node, scope)
+          owners = node.each_ancestor(:block).select { |block| nearest_scope(block).equal?(scope) }
+          owners << scope if scope&.any_def_type?
+
+          owners.any? { |owner| owner.arguments.argument_list.any? { |arg| arg.name == :it } }
+        end
+
+        def visible_in_block?(definition, node)
+          return true if definition.source_range.begin_pos < node.source_range.begin_pos
+
+          node.source_range.contains?(definition.source_range)
         end
 
         def inner_block_ranges(body)
@@ -142,6 +181,18 @@ module RuboCop
         def block_variables(body, block_argument_name)
           body.each_descendant(:lvar).select do |descendant|
             descendant.source == block_argument_name
+          end
+        end
+
+        def variable_definitions(node)
+          node.each_node(:lvasgn, :match_var, :match_with_lvasgn).flat_map do |definition|
+            names = if definition.match_with_lvasgn_type?
+                      definition.children.first.each_capture(named: true).map(&:name)
+                    else
+                      [definition.children.first.to_s]
+                    end
+
+            names.map { |name| [name, definition] }
           end
         end
       end
