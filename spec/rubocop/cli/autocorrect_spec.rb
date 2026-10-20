@@ -5344,6 +5344,50 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop for `Layout/ExtraSpacing` with `Layout/RedundantLineBreak` and `Layout/LineLength` when aligning blocks joined into single lines' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ExtraSpacing:
+        ForceEqualSignAlignment: true
+      Layout/RedundantLineBreak:
+        Enabled: true
+        InspectBlocks: true
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo do
+        bar do
+          obj.foobar('aaaaaaaaaaaaaaaaaaaa') do |value|
+            hash[:aaaaaaaaa]  = do_something('aaaaaaaaaaaaaaaaaaa', value)
+          end
+          obj.foobar('aaaaaaaaaaa', 'aaaaaaaaaaaa', 'aaaaaaaaaaaaaaaaaa') do |value| hash[:cccc] = value end
+          obj.foobar('aaaaaaaaaaaaaaaaaaaaa') do |value|
+            hash[:bbbbbbbbbb] = do_something('aaaaaaaaaaaaaaaaaaaa', value)
+          end
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '-A', '--only',
+        'Layout/BlockAlignment,Layout/BlockEndNewline,Layout/ExtraSpacing,' \
+        'Layout/IndentationWidth,Layout/LineLength,Layout/RedundantLineBreak'
+      ]
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo do
+        bar do
+          obj.foobar('aaaaaaaaaaaaaaaaaaaa') do |value| hash[:aaaaaaaaa]  = do_something('aaaaaaaaaaaaaaaaaaa', value) end
+          obj.foobar('aaaaaaaaaaa', 'aaaaaaaaaaaa', 'aaaaaaaaaaaaaaaaaa') do |value| hash[:cccc] = value end
+          obj.foobar('aaaaaaaaaaaaaaaaaaaaa') do |value| hash[:bbbbbbbbbb] = do_something('aaaaaaaaaaaaaaaaaaaa', value) end
+        end
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/DotPosition` and `Layout/SingleLineBlockChain` offenses' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

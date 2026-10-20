@@ -918,6 +918,60 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
+    context 'when `Layout/LineLength` is enabled' do
+      let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => true, 'Max' => 20 } } }
+
+      it 'registers an offense and corrects when aligning keeps lines within `Max`' do
+        expect_offense(<<~RUBY)
+          a = do_something
+          bbbbb = foo
+                ^ `=` is not aligned with the preceding assignment.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a     = do_something
+          bbbbb = foo
+        RUBY
+      end
+
+      it 'does not register an offense when aligning would make a line exceed `Max`' do
+        expect_no_offenses(<<~RUBY)
+          a = do_something
+          bbbbbb = foo
+        RUBY
+      end
+
+      it 'registers an offense and corrects when a line exceeding `Max` needs no padding' do
+        expect_offense(<<~RUBY)
+          a = foo
+          bbbbbb = do_something
+                 ^ `=` is not aligned with the preceding assignment.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a      = foo
+          bbbbbb = do_something
+        RUBY
+      end
+    end
+
+    context 'when `Layout/LineLength` is disabled' do
+      let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => false, 'Max' => 20 } } }
+
+      it 'registers an offense and corrects when aligning makes a line exceed `Max`' do
+        expect_offense(<<~RUBY)
+          a = do_something
+          bbbbbb = foo
+                 ^ `=` is not aligned with the preceding assignment.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a      = do_something
+          bbbbbb = foo
+        RUBY
+      end
+    end
+
     context 'endless methods', :ruby30 do
       it 'does not register an offense when not aligned' do
         expect_no_offenses(<<~RUBY)
