@@ -75,6 +75,61 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
       expect_no_offenses('hash.fetch(key) { default }')
     end
 
+    it 'accepts fetch with argument forwarding', :ruby27 do
+      expect_no_offenses(<<~RUBY)
+        def do_something(...)
+          hash.fetch(...)
+        end
+      RUBY
+    end
+
+    it 'accepts fetch with anonymous rest argument forwarding', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def do_something(*)
+          hash.fetch(*)
+        end
+      RUBY
+    end
+
+    it 'accepts fetch with anonymous keyword rest argument forwarding', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def do_something(**)
+          hash.fetch(**)
+        end
+      RUBY
+    end
+
+    it 'accepts fetch with anonymous block argument forwarding', :ruby31 do
+      expect_no_offenses(<<~RUBY)
+        def do_something(&)
+          hash.fetch(&)
+        end
+      RUBY
+    end
+
+    it 'accepts fetch with a splat argument' do
+      expect_no_offenses('hash.fetch(*args)')
+    end
+
+    it 'accepts fetch with a double splat argument' do
+      expect_no_offenses('hash.fetch(**options)')
+    end
+
+    it 'accepts fetch with a block argument' do
+      expect_no_offenses('hash.fetch(&block)')
+    end
+
+    it 'registers an offense when using fetch with a hash literal key containing a double splat' do
+      expect_offense(<<~RUBY)
+        hash.fetch({ **options })
+             ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        hash[{ **options }]
+      RUBY
+    end
+
     it 'accepts `fetch` without receiver' do
       expect_no_offenses('fetch(key)')
     end
