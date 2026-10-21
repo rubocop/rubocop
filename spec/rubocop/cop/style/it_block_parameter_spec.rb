@@ -75,6 +75,13 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
           block { do_something(_2) }
         RUBY
       end
+
+      it 'does not register an offense for a single numbered parameter when a local variable named `it` is in scope' do
+        expect_no_offenses(<<~RUBY)
+          it = do_something
+          block { do_something(_1) }
+        RUBY
+      end
     end
 
     context 'EnforcedStyle: only_numbered_parameters' do
@@ -174,6 +181,72 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
             foo(it)
             bar(it)
           end
+        RUBY
+      end
+
+      it 'does not register an offense for a named parameter when a local variable named `it` is assigned before the block' do
+        expect_no_offenses(<<~RUBY)
+          it = do_something
+          block { |arg| do_something(arg) }
+        RUBY
+      end
+
+      it 'does not register an offense for a numbered parameter when a local variable named `it` is assigned before the block' do
+        expect_no_offenses(<<~RUBY)
+          it = do_something
+          block { do_something(_1) }
+        RUBY
+      end
+
+      it 'does not register an offense when a local variable named `it` is assigned in the block' do
+        expect_no_offenses(<<~RUBY)
+          block { |arg| it = do_something; do_something(arg, it) }
+        RUBY
+      end
+
+      it 'does not register an offense when the method has a parameter named `it`' do
+        expect_no_offenses(<<~RUBY)
+          def foo(it)
+            block { do_something(_1) }
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when an outer block has a parameter named `it`' do
+        expect_no_offenses(<<~RUBY)
+          outer { |it| block { do_something(_1) } }
+        RUBY
+      end
+
+      it 'registers an offense when a local variable named `it` is assigned after the block' do
+        expect_offense(<<~RUBY)
+          block { do_something(_1) }
+                               ^^ Use `it` block parameter.
+          it = do_something
+        RUBY
+
+        expect_correction(<<~RUBY)
+          block { do_something(it) }
+          it = do_something
+        RUBY
+      end
+
+      it 'registers an offense when a local variable named `it` is assigned in another method' do
+        expect_offense(<<~RUBY)
+          def foo
+            it = do_something
+          end
+
+          block { do_something(_1) }
+                               ^^ Use `it` block parameter.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            it = do_something
+          end
+
+          block { do_something(it) }
         RUBY
       end
 
