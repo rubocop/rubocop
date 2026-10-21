@@ -74,7 +74,7 @@ module RuboCop
 
           arguments = [exception_node, message_node].compact.map(&:source).join(', ')
 
-          if node.parent && requires_parens?(node.parent)
+          if parenthesize?(node)
             "#{node.method_name}(#{arguments})"
           else
             "#{node.method_name} #{arguments}"
@@ -88,7 +88,7 @@ module RuboCop
           argument = message_nodes.first.source
           exception_class = exception_node.receiver&.source || exception_node.source
 
-          if node.parent && requires_parens?(node.parent)
+          if parenthesize?(node)
             "#{node.method_name}(#{exception_class}.new(#{argument}))"
           else
             "#{node.method_name} #{exception_class}.new(#{argument})"
@@ -155,6 +155,12 @@ module RuboCop
           type = arg.receiver.const_name
 
           Array(cop_config['AllowedCompactTypes']).include?(type)
+        end
+
+        def parenthesize?(node)
+          return true if node.parenthesized?
+
+          node.parent && requires_parens?(node.parent)
         end
 
         def requires_parens?(parent)

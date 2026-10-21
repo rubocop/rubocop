@@ -1873,6 +1873,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RaiseArgs` with `EnforcedStyle: compact`, `Style/MethodCallWithArgsParentheses` and `Style/RedundantParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/RaiseArgs:
+        EnforcedStyle: compact
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo || (raise Error, 'message')
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A',
+          '--only', 'Style/MethodCallWithArgsParentheses,Style/RaiseArgs,Style/RedundantParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo || raise(Error.new('message'))
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineHashBraceLayout` with `EnforcedStyle: same_line` and `Style/RedundantDoubleSplatHashBraces`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineHashBraceLayout:
