@@ -3328,6 +3328,38 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/EmptyLinesAroundClassBody` and `Layout/IndentationWidth` offenses without a whitespace-only line' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundClassBody:
+        EnforcedStyle: empty_lines
+    YAML
+    create_file('example.rb', <<~RUBY)
+      class Foo
+      def do_something
+      end
+
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all',
+          '--only',
+          ['Layout/EmptyLinesAroundClassBody', 'Layout/IndentationWidth'].join(',')
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      class Foo
+
+        def do_something
+        end
+
+      end
+    RUBY
+  end
+
   it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
     source = ['foo.map{ |a| a.nil? }']
     create_file('example.rb', source)
