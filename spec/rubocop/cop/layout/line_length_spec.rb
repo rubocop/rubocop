@@ -2987,6 +2987,83 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_no_corrections
         end
       end
+
+      context 'when code follows a HEREDOC opener on the same line' do
+        it 'does not break up a block after the HEREDOC opener' do
+          expect_offense(<<~RUBY)
+            do_something(<<~HEREDOC, items.map { |item| item.to_s })
+                                                    ^^^^^^^^^^^^^^^^ Line is too long. [56/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'does not break up the line after a semicolon after the HEREDOC opener' do
+          expect_offense(<<~RUBY)
+            str = <<~HEREDOC; do_something_else(foo, bar)
+                                                    ^^^^^ Line is too long. [45/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'does not break up method call arguments after the HEREDOC opener' do
+          expect_offense(<<~RUBY)
+            do_something(<<~HEREDOC) + do_something_else(foo, bar)
+                                                    ^^^^^^^^^^^^^^ Line is too long. [54/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'breaks up an array before the HEREDOC element rather than a block after it' do
+          expect_offense(<<~RUBY)
+            [foo, bar, baz, <<~HEREDOC, items.map { |item| item }]
+                                                    ^^^^^^^^^^^^^^ Line is too long. [54/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [foo, bar, baz,#{trailing_whitespace}
+            <<~HEREDOC, items.map { |item| item }]
+              text
+            HEREDOC
+          RUBY
+        end
+
+        context 'when SplitStrings is enabled' do
+          let(:cop_config) { super().merge('SplitStrings' => true) }
+
+          it 'does not split a string after the HEREDOC opener' do
+            expect_offense(<<~RUBY)
+              do_something(<<~HEREDOC) + 'foo bar baz qux quux corge'
+                                                      ^^^^^^^^^^^^^^^ Line is too long. [55/40]
+                text
+              HEREDOC
+            RUBY
+
+            expect_no_corrections
+          end
+
+          it 'does not split an interpolated string after the HEREDOC opener' do
+            expect_offense(<<~'RUBY')
+              do_something(<<~HEREDOC) + "foo bar baz #{qux} quux corge"
+                                                      ^^^^^^^^^^^^^^^^^^ Line is too long. [58/40]
+                text
+              HEREDOC
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+      end
     end
 
     context 'comments' do
