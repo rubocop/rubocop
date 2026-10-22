@@ -81,7 +81,7 @@ module RuboCop
           return unless node.first_argument.arg_type?
 
           block_argument_name = node.first_argument.source
-          return if used_within_inner_block?(node.body, block_argument_name)
+          return if keep_parameter_name?(node.body, block_argument_name)
 
           find_block_variables(node, block_argument_name).each do |variable|
             add_offense(variable, message: MSG_USE_IT_PARAMETER) do |corrector|
@@ -168,6 +168,10 @@ module RuboCop
           body.each_node(:any_block).map { |block| block.loc.begin.join(block.loc.end) }
         end
 
+        def keep_parameter_name?(body, block_arg_name)
+          used_within_inner_block?(body, block_arg_name) || reassigned?(body, block_arg_name)
+        end
+
         def used_within_inner_block?(body, block_argument_name)
           return false unless body
 
@@ -176,6 +180,12 @@ module RuboCop
           block_variables(body, block_argument_name).any? do |variable|
             ranges.any? { |range| range.contains?(variable.source_range) }
           end
+        end
+
+        def reassigned?(body, block_argument_name)
+          return false unless body
+
+          variable_definitions(body).any? { |name, _definition| name == block_argument_name }
         end
 
         def block_variables(body, block_argument_name)

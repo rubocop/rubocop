@@ -355,6 +355,41 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when the block assigns its parameter' do
+        expect_no_offenses(<<~RUBY)
+          block { |arg| arg = arg.do_something; arg }
+        RUBY
+      end
+
+      it 'does not register an offense when the block assigns its parameter with an operator' do
+        expect_no_offenses(<<~RUBY)
+          block { |arg| arg += 1; arg }
+        RUBY
+      end
+
+      it 'does not register an offense when the block assigns its parameter with a named capture' do
+        expect_no_offenses(<<~RUBY)
+          block { |arg| /(?<arg>foo)/ =~ arg; arg }
+        RUBY
+      end
+
+      it 'does not register an offense when the block assigns its parameter with pattern matching' do
+        expect_no_offenses(<<~RUBY)
+          block { |arg| arg => {key: arg}; arg }
+        RUBY
+      end
+
+      it 'registers an offense when the block assigns another variable' do
+        expect_offense(<<~RUBY)
+          block { |arg| other = arg.do_something; other }
+                                ^^^ Use `it` block parameter.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          block {  other = it.do_something; other }
+        RUBY
+      end
     end
 
     context 'EnforcedStyle: disallow' do
