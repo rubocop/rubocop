@@ -1517,6 +1517,13 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         }
       RUBY
     end
+
+    it 'does not register an offense when a pair follows a double splat on the same line' do
+      expect_no_offenses(<<~RUBY)
+        x = { **a, b: 1,
+              **c, dd: 2 }
+      RUBY
+    end
   end
 
   context 'with multiple preferred(key and table) alignment configuration' do
@@ -1945,6 +1952,15 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         expect_correction(<<~RUBY)
           foo a: 1,
               **rest
+        RUBY
+      end
+    end
+
+    context 'and a pair after a double splat on the same line' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          x = { **a, b: 1,
+                **c, dd: 2 }
         RUBY
       end
     end
