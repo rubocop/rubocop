@@ -137,41 +137,32 @@ module RuboCop
           message = format(MSG, method: send_node.method_name)
 
           add_offense(send_node.loc.selector, message: message) do |corrector|
-            corrector.replace(
-              replacement_range(send_node, block_node),
-              replacement(block_node, key_expr, value_expr)
-            )
+            corrector.replace(header_range(send_node, block_node), header(block_node))
+            corrector.replace(block_node.body, body(block_node, key_expr, value_expr))
           end
         end
 
-        def replacement(block_node, key_expr, value_expr)
+        def header_range(send_node, block_node)
+          header_end = if block_node.numblock_type?
+                         block_node.loc.begin
+                       else
+                         block_node.arguments.source_range
+                       end
+          range_between(send_node.loc.selector.begin_pos, header_end.end_pos)
+        end
+
+        def header(block_node)
+          header = "to_h #{block_node.loc.begin.source}"
+          return header if block_node.numblock_type?
+
+          "#{header} |#{element_arg_source(block_node)}|"
+        end
+
+        def body(block_node, key_expr, value_expr)
           key_source = adjusted_source(key_expr, block_node)
           value_source = adjusted_source(value_expr, block_node)
-          body = "[#{key_source}, #{value_source}]"
 
-          if block_node.numblock_type?
-            block_node.braces? ? "to_h { #{body} }" : do_end_replacement(block_node, body)
-          else
-            named_block_replacement(block_node, body)
-          end
-        end
-
-        def named_block_replacement(block_node, body)
-          arg = element_arg_source(block_node)
-          if block_node.braces?
-            "to_h { |#{arg}| #{body} }"
-          else
-            do_end_replacement(block_node, body, arg)
-          end
-        end
-
-        def do_end_replacement(block_node, body, arg = nil)
-          args = arg ? " |#{arg}|" : ''
-          "to_h do#{args}\n#{indent(block_node)}  #{body}\n#{indent(block_node)}end"
-        end
-
-        def replacement_range(send_node, block_node)
-          range_between(send_node.loc.selector.begin_pos, block_node.source_range.end_pos)
+          "[#{key_source}, #{value_source}]"
         end
 
         def element_arg_source(block_node)
@@ -189,10 +180,6 @@ module RuboCop
 
           # For inject/reduce numblocks, _2 is the element (becomes _1)
           source.gsub('_2', '_1')
-        end
-
-        def indent(node)
-          ' ' * node.source_range.column
         end
 
         def element_source(expr_node)

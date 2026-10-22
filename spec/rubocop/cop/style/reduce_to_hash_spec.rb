@@ -23,7 +23,9 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
         RUBY
 
         expect_correction(<<~RUBY)
-          tables.to_h { |table| [table.node, table.columns.to_h { |column| [column.name, column.alias] }] }
+          tables.to_h { |table|
+            [table.node, table.columns.to_h { |column| [column.name, column.alias] }]
+          }
         RUBY
       end
 
@@ -38,6 +40,25 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
         expect_correction(<<~RUBY)
           array.to_h do |elem|
             [elem.id, elem.name]
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the receiver has a heredoc argument' do
+        expect_offense(<<~RUBY)
+          query(<<~SQL).each_with_object({}) do |row, hash|
+                        ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+            SELECT 1
+          SQL
+            hash[row.id] = row.name
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          query(<<~SQL).to_h do |row|
+            SELECT 1
+          SQL
+            [row.id, row.name]
           end
         RUBY
       end
