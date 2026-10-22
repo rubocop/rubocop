@@ -2517,7 +2517,7 @@ items.include?
 | No
 | Always (Unsafe)
 | 1.77
-| -
+| 1.92
 |===
 
 Prefer `Enumerable` predicate methods over expressions with `count`.
@@ -2532,6 +2532,14 @@ NOTE: This cop doesn't check `length` and `size` methods because they
 would yield false positives. For example, `String` implements `length`
 and `size`, but it doesn't include `Enumerable`.
 
+When `count` is used without a block, it measures the collection's
+size, so the offense is corrected to `empty?` or `!empty?`. The
+predicate methods `any?`, `none?` and `one?` test element truthiness
+instead and would return different results for collections with falsey
+elements (e.g. `[false].count.zero?` is `false`, but `[false].none?`
+is `true`). For the same reason, `count == 1` and `count > 1` without
+a block are not flagged.
+
 [#safety-stylecollectionquerying]
 === Safety
 
@@ -2539,26 +2547,11 @@ The cop is unsafe because receiver might not include `Enumerable`, or
 it has nonstandard implementation of `count` or any replacement
 methods.
 
-It's also unsafe because for collections with falsey values, expressions
-with `count` without a block return a different result than methods `any?`,
-`none?` and `one?`:
-
-[source,ruby]
-----
-[nil, false].count.positive?
-[nil].count == 1
-# => true
-
-[nil, false].any?
-[nil].one?
-# => false
-
-[nil].count == 0
-# => false
-
-[nil].none?
-# => true
-----
+Blockless `count` is corrected to `empty?`, which `Enumerable` doesn't
+define. `Range`, `Enumerator` (including lazy ones), `Struct`, `StringIO`
+and any class that just includes `Enumerable` respond to `count` but not
+to `empty?`, so `(1...1).count.zero?` is `true` while `(1...1).empty?`
+raises `NoMethodError`.
 
 Autocorrection is unsafe when replacement methods don't iterate over
 every element in collection and the given block runs side effects:
@@ -2582,12 +2575,14 @@ x.count.positive?
 x.count > 0
 x.count != 0
 
+# good
+!x.empty?
+
+# bad
 x.count(&:foo?).positive?
 x.count { |item| item.foo? }.positive?
 
 # good
-x.any?
-
 x.any?(&:foo?)
 x.any? { |item| item.foo? }
 
@@ -2596,11 +2591,20 @@ x.count.zero?
 x.count == 0
 
 # good
-x.none?
+x.empty?
 
 # bad
-x.count == 1
-x.one?
+x.count(&:foo?).zero?
+x.count(&:foo?) == 0
+
+# good
+x.none?(&:foo?)
+
+# bad
+x.count(&:foo?) == 1
+
+# good
+x.one?(&:foo?)
 ----
 
 [#allcops_activesupportextensionsenabled_-false-_default_-stylecollectionquerying]
@@ -2609,7 +2613,7 @@ x.one?
 [source,ruby]
 ----
 # good
-x.count > 1
+x.count(&:foo?) > 1
 ----
 
 [#allcops_activesupportextensionsenabled_-true-stylecollectionquerying]
@@ -2618,10 +2622,10 @@ x.count > 1
 [source,ruby]
 ----
 # bad
-x.count > 1
+x.count(&:foo?) > 1
 
 # good
-x.many?
+x.many?(&:foo?)
 ----
 
 [#references-stylecollectionquerying]

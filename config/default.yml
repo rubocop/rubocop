@@ -3943,7 +3943,7 @@ Style/CollectionQuerying:
   StyleGuide: '#collection-querying'
   Enabled: pending
   VersionAdded: '1.77'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.92'
   Safe: false
 
 Style/ColonMethodCall:
