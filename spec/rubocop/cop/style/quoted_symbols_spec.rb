@@ -263,6 +263,28 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects a trailing escaped backslash properly' do
+      expect_offense(<<~'RUBY')
+        :'foo\\'
+        ^^^^^^^^ Prefer double-quoted symbols unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        :"foo\\"
+      RUBY
+    end
+
+    it 'registers an offense and corrects a trailing escaped backslash in a hash key properly' do
+      expect_offense(<<~'RUBY')
+        { 'foo\\': bar }
+          ^^^^^^^ Prefer double-quoted symbols unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        { "foo\\": bar }
+      RUBY
+    end
+
     it 'accepts double quoted symbol with an escaped quote' do
       expect_no_offenses(<<~'RUBY')
         :"my\"quote"
