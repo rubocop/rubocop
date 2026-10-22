@@ -225,6 +225,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using an at sign' do
+    expect_offense(<<~RUBY)
+      'user@example.com'.split(/@/)
+                               ^^^ Use string `'@'` as argument instead of regexp `/@/`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      'user@example.com'.split('@')
+    RUBY
+  end
+
   it 'accepts methods other than pattern argument method' do
     expect_no_offenses("'a,b,c'.insert(2, 'a')")
   end
