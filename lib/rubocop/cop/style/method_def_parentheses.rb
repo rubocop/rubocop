@@ -169,10 +169,18 @@ module RuboCop
           location = node.arguments.source_range
 
           add_offense(location, message: MSG_MISSING) do |corrector|
-            add_parentheses(node.arguments, corrector)
+            corrector.replace(range_before_arguments(node), '(')
+            corrector.insert_after(location, ')')
 
             unexpected_style_detected 'require_no_parentheses'
           end
+        end
+
+        def range_before_arguments(node)
+          range = node.loc.name.end.join(node.arguments.source_range.begin)
+          last_line_break = range.source.rindex("\n")
+
+          last_line_break ? range.resize(last_line_break) : range
         end
 
         def unwanted_parentheses(args)
