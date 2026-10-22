@@ -1,1 +1,0 @@
-* [#16110](https://github.com/rubocop/rubocop/pull/16110): Fix an incorrect autocorrect for `Style/EndlessMethod` with a `do...end` block body in a method definition passed as an argument. ([@koic][])

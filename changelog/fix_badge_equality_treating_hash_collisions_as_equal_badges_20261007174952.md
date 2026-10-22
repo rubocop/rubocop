@@ -1,1 +1,0 @@
-* [#16131](https://github.com/rubocop/rubocop/pull/16131): Fix `RuboCop::Cop::Badge` equality comparing only hash values, which could treat unrelated cops as the same on platforms with narrow object hashes such as Windows and JRuby. ([@koic][])
