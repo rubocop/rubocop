@@ -83,7 +83,7 @@ module RuboCop
         extend AutoCorrector
 
         def self.autocorrect_incompatible_with
-          [Style::BlockDelimiters]
+          [Layout::BlockAlignment, Style::BlockDelimiters]
         end
 
         def on_block(node)
