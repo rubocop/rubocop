@@ -239,6 +239,64 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
+  it 'does not register an offense for parenthesized assignment of a command call' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x = foo.bar 'baz')
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized operator assignment of a command call' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x ||= foo 'baz')
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized setter assignment of a command call' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x.y = foo 'baz')
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized chained assignment of a command call' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x = y = foo 'baz')
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized assignment of a command call with a `do` block' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x = foo 'baz' do end)
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized negation of a command call' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (!foo 'baz')
+    RUBY
+  end
+
+  it 'registers an offense and corrects for parenthesized assignment of a method call with parentheses' do
+    expect_offense(<<~RUBY)
+      obj.do_something (x = foo('baz'))
+                      ^ `(x = foo('baz'))` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something(x = foo('baz'))
+    RUBY
+  end
+
+  it 'registers an offense and corrects for parenthesized assignment of an operator method call' do
+    expect_offense(<<~RUBY)
+      obj.do_something (x = foo + bar)
+                      ^ `(x = foo + bar)` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something(x = foo + bar)
+    RUBY
+  end
+
   it 'registers an offense and corrects for parenthesized `&&`' do
     expect_offense(<<~RUBY)
       false? (foo && bar)
