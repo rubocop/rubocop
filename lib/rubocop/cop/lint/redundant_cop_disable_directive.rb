@@ -146,8 +146,8 @@ module RuboCop
             comment = directive_comment(line_range)
             next if skip_directive?(comment)
 
-            next_range = line_ranges[line_range_index + 1]
-            redundant = find_redundant_directive(cop, comment, line_range, next_range)
+            following_ranges = line_ranges[(line_range_index + 1)..]
+            redundant = find_redundant_directive(cop, comment, line_range, following_ranges)
             yield comment, redundant if redundant
           end
         end
@@ -191,14 +191,33 @@ module RuboCop
           directive.push? || directive.pop? || directive.next?
         end
 
-        def find_redundant_directive(cop, comment, line_range, next_range)
-          if all_disabled?(comment)
-            find_redundant_all(line_range, next_range)
-          elsif department_disabled?(cop, comment)
-            find_redundant_department(cop, line_range)
+        def find_redundant_directive(cop, comment, line_range, following_ranges)
+          return find_redundant_all(line_range, following_ranges.first) if all_disabled?(comment)
+
+          range = line_range_through_repeated_disables(cop, line_range, following_ranges)
+          if department_disabled?(cop, comment)
+            find_redundant_department(cop, range)
           else
-            find_redundant_cop(cop, line_range)
+            find_redundant_cop(cop, range)
           end
+        end
+
+        def line_range_through_repeated_disables(cop, line_range, following_ranges)
+          last_range = line_range
+          following_ranges.each do |range|
+            break unless followed_ranges?(last_range, range) && repeated_disable?(cop, range)
+
+            last_range = range
+          end
+
+          line_range.begin..last_range.end
+        end
+
+        def repeated_disable?(cop, range)
+          comment = directive_comment(range)
+          return false if comment.nil? || skip_directive?(comment)
+
+          !all_disabled?(comment) && !department_disabled?(cop, comment)
         end
 
         # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

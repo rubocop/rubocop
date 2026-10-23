@@ -731,6 +731,24 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           end
 
+          context 'that cop twice in a row before the offense' do
+            it 'returns an offense only for the repeated directive' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Layout/IndentationStyle
+                # rubocop:disable Layout/IndentationStyle
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Layout/IndentationStyle`.
+                # 3, offense here
+                # rubocop:enable Layout/IndentationStyle
+              RUBY
+
+              expect_correction(<<~RUBY)
+                # rubocop:disable Layout/IndentationStyle
+                # 3, offense here
+                # rubocop:enable Layout/IndentationStyle
+              RUBY
+            end
+          end
+
           context 'that cop but on other lines' do
             it 'returns an offense' do
               expect_offense(<<~RUBY)
@@ -1016,6 +1034,33 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             do_something
           end
         RUBY
+      end
+
+      context 'when the cop is disabled again right after its department' do
+        let(:offenses) do
+          [
+            RuboCop::Cop::Offense.new(
+              :convention,
+              FakeLocation.new(line: 3, column: 0),
+              'Class has too many lines.',
+              'Metrics/ClassLength'
+            )
+          ]
+        end
+
+        it 'removes only the cop' do
+          expect_offense(<<~RUBY)
+            # rubocop:disable Metrics
+            # rubocop:disable Metrics/ClassLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+            # 3, offense here
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # rubocop:disable Metrics
+            # 3, offense here
+          RUBY
+        end
       end
 
       it 'removes cop duplicated by department and the `--` reason with it' do
