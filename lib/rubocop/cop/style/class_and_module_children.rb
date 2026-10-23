@@ -65,10 +65,11 @@ module RuboCop
         NESTED_MSG = 'Use nested module/class definitions instead of compact style.'
         COMPACT_MSG = 'Use compact module/class definition instead of nested style.'
 
-        # `Style/StructInheritance` turns a class definition into a constant assignment in
-        # the same pass, which the compacted `class` keyword would then precede.
+        # `Style/StructInheritance` and `Style/DataInheritance` turn a class definition into
+        # a constant assignment in the same pass, which the compacted `class` keyword would
+        # then precede.
         def self.autocorrect_incompatible_with
-          [Style::StructInheritance]
+          [Style::DataInheritance, Style::StructInheritance]
         end
 
         def on_class(node)
