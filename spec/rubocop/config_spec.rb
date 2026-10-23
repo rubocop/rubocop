@@ -822,13 +822,11 @@ RSpec.describe RuboCop::Config do
       expect(configuration.for_cop('Lint/OldCop')).to eq({ 'Bar' => 46, 'Enabled' => false })
     end
 
-    it 'merges the deprecated name configuration and adds a warning for a renamed cop name' do
+    it 'merges the deprecated name configuration for a renamed cop name without warning' do
       expect(configuration.for_cop('Lint/NewCop')).to eq(
         { 'Bar' => 46, 'Baz' => 1000, 'Enabled' => false }
       )
-      expect($stderr.string.chomp).to eq(
-        'Warning: Using `Lint/OldCop` configuration in example/.rubocop.yml for `Lint/NewCop`.'
-      )
+      expect($stderr.string).to be_empty
     end
   end
 
