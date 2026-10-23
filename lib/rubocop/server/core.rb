@@ -71,7 +71,13 @@ module RuboCop
 
       def process_input
         Cache.write_pid_file do
-          read_socket(@server.accept) until @server.closed?
+          until @server.closed?
+            if @server.wait_readable(@keep_alive)
+              read_socket(@server.accept)
+            else
+              @server.close
+            end
+          end
         end
       end
 
@@ -86,6 +92,7 @@ module RuboCop
 
       def start_server(host, port)
         @server = TCPServer.open(host, port)
+        @keep_alive = ConfigStore.new.for_pwd.for_all_cops['ServerKeepAlive']
 
         # JSON format does not expected output message when IDE integration with server mode.
         # See: https://github.com/rubocop/rubocop/issues/11164
