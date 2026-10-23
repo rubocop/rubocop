@@ -80,10 +80,6 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        def on_class(node)
-          check_other_alignment(node)
-        end
-
         def on_sclass(node)
           if node.parent&.assignment?
             check_asgn_alignment(node.parent, node)
@@ -91,10 +87,8 @@ module RuboCop
             check_other_alignment(node)
           end
         end
-
-        def on_module(node)
-          check_other_alignment(node)
-        end
+        alias on_class on_sclass
+        alias on_module on_sclass
 
         def on_if(node)
           check_other_alignment(node) unless node.ternary?
