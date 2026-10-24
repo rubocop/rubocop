@@ -7,6 +7,8 @@ module RuboCop
       include LineLengthHelp
       include AllowedPattern
 
+      SPACE_INSIDE_PARENS_STYLES = %w[space compact].freeze
+
       private
 
       def single_line_as_modifier?(node)
@@ -42,7 +44,10 @@ module RuboCop
       def modifier_fits_on_single_line?(node)
         return true unless max_line_length
 
-        line_length(line_in_modifier_form(node)) <= max_line_length
+        length = line_length(line_in_modifier_form(node))
+        length += 2 if parenthesize?(node) && space_inside_parens?
+
+        length <= max_line_length
       end
 
       def line_in_modifier_form(node)
@@ -50,6 +55,14 @@ module RuboCop
         code_before = keyword_element.source_line[0...keyword_element.column]
 
         "#{code_before}#{to_modifier_form(node)}#{code_after(node)}"
+      end
+
+      def space_inside_parens?
+        return false unless config.cop_enabled?('Layout/SpaceInsideParens')
+
+        style = config.for_cop('Layout/SpaceInsideParens')['EnforcedStyle']
+
+        SPACE_INSIDE_PARENS_STYLES.include?(style)
       end
 
       # Whether an existing line is acceptable to `Layout/LineLength`,

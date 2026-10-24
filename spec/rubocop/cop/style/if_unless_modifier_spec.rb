@@ -1016,6 +1016,48 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     RUBY
   end
 
+  context 'if-end is the value of an assignment that fits on one line only without spaces inside parentheses' do
+    let(:line_length_config) { super().merge('Max' => 19) }
+
+    context 'when `Layout/SpaceInsideParens` is `space`' do
+      let(:other_cops) do
+        super().merge('Layout/SpaceInsideParens' => { 'Enabled' => true,
+                                                      'EnforcedStyle' => 'space' })
+      end
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          foo ||=
+            if qux
+              bar_baz
+            end
+        RUBY
+      end
+    end
+
+    context 'when `Layout/SpaceInsideParens` is `no_space`' do
+      let(:other_cops) do
+        super().merge('Layout/SpaceInsideParens' => { 'Enabled' => true,
+                                                      'EnforcedStyle' => 'no_space' })
+      end
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          foo ||=
+            if qux
+            ^^ Favor modifier `if` usage when having a single-line body. [...]
+              bar_baz
+            end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo ||=
+            (bar_baz if qux)
+        RUBY
+      end
+    end
+  end
+
   context 'if-end is argument to a parenthesized method call' do
     it 'adds parentheses because otherwise it would cause SyntaxError' do
       expect_offense(<<~RUBY)

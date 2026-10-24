@@ -292,6 +292,44 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
       RUBY
     end
+
+    context 'when `Layout/SpaceInsideParens` is `space`' do
+      let(:other_cops) do
+        super().merge(
+          'Layout/SpaceInsideParens' => { 'Enabled' => true, 'EnforcedStyle' => 'space' }
+        )
+      end
+
+      it 'does not register an offense for a modifier `if` single statement that fits only without spaces inside parentheses' do
+        expect_no_offenses(<<~RUBY)
+          var ||= begin
+            foo_bar if condition
+          end
+        RUBY
+      end
+    end
+
+    context 'when `Layout/SpaceInsideParens` is `no_space`' do
+      let(:other_cops) do
+        super().merge(
+          'Layout/SpaceInsideParens' => { 'Enabled' => true, 'EnforcedStyle' => 'no_space' }
+        )
+      end
+
+      it 'registers an offense for a modifier `if` single statement that fits without spaces inside parentheses' do
+        expect_offense(<<~RUBY)
+          var ||= begin
+                  ^^^^^ Redundant `begin` block detected.
+            foo_bar if condition
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var ||= (foo_bar if condition)
+
+        RUBY
+      end
+    end
   end
 
   it 'registers and corrects an offense when using multi-line `if` in `begin` block' do

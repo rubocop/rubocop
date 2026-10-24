@@ -67,6 +67,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant `begin` block detected.'
+        SPACE_INSIDE_PARENS_STYLES = %w[space compact].freeze
 
         def self.autocorrect_incompatible_with
           [Style::BlockDelimiters]
@@ -239,8 +240,21 @@ module RuboCop
           return false unless max && statement.single_line?
 
           length = statement.source.length
-          length += 2 if low_precedence_statement?(statement)
+          length += parentheses_width if low_precedence_statement?(statement)
+
           node.loc.column + length > max
+        end
+
+        def parentheses_width
+          space_inside_parens? ? 4 : 2
+        end
+
+        def space_inside_parens?
+          return false unless config.cop_enabled?('Layout/SpaceInsideParens')
+
+          style = config.for_cop('Layout/SpaceInsideParens')['EnforcedStyle']
+
+          SPACE_INSIDE_PARENS_STYLES.include?(style)
         end
 
         def inspect_branches(node)

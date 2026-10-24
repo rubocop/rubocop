@@ -8246,6 +8246,74 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop when `Layout/SpaceInsideParens` pushes the statement joined by `Style/RedundantBegin` past `Layout/LineLength`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 19
+      Layout/SpaceInsideParens:
+        EnforcedStyle: space
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo ||=
+        begin
+          if qux
+            bar_baz
+          end
+        end
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all',
+        '--only',
+        'Layout/LineLength,Layout/SpaceInsideParens,' \
+        'Style/IfUnlessModifier,Style/MultilineMemoization,Style/RedundantBegin'
+      ]
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo ||=
+        begin
+          bar_baz if qux
+        end
+    RUBY
+  end
+
+  it 'does not cause an infinite loop when `Layout/SpaceInsideParens` pushes the modifier form made by `Style/IfUnlessModifier` past `Layout/LineLength`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 19
+      Layout/SpaceInsideParens:
+        EnforcedStyle: space
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo ||=
+        if qux
+          bar_baz
+        end
+    RUBY
+
+    status = cli.run(
+      [
+        '--autocorrect-all',
+        '--only',
+        'Layout/LineLength,Layout/SpaceInsideParens,' \
+        'Style/IfUnlessModifier,Style/MultilineMemoization,Style/RedundantBegin'
+      ]
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo ||=
+        if qux
+          bar_baz
+        end
+    RUBY
+  end
+
   it 'corrects `Lint/UselessAssignment`, `Layout/ArrayAlignment` and `Layout/AssignmentIndentation` offenses for a list of values without brackets' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
