@@ -82,6 +82,19 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'when the raise is parenthesized inside parentheses' do
+      it 'registers an offense and keeps the parentheses of the raise' do
+        expect_offense(<<~RUBY)
+          bar || (raise(Ex, 'error'))
+                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar || (raise(Ex.new('error')))
+        RUBY
+      end
+    end
+
     context 'with correct + opposite' do
       it 'reports an offense' do
         expect_offense(<<~RUBY)
@@ -228,6 +241,19 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
           expect_correction(<<~RUBY)
             bar || raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when the raise is parenthesized inside parentheses' do
+        it 'registers an offense and keeps the parentheses of the raise' do
+          expect_offense(<<~RUBY)
+            bar || (raise(Ex.new('error')))
+                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            bar || (raise(Ex, 'error'))
           RUBY
         end
       end
