@@ -72,17 +72,21 @@ module RuboCop
 
           message = message(node)
           add_offense(node.loc.operator, message: message) do |corrector|
-            node.each_child_node do |expr|
-              if expr.call_type?
-                correct_send(expr, corrector)
-              elsif expr.type?(:return, :next, :break, :yield) || expr.assignment?
-                correct_other(expr, corrector)
-              end
-            end
+            node.each_child_node { |expr| correct_operand(expr, corrector) }
 
             corrector.replace(node.loc.operator, node.alternate_operator)
 
             keep_operator_precedence(corrector, node)
+          end
+        end
+
+        def correct_operand(expr, corrector)
+          expr = expr.send_node if expr.any_block_type?
+
+          if expr.call_type?
+            correct_send(expr, corrector)
+          elsif expr.type?(:return, :next, :break, :yield) || expr.assignment?
+            correct_other(expr, corrector)
           end
         end
 
