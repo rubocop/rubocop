@@ -100,6 +100,7 @@ module RuboCop
           return unless key
           return if accumulator_used_in_expressions?(block_node, key, value)
           return if nested_match?(key) || nested_match?(value)
+          return if heredoc_in_inject_numblock?(block_node, key, value)
 
           register_offense(node, block_node, key, value)
         end
@@ -124,6 +125,12 @@ module RuboCop
           end
         end
 
+        def heredoc_in_inject_numblock?(block_node, key, value)
+          return false if !block_node.numblock_type? || block_node.method?(:each_with_object)
+
+          [key, value].any? { |node| node.each_node(:any_str).any?(&:heredoc?) }
+        end
+
         def accumulator_name(block_node)
           index = block_node.method?(:each_with_object) ? 1 : 0
           block_node.argument_list[index].name
@@ -136,42 +143,20 @@ module RuboCop
         def register_offense(send_node, block_node, key_expr, value_expr)
           message = format(MSG, method: send_node.method_name)
 
+          # Each part is replaced separately so that heredoc bodies between them are kept.
           add_offense(send_node.loc.selector, message: message) do |corrector|
-            corrector.replace(
-              replacement_range(send_node, block_node),
-              replacement(block_node, key_expr, value_expr)
-            )
+            corrector.replace(method_call_range(send_node), 'to_h')
+
+            unless block_node.numblock_type?
+              corrector.replace(block_node.arguments, "|#{element_arg_source(block_node)}|")
+            end
+
+            correct_body(corrector, block_node, key_expr, value_expr)
           end
         end
 
-        def replacement(block_node, key_expr, value_expr)
-          key_source = adjusted_source(key_expr, block_node)
-          value_source = adjusted_source(value_expr, block_node)
-          body = "[#{key_source}, #{value_source}]"
-
-          if block_node.numblock_type?
-            block_node.braces? ? "to_h { #{body} }" : do_end_replacement(block_node, body)
-          else
-            named_block_replacement(block_node, body)
-          end
-        end
-
-        def named_block_replacement(block_node, body)
-          arg = element_arg_source(block_node)
-          if block_node.braces?
-            "to_h { |#{arg}| #{body} }"
-          else
-            do_end_replacement(block_node, body, arg)
-          end
-        end
-
-        def do_end_replacement(block_node, body, arg = nil)
-          args = arg ? " |#{arg}|" : ''
-          "to_h do#{args}\n#{indent(block_node)}  #{body}\n#{indent(block_node)}end"
-        end
-
-        def replacement_range(send_node, block_node)
-          range_between(send_node.loc.selector.begin_pos, block_node.source_range.end_pos)
+        def method_call_range(send_node)
+          range_between(send_node.loc.selector.begin_pos, send_node.source_range.end_pos)
         end
 
         def element_arg_source(block_node)
@@ -182,6 +167,16 @@ module RuboCop
           end
         end
 
+        def correct_body(corrector, block_node, key_expr, value_expr)
+          key_source = adjusted_source(key_expr, block_node)
+          value_source = adjusted_source(value_expr, block_node)
+          body = block_node.body
+          assignment = body.begin_type? ? body.children.first : body
+
+          corrector.replace(assignment, "[#{key_source}, #{value_source}]")
+          corrector.remove(accumulator_range(body.children.last)) if body.begin_type?
+        end
+
         def adjusted_source(expr_node, block_node)
           source = element_source(expr_node)
           return source unless block_node.numblock_type?
@@ -189,10 +184,6 @@ module RuboCop
 
           # For inject/reduce numblocks, _2 is the element (becomes _1)
           source.gsub('_2', '_1')
-        end
-
-        def indent(node)
-          ' ' * node.source_range.column
         end
 
         def element_source(expr_node)
@@ -209,6 +200,13 @@ module RuboCop
           return false unless node.type?(:call, :super, :yield)
 
           node.arguments? && !node.parenthesized? && !node.operator_method? && !node.setter_method?
+        end
+
+        def accumulator_range(accumulator)
+          range = range_with_surrounding_space(accumulator.source_range, side: :left)
+          return range unless range.source_buffer.source[range.begin_pos - 1] == ';'
+
+          range_with_surrounding_space(range.adjust(begin_pos: -1), side: :left, newlines: false)
         end
       end
     end

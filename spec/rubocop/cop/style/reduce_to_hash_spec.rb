@@ -23,7 +23,9 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
         RUBY
 
         expect_correction(<<~RUBY)
-          tables.to_h { |table| [table.node, table.columns.to_h { |column| [column.name, column.alias] }] }
+          tables.to_h { |table|
+            [table.node, table.columns.to_h { |column| [column.name, column.alias] }]
+          }
         RUBY
       end
 
@@ -293,6 +295,81 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
       end
     end
 
+    context 'with a heredoc' do
+      it 'registers an offense and keeps the heredoc body when the receiver has a heredoc argument' do
+        expect_offense(<<~RUBY)
+          foo(<<~EOS).each_with_object({}) do |elem, hash|
+                      ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+            text
+          EOS
+            hash[elem.id] = elem.name
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(<<~EOS).to_h do |elem|
+            text
+          EOS
+            [elem.id, elem.name]
+          end
+        RUBY
+      end
+
+      it 'registers an offense and keeps the heredoc body when the value is a heredoc' do
+        expect_offense(<<~RUBY)
+          array.each_with_object({}) do |elem, hash|
+                ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+            hash[elem] = <<~EOS
+              text
+            EOS
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h do |elem|
+            [elem, <<~EOS]
+              text
+            EOS
+          end
+        RUBY
+      end
+
+      it 'registers an offense and keeps the heredoc body when the value is a heredoc in `inject`' do
+        expect_offense(<<~RUBY)
+          array.inject({}) do |hash, elem|
+                ^^^^^^ Use `to_h { ... }` instead of `inject`.
+            hash[elem] = <<~EOS
+              text
+            EOS
+            hash
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h do |elem|
+            [elem, <<~EOS]
+              text
+            EOS
+          end
+        RUBY
+      end
+
+      it 'registers an offense and keeps the heredoc body when the accumulator follows a heredoc on the same line in `inject`' do
+        expect_offense(<<~RUBY)
+          array.inject({}) { |hash, elem| hash[elem] = <<~EOS; hash }
+                ^^^^^^ Use `to_h { ... }` instead of `inject`.
+            text
+          EOS
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.to_h { |elem| [elem, <<~EOS] }
+            text
+          EOS
+        RUBY
+      end
+    end
+
     context 'with numbered parameters', :ruby27 do
       it 'registers an offense and corrects each_with_object with numbered params' do
         expect_offense(<<~RUBY)
@@ -319,6 +396,17 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
 
         expect_correction(<<~RUBY)
           array.to_h { [_1.id, _1.name] }
+        RUBY
+      end
+
+      it 'does not register an offense when the value is a heredoc in `inject` with numbered params' do
+        expect_no_offenses(<<~RUBY)
+          array.inject({}) do
+            _1[_2] = <<~EOS
+              \#{_2}
+            EOS
+            _1
+          end
         RUBY
       end
     end
