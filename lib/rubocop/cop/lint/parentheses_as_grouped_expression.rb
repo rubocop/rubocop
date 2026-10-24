@@ -57,7 +57,7 @@ module RuboCop
           node = node.children.first while node&.begin_type? && node.children.one?
           return false unless node
 
-          keyword_operator?(node) || modifier_expression?(node)
+          keyword_operator?(node) || modifier_expression?(node) || command_call_operand?(node)
         end
 
         def keyword_operator?(node)
@@ -67,6 +67,27 @@ module RuboCop
 
         def modifier_expression?(node)
           node.type?(:if, :while, :until) && node.modifier_form?
+        end
+
+        def command_call_operand?(node)
+          if node.assignment? || (node.call_type? && node.assignment_method?)
+            command_call_value?(node.children.last)
+          elsif node.send_type? && node.prefix_bang?
+            command_call_value?(node.receiver)
+          else
+            false
+          end
+        end
+
+        def command_call_value?(node)
+          command_call?(node) || command_call_operand?(node)
+        end
+
+        def command_call?(node)
+          node = node.send_node if node.any_block_type?
+          return false unless node.type?(:call, :super, :yield)
+
+          node.arguments? && !node.parenthesized? && !node.operator_method?
         end
 
         def chained_calls?(node)
