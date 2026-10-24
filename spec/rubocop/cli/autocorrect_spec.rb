@@ -8594,6 +8594,31 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Layout/LineContinuationSpacing` and ' \
+     '`Layout/SpaceAroundOperators` with `EnforcedStyle: no_space`' do
+    skip 'LineContinuationSpacing does not handle CRLF' if RuboCop::Platform.windows?
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineContinuationSpacing:
+        EnforcedStyle: no_space
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      foo = \
+        bar
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only Layout/LineContinuationSpacing,Layout/SpaceAroundOperators]
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      foo =\
+        bar
+    RUBY
+  end
+
   it 'corrects `Lint/UselessAssignment`, `Layout/ArrayAlignment` and `Layout/AssignmentIndentation` offenses for a list of values without brackets' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

@@ -245,13 +245,23 @@ module RuboCop
             return if with_space.is?(operator.source)
 
             "Space around operator `#{operator.source}` detected."
-          elsif !/^\s.*\s$/.match?(with_space.source)
+          elsif missing_surrounding_space?(with_space)
             "Surrounding space missing for operator `#{operator.source}`."
           elsif excess_leading_space?(type, operator, with_space, right_operand) ||
                 excess_trailing_space?(right_operand.source_range, with_space)
             "Operator `#{operator.source}` should be surrounded " \
               'by a single space.'
           end
+        end
+
+        def missing_surrounding_space?(with_space)
+          return false if /\A\s.*\s\z/m.match?(with_space.source)
+
+          !with_space.source.start_with?(/\s/) || !line_continuation_after?(with_space)
+        end
+
+        def line_continuation_after?(range)
+          processed_source.buffer.source[range.end_pos, 2] == "\\\n"
         end
 
         def excess_leading_space?(type, operator, with_space, right_operand)
