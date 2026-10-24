@@ -214,6 +214,26 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     RUBY
   end
 
+  it 'accepts an assignment followed by a line continuation without a space' do
+    expect_no_offenses(<<~'RUBY')
+      x =\
+        0
+    RUBY
+  end
+
+  it 'registers an offense for a missing space before an operator followed by a line continuation' do
+    expect_offense(<<~'RUBY')
+      x=\
+       ^ Surrounding space missing for operator `=`.
+        0
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      x = \
+        0
+    RUBY
+  end
+
   it 'accepts an operator at the beginning of a line' do
     expect_no_offenses(<<~'RUBY')
       a = b \
