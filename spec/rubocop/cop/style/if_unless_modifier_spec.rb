@@ -813,6 +813,36 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
+  context 'when `Layout/SpaceInsideParens` is `EnforcedStyle: space`' do
+    let(:other_cops) do
+      {
+        'Layout/LineLength' => line_length_config,
+        'Layout/SpaceInsideParens' => { 'Enabled' => true, 'EnforcedStyle' => 'space' }
+      }
+    end
+
+    it 'registers an offense and corrects with spaces inside the added parentheses' do
+      expect_offense(<<~RUBY)
+        x ||= if condition
+              ^^ Favor modifier `if` usage when having a single-line body. Wrap the expression in parentheses to keep the current behavior, as it is part of a larger expression.
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x ||= ( foo if condition )
+      RUBY
+    end
+
+    it 'does not register an offense when the spaces push the modifier form past the line length' do
+      expect_no_offenses(<<~RUBY)
+        x ||= if condition
+          a_method_name_that_fits_the_limit_only_without_inner_spaces
+        end
+      RUBY
+    end
+  end
+
   context 'multiline `if` that fits on one line and using dot method call with hash value omission syntax', :ruby31 do
     it 'corrects it to normal form1' do
       expect_offense(<<~RUBY)

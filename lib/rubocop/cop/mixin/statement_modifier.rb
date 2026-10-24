@@ -92,8 +92,20 @@ module RuboCop
       def to_modifier_form(node)
         body = if_body_source(node.body)
         expression = [body, node.keyword, node.condition.source].compact.join(' ')
-        parenthesized = parenthesize?(node) ? "(#{expression})" : expression
-        [parenthesized, first_line_comment(node)].compact.join(' ')
+        expression = parenthesized(expression) if parenthesize?(node)
+        [expression, first_line_comment(node)].compact.join(' ')
+      end
+
+      def parenthesized(expression)
+        padding = space_inside_parens? ? ' ' : ''
+
+        "(#{padding}#{expression}#{padding})"
+      end
+
+      def space_inside_parens?
+        return false unless config.cop_enabled?('Layout/SpaceInsideParens')
+
+        %w[space compact].include?(config.for_cop('Layout/SpaceInsideParens')['EnforcedStyle'])
       end
 
       # rubocop:disable-next Metrics/AbcSize

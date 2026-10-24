@@ -8216,6 +8216,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Style/IfUnlessModifier` and ' \
+     '`Layout/SpaceInsideParens` with `EnforcedStyle: space`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Max: 80
+      Layout/SpaceInsideParens:
+        EnforcedStyle: space
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x ||= if condition
+        a_method_name_that_fits_the_limit_only_without_inner_spaces
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only Style/IfUnlessModifier,Layout/SpaceInsideParens,Layout/LineLength]
+    )
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      x ||= if condition
+        a_method_name_that_fits_the_limit_only_without_inner_spaces
+      end
+    RUBY
+  end
+
   it 'corrects `Lint/UselessAssignment`, `Layout/ArrayAlignment` and `Layout/AssignmentIndentation` offenses for a list of values without brackets' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
