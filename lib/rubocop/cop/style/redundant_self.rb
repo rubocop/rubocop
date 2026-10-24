@@ -115,7 +115,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.self_receiver? && regular_method_call?(node)
-          return if node.parent&.mlhs_type?
+          return if multiple_assignment_target?(node)
           return if allowed_send_node?(node)
           return if it_method_in_block?(node)
 
@@ -152,6 +152,14 @@ module RuboCop
           node.each_descendant do |child_node|
             @local_variables_scopes[child_node] = local_variables
           end
+        end
+
+        def multiple_assignment_target?(node)
+          return false unless (parent = node.parent)
+
+          parent = parent.parent if parent.splat_type?
+
+          parent.mlhs_type?
         end
 
         def allowed_send_node?(node)
