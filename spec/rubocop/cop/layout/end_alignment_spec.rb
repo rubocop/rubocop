@@ -858,6 +858,8 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       end
 
       it_behaves_like 'aligned', 'var = case',   'a when b', 'end'
+      it_behaves_like 'aligned', 'Foo = class',  'Bar',      'end'
+      it_behaves_like 'aligned', 'Foo = module', 'Bar',      'end'
       it_behaves_like 'aligned', "var =\n  if",  'test', '  end'
       context 'Ruby >= 2.7', :ruby27 do
         it_behaves_like 'aligned', 'var = case', 'a; in b', 'end'
