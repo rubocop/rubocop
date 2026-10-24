@@ -125,6 +125,7 @@ module RuboCop
           @breakable_strings = {}
           @endless_methods_by_line = {}
           @heredocs = nil
+          @heredoc_openers = nil
 
           return unless processed_source.raw_source.include?(';')
 
@@ -214,9 +215,22 @@ module RuboCop
           range = breakable_node.source_range
 
           existing = breakable_range_by_line_index[line_index]
-          return if existing
+          return if existing || after_heredoc_opener?(range)
 
           breakable_range_by_line_index[line_index] = range
+        end
+
+        def after_heredoc_opener?(range)
+          heredoc_openers.any? do |opener|
+            opener.line == range.line && opener.begin_pos < range.begin_pos
+          end
+        end
+
+        def heredoc_openers
+          ast = processed_source.ast
+          return [] if ast.nil?
+
+          @heredoc_openers ||= ast.each_node(:any_str).select(&:heredoc?).map(&:source_range)
         end
 
         def compact_nested_array_break?(node, breakable_node)
@@ -237,21 +251,24 @@ module RuboCop
           tokens = processed_source.tokens.select { |t| t.type == :tSEMI }
           tokens.reverse_each do |token|
             range = breakable_range_after_semicolon(token)
-            breakable_range_by_line_index[range.line - 1] = range if range
+            next if range.nil? || after_heredoc_opener?(range)
+
+            breakable_range_by_line_index[range.line - 1] = range
           end
         end
 
         def check_for_breakable_block(block_node)
           return unless block_node.single_line?
-          return if receiver_contains_heredoc?(block_node)
 
           line_index = block_node.loc.line - 1
           return if breakable_string_delimiters[line_index]
 
           range = breakable_block_range(block_node)
           pos = range.begin_pos + 1
+          range = range_between(pos, pos + 1)
+          return if after_heredoc_opener?(range)
 
-          breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
+          breakable_range_by_line_index[line_index] = range
         end
 
         # rubocop:disable-next Metrics/AbcSize
@@ -289,7 +306,8 @@ module RuboCop
             !node.heredoc? &&
             # TODO: strings inside hashes, kwargs and arrays are currently ignored,
             # but could be considered in the future
-            !node.parent&.type?(:pair, :kwoptarg, :array)
+            !node.parent&.type?(:pair, :kwoptarg, :array) &&
+            !after_heredoc_opener?(node.source_range)
         end
 
         def breakable_block_range(block_node)
