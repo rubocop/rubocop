@@ -132,7 +132,8 @@ module RuboCop
           empty_begin?(node) ||
             begin_block_has_multiline_statements?(node) ||
             contain_rescue_or_ensure?(node) ||
-            valid_context_using_only_begin?(node)
+            valid_context_using_only_begin?(node) ||
+            ternary_operand_requiring_begin?(node)
         end
 
         def register_offense(node)
@@ -229,6 +230,12 @@ module RuboCop
             parent&.send_type? || parent&.operator_keyword?
         end
 
+        def ternary_operand_requiring_begin?(node)
+          return false unless node.parent&.if_type? && node.parent.ternary?
+
+          !node.children.one? || low_precedence_statement?(node.children.first)
+        end
+
         def valid_begin_assignment?(node)
           node.parent&.assignment? && (!node.children.one? || too_long_when_joined?(node))
         end
@@ -247,6 +254,7 @@ module RuboCop
           node.branches.each do |branch|
             next unless branch&.kwbegin_type?
             next if branch.rescue_node || branch.ensure_node
+            next if ternary_operand_requiring_begin?(branch)
 
             register_offense(branch)
           end

@@ -403,6 +403,61 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when a single statement `begin` block is a ternary branch' do
+    expect_offense(<<~RUBY)
+      condition ? foo : begin
+                        ^^^^^ Redundant `begin` block detected.
+        bar
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      condition ? foo :#{trailing_whitespace}
+        bar
+
+    RUBY
+  end
+
+  it 'does not register an offense when a multiple statements `begin` block is a ternary branch' do
+    expect_no_offenses(<<~RUBY)
+      condition ? foo : begin
+        bar
+        baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when an empty `begin` block is a ternary branch' do
+    expect_no_offenses(<<~RUBY)
+      condition ? foo : begin
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when a modifier `if` statement `begin` block is a ternary branch' do
+    expect_no_offenses(<<~RUBY)
+      condition ? foo : begin
+        bar if baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when a `not` statement `begin` block is a ternary branch' do
+    expect_no_offenses(<<~RUBY)
+      condition ? foo : begin
+        not bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when an `and` statement `begin` block is a ternary branch' do
+    expect_no_offenses(<<~RUBY)
+      condition ? foo : begin
+        bar and baz
+      end
+    RUBY
+  end
+
   it 'registers and corrects an offense when a multiline `begin` block is inside `case`/`when`' do
     expect_offense(<<~RUBY)
       case condition
