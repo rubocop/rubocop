@@ -238,6 +238,18 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             RUBY
           end
         end
+
+        it 'registers an offense for a comparison nested in the receiver of another comparison' do
+          expect_offense(<<~RUBY)
+            foo { bar < 0 } < 0
+                  ^^^^^^^ Use `bar.negative?` instead of `bar < 0`.
+            ^^^^^^^^^^^^^^^^^^^ Use `foo { bar < 0 }.negative?` instead of `foo { bar < 0 } < 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo { bar.negative? }.negative?
+          RUBY
+        end
       end
 
       context 'when target ruby version is 2.2 or lower', :ruby22, unsupported_on: :prism do
@@ -340,6 +352,18 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
 
       expect_correction(<<~RUBY)
         number < 0
+      RUBY
+    end
+
+    it 'registers an offense for a predicate nested in the receiver of another predicate' do
+      expect_offense(<<~RUBY)
+        foo { bar.positive? }.positive?
+              ^^^^^^^^^^^^^ Use `bar > 0` instead of `bar.positive?`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `foo { bar.positive? } > 0` instead of `foo { bar.positive? }.positive?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo { bar > 0 } > 0
       RUBY
     end
   end

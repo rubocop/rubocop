@@ -87,6 +87,10 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[== > < positive? negative? zero?].freeze
 
+        def on_new_investigation
+          @corrected_nodes = nil
+        end
+
         def on_send(node)
           numeric, replacement = check(node)
           return unless numeric
@@ -99,7 +103,7 @@ module RuboCop
 
           message = format(MSG, prefer: replacement, current: node.source)
           add_offense(node, message: message) do |corrector|
-            corrector.replace(node, replacement)
+            autocorrect(corrector, node, replacement)
           end
         end
 
@@ -113,6 +117,19 @@ module RuboCop
           bitwise_predicate_candidate?(node) &&
             config.for_cop('Style/BitwisePredicate').fetch('Enabled') &&
             BitwisePredicate.support_target_ruby_version?(target_ruby_version)
+        end
+
+        def autocorrect(corrector, node, replacement)
+          return if corrected_ancestor?(node)
+
+          corrector.replace(node, replacement)
+
+          @corrected_nodes ||= Set.new.compare_by_identity
+          @corrected_nodes.add(node)
+        end
+
+        def corrected_ancestor?(node)
+          node.each_ancestor(:send).any? { |ancestor| @corrected_nodes&.include?(ancestor) }
         end
 
         def check(node)
