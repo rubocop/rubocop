@@ -243,6 +243,7 @@ module RuboCop
 
         def self.autocorrect_incompatible_with
           [
+            Layout::HeredocArgumentClosingParenthesis,
             Style::NestedParenthesizedCalls,
             Style::RedundantParentheses,
             Style::RescueModifier,
