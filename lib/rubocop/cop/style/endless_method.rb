@@ -151,8 +151,17 @@ module RuboCop
         # which an endless definition cannot hold.
         # `Style/RaiseArgs` would drop the parentheses of a `raise` that becomes
         # the body in the same pass, which a method passed as an argument needs.
+        # `Style/IfUnlessModifier` and `Style/WhileUntilModifier` would turn the body into
+        # a modifier form, which then applies to the whole endless definition.
         def self.autocorrect_incompatible_with
-          [Style::GuardClause, Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses, Style::RaiseArgs]
+          [
+            Style::GuardClause,
+            Style::IfUnlessModifier,
+            Style::MethodCallWithArgsParentheses,
+            Style::MethodDefParentheses,
+            Style::RaiseArgs,
+            Style::WhileUntilModifier
+          ]
         end
 
         def on_def(node)

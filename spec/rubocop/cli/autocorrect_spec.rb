@@ -1906,6 +1906,41 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/EndlessMethod` with `EnforcedStyle: require_always`, `Style/IfUnlessModifier` and `Style/WhileUntilModifier`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/EndlessMethod:
+        EnforcedStyle: require_always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo
+        until yield
+          do_something
+        end
+      end
+
+      def bar
+        if condition
+          do_something
+        end
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only', 'Style/EndlessMethod,Style/IfUnlessModifier,Style/WhileUntilModifier'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo = (do_something until yield)
+
+      def bar = (do_something if condition)
+    RUBY
+  end
+
   it 'corrects `Style/RaiseArgs` with `EnforcedStyle: compact`, `Style/MethodCallWithArgsParentheses` and `Style/RedundantParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/RaiseArgs:
