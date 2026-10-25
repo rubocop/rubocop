@@ -367,8 +367,8 @@ module RuboCop
       return if team.cops.empty?
 
       team.defer_corrections = @options[:diff]
+      team.cops.first.offenses_to_check = offenses.reject(&:corrected?)
 
-      team.cops.first.offenses_to_check = offenses
       yield team
     end
 

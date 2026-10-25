@@ -3128,6 +3128,31 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq("# frozen_string_literal: true\n\n$g = 'a'\n")
   end
 
+  it 'removes a redundant directive that autocorrection moves onto the line of an offense corrected earlier' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Lint/RedundantCopDisableDirective:
+        Enabled: true
+      Style/FrozenStringLiteralComment:
+        Enabled: true
+      Style/Semicolon:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo # rubocop:disable Style/Semicolon
+      bar;
+    RUBY
+
+    expect(cli.run(['--autocorrect-all'])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+      foo
+      bar
+    RUBY
+  end
+
   it 'corrects RedundantCopDisableDirective offenses' do
     source = <<~RUBY
       class A
