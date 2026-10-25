@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
                :restore_registry do
   include FileHelper
 
-  subject(:formatter) { described_class.new(output) }
+  subject(:formatter) { described_class.new(output, auto_gen_allowed_offenses: true) }
 
   include_context 'mock console output'
 
@@ -33,7 +33,9 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     )
   end
 
-  let(:expected_heading_command) { 'rubocop --auto-gen-config' }
+  let(:expected_heading_command) do
+    'rubocop --auto-gen-config --auto-gen-allowed-offenses'
+  end
 
   let(:expected_heading_timestamp) { "on #{Time.now} " }
   let(:config_store) { instance_double(RuboCop::ConfigStore) }
@@ -48,7 +50,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
     allow(Time).to receive(:now).and_return(Time.now)
     allow(config_store).to receive(:for_pwd).and_return(pwd_config)
-    allow(pwd_config).to receive(:[]).and_return(nil)
+    allow(pwd_config).to receive_messages('[]' => nil, base_dir_for_path_parameters: Dir.pwd)
   end
 
   context 'when any offenses are detected' do
@@ -65,18 +67,18 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       [heading,
        '# Offense count: 2',
        'Test/Cop1:',
-       '  Exclude:',
-       "    - 'test_a.rb'",
-       "    - 'test_b.rb'",
+       '  AllowedOffenses:',
+       '    test_a.rb: 1',
+       '    test_b.rb: 1',
        '',
        '# Offense count: 1',
        'Test/Cop2:',
-       '  Exclude:',
-       "    - 'test_a.rb'",
+       '  AllowedOffenses:',
+       '    test_a.rb: 1',
        ''].join("\n")
     end
 
-    it 'displays YAML configuration disabling all cops with offenses' do
+    it 'displays YAML configuration allowing the current offense counts' do
       expect(output.string).to eq(expected_rubocop_todo)
       expect($stdout.string).to eq("Created .rubocop_todo.yml.\n")
     end
@@ -108,21 +110,18 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       [heading,
        '# Offense count: 2',
        'Test/Cop1:',
-       '  Exclude:',
-       "    - 'Gemfile'",
-       "    - 'test_a.rb'",
-       "    - 'test_b.rb'",
+       '  AllowedOffenses:',
+       '    test_a.rb: 1',
+       '    test_b.rb: 1',
        '',
        '# Offense count: 1',
        'Test/Cop2:',
-       '  Exclude:',
-       "    - '**/*.blah'",
-       '    - !ruby/regexp /.*/bar/*/foo\.rb$/',
-       "    - 'test_a.rb'",
+       '  AllowedOffenses:',
+       '    test_a.rb: 1',
        ''].join("\n")
     end
 
-    it 'merges in excludes from .rubocop.yml' do
+    it 'does not copy excludes from .rubocop.yml into allowance configuration' do
       expect(output.string).to eq(expected_rubocop_todo)
     end
   end
@@ -154,26 +153,12 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
        '',
        '# Offense count: 15',
        'Test/Cop2:',
-       '  Exclude:',
-       "    - 'test_01.rb'",
-       "    - 'test_02.rb'",
-       "    - 'test_03.rb'",
-       "    - 'test_04.rb'",
-       "    - 'test_05.rb'",
-       "    - 'test_06.rb'",
-       "    - 'test_07.rb'",
-       "    - 'test_08.rb'",
-       "    - 'test_09.rb'",
-       "    - 'test_10.rb'",
-       "    - 'test_11.rb'",
-       "    - 'test_12.rb'",
-       "    - 'test_13.rb'",
-       "    - 'test_14.rb'",
-       "    - 'test_15.rb'",
+       '  AllowedOffenses:',
+       *filenames.take(15).map { |filename| "    #{filename}: 1" },
        ''].join("\n")
     end
 
-    it 'disables the cop with 15 offending files' do
+    it 'applies the default exclusion limit to allowance maps' do
       expect(output.string).to eq(expected_rubocop_todo)
     end
   end
@@ -195,11 +180,15 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       formatter.finished(filenames)
     end
 
-    let(:formatter) { described_class.new(output, exclude_limit: 5) }
+    let(:formatter) do
+      described_class.new(output, auto_gen_allowed_offenses: true, exclude_limit: 5)
+    end
 
     let(:filenames) { Array.new(6) { |index| format('test_%02d.rb', index + 1) } }
 
-    let(:expected_heading_command) { 'rubocop --auto-gen-config --exclude-limit 5' }
+    let(:expected_heading_command) do
+      'rubocop --auto-gen-config --auto-gen-allowed-offenses --exclude-limit 5'
+    end
 
     let(:expected_rubocop_todo) do
       [heading,
@@ -209,16 +198,58 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
        '',
        '# Offense count: 5',
        'Test/Cop2:',
-       '  Exclude:',
-       "    - 'test_01.rb'",
-       "    - 'test_02.rb'",
-       "    - 'test_03.rb'",
-       "    - 'test_04.rb'",
-       "    - 'test_05.rb'",
+       '  AllowedOffenses:',
+       *filenames.take(5).map { |filename| "    #{filename}: 1" },
        ''].join("\n")
     end
 
-    it 'respects the file exclusion list limit' do
+    it 'applies the configured exclusion limit to allowance maps' do
+      expect(output.string).to eq(expected_rubocop_todo)
+    end
+  end
+
+  context 'when no_exclude_limit option is passed' do
+    before do
+      formatter.started(filenames)
+
+      filenames.each do |filename|
+        formatter.file_started(filename, options)
+
+        if filename == filenames.last
+          formatter.file_finished(filename, [offenses.first])
+        else
+          formatter.file_finished(filename, offenses)
+        end
+      end
+
+      formatter.finished(filenames)
+    end
+
+    let(:formatter) do
+      described_class.new(output, auto_gen_allowed_offenses: true, no_exclude_limit: false)
+    end
+
+    let(:filenames) { Array.new(16) { |index| format('test_%02d.rb', index + 1) } }
+
+    let(:expected_heading_command) do
+      'rubocop --auto-gen-config --auto-gen-allowed-offenses --no-exclude-limit'
+    end
+
+    let(:expected_rubocop_todo) do
+      [heading,
+       '# Offense count: 16',
+       'Test/Cop1:',
+       '  AllowedOffenses:',
+       *filenames.map { |filename| "    #{filename}: 1" },
+       '',
+       '# Offense count: 15',
+       'Test/Cop2:',
+       '  AllowedOffenses:',
+       *filenames.take(15).map { |filename| "    #{filename}: 1" },
+       ''].join("\n")
+    end
+
+    it 'generates all allowances regardless of the number of offending files' do
       expect(output.string).to eq(expected_rubocop_todo)
     end
   end
@@ -301,8 +332,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
        '# Offense count: 1',
        '# This cop supports safe autocorrection (--autocorrect).',
        'Test/Cop3:',
-       '  Exclude:',
-       "    - 'test_autocorrect.rb'",
+       '  AllowedOffenses:',
+       '    test_autocorrect.rb: 1',
        ''].join("\n")
     end
 
@@ -327,8 +358,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
        '# Offense count: 1',
        '# This cop supports unsafe autocorrection (--autocorrect-all).',
        "#{cop_name}:",
-       '  Exclude:',
-       "    - 'test_autocorrect.rb'",
+       '  AllowedOffenses:',
+       '    test_autocorrect.rb: 1',
        ''].join("\n")
     end
 
