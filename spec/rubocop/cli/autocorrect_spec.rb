@@ -6022,6 +6022,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/SingleLineBlockChain` with `Style/MapToSet`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo(obj.map { |x| x.do_something }.to_set, bar)
+      obj.map { |x| x.do_something }.to_set | bar
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/SingleLineBlockChain,Style/MapToSet'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo(obj.to_set { |x| x.do_something }, bar)
+      obj.to_set { |x| x.do_something } | bar
+    RUBY
+  end
+
   it 'corrects `Style/BlockDelimiters` with `EnforcedStyle: braces_for_chaining` and `Style/RedundantBegin` offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/BlockDelimiters:
