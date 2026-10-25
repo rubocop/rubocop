@@ -163,7 +163,7 @@ module RuboCop
 
       def put_comma(items, kind)
         last_item = items.last
-        return if last_item.block_pass_type?
+        return if last_item.type?(:block_pass, :forwarded_args)
 
         range = autocorrect_range(last_item)
         msg = format(MSG, command: 'Put a', unit: format(kind, article: 'a multiline'))
