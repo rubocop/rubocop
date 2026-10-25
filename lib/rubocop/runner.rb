@@ -164,25 +164,65 @@ module RuboCop
       true
     end
 
-    def inspect_files(files) # rubocop:disable Metrics/AbcSize
+    def inspect_files(files)
+      prepare_allowed_offense_reporting
       formatter_set.started(files)
       formatters_started = true
-      file_iterator(files) do |file|
-        offenses, problems = collect_problems { process_file(file) }
-        succeeded = offenses.none? { |o| considered_failure?(o) && offense_displayed?(o) }
-
-        [offenses, succeeded, problems]
-      end
+      passed = file_iterator(files) { |file| inspect_file_for_reporting(file) }
+      passed && !allowed_offenses_exceeded?
     ensure
+      finish_inspection(files, formatters_started)
+    end
+
+    def prepare_allowed_offense_reporting
+      @pending_file_reports = nil
+      @allowed_offenses = allowed_offenses_for_run
+      @pending_file_reports = [] if @allowed_offenses
+    end
+
+    def inspect_file_for_reporting(file)
+      offenses, problems = collect_problems { process_file(file) }
+      succeeded = offenses.none? do |offense|
+        !@allowed_offenses&.configured_for?(offense.cop_name) &&
+          considered_failure?(offense) && offense_displayed?(offense)
+      end
+
+      [offenses, succeeded, problems]
+    end
+
+    def allowed_offenses_exceeded?
+      @allowed_offenses&.exceeded? || false
+    end
+
+    def finish_inspection(files, formatters_started)
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
-      # mainly targets editors that integrates RuboCop. When RuboCop is run
-      # by an editor, it should be inspecting only one file.
+      # mainly targets editors that integrate RuboCop. When RuboCop is run by
+      # an editor, it should be inspecting only one file.
       if files.size > 1 && cached_run?
         ResultCache.cleanup(@config_store, @options[:debug], @options[:cache_root])
       end
+      report_pending_file_reports if @pending_file_reports
       formatter_set.finished(@inspected_files.freeze) if formatters_started
       formatter_set.close_output_files
       warn_about_elided_offenses
+    ensure
+      @allowed_offenses = nil
+      @pending_file_reports = nil
+    end
+
+    def allowed_offenses_for_run
+      return if @options[:auto_gen_config]
+
+      allowed_offenses = AllowedOffenses.new(@config_store.for_pwd)
+      allowed_offenses if allowed_offenses.configured?
+    end
+
+    def report_pending_file_reports
+      @pending_file_reports.each do |file, offenses, errors, warnings|
+        formatter_set.file_started(file, cli_options: @options, config_store: @config_store)
+        file_problems(file, errors, warnings) unless errors.empty? && warnings.empty?
+        file_finished(file, offenses)
+      end
     end
 
     def file_iterator(files, &block)
@@ -218,6 +258,12 @@ module RuboCop
       file, offenses, (errors, warnings) = @report_queue.delete(index)
       @errors.concat(errors)
       @warnings.concat(warnings)
+      if @allowed_offenses
+        @allowed_offenses.record(file, offenses)
+        @pending_file_reports << [file, offenses, errors, warnings]
+        return
+      end
+
       file_problems(file, errors, warnings) unless errors.empty? && warnings.empty?
       file_finished(file, offenses)
     end
@@ -274,7 +320,7 @@ module RuboCop
         # Report and count the offending file before stopping so `--fail-fast`
         # still shows its offenses and exits with a failing status.
         _offenses, succeeded = result
-        break if @options[:fail_fast] && !succeeded
+        break if @options[:fail_fast] && (!succeeded || @allowed_offenses&.exceeded?)
       end
     end
 
@@ -398,6 +444,8 @@ module RuboCop
 
     def file_started(file)
       puts "Scanning #{file}" if @options[:debug]
+      return if @allowed_offenses
+
       formatter_set.file_started(file, cli_options: @options, config_store: @config_store)
     end
 
@@ -412,6 +460,7 @@ module RuboCop
 
     def file_finished(file, offenses)
       @inspected_files << file
+      offenses = @allowed_offenses.filter(file, offenses) if @allowed_offenses
       offenses = offenses_to_report(offenses)
       formatter_set.file_finished(file, offenses)
     end

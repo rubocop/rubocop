@@ -40,6 +40,14 @@ module RuboCop
         end
     end
 
+    def normalized_relative_path(path, base_dir = PathUtil.pwd)
+      path = File.expand_path(path.to_s)
+      base_dir = File.expand_path(base_dir)
+      Pathname.new(path).relative_path_from(Pathname.new(base_dir)).to_s.tr(File::SEPARATOR, '/')
+    rescue ArgumentError
+      path.tr(File::SEPARATOR, '/')
+    end
+
     def remote_file?(uri)
       uri.start_with?('http://', 'https://')
     end

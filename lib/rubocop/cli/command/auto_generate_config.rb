@@ -64,17 +64,21 @@ module RuboCop
         end
 
         def maybe_run_line_length_cop
-          if only_exclude?
-            skip_line_length_cop(PHASE_1_SKIPPED_ONLY_EXCLUDE)
-          elsif !line_length_enabled?(@config_store.for_pwd)
-            skip_line_length_cop(PHASE_1_DISABLED)
-          elsif !same_max_line_length?(@config_store.for_pwd, ConfigLoader.default_configuration)
-            skip_line_length_cop(PHASE_1_OVERRIDDEN)
-          elsif options_has_only_flag?
-            skip_line_length_cop(PHASE_1_SKIPPED_ONLY_COPS)
-          else
-            run_line_length_cop
+          reason = line_length_skip_reason
+          return skip_line_length_cop(reason) if reason
+
+          run_line_length_cop
+        end
+
+        def line_length_skip_reason
+          return PHASE_1_SKIPPED_ONLY_EXCLUDE if only_exclude?
+          return PHASE_1_DISABLED unless line_length_enabled?(@config_store.for_pwd)
+
+          unless same_max_line_length?(@config_store.for_pwd, ConfigLoader.default_configuration)
+            return PHASE_1_OVERRIDDEN
           end
+
+          PHASE_1_SKIPPED_ONLY_COPS if options_has_only_flag?
         end
 
         def skip_line_length_cop(reason)
