@@ -143,7 +143,18 @@ module RuboCop
         def replacement(parts)
           interpolated_parts = parts.map { |part| adjust_str(part) }
 
-          "\"#{handle_quotes(interpolated_parts).join}\""
+          "\"#{join_parts(handle_quotes(interpolated_parts))}\""
+        end
+
+        def join_parts(parts)
+          parts.each_with_object(+'') do |part, result|
+            result.insert(-2, '\\') if interpolation_formed?(result, part)
+            result << part
+          end
+        end
+
+        def interpolation_formed?(preceding, part)
+          part.start_with?('{', '@', '$') && preceding.match?(/(?<!\\)(?:\\\\)*#\z/)
         end
 
         def adjust_str(part)
