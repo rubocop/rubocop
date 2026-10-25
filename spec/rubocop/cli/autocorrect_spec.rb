@@ -8306,6 +8306,58 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/EvalWithLocation` and `Layout/EmptyLinesAroundBlockBody` offenses ' \
+     'when the eval call ends the block body' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundBlockBody:
+        EnforcedStyle: empty_lines
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo do
+        bar.instance_eval "def baz; end"
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only Style/EvalWithLocation,Layout/EmptyLinesAroundBlockBody]
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      foo do
+
+        bar.instance_eval "def baz; end", __FILE__, __LINE__
+
+      end
+    RUBY
+  end
+
+  it 'corrects `Style/EvalWithLocation` and `Layout/EmptyLinesAroundClassBody` offenses ' \
+     'when the eval call ends the class body' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundClassBody:
+        EnforcedStyle: empty_lines
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo
+        class_eval "def baz; end"
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only Style/EvalWithLocation,Layout/EmptyLinesAroundClassBody]
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo
+
+        class_eval "def baz; end", __FILE__, __LINE__
+
+      end
+    RUBY
+  end
+
   it 'does not cause an infinite loop when `Layout/SpaceInsideParens` pushes the statement joined by `Style/RedundantBegin` past `Layout/LineLength`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/LineLength:

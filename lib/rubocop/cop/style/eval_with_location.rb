@@ -66,6 +66,14 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[eval class_eval module_eval instance_eval].freeze
 
+        def self.autocorrect_incompatible_with
+          [
+            Layout::EmptyLinesAroundBlockBody,
+            Layout::EmptyLinesAroundClassBody,
+            Layout::EmptyLinesAroundModuleBody
+          ]
+        end
+
         # @!method valid_eval_receiver?(node)
         def_node_matcher :valid_eval_receiver?, <<~PATTERN
           { nil? (const {nil? cbase} :Kernel) }

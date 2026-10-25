@@ -1,0 +1,1 @@
+* [#16165](https://github.com/rubocop/rubocop/pull/16165): Fix an incorrect autocorrect for `Style/EvalWithLocation` with `Layout/EmptyLinesAroundBlockBody`, `Layout/EmptyLinesAroundClassBody` and `Layout/EmptyLinesAroundModuleBody`. ([@Starlexxx][])
