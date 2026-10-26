@@ -118,10 +118,7 @@ module RuboCop
         def redundant_splat_expansion(node)
           literal_expansion(node) do |expanded_item|
             if expanded_item.send_type?
-              return if array_new_inside_array_literal?(expanded_item)
-
-              grandparent = node.parent.parent
-              return if grandparent && !ASSIGNMENT_TYPES.include?(grandparent.type)
+              return unless redundant_array_new_splat?(node, expanded_item)
             # An empty array/percent literal (`*[]`, `*%w()`, ...) expands to nothing, so
             # removing the splat would produce invalid or semantically different code.
             elsif expanded_item.array_type? && expanded_item.children.empty?
@@ -130,6 +127,16 @@ module RuboCop
 
             yield
           end
+        end
+
+        # A splatted `Array.new` passed as a method argument provides the arguments,
+        # so the splat is only redundant directly inside an array.
+        def redundant_array_new_splat?(node, array_new_node)
+          return false unless node.parent.array_type?
+          return false if array_new_inside_array_literal?(array_new_node)
+
+          grandparent = node.parent.parent
+          !grandparent || ASSIGNMENT_TYPES.include?(grandparent.type)
         end
 
         def array_new_inside_array_literal?(array_new_node)
