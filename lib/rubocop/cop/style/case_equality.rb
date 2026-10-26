@@ -7,7 +7,7 @@ module RuboCop
       # The `===` operator has different behavior depending on the
       # receiver and its use outside of `case`/`when` is confusing.
       # Prefer more explicit alternatives like `is_a?`, `include?`,
-      # or `match?`.
+      # `cover?`, or `match?`.
       #
       # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is a constant.
@@ -22,9 +22,11 @@ module RuboCop
       # @example
       #   # bad
       #   (1..100) === 7
+      #   ('a'..'z') === char
       #
       #   # good
       #   (1..100).include?(7)
+      #   ('a'..'z').cover?(char)
       #
       # @example AllowOnConstant: false (default)
       #   # bad
@@ -90,9 +92,18 @@ module RuboCop
         end
 
         def begin_replacement(lhs, rhs)
-          return unless lhs.children.first&.range_type?
+          range = lhs.children.first
+          return unless range&.range_type?
 
-          "#{lhs.source}.include?(#{rhs.source})"
+          method = cover_semantics?(range) ? 'cover?' : 'include?'
+
+          "#{lhs.source}.#{method}(#{rhs.source})"
+        end
+
+        # `Range#===` behaves like `Range#cover?` since Ruby 2.7 (since Ruby 2.6 for ranges
+        # that aren't string ranges), and `Range#include?` only matches that for numeric ranges.
+        def cover_semantics?(range)
+          target_ruby_version >= 2.7 && !range.children.compact.all?(&:numeric_type?)
         end
 
         def const_replacement(lhs, rhs)

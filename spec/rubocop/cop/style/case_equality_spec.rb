@@ -130,4 +130,65 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
 
     it_behaves_like 'offenses'
   end
+
+  context 'when the receiver is a range' do
+    context 'with Ruby >= 2.7', :ruby27 do
+      it 'registers an offense and corrects to `cover?` for a range of strings' do
+        expect_offense(<<~RUBY)
+          ('a'..'z') === var
+                     ^^^ Avoid the use of the case equality operator `===`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ('a'..'z').cover?(var)
+        RUBY
+      end
+
+      it 'registers an offense and corrects to `cover?` for a range of variables' do
+        expect_offense(<<~RUBY)
+          (min...max) === var
+                      ^^^ Avoid the use of the case equality operator `===`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (min...max).cover?(var)
+        RUBY
+      end
+
+      it 'registers an offense and corrects to `include?` for an endless numeric range' do
+        expect_offense(<<~RUBY)
+          (1.5..) === var
+                  ^^^ Avoid the use of the case equality operator `===`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (1.5..).include?(var)
+        RUBY
+      end
+    end
+
+    context 'with Ruby <= 2.6', :ruby26, unsupported_on: :prism do
+      it 'registers an offense and corrects to `include?` for a range of strings' do
+        expect_offense(<<~RUBY)
+          ('a'..'z') === var
+                     ^^^ Avoid the use of the case equality operator `===`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ('a'..'z').include?(var)
+        RUBY
+      end
+
+      it 'registers an offense and corrects to `include?` for a range of variables' do
+        expect_offense(<<~RUBY)
+          (min...max) === var
+                      ^^^ Avoid the use of the case equality operator `===`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (min...max).include?(var)
+        RUBY
+      end
+    end
+  end
 end
