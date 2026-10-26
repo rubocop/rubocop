@@ -12,7 +12,7 @@ module RuboCop
           when :no_empty_lines
             corrector.remove(range)
           when :empty_lines
-            corrector.insert_before(range.begin.adjust(begin_pos: -1, end_pos: -1), "\n")
+            corrector.replace(range.begin.adjust(begin_pos: -1), "\n\n")
           end
         end
 
