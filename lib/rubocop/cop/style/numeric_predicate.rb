@@ -99,7 +99,10 @@ module RuboCop
 
           message = format(MSG, prefer: replacement, current: node.source)
           add_offense(node, message: message) do |corrector|
+            next if inside_corrected_predicate?(node)
+
             corrector.replace(node, replacement)
+            ignore_node(node)
           end
         end
 
@@ -113,6 +116,10 @@ module RuboCop
           bitwise_predicate_candidate?(node) &&
             config.for_cop('Style/BitwisePredicate').fetch('Enabled') &&
             BitwisePredicate.support_target_ruby_version?(target_ruby_version)
+        end
+
+        def inside_corrected_predicate?(node)
+          node.each_ancestor(:send).any? { |ancestor| ignored_node?(ancestor) }
         end
 
         def check(node)
