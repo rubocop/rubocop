@@ -476,6 +476,17 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           end
         end
       end
+
+      it 'accepts no trailing comma in a method call with argument forwarding at the end' do
+        expect_no_offenses(<<~RUBY)
+          def foo(...)
+            bar(
+              baz,
+              ...
+            )
+          end
+        RUBY
+      end
     end
 
     context 'when EnforcedStyleForMultiline is diff_comma' do
@@ -721,6 +732,17 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
             RUBY
           end
         end
+      end
+
+      it 'accepts no trailing comma in a method call with argument forwarding at the end' do
+        expect_no_offenses(<<~RUBY)
+          def foo(...)
+            bar(
+              baz,
+              ...
+            )
+          end
+        RUBY
       end
     end
   end
