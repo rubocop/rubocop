@@ -86,14 +86,17 @@ module RuboCop
           return if message_nodes.size > 1
 
           argument = message_nodes.first.source
-          exception_class = exception_node.source
-          exception_class = exception_node.receiver.source if use_new_method?(exception_node)
+          exception_class = exception_class_node(exception_node).source
 
           if parenthesize?(node)
             "#{node.method_name}(#{exception_class}.new(#{argument}))"
           else
             "#{node.method_name} #{exception_class}.new(#{argument})"
           end
+        end
+
+        def exception_class_node(exception_node)
+          use_new_method?(exception_node) ? exception_node.receiver : exception_node
         end
 
         def check_compact(node)
@@ -103,11 +106,38 @@ module RuboCop
             return if use_new_method?(exception) && exception.arguments?
 
             add_offense(node, message: format(COMPACT_MSG, method: node.method_name)) do |corrector|
-              replace_raise(corrector, node, correction_exploded_to_compact(node))
+              correct_raise(node) { correct_to_compact(corrector, node) }
             end
           else
             correct_style_detected
           end
+        end
+
+        def correct_to_compact(corrector, node)
+          if heredoc_message?(node)
+            correct_heredoc_exploded_to_compact(corrector, node)
+          else
+            corrector.replace(node, correction_exploded_to_compact(node))
+          end
+        end
+
+        def heredoc_message?(node)
+          node.parenthesized? && node.arguments.size == 2 && heredoc?(node.last_argument)
+        end
+
+        def heredoc?(node)
+          node.each_node(:any_str).any?(&:heredoc?)
+        end
+
+        def correct_heredoc_exploded_to_compact(corrector, node)
+          exception_node, message_node = *node.arguments
+          exception_class = exception_class_node(exception_node)
+          corrector.replace(range_between(exception_class, message_node), '.new(')
+          corrector.insert_after(message_node, ')')
+        end
+
+        def range_between(left_node, right_node)
+          left_node.source_range.end.join(right_node.source_range.begin)
         end
 
         def check_exploded(node)
@@ -120,15 +150,36 @@ module RuboCop
           return if allowed_non_exploded_type?(first_arg)
 
           add_offense(node, message: format(EXPLODED_MSG, method: node.method_name)) do |corrector|
-            replace_raise(corrector, node, correction_compact_to_exploded(node))
+            correct_raise(node) { correct_to_exploded(corrector, node) }
           end
         end
 
-        def replace_raise(corrector, node, replacement)
+        def correct_to_exploded(corrector, node)
+          if heredoc_new_argument?(node)
+            correct_heredoc_compact_to_exploded(corrector, node)
+          else
+            corrector.replace(node, correction_compact_to_exploded(node))
+          end
+        end
+
+        def heredoc_new_argument?(node)
+          new_call = node.first_argument
+          return false unless new_call.arguments.one? && heredoc?(new_call.first_argument)
+
+          node.parenthesized? || !parenthesize?(node)
+        end
+
+        def correct_heredoc_compact_to_exploded(corrector, node)
+          new_call = node.first_argument
+          corrector.replace(range_between(new_call.receiver, new_call.first_argument), ', ')
+          corrector.remove(new_call.loc.end) if new_call.loc.end
+        end
+
+        def correct_raise(node)
           opposite_style_detected
           return if inside_corrected_raise?(node)
 
-          corrector.replace(node, replacement)
+          yield
           ignore_node(node)
         end
 
