@@ -31,7 +31,10 @@ gem 'ruby-lsp', '~> 0.24', platform: :mri if RUBY_VERSION >= '3.0'
 # the development environment can exercise the integration. The gem only publishes
 # native binaries for MRI on supported platforms, so we gate by `RUBY_ENGINE` to
 # keep JRuby and other engines unaffected.
-gem 'rubydex', require: false if RUBY_VERSION >= '3.2' && RUBY_ENGINE == 'ruby'
+# FIXME: With rubydex 0.4.3, `Lint/DeprecatedReference` reports references to constants that
+# are not deprecated in the internal investigation on CI. Remove the exclusion once that is fixed.
+# https://github.com/rubocop/rubocop/actions/runs/40363639316/job/121716004034
+gem 'rubydex', '!= 0.4.3', require: false if RUBY_VERSION >= '3.2' && RUBY_ENGINE == 'ruby'
 # SimpleCov 1.0 requires Ruby 3.2+. Coverage measurement is opt-in (`COVERAGE=1`)
 # and unnecessary on the older Rubies in the CI matrix.
 gem 'simplecov', '~> 1.0' if RUBY_VERSION >= '3.2'
