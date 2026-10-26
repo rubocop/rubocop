@@ -45,7 +45,7 @@ module RuboCop
         extend AutoCorrector
 
         def self.autocorrect_incompatible_with
-          [Style::TrailingCommaInArrayLiteral]
+          [Layout::MultilineArrayBraceLayout, Style::TrailingCommaInArrayLiteral]
         end
 
         def on_hash(node)

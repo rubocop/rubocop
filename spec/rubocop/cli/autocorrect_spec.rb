@@ -8306,6 +8306,56 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/HashAsLastArrayItem` and `Layout/MultilineArrayBraceLayout` offenses ' \
+     'for nested arrays ending with a hash' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/HashAsLastArrayItem:
+        EnforcedStyle: no_braces
+      Layout/MultilineArrayBraceLayout:
+        EnforcedStyle: same_line
+      Layout/FirstHashElementIndentation:
+        EnforcedStyle: align_braces
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      {
+        data: [
+          {
+            text: 1
+          }
+        ],
+        includes: {
+          users: [
+            {
+              m: {
+              },
+            }
+          ]
+        }
+      }
+    RUBY
+
+    cops = %w[
+      Style/HashAsLastArrayItem Layout/MultilineArrayBraceLayout
+      Layout/FirstHashElementIndentation Layout/TrailingWhitespace
+    ]
+    status = cli.run(['--autocorrect-all', '--only', cops.join(',')])
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      {
+        data: [
+
+            text: 1],
+        includes: {
+                    users: [
+
+                        m: {
+                           },]
+                  }
+      }
+    RUBY
+  end
+
   it 'does not cause an infinite loop when `Layout/SpaceInsideParens` pushes the statement joined by `Style/RedundantBegin` past `Layout/LineLength`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/LineLength:
