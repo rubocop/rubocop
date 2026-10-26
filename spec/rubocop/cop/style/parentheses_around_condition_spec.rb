@@ -270,6 +270,81 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       RUBY
     end
 
+    it 'accepts variable assignment of a method call without parentheses in `if` condition' do
+      expect_no_offenses(<<~RUBY)
+        if (x = foo 1)
+        end
+      RUBY
+    end
+
+    it 'accepts variable assignment of a method call without parentheses in `while` condition' do
+      expect_no_offenses(<<~RUBY)
+        while (x = obj.do_something 1)
+        end
+      RUBY
+    end
+
+    it 'accepts setter assignment of a method call without parentheses in condition' do
+      expect_no_offenses(<<~RUBY)
+        if (obj.x = foo 1)
+        end
+      RUBY
+    end
+
+    it 'accepts chained assignment of a method call without parentheses in condition' do
+      expect_no_offenses(<<~RUBY)
+        if (x = y = foo 1)
+        end
+      RUBY
+    end
+
+    it 'accepts variable assignment of a method call without parentheses and with a block in condition' do
+      expect_no_offenses(<<~RUBY)
+        if (x = foo 1 do end)
+        end
+      RUBY
+    end
+
+    it 'accepts variable assignment of a method call without parentheses with `rescue` modifier in condition' do
+      expect_no_offenses(<<~RUBY)
+        if (x = foo 1 rescue nil)
+        end
+      RUBY
+    end
+
+    it 'accepts variable assignment of `yield` without parentheses in condition' do
+      expect_no_offenses(<<~RUBY)
+        if (x = yield 1)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for variable assignment of a method call with parentheses in condition' do
+      expect_offense(<<~RUBY)
+        if (x = foo(1))
+           ^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if x = foo(1)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for variable assignment of a binary operation in condition' do
+      expect_offense(<<~RUBY)
+        if (x = foo + 1)
+           ^^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if x = foo + 1
+        end
+      RUBY
+    end
+
     context 'when `Lint/AssignmentInCondition` allows safe assignment' do
       let(:config) do
         RuboCop::Config.new(
