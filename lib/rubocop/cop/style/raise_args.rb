@@ -86,7 +86,8 @@ module RuboCop
           return if message_nodes.size > 1
 
           argument = message_nodes.first.source
-          exception_class = exception_node.receiver&.source || exception_node.source
+          exception_class = exception_node.source
+          exception_class = exception_node.receiver.source if use_new_method?(exception_node)
 
           if parenthesize?(node)
             "#{node.method_name}(#{exception_class}.new(#{argument}))"
