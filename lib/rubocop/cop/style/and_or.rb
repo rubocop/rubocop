@@ -111,6 +111,7 @@ module RuboCop
           return correct_setter(node, corrector) if node.setter_method?
           return correct_other(node, corrector) if node.comparison_method?
 
+          correct_block_receiver(node, corrector)
           return unless correctable_send?(node)
 
           whitespace_before_arg_range = whitespace_before_arg(node)
@@ -154,6 +155,14 @@ module RuboCop
           elsif node.and_type? && node.rhs.or_type?
             corrector.wrap(node.rhs, '(', ')')
           end
+        end
+
+        # A method chained onto a `do` block, as in `bar baz do ... end.qux`,
+        # still needs parentheses around the arguments of the call that takes the block.
+        def correct_block_receiver(node, corrector)
+          receiver = node.receiver
+          receiver = receiver.receiver while receiver&.call_type?
+          correct_operand(receiver, corrector) if receiver&.any_block_type?
         end
 
         def correctable_send?(node)
