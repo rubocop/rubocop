@@ -163,6 +163,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       expect_no_offenses('raise MyKwArgError.new(a: 1, b: 2), message')
     end
 
+    it 'accepts exception constructor with positional arguments and message argument' do
+      expect_no_offenses('raise MyError.new(code), message')
+    end
+
     it 'registers an offense and corrects a raise nested in the arguments of another raise' do
       expect_offense(<<~'RUBY')
         raise Foo, "#{fetch { raise Bar, 'bad' }}"

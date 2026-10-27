@@ -99,6 +99,7 @@ module RuboCop
           if node.arguments.size > 1
             exception = node.first_argument
             return if exception.send_type? && exception.first_argument&.hash_type?
+            return if use_new_method?(exception) && exception.arguments?
 
             add_offense(node, message: format(COMPACT_MSG, method: node.method_name)) do |corrector|
               replace_raise(corrector, node, correction_exploded_to_compact(node))
