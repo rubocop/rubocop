@@ -508,6 +508,89 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'with `super` with arguments' do
+      it 'autocorrects "and" with && and adds parentheses to the arguments on the right' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and super baz
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && super(baz)
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments on the left' do
+        expect_offense(<<~RUBY)
+          def m
+            super baz and foo
+                      ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            super(baz) && foo
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments when it takes a `do` block' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and super baz do |x|
+                ^^^ Use `&&` instead of `and`.
+              x
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && super(baz) do |x|
+              x
+            end
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments when negated' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and !super baz
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && !super(baz)
+          end
+        RUBY
+      end
+    end
+
+    context 'with `super` without arguments' do
+      it 'autocorrects "and" with && without adding parentheses' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and super
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && super
+          end
+        RUBY
+      end
+    end
+
     context 'with !obj.method arg on right' do
       it 'autocorrects "and" with && and adds parens' do
         expect_offense(<<~RUBY)

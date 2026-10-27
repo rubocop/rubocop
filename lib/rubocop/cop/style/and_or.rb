@@ -83,7 +83,7 @@ module RuboCop
         def correct_operand(expr, corrector)
           expr = expr.send_node if expr.any_block_type?
 
-          if expr.call_type?
+          if expr.type?(:call, :super)
             correct_send(expr, corrector)
           elsif expr.type?(:return, :next, :break, :yield) || expr.assignment?
             correct_other(expr, corrector)
@@ -125,7 +125,7 @@ module RuboCop
         def correct_not(node, receiver, corrector)
           if node.prefix_bang?
             receiver = receiver.send_node if receiver.any_block_type?
-            return unless receiver.call_type?
+            return unless receiver.type?(:call, :super)
 
             correct_send(receiver, corrector)
           elsif node.prefix_not?
@@ -158,7 +158,7 @@ module RuboCop
         end
 
         def whitespace_before_arg(node)
-          begin_paren = node.loc.selector.end_pos
+          begin_paren = node.selector.end_pos
           end_paren = begin_paren
           # Increment position of parenthesis, unless message is a predicate
           # method followed by a non-whitespace char (e.g. is_a?String).
