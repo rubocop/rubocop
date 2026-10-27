@@ -330,6 +330,96 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to multiline method definition when the method is followed by `&&`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end && baz')
+          def foo;#{trailing_whitespace}
+            bar;#{trailing_whitespace}
+          end && baz
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the method is followed by `||`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end || baz')
+          def foo;#{trailing_whitespace}
+            bar;#{trailing_whitespace}
+          end || baz
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the method is the receiver of a method call' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end.to_proc')
+          def foo;#{trailing_whitespace}
+            bar;#{trailing_whitespace}
+          end.to_proc
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the method is the receiver of an operator' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end == :foo')
+          def foo;#{trailing_whitespace}
+            bar;#{trailing_whitespace}
+          end == :foo
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the method is a ternary condition' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end ? a : b')
+          def foo;#{trailing_whitespace}
+            bar;#{trailing_whitespace}
+          end ? a : b
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the method is followed by a `rescue` modifier' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end rescue nil')
+          def foo;#{trailing_whitespace}
+            bar;#{trailing_whitespace}
+          end rescue nil
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the method starts a range' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end..baz')
+          def foo;#{trailing_whitespace}
+            bar;#{trailing_whitespace}
+          end..baz
+        RUBY
+      end
+
+      it 'corrects to multiline method definition when the method ends the left operand of `||`' do
+        expect_correction(<<~RUBY.strip, source: 'a && def foo; bar; end || baz')
+          a && def foo;#{trailing_whitespace}
+                 bar;#{trailing_whitespace}
+               end || baz
+        RUBY
+      end
+
+      it 'corrects to an endless method definition when the method is followed by `and`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end and baz')
+          def foo() = bar and baz
+        RUBY
+      end
+
+      it 'corrects to an endless method definition when the method is followed by an `if` modifier' do
+        expect_correction(<<~RUBY.strip, source: 'def foo; bar; end if baz')
+          def foo() = bar if baz
+        RUBY
+      end
+
+      it 'corrects to an endless method definition when the method is the body of a `begin` with `rescue`' do
+        expect_correction(<<~RUBY, source: <<~SOURCE)
+          begin
+            def foo() = bar
+          rescue
+          end
+        RUBY
+          begin
+            def foo; bar; end
+          rescue
+          end
+        SOURCE
+      end
+
       it 'corrects to multiline method definition when the body is a multiple assignment' do
         expect_correction(<<~RUBY.strip, source: 'def foo; a, b = bar; end')
           def foo;#{trailing_whitespace}

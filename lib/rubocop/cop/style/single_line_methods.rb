@@ -69,8 +69,29 @@ module RuboCop
           return false if disallow_endless_method_style?
           return false unless body_node
           return false if body_node.parent.assignment_method?
+          return false if captures_following_code?(body_node.parent)
 
           !unsupported_endless_method_body?(body_node) && endless_method_body?(body_node)
+        end
+
+        # `def foo; bar; end && baz` would become `def foo() = bar && baz`. The same goes for a def
+        # that ends an operand, as in `a && def foo; bar; end || baz`.
+        def captures_following_code?(node)
+          return false unless (parent = node.parent)
+
+          node_end = node.source_range.end_pos
+          return captures_following_code?(parent) if parent.source_range.end_pos == node_end
+
+          parent.children.first.equal?(node) && extends_endless_body?(parent, node)
+        end
+
+        def extends_endless_body?(parent, node)
+          case parent.type
+          when :and, :or then parent.logical_operator?
+          when :if then parent.ternary?
+          when :rescue then same_line?(node, parent.resbody_branches.first) # the modifier form
+          else parent.type?(:call, :range)
+          end
         end
 
         def unsupported_endless_method_body?(body_node)
