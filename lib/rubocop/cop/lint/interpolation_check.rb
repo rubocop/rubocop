@@ -41,26 +41,22 @@ module RuboCop
 
         private
 
-        # rubocop:disable-next Metrics/CyclomaticComplexity
         def check(node)
           return if node.parent&.regexp_type?
           return unless /(?<!\\)#\{.*\}/.match?(node.source)
           return if heredoc?(node)
-          return unless node.loc.begin && node.loc.end
+          return unless single_quoted?(node)
           return unless valid_syntax?(node)
 
           add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
-        def autocorrect(corrector, node)
-          starting_token, ending_token = if node.source.include?('"')
-                                           ['%{', '}']
-                                         else
-                                           ['"', '"']
-                                         end
+        def single_quoted?(node)
+          node.loc.begin&.is?("'") && node.loc.end
+        end
 
-          corrector.replace(node.loc.begin, starting_token)
-          corrector.replace(node.loc.end, ending_token)
+        def autocorrect(corrector, node)
+          corrector.replace(node, interpolated_source(node))
         end
 
         def heredoc?(node)
@@ -68,14 +64,21 @@ module RuboCop
         end
 
         def valid_syntax?(node)
-          double_quoted_string = if node.source.include?('"')
-                                   node.source.sub(/\A'/, '%{').sub(/'\z/, '}')
-                                 else
-                                   node.source.gsub(/\A'|'\z/, '"')
-                                 end
-
-          processed_source = parse(double_quoted_string)
+          processed_source = parse(interpolated_source(node))
           processed_source.valid_syntax? && processed_source.ast.dstr_type?
+        end
+
+        def interpolated_source(node)
+          content = node.source[1...-1]
+          return %("#{content}") unless content.include?('"')
+          return "%{#{content}}" unless continued_string_part?(node)
+
+          %("#{content.gsub(/\\.|"/) { |m| m == '"' ? '\"' : m }}")
+        end
+
+        # A percent literal right after another string part is parsed as the `%` operator.
+        def continued_string_part?(node)
+          node.parent&.dstr_type? && node.left_sibling
         end
       end
     end
