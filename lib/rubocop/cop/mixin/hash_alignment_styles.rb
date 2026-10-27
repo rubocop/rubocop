@@ -59,7 +59,13 @@ module RuboCop
             !pair_after_kwsplat_on_same_line?(node)
         end
 
+        # With several enforced styles, deltas are computed even for a hash this style
+        # can't check. A pair that doesn't begin its line can't be moved without
+        # deleting whatever precedes it, so it's left alone.
         def deltas(first_pair, current_pair)
+          return {} unless current_pair.equal?(first_pair) ||
+                           Util.begins_its_line?(current_pair.source_range)
+
           key_delta = key_delta(first_pair, current_pair)
           shift = separator_shift(current_pair, key_delta)
           separator_delta = separator_delta(first_pair, current_pair, shift)
