@@ -192,4 +192,74 @@ RSpec.describe RuboCop::Cop::Style::RedundantException, :config do
       raise foo[1].to_s
     RUBY
   end
+
+  it 'registers an offense for raise with RuntimeError and a heredoc message in a multiline call' do
+    expect_offense(<<~RUBY)
+      raise(
+      ^^^^^^ Redundant `RuntimeError` argument can be removed.
+        RuntimeError, <<~MSG
+          message
+        MSG
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise(
+        <<~MSG
+          message
+        MSG
+      )
+    RUBY
+  end
+
+  it 'registers an offense for raise with RuntimeError and a heredoc method call message in a multiline call' do
+    expect_offense(<<~RUBY)
+      raise(
+      ^^^^^^ Redundant `RuntimeError` argument can be removed.
+        RuntimeError, <<~MSG.strip
+          message
+        MSG
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise(
+        <<~MSG.strip.to_s
+          message
+        MSG
+      )
+    RUBY
+  end
+
+  it 'registers an offense for raise with RuntimeError.new and a heredoc message in a multiline call' do
+    expect_offense(<<~RUBY)
+      raise(
+      ^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+        RuntimeError.new(<<~MSG)
+          message
+        MSG
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise(
+        <<~MSG
+          message
+        MSG
+      )
+    RUBY
+  end
+
+  it 'registers an offense but does not correct raise with RuntimeError.new and a heredoc body inside its parentheses' do
+    expect_offense(<<~RUBY)
+      raise RuntimeError.new(
+      ^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+        <<~MSG
+          message
+        MSG
+      )
+    RUBY
+
+    expect_no_corrections
+  end
 end
