@@ -43,6 +43,32 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'with a raise with an exception class returned by a method call' do
+      it 'reports an offense' do
+        expect_offense(<<~RUBY)
+          raise e.class, message
+          ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise e.class.new(message)
+        RUBY
+      end
+    end
+
+    context 'with a raise with an instantiation of an exception class returned by a method call' do
+      it 'reports an offense' do
+        expect_offense(<<~RUBY)
+          raise e.class.new, message
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise e.class.new(message)
+        RUBY
+      end
+    end
+
     context 'when used in a ternary expression' do
       it 'registers an offense and autocorrects' do
         expect_offense(<<~RUBY)
