@@ -85,9 +85,15 @@ module RuboCop
 
           if expr.type?(:call, :super)
             correct_send(expr, corrector)
-          elsif expr.type?(:return, :next, :break, :yield) || expr.assignment?
+          elsif wrap_in_parentheses?(expr)
             correct_other(expr, corrector)
           end
+        end
+
+        # These bind looser than `&&` and `||`, or can't be their operands at all.
+        def wrap_in_parentheses?(node)
+          node.type?(:return, :next, :break, :yield, :any_match_pattern, :range, :defined?) ||
+            node.assignment? || (node.if_type? && node.ternary?)
         end
 
         def on_conditionals(node)
