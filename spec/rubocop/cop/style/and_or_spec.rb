@@ -562,6 +562,36 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           end
         RUBY
       end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments when a method is chained onto the block' do
+        expect_offense(<<~RUBY)
+          foo and bar baz do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end.qux
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do |x|
+            x
+          end.qux
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to both calls when a method with arguments is chained onto the block' do
+        expect_offense(<<~RUBY)
+          foo and bar baz do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end.qux quux
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do |x|
+            x
+          end.qux(quux)
+        RUBY
+      end
     end
 
     context 'with !obj.method arg and a `do` block on the right' do
