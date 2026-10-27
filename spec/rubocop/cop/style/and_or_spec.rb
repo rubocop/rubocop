@@ -374,6 +374,68 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           end
         RUBY
       end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments with a numblock' do
+        expect_offense(<<~RUBY)
+          foo and bar baz do
+              ^^^ Use `&&` instead of `and`.
+            _1
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do
+            _1
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments with an itblock', :ruby34 do
+        expect_offense(<<~RUBY)
+          foo and bar baz do
+              ^^^ Use `&&` instead of `and`.
+            it
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do
+            it
+          end
+        RUBY
+      end
+    end
+
+    context 'with !obj.method arg and a `do` block on the right' do
+      it 'autocorrects "and" with && and adds parentheses to the arguments' do
+        expect_offense(<<~RUBY)
+          foo and !bar.baz qux do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && !bar.baz(qux) do |x|
+            x
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments of a receiverless call' do
+        expect_offense(<<~RUBY)
+          foo and !bar baz do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && !bar(baz) do |x|
+            x
+          end
+        RUBY
+      end
     end
 
     context 'with `next`/`break` with arguments on the right' do

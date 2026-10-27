@@ -124,6 +124,7 @@ module RuboCop
         # however, 'not x' also parses as (send x :!)
         def correct_not(node, receiver, corrector)
           if node.prefix_bang?
+            receiver = receiver.send_node if receiver.any_block_type?
             return unless receiver.call_type?
 
             correct_send(receiver, corrector)
