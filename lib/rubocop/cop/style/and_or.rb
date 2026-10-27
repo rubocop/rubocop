@@ -151,7 +151,10 @@ module RuboCop
         end
 
         def correctable_send?(node)
-          !node.parenthesized? && node.arguments? && !node.method?(:[])
+          # Operator syntax such as `a + b` or `a[b]` already binds tighter than `&&` and `||`.
+          return false if node.operator_method? && !node.loc.dot
+
+          !node.parenthesized? && node.arguments?
         end
 
         def whitespace_before_arg(node)
