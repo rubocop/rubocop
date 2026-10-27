@@ -1,1 +1,1 @@
-* [#16133](https://github.com/rubocop/rubocop/pull/16133): Fix false negatives for cops that rely on `Util::LITERAL_REGEX`, such as `Style/RedundantRegexpArgument`, when a regexp contains `@`. ([@jadhavgaurav][])
+* [#16133](https://github.com/rubocop/rubocop/pull/16133): Fix false negatives for `Style/RedundantRegexpArgument` when a regexp contains `@`. ([@jadhavgaurav][])
