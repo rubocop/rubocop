@@ -1766,6 +1766,63 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           }
         RUBY
       end
+
+      it 'does not delete a double splat before a pair on the same line' do
+        expect_offense(<<~RUBY)
+          x = { **a, b:  1,
+                **c, dd: 2 }
+                ^^^ Align keyword splats with the rest of the hash if it spans more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = { **a, b:  1,
+                     **c, dd: 2 }
+        RUBY
+      end
+
+      it 'does not delete a double splat before a hash rocket pair on the same line' do
+        expect_offense(<<~RUBY)
+          x = { **a, :b  => 1,
+                **c, :dd => 2 }
+                ^^^ Align keyword splats with the rest of the hash if it spans more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = { **a, :b  => 1,
+                     **c, :dd => 2 }
+        RUBY
+      end
+
+      it 'does not delete a pair before another pair on the same line' do
+        expect_no_offenses(<<~RUBY)
+          h = {
+            a:      1,
+            bbbbbb: 2,
+            e:      5, f: 6
+          }
+        RUBY
+      end
+
+      it 'registers an offense and corrects a misaligned pair before another pair on the same line' do
+        expect_offense(<<~RUBY)
+          h = {
+            a:   1,
+            bb:  2,
+            ccc: 3,
+            e: 5, f: 6
+            ^^^^ Align the keys and values of a hash literal if they span more than one line.
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          h = {
+            a:   1,
+            bb:  2,
+            ccc: 3,
+            e:   5, f: 6
+          }
+        RUBY
+      end
     end
   end
 
