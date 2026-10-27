@@ -37,10 +37,6 @@ namespace :cut_release do
   end
 
   def update_docs(old_version, new_version)
-    update_file('docs/antora.yml') do |antora_metadata|
-      antora_metadata.sub('version: ~', "version: '#{version_sans_patch(new_version)}'")
-    end
-
     update_file('docs/modules/ROOT/pages/installation.adoc') do |installation|
       installation.sub(
         /gem 'rubocop', '~> \d+\.\d+', require: false/,
