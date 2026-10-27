@@ -210,6 +210,39 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       RUBY
     end
 
+    it 'autocorrects "and" with a binary operator method on either side without adding parentheses' do
+      expect_offense(<<~RUBY)
+        bar + baz and qux.quux ** corge
+                  ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar + baz && qux.quux ** corge
+      RUBY
+    end
+
+    it 'autocorrects "or" with `%` and `<<` operator methods without adding parentheses' do
+      expect_offense(<<~RUBY)
+        bar % baz or qux << quux
+                  ^^ Use `||` instead of `or`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar % baz || qux << quux
+      RUBY
+    end
+
+    it 'autocorrects "and" with an operator method called with a dot and adds parentheses' do
+      expect_offense(<<~RUBY)
+        foo and bar.+ baz
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && bar.+(baz)
+      RUBY
+    end
+
     { 'and' => '&&', 'or' => '||' }.each do |operator, prefer|
       it "warns on short-circuit (#{operator})" do
         expect_offense(<<~RUBY, operator: operator)
