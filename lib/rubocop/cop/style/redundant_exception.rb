@@ -37,21 +37,16 @@ module RuboCop
         private
 
         def fix_exploded(node)
-          exploded?(node) do |command, message|
+          exploded?(node) do |exception, message|
             # `raise RuntimeError, nil` uses the class name as the message, so
             # rewriting it to `raise nil.to_s` (an empty message) would change it.
             next if message.nil_type?
 
             add_offense(node, message: MSG_1) do |corrector|
-              corrector.replace(node, replaced_exploded(node, command, message))
+              corrector.remove(exception.source_range.join(message.source_range.begin))
+              corrector.replace(message, message_source(message))
             end
           end
-        end
-
-        def replaced_exploded(node, command, message)
-          arg = message_source(message)
-          arg = node.parenthesized? ? "(#{arg})" : " #{arg}"
-          "#{command}#{arg}"
         end
 
         def string_message?(message)
@@ -63,8 +58,17 @@ module RuboCop
             next if message.nil_type?
 
             add_offense(node, message: MSG_2) do |corrector|
+              # Replacing the call would drop a heredoc body that sits inside its parentheses.
+              next if heredoc_body_inside?(new_call, message)
+
               corrector.replace(new_call, message_source(message))
             end
+          end
+        end
+
+        def heredoc_body_inside?(new_call, message)
+          message.each_node(:any_str).any? do |str|
+            str.heredoc? && str.loc.heredoc_end.end_pos < new_call.source_range.end_pos
           end
         end
 
@@ -90,7 +94,7 @@ module RuboCop
 
         # @!method exploded?(node)
         def_node_matcher :exploded?, <<~PATTERN
-          (send nil? ${:raise :fail} (const {nil? cbase} :RuntimeError) $_)
+          (send nil? {:raise :fail} $(const {nil? cbase} :RuntimeError) $_)
         PATTERN
 
         # @!method compact?(node)
