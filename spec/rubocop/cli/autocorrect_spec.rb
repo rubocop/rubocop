@@ -3505,6 +3505,130 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/EmptyLinesAroundBlockBody` with `EnforcedStyle: empty_lines` and `Style/EvalWithLocation` when the eval call ends the block body' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundBlockBody:
+        EnforcedStyle: empty_lines
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo do
+        bar.instance_eval "def baz; end"
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect-all', '--only', 'Layout/EmptyLinesAroundBlockBody,Style/EvalWithLocation']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo do
+
+        bar.instance_eval "def baz; end", __FILE__, __LINE__
+
+      end
+    RUBY
+  end
+
+  it 'corrects `Layout/EmptyLinesAroundClassBody` with `EnforcedStyle: empty_lines` and `Style/MethodCallWithArgsParentheses` when the call ends the class body' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundClassBody:
+        EnforcedStyle: empty_lines
+      Style/MethodCallWithArgsParentheses:
+        IgnoreMacros: false
+    YAML
+    create_file('example.rb', <<~RUBY)
+      class Foo
+        do_something bar
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/EmptyLinesAroundClassBody,Style/MethodCallWithArgsParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      class Foo
+
+        do_something(bar)
+
+      end
+    RUBY
+  end
+
+  it 'corrects `Layout/EmptyLinesAroundClassBody` with `EnforcedStyle: empty_lines_special` and `Style/MethodCallWithArgsParentheses` when the call precedes the first method definition' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundClassBody:
+        EnforcedStyle: empty_lines_special
+      Style/MethodCallWithArgsParentheses:
+        IgnoreMacros: false
+    YAML
+    create_file('example.rb', <<~RUBY)
+      class Foo
+        include Bar
+        def do_something
+        end
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/EmptyLinesAroundClassBody,Style/MethodCallWithArgsParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      class Foo
+        include(Bar)
+
+        def do_something
+        end
+
+      end
+    RUBY
+  end
+
+  it 'corrects `Layout/EmptyLinesAroundClassBody` with `EnforcedStyle: empty_lines_special` and `Layout/IndentationConsistency` offenses without a whitespace-only line' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundClassBody:
+        EnforcedStyle: empty_lines_special
+    YAML
+    create_file('example.rb', <<~RUBY)
+      class Foo
+        include Bar
+      def do_something
+      end
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          %w[
+            Layout/DefEndAlignment Layout/EmptyLinesAroundClassBody
+            Layout/IndentationConsistency Layout/IndentationWidth
+          ].join(',')
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      class Foo
+        include Bar
+
+        def do_something
+        end
+
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/EmptyLinesAroundClassBody` and `Layout/IndentationWidth` offenses without a whitespace-only line' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/EmptyLinesAroundClassBody:
