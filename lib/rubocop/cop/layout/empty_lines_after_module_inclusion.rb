@@ -91,7 +91,7 @@ module RuboCop
         end
 
         def next_line_node(node)
-          return if node.parent.type?(:if, :rescue, :ensure)
+          return if node.parent.type?(:if, :rescue, :ensure, :and, :or)
 
           node.right_sibling
         end
