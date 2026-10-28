@@ -174,7 +174,7 @@ module RuboCop
       #     end
       #   end
       #
-      class ClassStructure < Base
+      class ClassStructure < Base # rubocop:disable Metrics/ClassLength
         include VisibilityHelp
         include CommentsHelp
         extend AutoCorrector
@@ -191,9 +191,19 @@ module RuboCop
         # A moved element is inserted before the line break that precedes its anchor.
         # When the anchor follows a blank line, `Layout/EmptyLines`,
         # `Layout/EmptyLinesAroundAccessModifier` or `Layout/EmptyLinesAroundClassBody`
-        # may remove that line break in the same pass.
+        # may remove that line break in the same pass. A moved element is removed with the
+        # line break before it, and `Style/AccessModifierDeclarations`,
+        # `Style/BisectedAttrAccessor` or `Style/RedundantInitialize` may remove the same
+        # element with the line break after it, joining the lines around it.
         def self.autocorrect_incompatible_with
-          [Layout::EmptyLines, Layout::EmptyLinesAroundAccessModifier, Layout::EmptyLinesAroundClassBody]
+          [
+            Layout::EmptyLines,
+            Layout::EmptyLinesAroundAccessModifier,
+            Layout::EmptyLinesAroundClassBody,
+            Style::AccessModifierDeclarations,
+            Style::BisectedAttrAccessor,
+            Style::RedundantInitialize
+          ]
         end
 
         # Validates code style on class declaration.
