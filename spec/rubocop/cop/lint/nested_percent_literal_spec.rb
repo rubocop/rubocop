@@ -22,6 +22,18 @@ RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral, :config do
     expect_no_offenses('%w[1%+ 2]')
   end
 
+  it 'registers no offense for format sequences' do
+    expect_no_offenses('%w[%1s %2d %3f]')
+    expect_no_offenses('%w[%-1s %2d %.3f %+d %#x %<name>s %{name}]')
+  end
+
+  it 'registers an offense for a nested percent literal next to format sequences' do
+    expect_offense(<<~RUBY)
+      %w[%-5s %w[a b]]
+      ^^^^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.
+    RUBY
+  end
+
   it 'registers an offense for nested percent literals' do
     expect_offense(<<~RUBY)
       %i[a b %i[c d] xyz]

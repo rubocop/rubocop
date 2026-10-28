@@ -40,6 +40,7 @@ module RuboCop
         # NestedPercentLiteral violation to be emitted.
         PERCENT_LITERAL_TYPES = PreferredDelimiters::PERCENT_LITERAL_TYPES
         REGEXES = PERCENT_LITERAL_TYPES.map { |percent_literal| /\A#{percent_literal}\W/ }.freeze
+        FORMAT_SEQUENCE = /\A#{RuboCop::Cop::Utils::FormatString::SEQUENCE}\z/.freeze
 
         def on_array(node)
           process(node, *PERCENT_LITERAL_TYPES)
@@ -54,6 +55,8 @@ module RuboCop
         def contains_percent_literals?(node)
           node.each_child_node.any? do |child|
             literal = child.children.first.to_s.scrub
+            next false if literal.match?(FORMAT_SEQUENCE)
+
             REGEXES.any? { |regex| literal.match?(regex) }
           end
         end
