@@ -741,6 +741,112 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'does not register an offense when a block parameter name is later called as a method with arguments' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x|
+          bar(x)
+        end
+        x :baz do
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a block parameter name is later called as a method in a nested block' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x|
+          bar(x)
+        end
+        baz do
+          x
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a variable assigned in the block is later called as a method' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |x|
+          y = x
+        end
+        y :bar
+      RUBY
+    end
+
+    it 'registers an offense when a block parameter name is later called as a method with parentheses' do
+      expect_offense(<<~RUBY)
+        foo.each do |x|
+        ^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x)
+        end
+        x(:baz)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for x in foo do
+          bar(x)
+        end
+        x(:baz)
+      RUBY
+    end
+
+    it 'registers an offense when a block parameter name is called as a method outside the enclosing block' do
+      expect_offense(<<~RUBY)
+        foo do
+          bar.each do |x|
+          ^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+            baz(x)
+          end
+        end
+        x :qux
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo do
+          for x in bar do
+            baz(x)
+          end
+        end
+        x :qux
+      RUBY
+    end
+
+    it 'registers an offense when a block parameter name is called as a method in a later method definition' do
+      expect_offense(<<~RUBY)
+        foo.each do |x|
+        ^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x)
+        end
+        def baz
+          x :qux
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for x in foo do
+          bar(x)
+        end
+        def baz
+          x :qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense when a block parameter name is called as a method before the block' do
+      expect_offense(<<~RUBY)
+        x :baz
+        foo.each do |x|
+        ^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          bar(x)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x :baz
+        for x in foo do
+          bar(x)
+        end
+      RUBY
+    end
+
     it 'registers an offense and corrects a multiline `each` with braces' do
       expect_offense(<<~RUBY)
         c.each { |d|
