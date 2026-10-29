@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.92.2 (2026-10-29)
+
 ### Bug fixes
 
 * [#16147](https://github.com/rubocop/rubocop/pull/16147): Fix a false negative for `Lint/RedundantCopDisableDirective` when autocorrection shifts lines. ([@koic][])
