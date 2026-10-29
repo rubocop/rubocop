@@ -1083,6 +1083,40 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
+  context 'rescue in do-end block on index or-assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        foo[bar] ||= baz do
+          rescue StandardError
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `foo[bar]` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo[bar] ||= baz do
+        rescue StandardError
+        end
+      RUBY
+    end
+  end
+
+  context 'rescue in do-end block on attribute operation assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        foo.bar += baz do
+          rescue StandardError
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `foo.bar` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar += baz do
+        rescue StandardError
+        end
+      RUBY
+    end
+  end
+
   context 'rescue in assigned do-end block starting on newline' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
