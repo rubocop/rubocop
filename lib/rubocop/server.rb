@@ -51,12 +51,22 @@ module RuboCop
       end
 
       def wait_for_running_status!(expected)
+        wait_until("running? was not #{expected}") { Server.running? == expected }
+      end
+
+      def wait_for_process_exit!(pid)
+        wait_until("RuboCop server (#{pid}) did not exit") { !Cache.pid_running?(pid) }
+      end
+
+      private
+
+      def wait_until(timeout_message)
         start_time = Time.now
-        while Server.running? != expected
+        until yield
           sleep 0.1
           next unless Time.now - start_time > TIMEOUT
 
-          warn "running? was not #{expected} after #{TIMEOUT} seconds!"
+          warn "#{timeout_message} after #{TIMEOUT} seconds!"
           exit 1
         end
       end
