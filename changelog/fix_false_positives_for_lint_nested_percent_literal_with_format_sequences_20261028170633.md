@@ -1,1 +1,0 @@
-* [#16168](https://github.com/rubocop/rubocop/issues/16168): Fix false positives for `Lint/NestedPercentLiteral` when a percent literal contains format sequences such as `%-5s` or `%.2f`. ([@Vitalini][])

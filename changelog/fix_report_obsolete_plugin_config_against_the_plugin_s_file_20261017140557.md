@@ -1,1 +1,0 @@
-* [#14045](https://github.com/rubocop/rubocop/issues/14045): Warn about any obsolete configuration shipped by a plugin, naming the plugin and its file, instead of reporting a renamed cop against the user's `.rubocop.yml`. ([@ihamzatarar][])
