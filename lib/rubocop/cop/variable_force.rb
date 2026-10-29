@@ -192,7 +192,7 @@ module RuboCop
       def regexp_captured_names(node)
         regexp = node.to_regexp
 
-        regexp.named_captures.keys
+        regexp.names
       end
 
       def process_variable_operator_assignment(node)

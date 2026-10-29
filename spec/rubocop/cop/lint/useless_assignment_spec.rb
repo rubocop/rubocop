@@ -2416,6 +2416,34 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a named capture with a non-ASCII name is referenced' do
+    it 'accepts' do
+      expect_no_offenses(<<~'RUBY')
+        def some_method(str)
+          /(?<année>\d+)/ =~ str
+          année
+        end
+      RUBY
+    end
+  end
+
+  context 'when a named capture with a non-ASCII name is unreferenced' do
+    it 'registers an offense' do
+      expect_offense(<<~'RUBY')
+        def some_method(str)
+          /(?<année>\d+)/ =~ str
+          ^^^^^^^^^^^^^^^ Useless assignment to variable - `année`.
+        end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        def some_method(str)
+          /(?:\d+)/ =~ str
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is referenced in rhs of named capture expression' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
