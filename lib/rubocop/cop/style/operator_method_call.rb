@@ -30,7 +30,7 @@ module RuboCop
         def on_send(node)
           return unless (dot = node.loc.dot)
           return if unary_method_no_operator?(node)
-          return if node.receiver.const_type? || !node.arguments.one?
+          return if node.receiver.const_type? || !node.arguments.one? || node.block_literal?
 
           return unless (rhs = node.first_argument)
           return if method_call_with_parenthesized_arg?(rhs)
