@@ -119,6 +119,31 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
     RUBY
   end
 
+  it 'does not register an offense for `yield` in interpolation outside a method' do
+    expect_no_offenses(<<~'RUBY')
+      class FooTest
+        it 'x' do
+          layout { 'A #{yield.upcase}!' }
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects `yield` in interpolation inside a method' do
+    expect_offense(<<~'RUBY')
+      def foo
+        layout { 'A #{yield.upcase}!' }
+                 ^^^^^^^^^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+      end
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      def foo
+        layout { "A #{yield.upcase}!" }
+      end
+    RUBY
+  end
+
   it 'does not crash for \xff' do
     expect_no_offenses(<<~'RUBY')
       foo = "\xff"

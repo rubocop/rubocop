@@ -65,7 +65,9 @@ module RuboCop
 
         def valid_syntax?(node)
           processed_source = parse(interpolated_source(node))
-          processed_source.valid_syntax? && processed_source.ast.dstr_type?
+          return false unless processed_source.valid_syntax? && processed_source.ast.dstr_type?
+
+          !yield_outside_method?(processed_source.ast, node)
         end
 
         def interpolated_source(node)
@@ -79,6 +81,10 @@ module RuboCop
         # A percent literal right after another string part is parsed as the `%` operator.
         def continued_string_part?(node)
           node.parent&.dstr_type? && node.left_sibling
+        end
+
+        def yield_outside_method?(interpolated_node, node)
+          interpolated_node.each_node(:yield).any? && node.each_ancestor(:any_def).none?
         end
       end
     end
