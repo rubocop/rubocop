@@ -154,6 +154,9 @@ module RuboCop
         end
 
         def on_gvar(node)
+          # `alias $ARGV $*` names the variables, it does not read them.
+          return if node.parent&.alias_type?
+
           global_var = node.name
 
           return unless (preferred = preferred_names(global_var))
