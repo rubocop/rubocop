@@ -32,6 +32,52 @@ RSpec.describe RuboCop::ProjectIndexLoader do
     end
   end
 
+  describe '.build_index', :project_index do
+    def staged_project(source)
+      Dir.mktmpdir do |tmpdir|
+        path = File.join(tmpdir, 'app.rb')
+        File.write(path, source)
+        yield tmpdir, path
+      end
+    end
+
+    it 'indexes the RBS signatures of Ruby core' do
+      staged_project("class Report\nend\n") do |_tmpdir, path|
+        graph = described_class.build_index([path])
+
+        # Rubydex declares `Class` built-in with an empty body; its members come from
+        # the core signatures alone. `Class#new` is what stops a constructor lookup
+        # where Ruby stops it, instead of walking on into `Object`'s instance methods.
+        expect(graph['Class'].members.map(&:name)).to include('Class#new()')
+      end
+    end
+
+    it 'indexes the project when the core signatures cannot be located' do
+      staged_project("class Report\nend\n") do |_tmpdir, path|
+        allow(Gem).to receive(:path).and_return([])
+
+        graph = described_class.build_index([path])
+
+        expect(graph['Report']).not_to be_nil
+        expect(graph['Class'].members.to_a).to be_empty
+      end
+    end
+
+    it 'does not let the core `BasicObject#initialize` signature make an ancestry stateful' do
+      # `BasicObject` declares `initialize` in the core signatures, but it is the
+      # no-op `super` would reach anyway, so `Lint/MissingSuper` must still treat a
+      # root-only ancestry as stateless.
+      source = "class Report\n  def initialize\n    @foo = 1\n  end\nend\n"
+      staged_project(source) do |tmpdir, _path|
+        write_rubocop_config(tmpdir, 'AllCops' => { 'UseProjectIndex' => true })
+
+        offenses = project_index_offenses(tmpdir)
+
+        expect(offenses.select { |offense| offense['cop_name'] == 'Lint/MissingSuper' }).to be_empty
+      end
+    end
+  end
+
   describe 'AllCops/ProjectIndexIncludesGems', :project_index do
     let(:child_source) do
       <<~RUBY
