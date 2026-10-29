@@ -109,6 +109,9 @@ module RuboCop
         # @private
         # @param [RuboCop::AST::Node] node
         def on_back_ref_or_gvar_or_nth_ref(node)
+          # `alias $MATCH $&` names the variables, it does not read them.
+          return if node.parent&.alias_type?
+
           preferred_expression = preferred_expression_to_node_with_constant_prefix(node)
           return unless preferred_expression
 

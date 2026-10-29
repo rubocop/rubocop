@@ -95,6 +95,15 @@ RSpec.describe RuboCop::Cop::Style::PerlBackrefs, :config do
     RUBY
   end
 
+  it 'does not register an offense for global variables in `alias`' do
+    expect_no_offenses(<<~RUBY)
+      alias $MATCH $&
+      alias $PREMATCH $`
+      alias $POSTMATCH $'
+      alias $my_match $MATCH
+    RUBY
+  end
+
   it 'does not register an offense for $LAST_PAREN_MATCH, which has no concise equivalent' do
     expect_no_offenses(<<~RUBY)
       $LAST_PAREN_MATCH
