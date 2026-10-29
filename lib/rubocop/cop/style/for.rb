@@ -53,6 +53,7 @@ module RuboCop
         PREFER_EACH = 'Prefer `each` over `for`.'
         PREFER_FOR = 'Prefer `for` over `each`.'
         IMPLICIT_PARAMETERS = %i[_1 _2 _3 _4 _5 _6 _7 _8 _9 it].to_set.freeze
+        SCOPE_TYPES = %i[any_def class module sclass].freeze
 
         # `Style/RedundantBegin` removes the `begin` of a block body in the same pass,
         # leaving a `rescue` or `ensure` clause directly in the `for` body.
@@ -80,8 +81,7 @@ module RuboCop
 
           if style == :for
             return unless node.receiver
-            return unless convertible_to_for?(node)
-            return if rescue_or_ensure_body?(node) || do_end_block_in_collection?(node)
+            return unless correctable_to_for?(node)
 
             add_offense(node, message: PREFER_FOR) do |corrector|
               EachToForCorrector.new(node).call(corrector)
@@ -126,6 +126,13 @@ module RuboCop
           node.multiline? && node.method?(:each) && !node.send_node.arguments?
         end
 
+        def correctable_to_for?(node)
+          return false unless convertible_to_for?(node)
+          return false if rescue_or_ensure_body?(node) || do_end_block_in_collection?(node)
+
+          !leaked_variable_called_later?(node)
+        end
+
         def convertible_to_for?(node)
           return false if node.type?(:numblock, :itblock)
           return true unless node.arguments?
@@ -142,6 +149,42 @@ module RuboCop
 
         def do_end_block_in_collection?(node)
           node.receiver.each_node(:any_block).any?(&:keywords?)
+        end
+
+        def leaked_variable_called_later?(node)
+          names = leaked_variable_names(node)
+          return false if names.empty?
+
+          calls = innermost_scope(node, :any_block, *SCOPE_TYPES).each_descendant(:send)
+          scope = innermost_scope(node, *SCOPE_TYPES)
+
+          calls.any? { |call| leaked_name_called?(call, node, names, scope) }
+        end
+
+        def leaked_name_called?(call, node, names, scope)
+          return false unless names.include?(call.method_name) && variable_like_call?(call)
+          return false if call.source_range.begin_pos < node.source_range.end_pos
+
+          innermost_scope(call, *SCOPE_TYPES).equal?(scope)
+        end
+
+        def leaked_variable_names(node)
+          names = node.arguments.each_descendant(:arg, :restarg).filter_map(&:name)
+          return names unless node.body
+
+          assigned_names = node.body.each_node(:lvasgn).filter_map do |lvasgn|
+            lvasgn.name if innermost_scope(lvasgn, :any_block, *SCOPE_TYPES).equal?(node)
+          end
+
+          names + assigned_names
+        end
+
+        def innermost_scope(node, *types)
+          node.each_ancestor(*types).first || processed_source.ast
+        end
+
+        def variable_like_call?(send_node)
+          !send_node.receiver && !send_node.parenthesized?
         end
       end
     end
