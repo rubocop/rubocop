@@ -1,0 +1,1 @@
+* [#16185](https://github.com/rubocop/rubocop/issues/16185): Fix a race where a server restart fails with `running? was not true after 20 seconds!` because the old server still removes its cache directory. ([@DmitryPogrebnoy][])

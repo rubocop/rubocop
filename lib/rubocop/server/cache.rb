@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'digest'
+require 'fileutils'
 require 'pathname'
+require 'securerandom'
 require 'yaml'
 require_relative '../cache_config'
 require_relative '../config_finder'
@@ -134,7 +136,7 @@ module RuboCop
           pid_path.write(Process.pid)
           yield
         ensure
-          dir.rmtree
+          remove_dir
         end
 
         def write_status_file(status)
@@ -182,6 +184,14 @@ module RuboCop
 
           require 'yaml'
           YAML.safe_load(yaml_code, permitted_classes: [Regexp, Symbol], aliases: true) || {}
+        end
+
+        def remove_dir
+          removed_dir_path = "#{dir_path}.#{SecureRandom.hex(8)}.removed"
+          File.rename(dir_path, removed_dir_path)
+          FileUtils.rm_rf(removed_dir_path)
+        rescue Errno::ENOENT
+          nil
         end
       end
     end
