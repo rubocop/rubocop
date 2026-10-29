@@ -245,6 +245,7 @@ module RuboCop
           [
             Layout::HeredocArgumentClosingParenthesis,
             Style::NestedParenthesizedCalls,
+            Style::ParenthesesAroundCondition,
             Style::RedundantParentheses,
             Style::RescueModifier,
             Style::TernaryParentheses,
