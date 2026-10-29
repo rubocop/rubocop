@@ -88,5 +88,41 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
             # comment
       RUBY
     end
+
+    it 'registers an offense and corrects a closing bracket followed by an argument after a comment line' do
+      expect_offense(<<~RUBY)
+        foo([
+          1,
+          # comment
+        ], bar)
+        ^ The closing array brace must be on the same line as the last array element.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo([
+          1,], bar)
+          # comment
+      RUBY
+    end
+
+    it 'registers an offense and corrects a nested array whose closing bracket is followed by an element after a comment line' do
+      expect_offense(<<~RUBY)
+        foo = [
+          [
+            1,
+            # comment
+          ], 2
+          ^ The closing array brace must be on the same line as the last array element.
+        ]
+        ^ The closing array brace must be on the same line as the last array element.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = [
+          [
+            1,], 2]
+            # comment
+      RUBY
+    end
   end
 end

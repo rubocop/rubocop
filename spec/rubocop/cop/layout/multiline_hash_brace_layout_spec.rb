@@ -76,5 +76,27 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
             baz: 1}} # comment
       RUBY
     end
+
+    it 'registers an offense and corrects a nested hash whose closing brace is followed by a comma after a comment line' do
+      expect_offense(<<~RUBY)
+        foo = {
+          bar: {
+            baz: 1,
+            # comment
+          },
+          ^ Closing hash brace must be on the same line as the last hash element.
+          qux: 2
+        }
+        ^ Closing hash brace must be on the same line as the last hash element.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = {
+          bar: {
+            baz: 1,},
+            # comment
+          qux: 2}
+      RUBY
+    end
   end
 end

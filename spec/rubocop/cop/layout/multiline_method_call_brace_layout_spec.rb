@@ -138,6 +138,22 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
             })
         RUBY
       end
+
+      it 'registers an offense and corrects when a comment line precedes the closing brace followed by a method call' do
+        expect_offense(<<~RUBY)
+          foo(
+            bar,
+            # comment
+          ).baz
+          ^ Closing method call brace must be on the same line as the last argument.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(
+            bar,).baz
+            # comment
+        RUBY
+      end
     end
   end
 
