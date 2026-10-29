@@ -343,6 +343,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         [:"#{foo}", :"#{foo}bar", :"foo#{bar}", :foo]
       RUBY
     end
+
+    it 'autocorrects an array with quotes inside an interpolation' do
+      expect_offense(<<~'RUBY')
+        %I(a_#{name.tr("-", "_")} b)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[:"a_#{name.tr("-", "_")}", :b]` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        [:"a_#{name.tr("-", "_")}", :b]
+      RUBY
+    end
   end
 
   context 'with non-default MinSize' do

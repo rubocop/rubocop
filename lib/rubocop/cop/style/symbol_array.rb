@@ -98,9 +98,7 @@ module RuboCop
 
           syms = node.children.map do |c|
             if c.dsym_type?
-              string_literal = to_string_literal(c.source)
-
-              ":#{trim_string_interpolation_escape_character(string_literal)}"
+              ":#{build_interpolated_string_literal(c)}"
             else
               to_symbol_literal(c.value.to_s)
             end

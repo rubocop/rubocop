@@ -564,6 +564,28 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
+    it 'autocorrects a %W() array with quotes inside an interpolation' do
+      expect_offense(<<~'RUBY')
+        %W(CFLAGS=#{ENV.fetch("CFLAGS", "")} -O2)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `["CFLAGS=#{ENV.fetch("CFLAGS", "")}", '-O2']` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        ["CFLAGS=#{ENV.fetch("CFLAGS", "")}", '-O2']
+      RUBY
+    end
+
+    it 'autocorrects a %W() array with an escape sequence next to an interpolation' do
+      expect_offense(<<~'RUBY')
+        %W(tab\there#{x} y)
+        ^^^^^^^^^^^^^^^^^^^ Use `["tab\there#{x}", 'y']` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        ["tab\there#{x}", 'y']
+      RUBY
+    end
+
     it "doesn't fail on strings which are not valid UTF-8" do
       # Regression test, see GH issue 2671
       expect_no_offenses(<<~'RUBY')

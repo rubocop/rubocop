@@ -77,6 +77,27 @@ module RuboCop
         end
       end
 
+      # Builds a double-quoted string literal for an interpolated element of a `%W` or `%I`
+      # array. Only the text around the interpolations is escaped, the code inside them is
+      # kept as written.
+      # @param [RuboCop::AST::Node] node a `dstr` or `dsym` node
+      # @return [String]
+      def build_interpolated_string_literal(node)
+        contents = node.children.map do |child|
+          if child.str_type?
+            child.value.inspect[1..-2]
+          elsif child.begin_type?
+            child.source
+          else
+            # A variable interpolated without braces, such as `#@foo`. The braces keep
+            # the text that follows from becoming part of the variable name.
+            "\#{#{child.source}}"
+          end
+        end
+
+        "\"#{contents.join}\""
+      end
+
       # @param [RuboCop::AST::ArrayNode] node
       # @param [Array<String>] elements
       # @return [String]
