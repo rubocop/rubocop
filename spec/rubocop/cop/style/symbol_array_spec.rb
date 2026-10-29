@@ -344,6 +344,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
     end
 
+    it 'autocorrects an array with an element starting with a variable interpolated without braces' do
+      expect_offense(<<~'RUBY')
+        %I(#@foo bar)
+        ^^^^^^^^^^^^^ Use `[:"#{@foo}", :bar]` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        [:"#{@foo}", :bar]
+      RUBY
+    end
+
     it 'autocorrects an array with quotes inside an interpolation' do
       expect_offense(<<~'RUBY')
         %I(a_#{name.tr("-", "_")} b)

@@ -575,6 +575,17 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
+    it 'autocorrects a %W() array with elements starting with a variable interpolated without braces' do
+      expect_offense(<<~'RUBY')
+        %W(#@foo bar #@baz)
+        ^^^^^^^^^^^^^^^^^^^ Use `["#{@foo}", 'bar', "#{@baz}"]` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        ["#{@foo}", 'bar', "#{@baz}"]
+      RUBY
+    end
+
     it 'autocorrects a %W() array with an escape sequence next to an interpolation' do
       expect_offense(<<~'RUBY')
         %W(tab\there#{x} y)
