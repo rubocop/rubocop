@@ -307,6 +307,18 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
         RUBY
       end
 
+      it 'registers an offense when using a single named block parameter as an omitted hash value' do
+        expect_offense(<<~RUBY)
+          block { |arg| do_something(arg:, key: {arg:}) }
+                                     ^^^ Use `it` block parameter.
+                                                 ^^^ Use `it` block parameter.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          block {  do_something(arg: it, key: {arg: it}) }
+        RUBY
+      end
+
       it 'registers an offense when using twice a single named parameters' do
         expect_offense(<<~RUBY)
           block do |arg|

@@ -86,7 +86,7 @@ module RuboCop
           find_block_variables(node, block_argument_name).each do |variable|
             add_offense(variable, message: MSG_USE_IT_PARAMETER) do |corrector|
               corrector.remove(node.arguments)
-              corrector.replace(variable, 'it')
+              replace_with_it(corrector, variable)
             end
           end
         end
@@ -128,6 +128,16 @@ module RuboCop
 
           block_variables(node.body, block_argument_name).reject do |variable|
             ranges.any? { |range| range.contains?(variable.source_range) }
+          end
+        end
+
+        def replace_with_it(corrector, variable)
+          parent = variable.parent
+
+          if parent.pair_type? && parent.value_omission?
+            corrector.replace(parent.loc.operator, ': it')
+          else
+            corrector.replace(variable, 'it')
           end
         end
 
