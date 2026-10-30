@@ -4,6 +4,11 @@ source 'https://rubygems.org'
 
 gemspec
 
+# FIXME: addressable 2.9.1, which webmock loads, warns about a duplicated range in a character
+# class, which fails every spec run with `STRICT_WARNINGS`. Remove the exclusion once a release
+# without the warning ships.
+# https://github.com/rubocop/rubocop/actions/runs/41079684523/job/124145164458
+gem 'addressable', '!= 2.9.1'
 gem 'asciidoctor'
 gem 'bump', require: false
 gem 'fiddle', platform: :windows if RUBY_VERSION >= '3.4'
