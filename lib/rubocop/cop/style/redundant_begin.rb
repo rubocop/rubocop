@@ -138,6 +138,8 @@ module RuboCop
         end
 
         def register_offense(node)
+          return if end_cannot_join_statement_line?(node)
+
           offense_range = node.loc.begin
 
           add_offense(offense_range) do |corrector|
@@ -147,11 +149,41 @@ module RuboCop
               remove_begin(corrector, offense_range, node)
             end
 
-            if use_modifier_form_after_multiline_begin_block?(node)
-              correct_modifier_form_after_multiline_begin_block(corrector, node)
-            end
-            corrector.remove(node.loc.end)
+            correct_end(corrector, node)
           end
+        end
+
+        def end_cannot_join_statement_line?(node)
+          return false if use_modifier_form_after_multiline_begin_block?(node)
+          return false unless code_after_end_on_its_own_line?(node)
+
+          range_with_end_line_break(node).begin_pos != statement_end_pos(node)
+        end
+
+        def use_modifier_form_after_multiline_begin_block?(node)
+          return false unless (parent = node.parent)
+          return false unless node.multiline? && parent.if_type? && parent.modifier_form?
+
+          !parent.condition.equal?(node)
+        end
+
+        def code_after_end_on_its_own_line?(node)
+          end_range = node.loc.end
+          return false unless begins_its_line?(end_range)
+
+          rest_of_line = end_range.source_line[end_range.last_column..].lstrip
+
+          !rest_of_line.empty? && !rest_of_line.start_with?('#')
+        end
+
+        def range_with_end_line_break(node)
+          range_with_surrounding_space(node.loc.end, side: :left, newlines: true)
+        end
+
+        def statement_end_pos(node)
+          return node.loc.begin.end_pos if node.children.empty?
+
+          node.children.last.source_range.end_pos
         end
 
         def replace_begin_with_statement(corrector, offense_range, node)
@@ -190,11 +222,14 @@ module RuboCop
           corrector.insert_before(node.parent, comments) unless comments.blank?
         end
 
-        def use_modifier_form_after_multiline_begin_block?(node)
-          return false unless (parent = node.parent)
-
-          node.multiline? && parent.if_type? && parent.modifier_form? &&
-            !parent.condition.equal?(node)
+        def correct_end(corrector, node)
+          if use_modifier_form_after_multiline_begin_block?(node)
+            correct_modifier_form_after_multiline_begin_block(corrector, node)
+          elsif code_after_end_on_its_own_line?(node)
+            corrector.remove(range_with_end_line_break(node))
+          else
+            corrector.remove(node.loc.end)
+          end
         end
 
         def correct_modifier_form_after_multiline_begin_block(corrector, node)

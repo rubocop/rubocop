@@ -349,6 +349,76 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when `end` of the assigned `begin` block is followed by a comma' do
+    expect_offense(<<~RUBY)
+      do_something(
+        var ||= begin
+                ^^^^^ Redundant `begin` block detected.
+          foo if condition
+        end,
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(
+        var ||= (foo if condition),
+      )
+    RUBY
+  end
+
+  it 'registers and corrects an offense when `end` of the assigned `begin` block is followed by a modifier `if`' do
+    expect_offense(<<~RUBY)
+      var = begin
+            ^^^^^ Redundant `begin` block detected.
+        foo
+      end if condition
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = foo if condition
+    RUBY
+  end
+
+  it 'registers and corrects an offense when `end` of the `begin` block in an array is followed by a comma' do
+    expect_offense(<<~RUBY)
+      [
+        begin
+        ^^^^^ Redundant `begin` block detected.
+          foo
+        end,
+      ]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [
+       #{trailing_whitespace}
+          foo,
+      ]
+    RUBY
+  end
+
+  it 'does not register an offense when `end` followed by a comma comes after a comment' do
+    expect_no_offenses(<<~RUBY)
+      do_something(
+        var ||= begin
+          foo # comment
+        end,
+      )
+    RUBY
+  end
+
+  it 'does not register an offense when `end` followed by a comma comes after a heredoc body' do
+    expect_no_offenses(<<~RUBY)
+      do_something(
+        var ||= begin
+          foo(<<~TEXT)
+            text
+          TEXT
+        end,
+      )
+    RUBY
+  end
+
   it 'registers and corrects an offense when a multiline `begin` block is inside `if`' do
     expect_offense(<<~RUBY)
       if condition
