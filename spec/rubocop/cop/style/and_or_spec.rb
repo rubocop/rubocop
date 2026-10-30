@@ -199,6 +199,131 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       RUBY
     end
 
+    it 'autocorrects "or" with a one-line `in` pattern matching on the left', :ruby30 do
+      expect_offense(<<~RUBY)
+        arg in Symbol or raise TypeError, 'x'
+                      ^^ Use `||` instead of `or`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (arg in Symbol) || raise(TypeError, 'x')
+      RUBY
+    end
+
+    it 'autocorrects "or" with a one-line `in` pattern matching on the right', :ruby30 do
+      expect_offense(<<~RUBY)
+        foo or arg in Symbol
+            ^^ Use `||` instead of `or`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo || (arg in Symbol)
+      RUBY
+    end
+
+    it 'autocorrects "and" with a one-line `=>` pattern matching on the right', :ruby30 do
+      expect_offense(<<~RUBY)
+        foo and arg => Symbol
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && (arg => Symbol)
+      RUBY
+    end
+
+    it 'autocorrects "and" with a ternary on the right' do
+      expect_offense(<<~RUBY)
+        foo and bar ? baz : qux
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && (bar ? baz : qux)
+      RUBY
+    end
+
+    it 'autocorrects "and" with a ternary on the left' do
+      expect_offense(<<~RUBY)
+        bar ? baz : qux and foo
+                        ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (bar ? baz : qux) && foo
+      RUBY
+    end
+
+    it 'autocorrects "and" with a keyword `if` without adding parentheses' do
+      expect_offense(<<~RUBY)
+        foo and if bar
+            ^^^ Use `&&` instead of `and`.
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && if bar
+          baz
+        end
+      RUBY
+    end
+
+    it 'autocorrects "and" with an inclusive range on the right' do
+      expect_offense(<<~RUBY)
+        foo and bar..baz
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && (bar..baz)
+      RUBY
+    end
+
+    it 'autocorrects "or" with an exclusive range on the left' do
+      expect_offense(<<~RUBY)
+        bar...baz or foo
+                  ^^ Use `||` instead of `or`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (bar...baz) || foo
+      RUBY
+    end
+
+    it 'autocorrects "and" with `defined?` without parentheses on the left' do
+      expect_offense(<<~RUBY)
+        defined? bar and foo
+                     ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (defined? bar) && foo
+      RUBY
+    end
+
+    it 'autocorrects "and" with `defined?` without parentheses on the right' do
+      expect_offense(<<~RUBY)
+        foo and defined? bar
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && (defined? bar)
+      RUBY
+    end
+
+    it 'autocorrects "and" with `defined?` with parentheses without adding parentheses' do
+      expect_offense(<<~RUBY)
+        defined?(bar) and foo
+                      ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        defined?(bar) && foo
+      RUBY
+    end
+
     it 'autocorrects "and" with an Enumerable accessor on either side' do
       expect_offense(<<~RUBY)
         foo[:bar] and foo[:baz]
@@ -207,6 +332,39 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
 
       expect_correction(<<~RUBY)
         foo[:bar] && foo[:baz]
+      RUBY
+    end
+
+    it 'autocorrects "and" with a binary operator method on either side without adding parentheses' do
+      expect_offense(<<~RUBY)
+        bar + baz and qux.quux ** corge
+                  ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar + baz && qux.quux ** corge
+      RUBY
+    end
+
+    it 'autocorrects "or" with `%` and `<<` operator methods without adding parentheses' do
+      expect_offense(<<~RUBY)
+        bar % baz or qux << quux
+                  ^^ Use `||` instead of `or`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar % baz || qux << quux
+      RUBY
+    end
+
+    it 'autocorrects "and" with an operator method called with a dot and adds parentheses' do
+      expect_offense(<<~RUBY)
+        foo and bar.+ baz
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && bar.+(baz)
       RUBY
     end
 
@@ -359,6 +517,115 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'with a method call with arguments and a `do` block on the right' do
+      it 'autocorrects "and" with && and adds parentheses to the arguments' do
+        expect_offense(<<~RUBY)
+          foo and bar baz do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do |x|
+            x
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments with a numblock' do
+        expect_offense(<<~RUBY)
+          foo and bar baz do
+              ^^^ Use `&&` instead of `and`.
+            _1
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do
+            _1
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments with an itblock', :ruby34 do
+        expect_offense(<<~RUBY)
+          foo and bar baz do
+              ^^^ Use `&&` instead of `and`.
+            it
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do
+            it
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments when a method is chained onto the block' do
+        expect_offense(<<~RUBY)
+          foo and bar baz do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end.qux
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do |x|
+            x
+          end.qux
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to both calls when a method with arguments is chained onto the block' do
+        expect_offense(<<~RUBY)
+          foo and bar baz do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end.qux quux
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar(baz) do |x|
+            x
+          end.qux(quux)
+        RUBY
+      end
+    end
+
+    context 'with !obj.method arg and a `do` block on the right' do
+      it 'autocorrects "and" with && and adds parentheses to the arguments' do
+        expect_offense(<<~RUBY)
+          foo and !bar.baz qux do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && !bar.baz(qux) do |x|
+            x
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments of a receiverless call' do
+        expect_offense(<<~RUBY)
+          foo and !bar baz do |x|
+              ^^^ Use `&&` instead of `and`.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && !bar(baz) do |x|
+            x
+          end
+        RUBY
+      end
+    end
+
     context 'with `next`/`break` with arguments on the right' do
       it 'autocorrects and adds parentheses' do
         expect_offense(<<~RUBY)
@@ -391,6 +658,89 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         expect_correction(<<~RUBY)
           def m
             foo && (yield 1)
+          end
+        RUBY
+      end
+    end
+
+    context 'with `super` with arguments' do
+      it 'autocorrects "and" with && and adds parentheses to the arguments on the right' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and super baz
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && super(baz)
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments on the left' do
+        expect_offense(<<~RUBY)
+          def m
+            super baz and foo
+                      ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            super(baz) && foo
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments when it takes a `do` block' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and super baz do |x|
+                ^^^ Use `&&` instead of `and`.
+              x
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && super(baz) do |x|
+              x
+            end
+          end
+        RUBY
+      end
+
+      it 'autocorrects "and" with && and adds parentheses to the arguments when negated' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and !super baz
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && !super(baz)
+          end
+        RUBY
+      end
+    end
+
+    context 'with `super` without arguments' do
+      it 'autocorrects "and" with && without adding parentheses' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and super
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && super
           end
         RUBY
       end

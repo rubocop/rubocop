@@ -85,7 +85,7 @@ module RuboCop
         /xi.freeze
 
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses]
         end
 
         def on_block(node)
@@ -122,8 +122,10 @@ module RuboCop
         def on_new_investigation
           @breakable_range_by_line_index = {}
           @breakable_string_delimiters = {}
+          @breakable_strings = {}
           @endless_methods_by_line = {}
           @heredocs = nil
+          @heredoc_openers = nil
 
           return unless processed_source.raw_source.include?(';')
 
@@ -207,37 +209,69 @@ module RuboCop
         def check_for_breakable_node(node)
           breakable_node = extract_breakable_node(node, max)
           return if breakable_node.nil?
+          return if compact_nested_array_break?(node, breakable_node)
 
           line_index = breakable_node.first_line - 1
           range = breakable_node.source_range
 
           existing = breakable_range_by_line_index[line_index]
-          return if existing
+          return if existing || after_heredoc_opener?(range)
 
           breakable_range_by_line_index[line_index] = range
+        end
+
+        def after_heredoc_opener?(range)
+          heredoc_openers.any? do |opener|
+            opener.line == range.line && opener.begin_pos < range.begin_pos
+          end
+        end
+
+        def heredoc_openers
+          ast = processed_source.ast
+          return [] if ast.nil?
+
+          @heredoc_openers ||= ast.each_node(:any_str).select(&:heredoc?).map(&:source_range)
+        end
+
+        def compact_nested_array_break?(node, breakable_node)
+          return false if !node.array_type? || !node.square_brackets?
+          return false unless breakable_node.equal?(node.children.first)
+          return false unless breakable_node.source.start_with?('[')
+
+          compact_array_brackets_enforced?
+        end
+
+        def compact_array_brackets_enforced?
+          return false unless config.cop_enabled?('Layout/SpaceInsideArrayLiteralBrackets')
+
+          config.for_cop('Layout/SpaceInsideArrayLiteralBrackets')['EnforcedStyle'] == 'compact'
         end
 
         def check_for_breakable_semicolons(processed_source)
           tokens = processed_source.tokens.select { |t| t.type == :tSEMI }
           tokens.reverse_each do |token|
             range = breakable_range_after_semicolon(token)
-            breakable_range_by_line_index[range.line - 1] = range if range
+            next if range.nil? || after_heredoc_opener?(range)
+
+            breakable_range_by_line_index[range.line - 1] = range
           end
         end
 
         def check_for_breakable_block(block_node)
           return unless block_node.single_line?
-          return if receiver_contains_heredoc?(block_node)
 
           line_index = block_node.loc.line - 1
           return if breakable_string_delimiters[line_index]
 
           range = breakable_block_range(block_node)
           pos = range.begin_pos + 1
+          range = range_between(pos, pos + 1)
+          return if after_heredoc_opener?(range)
 
-          breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
+          breakable_range_by_line_index[line_index] = range
         end
 
+        # rubocop:disable-next Metrics/AbcSize
         def check_for_breakable_str(node)
           line_index = node.loc.line - 1
           return if breakable_range_by_line_index[line_index]
@@ -248,6 +282,7 @@ module RuboCop
 
           breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
           breakable_string_delimiters[line_index] = delimiter
+          breakable_strings[line_index] = node
         end
 
         def check_for_breakable_dstr(node) # rubocop:disable Metrics/AbcSize
@@ -271,7 +306,8 @@ module RuboCop
             !node.heredoc? &&
             # TODO: strings inside hashes, kwargs and arrays are currently ignored,
             # but could be considered in the future
-            !node.parent&.type?(:pair, :kwoptarg, :array)
+            !node.parent&.type?(:pair, :kwoptarg, :array) &&
+            !after_heredoc_opener?(node.source_range)
         end
 
         def breakable_block_range(block_node)
@@ -423,6 +459,10 @@ module RuboCop
           @breakable_string_delimiters ||= {}
         end
 
+        def breakable_strings
+          @breakable_strings ||= {}
+        end
+
         def heredocs
           @heredocs ||= extract_heredocs(processed_source.ast)
         end
@@ -479,8 +519,36 @@ module RuboCop
                           "\n"
                         end
 
-            corrector.insert_before(breakable_range, insertion) unless breakable_range.nil?
+            break_ranges(line_index).each do |range|
+              corrector.insert_before(range, insertion)
+            end
           end
+        end
+
+        def break_ranges(line_index)
+          return [] if breakable_range.nil?
+          return [breakable_range] unless (node = breakable_strings[line_index])&.loc?(:end)
+
+          string_break_ranges(node, breakable_string_delimiters[line_index])
+        end
+
+        def string_break_ranges(node, delimiter)
+          ranges = [breakable_range]
+          pos = breakable_range.begin_pos
+
+          while (pos = next_string_break_position(node, pos, delimiter))
+            ranges << range_between(pos, pos + 1)
+          end
+
+          ranges
+        end
+
+        def next_string_break_position(node, pos, delimiter)
+          rest = parse("#{delimiter}#{node.source_range.with(begin_pos: pos).source}").ast
+          return unless rest&.str_type?
+          return unless (rest_pos = breakable_string_position(rest))
+
+          pos + rest_pos - delimiter.length
         end
 
         def excess_range(uri_range, line, line_index)

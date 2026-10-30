@@ -64,6 +64,16 @@ RSpec.describe RuboCop::Cop::Badge do
     expect(Set.new([badge1, badge2])).to be_one
   end
 
+  it 'does not treat badges with colliding hashes as equal' do
+    colliding = Class.new(described_class) do
+      def hash
+        0
+      end
+    end
+
+    expect(colliding.new(%w[Foo Bar])).not_to eq(colliding.new(%w[Baz Qux]))
+  end
+
   it 'can be converted to a string with the Department/CopName format' do
     expect(described_class.new(%w[Foo Bar]).to_s).to eql('Foo/Bar')
   end

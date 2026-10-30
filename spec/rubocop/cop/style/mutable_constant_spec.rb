@@ -961,6 +961,17 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       RUBY
     end
 
+    it 'registers an offense and expands an omitted hash value in an already-frozen hash', :ruby31 do
+      expect_offense(<<~RUBY)
+        CONST = { foo:, bar: 1 }.freeze
+                  ^^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        CONST = { foo: foo.freeze, bar: 1 }.freeze
+      RUBY
+    end
+
     it 'descends into an already-frozen outer literal in strict mode' do
       expect_offense(<<~RUBY)
         CONST = [Something.new].freeze
@@ -969,6 +980,23 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
       expect_correction(<<~RUBY)
         CONST = [Something.new.freeze].freeze
+      RUBY
+    end
+
+    it 'does not register an offense for a splat element in an already-frozen array' do
+      expect_no_offenses(<<~RUBY)
+        CONST = [1, *foo, *1..2, *[bar]].freeze
+      RUBY
+    end
+
+    it 'does not freeze a splat element when freezing an array' do
+      expect_offense(<<~RUBY)
+        CONST = [1, *foo]
+                ^^^^^^^^^ Freeze mutable objects assigned to constants.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        CONST = [1, *foo].freeze
       RUBY
     end
   end

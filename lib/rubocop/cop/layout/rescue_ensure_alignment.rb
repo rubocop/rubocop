@@ -115,7 +115,7 @@ module RuboCop
               node.loc.name
             when :sclass
               node.identifier.source_range
-            when :masgn
+            when :masgn, :op_asgn, :or_asgn, :and_asgn
               node.lhs.source_range
             else
               # It is a wrapper with receiver of object attribute or access modifier.

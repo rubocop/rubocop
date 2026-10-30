@@ -829,6 +829,32 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             RUBY
           end
 
+          it 'breaks a string that needs several pieces in a single pass' do
+            expect_offense(<<~RUBY)
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccc'
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [86/40]
+            RUBY
+
+            expect_correction(<<~'RUBY', loop: false)
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
+              'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' \
+              'cccccccccccc'
+            RUBY
+          end
+
+          it 'breaks a double-quoted string with escapes that needs several pieces in a single pass' do
+            expect_offense(<<~'RUBY')
+              x = "\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13"
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [82/40]
+            RUBY
+
+            expect_correction(<<~'RUBY', loop: false)
+              x = "\x01\x02\x03\x04\x05\x06\x07" \
+              "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f" \
+              "\x10\x11\x12\x13"
+            RUBY
+          end
+
           it 'breaks an indented string under a multi-line parent without looping' do
             expect_offense(<<~RUBY)
               foo(
@@ -1610,6 +1636,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
         end
       end
+
+      context 'when over limit without parentheses' do
+        it 'does not move the first parameter to the next line' do
+          expect_offense(<<~RUBY)
+            def do_something_with_a_long_method_name foo:, bar: nil
+                                                    ^^^^^^^^^^^^^^^ Line is too long. [55/40]
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def do_something_with_a_long_method_name foo:,#{trailing_whitespace}
+            bar: nil
+            end
+          RUBY
+        end
+      end
     end
 
     context 'class method definition' do
@@ -1632,6 +1674,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_correction(<<~RUBY)
             def self.foo(abc: "100000",#{trailing_whitespace}
             def: "100000", ghi: "100000", jkl: "100000", mno: "100000")
+            end
+          RUBY
+        end
+      end
+
+      context 'when over limit without parentheses' do
+        it 'does not move the first parameter to the next line' do
+          expect_offense(<<~RUBY)
+            def self.do_something_with_a_long_name foo:, bar: nil
+                                                    ^^^^^^^^^^^^^ Line is too long. [53/40]
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def self.do_something_with_a_long_name foo:,#{trailing_whitespace}
+            bar: nil
             end
           RUBY
         end
@@ -2420,6 +2478,71 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_no_corrections
         end
       end
+
+      context 'when `Layout/SpaceInsideArrayLiteralBrackets` uses the `compact` style' do
+        let(:other_cops) do
+          {
+            'Layout/SpaceInsideArrayLiteralBrackets' => {
+              'Enabled' => true, 'EnforcedStyle' => 'compact'
+            }
+          }
+        end
+
+        it 'does not break before the first element when it is an array literal' do
+          expect_offense(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [[1, 2], [3, 4]]
+                                                    ^^^^^^^^^^^^^^^^ Line is too long. [56/40]
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'breaks before the first element when it is not an array literal' do
+          expect_offense(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [1, [3, 4]]
+                                                    ^^^^^^^^^^^ Line is too long. [51/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [
+            1, [3, 4]]
+          RUBY
+        end
+
+        it 'breaks before a later element of a nested array' do
+          expect_offense(<<~RUBY)
+            [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]]
+                                                    ^^^^^^^^^^^ Line is too long. [51/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [[1, 2], [3, 4], [5, 6], [7, 8],#{trailing_whitespace}
+            [9, 10], [11, 12]]
+          RUBY
+        end
+      end
+
+      context 'when `Layout/SpaceInsideArrayLiteralBrackets` uses the `no_space` style' do
+        let(:other_cops) do
+          {
+            'Layout/SpaceInsideArrayLiteralBrackets' => {
+              'Enabled' => true, 'EnforcedStyle' => 'no_space'
+            }
+          }
+        end
+
+        it 'breaks before the first element when it is an array literal' do
+          expect_offense(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [[1, 2], [3, 4]]
+                                                    ^^^^^^^^^^^^^^^^ Line is too long. [56/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            do_something(foooooooooooooo) if bar == [
+            [1, 2], [3, 4]]
+          RUBY
+        end
+      end
     end
 
     context 'breakable collection' do
@@ -2862,6 +2985,83 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
 
           expect_no_corrections
+        end
+      end
+
+      context 'when code follows a HEREDOC opener on the same line' do
+        it 'does not break up a block after the HEREDOC opener' do
+          expect_offense(<<~RUBY)
+            do_something(<<~HEREDOC, items.map { |item| item.to_s })
+                                                    ^^^^^^^^^^^^^^^^ Line is too long. [56/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'does not break up the line after a semicolon after the HEREDOC opener' do
+          expect_offense(<<~RUBY)
+            str = <<~HEREDOC; do_something_else(foo, bar)
+                                                    ^^^^^ Line is too long. [45/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'does not break up method call arguments after the HEREDOC opener' do
+          expect_offense(<<~RUBY)
+            do_something(<<~HEREDOC) + do_something_else(foo, bar)
+                                                    ^^^^^^^^^^^^^^ Line is too long. [54/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'breaks up an array before the HEREDOC element rather than a block after it' do
+          expect_offense(<<~RUBY)
+            [foo, bar, baz, <<~HEREDOC, items.map { |item| item }]
+                                                    ^^^^^^^^^^^^^^ Line is too long. [54/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [foo, bar, baz,#{trailing_whitespace}
+            <<~HEREDOC, items.map { |item| item }]
+              text
+            HEREDOC
+          RUBY
+        end
+
+        context 'when SplitStrings is enabled' do
+          let(:cop_config) { super().merge('SplitStrings' => true) }
+
+          it 'does not split a string after the HEREDOC opener' do
+            expect_offense(<<~RUBY)
+              do_something(<<~HEREDOC) + 'foo bar baz qux quux corge'
+                                                      ^^^^^^^^^^^^^^^ Line is too long. [55/40]
+                text
+              HEREDOC
+            RUBY
+
+            expect_no_corrections
+          end
+
+          it 'does not split an interpolated string after the HEREDOC opener' do
+            expect_offense(<<~'RUBY')
+              do_something(<<~HEREDOC) + "foo bar baz #{qux} quux corge"
+                                                      ^^^^^^^^^^^^^^^^^^ Line is too long. [58/40]
+                text
+              HEREDOC
+            RUBY
+
+            expect_no_corrections
+          end
         end
       end
     end

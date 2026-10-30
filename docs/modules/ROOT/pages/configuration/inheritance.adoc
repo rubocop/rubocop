@@ -73,9 +73,13 @@ server and shared between many projects.
 
 The remote config file is cached locally and is only updated if:
 
-* The file does not exist.
-* The file has not been updated in the last 24 hours.
-* The remote copy has a newer modification time than the local copy.
+* The cached file does not exist.
+* The cached file is older than 24 hours, and the server has a newer copy.
+
+RuboCop does not contact the server again until the cache file is more
+than 24 hours old. That request sends `If-Modified-Since` set to the
+time the file was written, and keeps the file when the server reports
+no change.
 
 This local cache is stored in xref:usage/caching.adoc#cache-path[the configured cache path],
 maintaining the remote filename prefix.

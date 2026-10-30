@@ -426,14 +426,21 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
   end
 
   describe 'expanding Array.new call on method argument' do
-    it 'registers an offense and corrects' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
         send(method, *Array.new(foo))
-                     ^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
       RUBY
+    end
 
-      expect_correction(<<~RUBY)
-        send(method, Array.new(foo))
+    it 'does not register an offense when the method call is assigned' do
+      expect_no_offenses(<<~RUBY)
+        a = foo(*Array.new(3) { 42 })
+      RUBY
+    end
+
+    it 'does not register an offense when the method call with other arguments is assigned' do
+      expect_no_offenses(<<~RUBY)
+        @a = foo(bar, *::Array.new(3, 42))
       RUBY
     end
   end

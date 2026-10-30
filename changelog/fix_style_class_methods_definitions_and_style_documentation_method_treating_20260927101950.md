@@ -1,1 +1,0 @@
-* [#15745](https://github.com/rubocop/rubocop/pull/15745): Fix `Style/ClassMethodsDefinitions` and `Style/DocumentationMethod` treating methods named in a multi-symbol `private` call as public, which made the former correct `class << self` to code raising `NameError`. ([@dduugg][])

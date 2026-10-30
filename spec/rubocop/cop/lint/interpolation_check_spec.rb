@@ -50,6 +50,51 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects with escaped double quotes in a split string part' do
+    expect_offense(<<~'RUBY')
+      'x' \
+        'foo "#{bar}"'
+        ^^^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      'x' \
+        "foo \"#{bar}\""
+    RUBY
+  end
+
+  it 'registers an offense and corrects a double quote after an escaped backslash in a split string part' do
+    expect_offense(<<~'RUBY')
+      'x' \
+        'foo \\"#{bar}"'
+        ^^^^^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      'x' \
+        "foo \\\"#{bar}\""
+    RUBY
+  end
+
+  it 'does not register an offense for interpolation in a `%q` string' do
+    expect_no_offenses(<<~'RUBY')
+      x = %q(a #{b})
+    RUBY
+  end
+
+  it 'registers an offense and corrects with a percent literal in the first split string part' do
+    expect_offense(<<~'RUBY')
+      'foo "#{bar}"' \
+      ^^^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+        'x'
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      %{foo "#{bar}"} \
+        'x'
+    RUBY
+  end
+
   it 'does not register an offense for properly interpolation strings' do
     expect_no_offenses(<<~'RUBY')
       hello = "foo #{bar}"

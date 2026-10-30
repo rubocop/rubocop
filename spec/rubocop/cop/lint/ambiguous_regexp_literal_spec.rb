@@ -25,6 +25,28 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when the regexp is the first key of a hash argument' do
+        expect_offense(<<~RUBY)
+          p /pattern/ => foo
+            ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          p(/pattern/ => foo)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when sending method to regexp in the first key of a hash argument' do
+        expect_offense(<<~RUBY)
+          p /pattern/.do_something => foo
+            ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          p(/pattern/.do_something => foo)
+        RUBY
+      end
+
       it 'registers an offense and corrects when sending method to regexp without argument' do
         expect_offense(<<~RUBY)
           p /pattern/.do_something

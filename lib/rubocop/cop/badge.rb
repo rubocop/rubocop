@@ -39,7 +39,7 @@ module RuboCop
       end
 
       def ==(other)
-        hash == other.hash
+        other.is_a?(Badge) && department == other.department && cop_name == other.cop_name
       end
       alias eql? ==
 

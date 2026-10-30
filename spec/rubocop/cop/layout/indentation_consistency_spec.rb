@@ -843,4 +843,109 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
   end
+
+  context 'when `Layout/IndentationWidth` is disabled on the first member line' do
+    it 'registers an offense and corrects aligning with the first member that `Layout/IndentationWidth` checks' do
+      expect_offense(<<~RUBY)
+        module Foo
+        extend self # rubocop:disable Layout/IndentationWidth
+        ^^^^^^^^^^^ Inconsistent indentation detected.
+
+          def bar
+          end
+
+            def baz
+            ^^^^^^^ Inconsistent indentation detected.
+            end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+          extend self # rubocop:disable Layout/IndentationWidth
+
+          def bar
+          end
+
+          def baz
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when `Layout/IndentationWidth` is disabled in a range around the first member' do
+      expect_offense(<<~RUBY)
+        module Foo
+          # rubocop:disable Layout/IndentationWidth
+            def bar
+            ^^^^^^^ Inconsistent indentation detected.
+            end
+          # rubocop:enable Layout/IndentationWidth
+          def baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+          # rubocop:disable Layout/IndentationWidth
+          def bar
+          end
+          # rubocop:enable Layout/IndentationWidth
+          def baz
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects aligning with the first member when `Layout/IndentationWidth` is disabled for all members' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/IndentationWidth
+        module Foo
+            def bar
+            end
+              def baz
+              ^^^^^^^ Inconsistent indentation detected.
+              end
+        end
+        # rubocop:enable Layout/IndentationWidth
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/IndentationWidth
+        module Foo
+            def bar
+            end
+            def baz
+            end
+        end
+        # rubocop:enable Layout/IndentationWidth
+      RUBY
+    end
+
+    context 'when `Layout/IndentationWidth` is disabled in the configuration' do
+      let(:other_cops) { { 'Layout/IndentationWidth' => { 'Enabled' => false } } }
+
+      it 'registers an offense and corrects aligning with the first member' do
+        expect_offense(<<~RUBY)
+          module Foo
+          extend self # rubocop:disable Layout/IndentationWidth
+
+            def bar
+            ^^^^^^^ Inconsistent indentation detected.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module Foo
+          extend self # rubocop:disable Layout/IndentationWidth
+
+          def bar
+          end
+          end
+        RUBY
+      end
+    end
+  end
 end

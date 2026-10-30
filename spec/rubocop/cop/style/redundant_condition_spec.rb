@@ -142,6 +142,49 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense with modifier `if` in an interpolation in `else`' do
+        expect_offense(<<~'RUBY')
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            "#{'foo' if $VERBOSE}"
+          end
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          b || "#{'foo' if $VERBOSE}"
+        RUBY
+      end
+
+      it 'registers an offense with modifier `unless` in a block in `else`' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            foo { bar unless baz; qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b || foo { bar unless baz; qux }
+        RUBY
+      end
+
+      it 'registers an offense and does not autocorrect when modifier `if` in an interpolation is followed by a comment in `else`' do
+        expect_offense(<<~'RUBY')
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            "#{'foo' if $VERBOSE}" # comment
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
       it 'registers an offense and corrects when a method without argument parentheses in `else`' do
         expect_offense(<<~RUBY)
           if b
@@ -1050,6 +1093,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
 
       expect_correction(<<~RUBY)
         b || (raise 'foo' if $VERBOSE)
+      RUBY
+    end
+
+    it 'registers an offense with modifier `if` in an interpolation in `else`' do
+      expect_offense(<<~'RUBY')
+        b ? b : "#{'foo' if $VERBOSE}"
+          ^^^^^ Use double pipes `||` instead.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        b || "#{'foo' if $VERBOSE}"
       RUBY
     end
 

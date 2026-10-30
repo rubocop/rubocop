@@ -170,6 +170,50 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
       RUBY
     end
 
+    it 'registers an offense when a trailing if is used with a method call without parentheses' do
+      expect_offense(<<~'RUBY')
+        "#{do_something 'foo', bar if condition}"
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{condition ? do_something('foo', bar) : ''}"
+      RUBY
+    end
+
+    it 'registers an offense when a trailing unless is used with a method call with a receiver and without parentheses' do
+      expect_offense(<<~'RUBY')
+        "#{obj.do_something 'foo' unless condition}"
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{condition ? '' : obj.do_something('foo')}"
+      RUBY
+    end
+
+    it 'registers an offense when a trailing if is used with `yield` without parentheses' do
+      expect_offense(<<~'RUBY')
+        "#{yield 'foo' if condition}"
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{condition ? yield('foo') : ''}"
+      RUBY
+    end
+
+    it 'registers an offense when a trailing if is used with an operator method' do
+      expect_offense(<<~'RUBY')
+        "#{foo + bar if condition}"
+         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use trailing conditionals in string interpolation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{condition ? foo + bar : ''}"
+      RUBY
+    end
+
     it 'registers an offense when trailing conditionals are used in nested string interpolations' do
       expect_offense(<<~'RUBY')
         "#{"foo#{'bar' if inner}" if outer}"

@@ -299,6 +299,19 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
       end
     end
 
+    context 'with a key using hash value omission', :ruby31 do
+      it 'registers an offense only for keys without hash value omission' do
+        expect_offense(<<~RUBY)
+          do_something('a-b': 1, c: 2, foo:)
+                                 ^ Symbol hash key should be quoted for consistency; use `"c":` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something('a-b': 1, "c": 2, foo:)
+        RUBY
+      end
+    end
+
     context 'with different quote styles' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)

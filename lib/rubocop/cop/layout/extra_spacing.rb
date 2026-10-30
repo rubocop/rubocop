@@ -30,6 +30,7 @@ module RuboCop
       #   some_object.method(arg)    # this is some comment
       class ExtraSpacing < Base
         extend AutoCorrector
+        include LineLengthHelp
         include PrecedingFollowingAlignment
         include RangeHelp
 
@@ -77,9 +78,14 @@ module RuboCop
         def check_assignment(token)
           return unless aligned_with_preceding_equals_operator(token) == :no
 
+          tokens, align_to = equal_sign_alignment(token.line)
+          return if exceeds_max_line_length?(tokens, align_to)
+
           message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
           add_offense(token.pos, message: message) do |corrector|
-            align_equal_signs(token.pos, corrector)
+            tokens.each do |asgn_token|
+              align_equal_sign(corrector, asgn_token, align_to)
+            end
           end
         end
 
@@ -240,14 +246,19 @@ module RuboCop
           cop_config['ForceEqualSignAlignment']
         end
 
-        def align_equal_signs(range, corrector)
-          lines  = all_relevant_assignment_lines(range.line)
+        def equal_sign_alignment(line_number)
+          lines  = all_relevant_assignment_lines(line_number)
           tokens = assignment_tokens.select { |t| lines.include?(t.line) }
 
-          columns  = tokens.map { |t| align_column(t) }
-          align_to = columns.max
+          [tokens, tokens.map { |t| align_column(t) }.max]
+        end
 
-          tokens.each { |token| align_equal_sign(corrector, token, align_to) }
+        def exceeds_max_line_length?(tokens, align_to)
+          max_line_length && tokens.any? do |token|
+            padding = align_to - token.pos.last_column
+
+            padding.positive? && line_length(token.pos.source_line) + padding > max_line_length
+          end
         end
 
         def align_equal_sign(corrector, token, align_to)

@@ -166,7 +166,7 @@ module RuboCop
         PATTERN
 
         def self.autocorrect_incompatible_with
-          [Layout::SpaceBeforeBlockBraces]
+          [Layout::SpaceBeforeBlockBraces, Style::TrailingCommaInArguments]
         end
 
         # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

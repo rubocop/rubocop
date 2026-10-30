@@ -204,6 +204,18 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           RUBY
         end
 
+        it 'registers offenses and corrects a comparison nested in the receiver of another comparison' do
+          expect_offense(<<~RUBY)
+            foo.count { |x| x < 0 } < 0
+                            ^^^^^ Use `x.negative?` instead of `x < 0`.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `foo.count { |x| x < 0 }.negative?` instead of `foo.count { |x| x < 0 } < 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.count { |x| x.negative? }.negative?
+          RUBY
+        end
+
         it 'registers an offense in yoda condition' do
           expect_offense(<<~RUBY)
             0 > number
@@ -270,6 +282,18 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
 
       expect_correction(<<~RUBY)
         !(number == 0)
+      RUBY
+    end
+
+    it 'registers offenses and corrects a predicate nested in the receiver of another predicate' do
+      expect_offense(<<~RUBY)
+        foo.count { |x| x.positive? }.positive?
+                        ^^^^^^^^^^^ Use `x > 0` instead of `x.positive?`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `foo.count { |x| x.positive? } > 0` instead of `foo.count { |x| x.positive? }.positive?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.count { |x| x > 0 } > 0
       RUBY
     end
 

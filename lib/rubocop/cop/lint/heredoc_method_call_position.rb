@@ -34,6 +34,10 @@ module RuboCop
 
         MSG = 'Put a method call with a HEREDOC receiver on the same line as the HEREDOC opening.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_send(node)
           heredoc = heredoc_node_descendent_receiver(node)
           return unless heredoc

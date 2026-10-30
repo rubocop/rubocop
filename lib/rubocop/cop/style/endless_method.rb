@@ -149,8 +149,19 @@ module RuboCop
         # an endless definition, so letting both correct in the same pass would double them.
         # `Style/GuardClause` turns a single `if` body into several statements,
         # which an endless definition cannot hold.
+        # `Style/RaiseArgs` would drop the parentheses of a `raise` that becomes
+        # the body in the same pass, which a method passed as an argument needs.
+        # `Style/IfUnlessModifier` and `Style/WhileUntilModifier` would turn the body into
+        # a modifier form, which then applies to the whole endless definition.
         def self.autocorrect_incompatible_with
-          [Style::GuardClause, Style::MethodCallWithArgsParentheses, Style::MethodDefParentheses]
+          [
+            Style::GuardClause,
+            Style::IfUnlessModifier,
+            Style::MethodCallWithArgsParentheses,
+            Style::MethodDefParentheses,
+            Style::RaiseArgs,
+            Style::WhileUntilModifier
+          ]
         end
 
         def on_def(node)
@@ -187,9 +198,7 @@ module RuboCop
             add_offense(node, message: MSG_MULTI_LINE) do |corrector|
               correct_to_multiline(corrector, node)
             end
-          elsif !node.endless? && can_be_made_endless?(node) && single_line_when_made_endless?(node)
-            return if too_long_when_made_endless?(node)
-
+          elsif convertible_to_endless?(node) && single_line_when_made_endless?(node)
             add_offense(node, message: MSG_REQUIRE_SINGLE) do |corrector|
               correct_to_endless(corrector, node)
             end
@@ -197,12 +206,16 @@ module RuboCop
         end
 
         def handle_require_always_style(node)
-          return if node.endless? || !can_be_made_endless?(node)
-          return if too_long_when_made_endless?(node)
+          return unless convertible_to_endless?(node)
 
           add_offense(node, message: MSG_REQUIRE_ALWAYS) do |corrector|
             correct_to_endless(corrector, node)
           end
+        end
+
+        def convertible_to_endless?(node)
+          !node.endless? && can_be_made_endless?(node) &&
+            !too_long_when_made_endless?(node) && !ambiguous_when_made_endless?(node)
         end
 
         def handle_disallow_style(node)
@@ -293,6 +306,23 @@ module RuboCop
 
         def single_line_when_made_endless?(node)
           !endless_replacement(node).include?("\n")
+        end
+
+        def ambiguous_when_made_endless?(node)
+          (operation = ambiguous_operation(node)) && ambiguous_enclosing_operation?(operation)
+        end
+
+        # @!method ambiguous_operation(node)
+        def_node_matcher :ambiguous_operation, <<~PATTERN
+          ^${
+            (if _ <any_def _>)
+            ({and or} any_def _)
+            ({while until} _ any_def)
+          }
+        PATTERN
+
+        def ambiguous_enclosing_operation?(operation)
+          operation.operator_keyword? || operation.modifier_form?
         end
 
         def too_long_when_made_endless?(node)

@@ -83,7 +83,8 @@ module RuboCop
           control_op_condition(cond) do |first_child, rest_children|
             return if require_parentheses?(node, first_child)
             return if semicolon_separated_expressions?(first_child, rest_children)
-            return if modifier_op?(first_child)
+            return if modifier_op?(first_child) || first_child.masgn_type?
+            return if command_call_assignment?(first_child)
             return if parens_allowed?(cond)
 
             message = message(cond)
@@ -113,6 +114,23 @@ module RuboCop
           return true if node.rescue_type?
 
           node.basic_conditional? && node.modifier_form?
+        end
+
+        def command_call_assignment?(node)
+          return false if !node.assignment? && !setter_method?(node)
+
+          value = node.children.last
+          value = value.body if value.rescue_type?
+
+          command_call_assignment?(value) || command_call?(value)
+        end
+
+        def command_call?(node)
+          node = node.send_node if node.any_block_type?
+          return false if !node.type?(:call, :super, :yield) || !node.arguments?
+          return false if node.parenthesized? || node.operator_method? || node.setter_method?
+
+          !node.method?(:[])
         end
 
         def message(node)

@@ -582,6 +582,54 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for a method definition with a modifier `if`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end if y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition followed by `and`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end and y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition followed by `&&`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end && y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition followed by `||`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end || y
+        RUBY
+      end
+
+      it 'does not register an offense for a method definition with a modifier `while`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end while y
+        RUBY
+      end
+
+      it 'does not register an offense for a singleton method definition followed by `&&`' do
+        expect_no_offenses(<<~RUBY)
+          def self.my_method
+            x
+          end && y
+        RUBY
+      end
+
       it 'registers an offense and corrects for a single line method with access modifier' do
         expect_offense(<<~RUBY)
           private def my_method
@@ -1053,6 +1101,23 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for a method definition with a modifier `unless`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x
+          end unless y
+        RUBY
+      end
+
+      it 'does not register an offense for a multiline method definition with a modifier `if`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            bar(1,
+                2)
+          end if y
+        RUBY
+      end
+
       it 'registers an offense and corrects for a single line method on self' do
         expect_offense(<<~RUBY)
           def self.my_method
@@ -1309,6 +1374,73 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         qux 1, def foo(x)
           bar :baz, x
         end
+      RUBY
+    end
+
+    it 'does not register an offense for a `do...end` block in a method definition passed as an argument' do
+      expect_no_offenses(<<~RUBY)
+        private def foo
+          bar do
+            baz
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a nested `do...end` block in a method definition passed as an argument' do
+      expect_no_offenses(<<~RUBY)
+        private def foo
+          obj.bar do
+            baz
+          end.qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a `do...end` block in a method definition passed as a parenthesized argument' do
+      expect_offense(<<~RUBY)
+        private(def foo
+                ^^^^^^^ Use endless method definitions.
+          bar do
+            baz
+          end
+        end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private(def foo = bar do
+            baz
+          end)
+      RUBY
+    end
+
+    it 'registers an offense for a `{...}` block in a method definition passed as an argument' do
+      expect_offense(<<~RUBY)
+        private def foo
+                ^^^^^^^ Use endless method definitions.
+          bar { baz }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private def foo = bar { baz }
+      RUBY
+    end
+
+    it 'registers an offense for a lambda literal with `do...end` in a method definition passed as an argument' do
+      expect_offense(<<~RUBY)
+        private def foo
+                ^^^^^^^ Use endless method definitions.
+          -> do
+            baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private def foo = -> do
+            baz
+          end
       RUBY
     end
 

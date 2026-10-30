@@ -67,6 +67,17 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects for right coerce with a trailing comment' do
+      expect_offense(<<~RUBY)
+        a / b.to_f # comment
+        ^^^^^^^^^^ Prefer using `.to_f` on the left side.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a.to_f / b # comment
+      RUBY
+    end
+
     it 'does not register offense for right coerce with implicit receiver' do
       expect_no_offenses('a / to_f')
     end
@@ -151,6 +162,17 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects for left coerce with a trailing comment' do
+      expect_offense(<<~RUBY)
+        a.to_f / b # comment
+        ^^^^^^^^^^ Prefer using `.to_f` on the right side.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a / b.to_f # comment
+      RUBY
+    end
+
     it 'does not register offense for left coerce with implicit receiver' do
       expect_no_offenses('to_f / b')
     end
@@ -182,6 +204,17 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
 
       expect_correction(<<~RUBY)
         (a - b).to_f / (3 * d / 2)
+      RUBY
+    end
+
+    it 'registers an offense and corrects for both coerce with a trailing comment' do
+      expect_offense(<<~RUBY)
+        a.to_f / b.to_f # comment
+        ^^^^^^^^^^^^^^^ Prefer using `.to_f` on one side only.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a.to_f / b # comment
       RUBY
     end
 
@@ -239,6 +272,31 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
 
       expect_correction(<<~RUBY)
         a.fdiv(b)
+      RUBY
+    end
+
+    it 'registers an offense and corrects for both coerce with a trailing comment' do
+      expect_offense(<<~RUBY)
+        a.to_f / b.to_f # comment
+        ^^^^^^^^^^^^^^^ Prefer using `fdiv` for float divisions.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a.fdiv(b) # comment
+      RUBY
+    end
+
+    it 'does not register an offense for both coerce with a comment after the operator' do
+      expect_no_offenses(<<~RUBY)
+        a.to_f / # comment
+          b.to_f
+      RUBY
+    end
+
+    it 'does not register an offense for right coerce with a comment after the operator' do
+      expect_no_offenses(<<~RUBY)
+        a / # comment
+          b.to_f
       RUBY
     end
 

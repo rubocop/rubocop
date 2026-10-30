@@ -90,7 +90,17 @@ module RuboCop
         end
 
         def exempt_from_brackets?(node)
+          return true if forwarded_or_splatted?(node.first_argument)
+
           comment_before_dot?(node) || env_fetch_preferred?(node.receiver)
+        end
+
+        def forwarded_or_splatted?(argument)
+          if argument.hash_type? && !argument.braces?
+            argument.children.any? { |child| child.type?(:kwsplat, :forwarded_kwrestarg) }
+          else
+            argument.type?(:forwarded_args, :forwarded_restarg, :splat, :block_pass)
+          end
         end
 
         def comment_before_dot?(node)

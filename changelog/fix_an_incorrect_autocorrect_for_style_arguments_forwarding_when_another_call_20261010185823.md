@@ -1,1 +1,0 @@
-* [#16020](https://github.com/rubocop/rubocop/pull/16020): Fix an incorrect autocorrect for `Style/ArgumentsForwarding` when another call forwards anonymous arguments without the block. ([@Starlexxx][])

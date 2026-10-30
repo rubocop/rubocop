@@ -118,6 +118,36 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
   context 'when EnforcedStyle is no_space' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
+    it 'registers an offense and corrects a brace after a line continuation' do
+      expect_offense(<<~'RUBY')
+        foo(bar) \
+                  ^{} Space detected to the left of {.
+          { baz }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(bar){ baz }
+      RUBY
+    end
+
+    it 'registers an offense but does not correct a brace after a line continuation and a heredoc' do
+      expect_offense(<<~'RUBY')
+        foo(<<~X) \
+          a
+        X
+         ^{} Space detected to the left of {.
+          { baz }
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects a brace after a line continuation in a file with CRLF line endings' do
+      source = "a\r\nb\r\nc\r\nd\r\nfoo(1,     x) \\\r\n  { baz }\r\n"
+
+      expect_correction("a\nb\nc\nd\nfoo(1,     x){ baz }\n", source: source)
+    end
+
     it 'registers an offense and corrects braces surrounded by spaces' do
       expect_offense(<<~RUBY)
         each { puts }
@@ -206,6 +236,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
       expect_correction(<<~RUBY)
         ->{}
       RUBY
+    end
+
+    it 'registers an offense and corrects empty braces after a line continuation' do
+      expect_offense(<<~'RUBY')
+        foo(bar) \
+                  ^{} Space detected to the left of {.
+          {}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(bar){}
+      RUBY
+    end
+
+    it 'registers an offense but does not correct empty braces after a line continuation and a heredoc' do
+      expect_offense(<<~'RUBY')
+        foo(<<~X) \
+          a
+        X
+         ^{} Space detected to the left of {.
+          {}
+      RUBY
+
+      expect_no_corrections
     end
   end
 

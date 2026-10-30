@@ -264,6 +264,18 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'registers an offense when a symbol conversion is in the receiver of a conversion method' do
+      expect_offense(<<~RUBY)
+        values.map(&:to_f).inject(:+).to_f
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `values.map(&:to_f).inject(:+).to_f`, use stricter `Float(values.map(&:to_f).inject(:+))`.
+        ^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `&:to_f`, use stricter `{ |i| Float(i) }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Float(values.map(&:to_f).inject(:+))
+      RUBY
+    end
+
     it 'does not register an offense when using `Integer` constructor' do
       expect_no_offenses(<<~RUBY)
         Integer(var, 10).to_f

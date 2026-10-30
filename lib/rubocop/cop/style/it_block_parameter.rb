@@ -59,12 +59,18 @@ module RuboCop
         MSG_AVOID_IT_PARAMETER = 'Avoid using `it` block parameter.'
         MSG_AVOID_IT_PARAMETER_MULTILINE = 'Avoid using `it` block parameter for multi-line blocks.'
 
+        SCOPE_TYPES = %i[any_def class module sclass].freeze
+
         minimum_target_ruby_version 3.4
 
         # `Style/StabbyLambdaParentheses` wraps the parameter this cop removes in the same pass,
         # which would leave an empty parameter list that forbids `it`.
         def self.autocorrect_incompatible_with
           [Style::Lambda, Style::StabbyLambdaParentheses]
+        end
+
+        def on_new_investigation
+          @it_variable_definitions = nil
         end
 
         def on_block(node)
@@ -75,12 +81,12 @@ module RuboCop
           return unless node.first_argument.arg_type?
 
           block_argument_name = node.first_argument.source
-          return if used_within_inner_block?(node.body, block_argument_name)
+          return if keep_parameter_name?(node.body, block_argument_name)
 
           find_block_variables(node, block_argument_name).each do |variable|
             add_offense(variable, message: MSG_USE_IT_PARAMETER) do |corrector|
               corrector.remove(node.arguments)
-              corrector.replace(variable, 'it')
+              replace_with_it(corrector, variable)
             end
           end
         end
@@ -116,7 +122,7 @@ module RuboCop
         private
 
         def find_block_variables(node, block_argument_name)
-          return [] unless node.body
+          return [] if !node.body || it_variable_in_scope?(node)
 
           ranges = inner_block_ranges(node.body)
 
@@ -125,8 +131,55 @@ module RuboCop
           end
         end
 
+        def replace_with_it(corrector, variable)
+          parent = variable.parent
+
+          if parent.pair_type? && parent.value_omission?
+            corrector.replace(parent.loc.operator, ': it')
+          else
+            corrector.replace(variable, 'it')
+          end
+        end
+
+        def it_variable_in_scope?(node)
+          scope = nearest_scope(node)
+          return true if it_argument_in_scope?(node, scope)
+
+          it_variable_definitions.any? do |definition|
+            nearest_scope(definition).equal?(scope) && visible_in_block?(definition, node)
+          end
+        end
+
+        def it_variable_definitions
+          @it_variable_definitions ||=
+            variable_definitions(processed_source.ast).filter_map do |name, definition|
+              definition if name == 'it'
+            end
+        end
+
+        def nearest_scope(node)
+          node.each_ancestor(*SCOPE_TYPES).first
+        end
+
+        def it_argument_in_scope?(node, scope)
+          owners = node.each_ancestor(:block).select { |block| nearest_scope(block).equal?(scope) }
+          owners << scope if scope&.any_def_type?
+
+          owners.any? { |owner| owner.arguments.argument_list.any? { |arg| arg.name == :it } }
+        end
+
+        def visible_in_block?(definition, node)
+          return true if definition.source_range.begin_pos < node.source_range.begin_pos
+
+          node.source_range.contains?(definition.source_range)
+        end
+
         def inner_block_ranges(body)
           body.each_node(:any_block).map { |block| block.loc.begin.join(block.loc.end) }
+        end
+
+        def keep_parameter_name?(body, block_arg_name)
+          used_within_inner_block?(body, block_arg_name) || reassigned?(body, block_arg_name)
         end
 
         def used_within_inner_block?(body, block_argument_name)
@@ -139,9 +192,27 @@ module RuboCop
           end
         end
 
+        def reassigned?(body, block_argument_name)
+          return false unless body
+
+          variable_definitions(body).any? { |name, _definition| name == block_argument_name }
+        end
+
         def block_variables(body, block_argument_name)
           body.each_descendant(:lvar).select do |descendant|
             descendant.source == block_argument_name
+          end
+        end
+
+        def variable_definitions(node)
+          node.each_node(:lvasgn, :match_var, :match_with_lvasgn).flat_map do |definition|
+            names = if definition.match_with_lvasgn_type?
+                      definition.children.first.each_capture(named: true).map(&:name)
+                    else
+                      [definition.children.first.to_s]
+                    end
+
+            names.map { |name| [name, definition] }
           end
         end
       end

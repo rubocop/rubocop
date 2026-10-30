@@ -245,20 +245,30 @@ module RuboCop
             return if with_space.is?(operator.source)
 
             "Space around operator `#{operator.source}` detected."
-          elsif !/^\s.*\s$/.match?(with_space.source)
+          elsif missing_surrounding_space?(with_space)
             "Surrounding space missing for operator `#{operator.source}`."
-          elsif excess_leading_space?(type, operator, with_space) ||
+          elsif excess_leading_space?(type, operator, with_space, right_operand) ||
                 excess_trailing_space?(right_operand.source_range, with_space)
             "Operator `#{operator.source}` should be surrounded " \
               'by a single space.'
           end
         end
 
-        def excess_leading_space?(type, operator, with_space)
+        def missing_surrounding_space?(with_space)
+          return false if /\A\s.*\s\z/m.match?(with_space.source)
+
+          !with_space.source.start_with?(/\s/) || !line_continuation_after?(with_space)
+        end
+
+        def line_continuation_after?(range)
+          processed_source.buffer.source[range.end_pos, 2] == "\\\n"
+        end
+
+        def excess_leading_space?(type, operator, with_space, right_operand)
           return false unless allow_for_alignment?
           return false unless with_space.source.start_with?(EXCESSIVE_SPACE)
 
-          return !aligned_with_operator?(operator) unless grouped_alignment_type?(type)
+          return !aligned?(type, operator, right_operand) unless grouped_alignment_type?(type)
 
           token            = Token.new(operator, nil, operator.source)
           align_preceding  = aligned_with_preceding_equals_operator(token)
@@ -267,6 +277,23 @@ module RuboCop
                           aligned_with_subsequent_equals_operator(token) == :none
 
           aligned_with_subsequent_equals_operator(token) != :yes
+        end
+
+        def aligned?(type, operator, right_operand)
+          return true if aligned_with_operator?(operator)
+
+          type == :pair && aligned_with_another_hash_rocket?(right_operand)
+        end
+
+        def aligned_with_another_hash_rocket?(pair)
+          hash_rocket_columns(pair.parent)[pair.loc.operator.column] > 1
+        end
+
+        def hash_rocket_columns(hash_node)
+          @hash_rocket_columns ||= {}.compare_by_identity
+          @hash_rocket_columns[hash_node] ||= hash_node.pairs.select(&:hash_rocket?).map do |pair|
+            pair.loc.operator.column
+          end.tally
         end
 
         def grouped_alignment_type?(type)

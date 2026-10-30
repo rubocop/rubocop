@@ -1392,6 +1392,35 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         RUBY
       end
 
+      it 'accepts parens when the sole argument is a parenthesized expression that can be merged' do
+        expect_no_offenses(<<~RUBY)
+          do_something((bar))
+          obj.do_something((bar + baz))
+        RUBY
+      end
+
+      it 'registers an offense when the sole argument is a parenthesized expression that cannot be merged' do
+        expect_offense(<<~RUBY)
+          do_something((bar or baz))
+                      ^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something (bar or baz)
+        RUBY
+      end
+
+      it 'registers an offense when a parenthesized expression is not the sole argument' do
+        expect_offense(<<~RUBY)
+          do_something((bar), baz)
+                      ^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something (bar), baz
+        RUBY
+      end
+
       it 'registers an offense when a comma appears only in a comment after the last argument' do
         expect_offense(<<~RUBY)
           do_something(:bar, :baz # comment, with a comma

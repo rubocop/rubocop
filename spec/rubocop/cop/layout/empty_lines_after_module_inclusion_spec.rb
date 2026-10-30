@@ -290,6 +290,23 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
     RUBY
   end
 
+  it 'does not register an offense when module inclusion is an operand of `&&`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        bar
+        extend(IO) && write if in_file
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when module inclusion is an operand of `or`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        extend(IO) or write
+      end
+    RUBY
+  end
+
   it 'does not register an offense for `include` directly before `rescue`' do
     expect_no_offenses(<<~RUBY)
       begin

@@ -228,10 +228,22 @@ module RuboCop
             return
           end
 
+          return expand_omitted_hash_value(corrector, node.parent) if omitted_hash_value?(node)
+
           wrap_for_freeze(corrector, node, expr)
           corrector.insert_after(expr, '.freeze')
 
           freeze_nested_literals(corrector, node) if recursive?
+        end
+
+        def omitted_hash_value?(node)
+          node.parent&.pair_type? && node.parent.value_omission?
+        end
+
+        def expand_omitted_hash_value(corrector, pair)
+          key = pair.key.value
+
+          corrector.replace(pair, "#{key}: #{key}.freeze")
         end
 
         def wrap_for_freeze(corrector, node, expr)
@@ -267,13 +279,14 @@ module RuboCop
         # Returns the child literals of an array or hash node that may
         # themselves need freezing. For hashes, both keys and values are
         # included. Percent-literal arrays (e.g. `%w(a b)`) are skipped because
-        # `.freeze` cannot be appended to their contents.
+        # `.freeze` cannot be appended to their contents. Splat elements are
+        # skipped because the splatted object is not stored in the array.
         def literal_children(node)
           case node.type
           when :array
             return [] if node.percent_literal?
 
-            node.children
+            node.children.reject(&:splat_type?)
           when :hash
             node.children.flat_map { |child| child.pair_type? ? child.children : [] }
           else

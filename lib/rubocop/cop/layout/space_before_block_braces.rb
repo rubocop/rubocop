@@ -136,9 +136,21 @@ module RuboCop
 
         def autocorrect(corrector, range)
           case range.source
+          when /\n/ then remove_line_continuation(corrector, range)
           when /\s/ then corrector.remove(range)
           else           corrector.insert_before(range, ' ')
           end
+        end
+
+        # When a heredoc body sits between the `\` and the brace, the newline before
+        # the brace ends the heredoc, and removing it would break the terminator.
+        def remove_line_continuation(corrector, range)
+          source = processed_source.buffer.source
+          return unless source[range.begin_pos - 1] == '\\'
+
+          begin_pos = range.begin_pos
+          begin_pos -= 1 while source[begin_pos - 1].match?(/[ \t\\]/)
+          corrector.remove(range_between(begin_pos, range.end_pos))
         end
 
         def style_for_empty_braces

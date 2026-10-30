@@ -280,6 +280,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects outer ref brackets containing chained ref brackets' do
+      expect_offense(<<~RUBY)
+        foo[ bar[0][1] ]
+            ^ Do not use space inside reference brackets.
+                      ^ Do not use space inside reference brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo[bar[0][1]]
+      RUBY
+    end
+
     it 'registers and correct multiple offenses for multiple sets of ref brackets' do
       expect_offense(<<~RUBY)
         b[ :key]["foo"  ][   0 ]
@@ -482,6 +494,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
       expect_correction(<<~RUBY)
         a[ :key ][ "foo" ][ 0 ]
+      RUBY
+    end
+
+    it 'registers an offense and corrects outer ref brackets containing chained ref brackets' do
+      expect_offense(<<~RUBY)
+        foo[bar[ 0 ][ 1 ]]
+           ^ Use space inside reference brackets.
+                         ^ Use space inside reference brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo[ bar[ 0 ][ 1 ] ]
       RUBY
     end
 

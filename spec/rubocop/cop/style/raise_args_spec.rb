@@ -17,6 +17,58 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'with a raise with 2 args and a heredoc message' do
+      it 'reports an offense and keeps the heredoc body' do
+        expect_offense(<<~RUBY)
+          raise(
+          ^^^^^^ Provide an exception object as an argument to `raise`.
+            RuntimeError,
+            <<~MSG.strip
+              text
+            MSG
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise(
+            RuntimeError.new(<<~MSG.strip)
+              text
+            MSG
+          )
+        RUBY
+      end
+
+      it 'reports an offense and keeps the heredoc body without parentheses' do
+        expect_offense(<<~RUBY)
+          raise RuntimeError, <<~MSG
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+            text
+          MSG
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise RuntimeError.new(<<~MSG)
+            text
+          MSG
+        RUBY
+      end
+
+      it 'reports an offense and keeps the receiver of a non-`new` exception class call' do
+        expect_offense(<<~RUBY)
+          raise(e.class, <<~MSG)
+          ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+            text
+          MSG
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise(e.class.new(<<~MSG))
+            text
+          MSG
+        RUBY
+      end
+    end
+
     context 'with a raise with 2 args and exception object is assigned to a local variable' do
       it 'reports an offense' do
         expect_offense(<<~RUBY)
@@ -39,6 +91,32 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
         expect_correction(<<~RUBY)
           raise FooError.new(message)
+        RUBY
+      end
+    end
+
+    context 'with a raise with an exception class returned by a method call' do
+      it 'reports an offense' do
+        expect_offense(<<~RUBY)
+          raise e.class, message
+          ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise e.class.new(message)
+        RUBY
+      end
+    end
+
+    context 'with a raise with an instantiation of an exception class returned by a method call' do
+      it 'reports an offense' do
+        expect_offense(<<~RUBY)
+          raise e.class.new, message
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise e.class.new(message)
         RUBY
       end
     end
@@ -78,6 +156,19 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
         expect_correction(<<~RUBY)
           bar || raise(Ex.new('error'))
+        RUBY
+      end
+    end
+
+    context 'when the raise is parenthesized inside parentheses' do
+      it 'registers an offense and keeps the parentheses of the raise' do
+        expect_offense(<<~RUBY)
+          bar || (raise(Ex, 'error'))
+                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar || (raise(Ex.new('error')))
         RUBY
       end
     end
@@ -149,6 +240,22 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     it 'accepts exception constructor with keyword arguments and message argument' do
       expect_no_offenses('raise MyKwArgError.new(a: 1, b: 2), message')
     end
+
+    it 'accepts exception constructor with positional arguments and message argument' do
+      expect_no_offenses('raise MyError.new(code), message')
+    end
+
+    it 'registers an offense and corrects a raise nested in the arguments of another raise' do
+      expect_offense(<<~'RUBY')
+        raise Foo, "#{fetch { raise Bar, 'bad' }}"
+                              ^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        raise Foo.new("#{fetch { raise Bar.new('bad') }}")
+      RUBY
+    end
   end
 
   context 'when enforced style is exploded' do
@@ -164,6 +271,61 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
           expect_correction(<<~RUBY)
             raise Ex, msg
+          RUBY
+        end
+      end
+
+      context 'with a heredoc message' do
+        it 'reports an offense and keeps the heredoc body' do
+          expect_offense(<<~RUBY)
+            raise(
+            ^^^^^^ Provide an exception class and message as arguments to `raise`.
+              RuntimeError.new(<<~MSG.strip)
+                text
+              MSG
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            raise(
+              RuntimeError, <<~MSG.strip
+                text
+              MSG
+            )
+          RUBY
+        end
+
+        it 'reports an offense and keeps the heredoc body with a leading dot `new`' do
+          expect_offense(<<~RUBY)
+            raise(Foo
+            ^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+              .new(<<~MSG))
+              text
+            MSG
+          RUBY
+
+          expect_correction(<<~RUBY)
+            raise(Foo, <<~MSG)
+              text
+            MSG
+          RUBY
+        end
+
+        it 'reports an offense and keeps the heredoc body without parentheses' do
+          expect_offense(<<~RUBY)
+            raise ArgumentError.new(
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+              <<~MSG
+                text
+              MSG
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            raise ArgumentError, <<~MSG
+                text
+              MSG
+
           RUBY
         end
       end
@@ -216,6 +378,19 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
           expect_correction(<<~RUBY)
             bar || raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when the raise is parenthesized inside parentheses' do
+        it 'registers an offense and keeps the parentheses of the raise' do
+          expect_offense(<<~RUBY)
+            bar || (raise(Ex.new('error')))
+                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            bar || (raise(Ex, 'error'))
           RUBY
         end
       end
@@ -465,6 +640,18 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     it 'accepts a raise with 2 args' do
       expect_no_offenses('raise RuntimeError, msg')
+    end
+
+    it 'registers an offense and corrects a raise nested in the arguments of another raise' do
+      expect_offense(<<~'RUBY')
+        raise Foo.new("#{fetch { raise Bar.new('bad') }}")
+                                 ^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        raise Foo, "#{fetch { raise Bar, 'bad' }}"
+      RUBY
     end
 
     it 'accepts a raise when exception object is assigned to a local variable' do

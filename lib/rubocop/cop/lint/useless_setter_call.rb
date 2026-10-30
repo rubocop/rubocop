@@ -35,15 +35,13 @@ module RuboCop
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
         def on_def(node)
-          return unless node.body
+          return if !node.body || node.void_context?
 
           last_expr = last_expression(node.body)
           return unless setter_call_to_local_variable?(last_expr)
 
-          tracker = MethodVariableTracker.new(node.body)
           receiver, = *last_expr
-          variable_name, = *receiver
-          return unless tracker.contain_local_object?(variable_name)
+          return unless contain_local_object?(node.body, receiver)
 
           loc_name = receiver.loc.name
 
@@ -64,6 +62,11 @@ module RuboCop
           expression = body.begin_type? ? body.children : body
 
           expression.is_a?(Array) ? expression.last : expression
+        end
+
+        def contain_local_object?(body, receiver)
+          variable_name, = *receiver
+          MethodVariableTracker.new(body).contain_local_object?(variable_name)
         end
 
         # This class tracks variable assignments in a method body

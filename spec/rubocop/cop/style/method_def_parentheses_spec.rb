@@ -327,6 +327,36 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         end
       RUBY
     end
+
+    it 'auto-adds required parens when the parameters follow a line continuation' do
+      expect_offense(<<~RUBY)
+        def func \\
+            a, b
+            ^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func(
+            a, b)
+        end
+      RUBY
+    end
+
+    it 'auto-adds required parens for a defs when the parameters follow a line continuation' do
+      expect_offense(<<~RUBY)
+        def self.func \\
+            a, b
+            ^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.func(
+            a, b)
+        end
+      RUBY
+    end
   end
 
   context 'require_no_parentheses' do
@@ -468,6 +498,23 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
           end
           def func(a,
                    b)
+          end
+        RUBY
+      end
+
+      it 'auto-adds required parens when the parameters follow a line continuation' do
+        expect_offense(<<~RUBY)
+          def func \\
+              a,
+              ^^ Use def with parentheses when there are parameters.
+              b
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func(
+              a,
+              b)
           end
         RUBY
       end

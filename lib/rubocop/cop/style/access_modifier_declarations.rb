@@ -132,7 +132,7 @@ module RuboCop
       #     private alias_method :qux, :foo
       #
       #   end
-      class AccessModifierDeclarations < Base
+      class AccessModifierDeclarations < Base # rubocop:disable Metrics/ClassLength
         extend AutoCorrector
 
         include ConfigurableEnforcedStyle
@@ -257,12 +257,20 @@ module RuboCop
           end
         end
 
-        # `private def foo = bar baz` parses only on Ruby 4.0+.
         def inlinable?(def_nodes)
           return false if def_nodes.empty?
-          return true if target_ruby_version >= 4.0
 
-          def_nodes.none? { |def_node| def_node.endless? && command_body?(def_node.body) }
+          def_nodes.none? { |def_node| def_node.endless? && body_unsafe_to_inline?(def_node.body) }
+        end
+
+        def body_unsafe_to_inline?(body)
+          return true if body.each_node(:any_block).any? { |block| do_end_block?(block) }
+
+          target_ruby_version < 4.0 && command_body?(body)
+        end
+
+        def do_end_block?(block)
+          block.keywords? && !block.send_node.lambda_literal?
         end
 
         def command_body?(body)

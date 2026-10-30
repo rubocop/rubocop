@@ -4,11 +4,20 @@ source 'https://rubygems.org'
 
 gemspec
 
+# FIXME: addressable 2.9.1, which webmock loads, warns about a duplicated range in a character
+# class, which fails every spec run with `STRICT_WARNINGS`. Remove the exclusion once a release
+# without the warning ships.
+# https://github.com/rubocop/rubocop/actions/runs/41079684523/job/124145164458
+gem 'addressable', '!= 2.9.1'
 gem 'asciidoctor'
 gem 'bump', require: false
 gem 'fiddle', platform: :windows if RUBY_VERSION >= '3.4'
 gem 'irb'
-gem 'mcp', '~> 1.0'
+# FIXME: mcp 1.8.0 makes Ruby 2.7 print a keyword argument deprecation warning for every
+# stdio request, which fails the MCP server specs that expect a silent stderr.
+# Remove the exclusion once 1.8.1 ships the fix.
+# https://github.com/modelcontextprotocol/ruby-sdk/pull/621
+gem 'mcp', '~> 1.0', '!= 1.8.0'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
 gem 'rake', '~> 13.0'
 # FIXME: rdoc 8.0+ depends on rbs, whose released C extension fails to build on JRuby.
@@ -27,7 +36,10 @@ gem 'ruby-lsp', '~> 0.24', platform: :mri if RUBY_VERSION >= '3.0'
 # the development environment can exercise the integration. The gem only publishes
 # native binaries for MRI on supported platforms, so we gate by `RUBY_ENGINE` to
 # keep JRuby and other engines unaffected.
-gem 'rubydex', require: false if RUBY_VERSION >= '3.2' && RUBY_ENGINE == 'ruby'
+# FIXME: With rubydex 0.4.3, `Lint/DeprecatedReference` reports references to constants that
+# are not deprecated in the internal investigation on CI. Remove the exclusion once that is fixed.
+# https://github.com/rubocop/rubocop/actions/runs/40363639316/job/121716004034
+gem 'rubydex', '!= 0.4.3', require: false if RUBY_VERSION >= '3.2' && RUBY_ENGINE == 'ruby'
 # SimpleCov 1.0 requires Ruby 3.2+. Coverage measurement is opt-in (`COVERAGE=1`)
 # and unnecessary on the older Rubies in the CI matrix.
 gem 'simplecov', '~> 1.0' if RUBY_VERSION >= '3.2'

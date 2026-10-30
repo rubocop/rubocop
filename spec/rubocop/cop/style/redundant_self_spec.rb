@@ -124,6 +124,29 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     expect_no_offenses('a, self.b = c, d')
   end
 
+  it 'accepts a self receiver on a splat lvalue of a parallel assignment' do
+    expect_no_offenses('self.a, *self.b = c')
+  end
+
+  it 'accepts a self receiver on a leading splat lvalue of a parallel assignment' do
+    expect_no_offenses('*self.a, self.b = c')
+  end
+
+  it 'accepts a self receiver on a splat lvalue of a nested parallel assignment' do
+    expect_no_offenses('a, (self.b, *self.c) = d')
+  end
+
+  it 'registers an offense for a self receiver in a splat on the right-hand side of a parallel assignment' do
+    expect_offense(<<~RUBY)
+      a, b = *self.c
+              ^^^^ Redundant `self` detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a, b = *c
+    RUBY
+  end
+
   it 'accepts a self receiver on an lvalue of an or-assignment' do
     expect_no_offenses('self.logger ||= Rails.logger')
   end

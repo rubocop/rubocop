@@ -45,19 +45,16 @@ module RuboCop
       end
 
       def nested_closing_bracket_moved_before_comment?
-        last_element = children(node).last
-        return false unless (comment = processed_source.comment_at_line(last_element.last_line - 1))
-        return false unless (nested = nested_literal_with_closing_bracket_on_own_line(last_element))
+        last_line = children(node).last.last_line
 
-        own_line_comment?(comment) || !(nested.chained? || nested.argument?)
+        node.each_descendant.any? { |nested| nested_closing_bracket_to_move?(nested, last_line) }
       end
 
-      def nested_literal_with_closing_bracket_on_own_line(last_element)
-        last_line = last_element.last_line
+      def nested_closing_bracket_to_move?(descendant, line)
+        return false unless same_kind_as_node?(descendant)
+        return false unless closing_bracket_on_own_line?(descendant, line)
 
-        last_element.each_node.find do |descendant|
-          same_kind_as_node?(descendant) && closing_bracket_on_own_line?(descendant, last_line)
-        end
+        closing_bracket_moved_before_comment?(descendant)
       end
 
       def same_kind_as_node?(descendant)
@@ -73,8 +70,12 @@ module RuboCop
         closing_bracket.source_line[0...closing_bracket.column].strip.empty?
       end
 
-      def own_line_comment?(comment)
-        comment.source_range.source_line.lstrip.start_with?('#')
+      def closing_bracket_moved_before_comment?(literal)
+        last_element = literal.call_type? ? literal.last_argument : literal.children.last
+        return false if last_element.nil?
+        return false if new_line_needed_before_closing_brace?(literal)
+
+        comment_before_closing_brace?(literal, last_element)
       end
 
       def correct_next_line_brace(corrector, end_range)
@@ -93,11 +94,17 @@ module RuboCop
       end
 
       def content_if_comment_present(corrector, node)
-        if processed_source.comment_at_line(children(node).last.last_line)
+        if comment_before_closing_brace?(node, children(node).last)
           select_content_to_be_inserted_after_last_element(corrector, node)
         else
           node.loc.end.source
         end
+      end
+
+      def comment_before_closing_brace?(literal, last_element)
+        lines_before_closing_brace = last_element.last_line...literal.loc.end.line
+
+        processed_source.each_comment_in_lines(lines_before_closing_brace).any?
       end
 
       def use_heredoc_argument_method_chain?(parent)

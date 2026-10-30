@@ -140,6 +140,8 @@ module RuboCop
               corrected_method: correct_sym_method(to_method)
             )
             add_offense(node, message: message) do |corrector|
+              next if part_of_ignored_node?(node)
+
               remove_parentheses(corrector, node) if node.parenthesized?
 
               corrector.replace(sym_node, correct_sym_method(to_method))

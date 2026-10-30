@@ -67,6 +67,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant `begin` block detected.'
+        SPACE_INSIDE_PARENS_STYLES = %w[space compact].freeze
 
         def self.autocorrect_incompatible_with
           [Style::BlockDelimiters]
@@ -132,7 +133,8 @@ module RuboCop
           empty_begin?(node) ||
             begin_block_has_multiline_statements?(node) ||
             contain_rescue_or_ensure?(node) ||
-            valid_context_using_only_begin?(node)
+            valid_context_using_only_begin?(node) ||
+            ternary_operand_requiring_begin?(node)
         end
 
         def register_offense(node)
@@ -191,7 +193,8 @@ module RuboCop
         def use_modifier_form_after_multiline_begin_block?(node)
           return false unless (parent = node.parent)
 
-          node.multiline? && parent.if_type? && parent.modifier_form?
+          node.multiline? && parent.if_type? && parent.modifier_form? &&
+            !parent.condition.equal?(node)
         end
 
         def correct_modifier_form_after_multiline_begin_block(corrector, node)
@@ -228,6 +231,12 @@ module RuboCop
             parent&.send_type? || parent&.operator_keyword?
         end
 
+        def ternary_operand_requiring_begin?(node)
+          return false unless node.parent&.if_type? && node.parent.ternary?
+
+          !node.children.one? || low_precedence_statement?(node.children.first)
+        end
+
         def valid_begin_assignment?(node)
           node.parent&.assignment? && (!node.children.one? || too_long_when_joined?(node))
         end
@@ -238,14 +247,28 @@ module RuboCop
           return false unless max && statement.single_line?
 
           length = statement.source.length
-          length += 2 if low_precedence_statement?(statement)
+          length += parentheses_width if low_precedence_statement?(statement)
+
           node.loc.column + length > max
+        end
+
+        def parentheses_width
+          space_inside_parens? ? 4 : 2
+        end
+
+        def space_inside_parens?
+          return false unless config.cop_enabled?('Layout/SpaceInsideParens')
+
+          style = config.for_cop('Layout/SpaceInsideParens')['EnforcedStyle']
+
+          SPACE_INSIDE_PARENS_STYLES.include?(style)
         end
 
         def inspect_branches(node)
           node.branches.each do |branch|
             next unless branch&.kwbegin_type?
             next if branch.rescue_node || branch.ensure_node
+            next if ternary_operand_requiring_begin?(branch)
 
             register_offense(branch)
           end

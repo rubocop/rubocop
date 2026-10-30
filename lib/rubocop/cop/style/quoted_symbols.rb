@@ -86,14 +86,12 @@ module RuboCop
         end
 
         def correct_quotes(str)
-          correction = if style == :single_quotes
-                         to_string_literal(str)
-                       else
-                         str.gsub("\\'", "'").inspect
-                       end
-
           # The conversion process doubles escaped slashes, so they have to be reverted
-          correction.gsub('\\\\', '\\').gsub('\"', '"')
+          if style == :single_quotes
+            to_string_literal(str).gsub('\\\\', '\\').gsub('\"', '"')
+          else
+            str.gsub("\\'", "'").inspect.gsub('\\\\', '\\')
+          end
         end
 
         def style

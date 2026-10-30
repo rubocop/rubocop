@@ -178,10 +178,24 @@ module RuboCop
         end
 
         def check_normal_style(node)
-          check_alignment(
-            node.children.reject { |child| bare_access_modifier?(child) },
-            base_column_for_normal_style(node)
-          )
+          items = node.children.reject { |child| bare_access_modifier?(child) }
+
+          check_alignment(items, base_column_for_normal_style(node) || governed_base_column(items))
+        end
+
+        def governed_base_column(items)
+          return unless config.cop_enabled?('Layout/IndentationWidth')
+          return if items.empty? || indentation_width_enabled_at?(items.first)
+
+          governed_item = items.find { |item| indentation_width_enabled_at?(item) }
+
+          display_column(governed_item.source_range) if governed_item
+        end
+
+        def indentation_width_enabled_at?(node)
+          comment_config = processed_source.comment_config
+
+          comment_config.cop_enabled_at_line?('Layout/IndentationWidth', node.first_line)
         end
 
         def check_indented_internal_methods_style(node)
@@ -197,7 +211,10 @@ module RuboCop
               children_to_check.last << child
             end
           end
-          children_to_check.each { |group| check_alignment(group) }
+
+          children_to_check.each do |group|
+            check_alignment(group, governed_base_column(group))
+          end
         end
       end
     end

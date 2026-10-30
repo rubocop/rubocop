@@ -72,18 +72,28 @@ module RuboCop
 
           message = message(node)
           add_offense(node.loc.operator, message: message) do |corrector|
-            node.each_child_node do |expr|
-              if expr.call_type?
-                correct_send(expr, corrector)
-              elsif expr.type?(:return, :next, :break, :yield) || expr.assignment?
-                correct_other(expr, corrector)
-              end
-            end
+            node.each_child_node { |expr| correct_operand(expr, corrector) }
 
             corrector.replace(node.loc.operator, node.alternate_operator)
 
             keep_operator_precedence(corrector, node)
           end
+        end
+
+        def correct_operand(expr, corrector)
+          expr = expr.send_node if expr.any_block_type?
+
+          if expr.type?(:call, :super)
+            correct_send(expr, corrector)
+          elsif wrap_in_parentheses?(expr)
+            correct_other(expr, corrector)
+          end
+        end
+
+        # These bind looser than `&&` and `||`, or can't be their operands at all.
+        def wrap_in_parentheses?(node)
+          node.type?(:return, :next, :break, :yield, :any_match_pattern, :range, :defined?) ||
+            node.assignment? || (node.if_type? && node.ternary?)
         end
 
         def on_conditionals(node)
@@ -101,6 +111,7 @@ module RuboCop
           return correct_setter(node, corrector) if node.setter_method?
           return correct_other(node, corrector) if node.comparison_method?
 
+          correct_block_receiver(node, corrector)
           return unless correctable_send?(node)
 
           whitespace_before_arg_range = whitespace_before_arg(node)
@@ -120,7 +131,8 @@ module RuboCop
         # however, 'not x' also parses as (send x :!)
         def correct_not(node, receiver, corrector)
           if node.prefix_bang?
-            return unless receiver.call_type?
+            receiver = receiver.send_node if receiver.any_block_type?
+            return unless receiver.type?(:call, :super)
 
             correct_send(receiver, corrector)
           elsif node.prefix_not?
@@ -145,12 +157,23 @@ module RuboCop
           end
         end
 
+        # A method chained onto a `do` block, as in `bar baz do ... end.qux`,
+        # still needs parentheses around the arguments of the call that takes the block.
+        def correct_block_receiver(node, corrector)
+          receiver = node.receiver
+          receiver = receiver.receiver while receiver&.call_type?
+          correct_operand(receiver, corrector) if receiver&.any_block_type?
+        end
+
         def correctable_send?(node)
-          !node.parenthesized? && node.arguments? && !node.method?(:[])
+          # Operator syntax such as `a + b` or `a[b]` already binds tighter than `&&` and `||`.
+          return false if node.operator_method? && !node.loc.dot
+
+          !node.parenthesized? && node.arguments?
         end
 
         def whitespace_before_arg(node)
-          begin_paren = node.loc.selector.end_pos
+          begin_paren = node.selector.end_pos
           end_paren = begin_paren
           # Increment position of parenthesis, unless message is a predicate
           # method followed by a non-whitespace char (e.g. is_a?String).
