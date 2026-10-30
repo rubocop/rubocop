@@ -1,0 +1,1 @@
+* [#16200](https://github.com/rubocop/rubocop/pull/16200): Drop the style guide links of `Lint/RaiseException` and `Style/EmptyStringInsideInterpolation`, which point at guidelines that don't exist. ([@bbatsov][])

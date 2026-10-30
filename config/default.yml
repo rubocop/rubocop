@@ -2383,7 +2383,6 @@ Lint/PercentSymbolArray:
 
 Lint/RaiseException:
   Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
-  StyleGuide: '#raise-exception'
   Enabled: true
   Safe: false
   VersionAdded: '0.81'
@@ -4297,7 +4296,6 @@ Style/EmptyMethod:
 
 Style/EmptyStringInsideInterpolation:
   Description: 'Checks for empty strings being assigned inside string interpolation.'
-  StyleGuide: '#empty-strings-in-interpolation'
   Enabled: pending
   EnforcedStyle: trailing_conditional
   SupportedStyles:
