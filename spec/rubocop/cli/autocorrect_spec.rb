@@ -2227,6 +2227,60 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RedundantBegin` with `EnforcedStyleForMultiline: comma` of trailing comma cops' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: comma
+      Style/TrailingCommaInArrayLiteral:
+        EnforcedStyleForMultiline: comma
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      do_something(
+        var ||= begin
+          foo
+        end
+      )
+      [
+        begin
+          foo
+        end
+      ]
+      {
+        key: begin
+          foo
+        end
+      }
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only',
+          'Style/RedundantBegin,Style/TrailingCommaInArguments,' \
+          'Style/TrailingCommaInArrayLiteral,Style/TrailingCommaInHashLiteral'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(
+        var ||= foo,
+      #{trailing_whitespace * 2}
+      )
+      [
+      #{trailing_whitespace * 2}
+          foo,
+      #{trailing_whitespace * 2}
+      ]
+      {
+        key:#{trailing_whitespace}
+          foo,
+      #{trailing_whitespace * 2}
+      }
+    RUBY
+  end
+
   it 'corrects `Style/SymbolProc` with `EnforcedStyleForMultiline: consistent_comma` of `Style/TrailingCommaInArguments`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/TrailingCommaInArguments:
