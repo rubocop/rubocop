@@ -575,6 +575,38 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
+      context 'when mise.toml contains a ruby version in an inline table' do
+        let(:mise_toml) { ['[tools]', 'ruby = { version = "3.3.1", lazy = true }'] }
+
+        it 'reads it to determine the target ruby version' do
+          expect(target_ruby.version).to eq 3.3
+        end
+
+        context 'when the version is not the first key' do
+          let(:mise_toml) { ['[tools]', "ruby = { lazy = true, version = '3.2.0' }"] }
+
+          it 'reads it to determine the target ruby version' do
+            expect(target_ruby.version).to eq 3.2
+          end
+        end
+
+        context 'when the inline table uses `:` instead of `=`' do
+          let(:mise_toml) { ['[tools]', 'ruby = { version: "3.3.1", lazy: true }'] }
+
+          it 'uses the default ruby version' do
+            expect(target_ruby.version).to eq default_version
+          end
+        end
+
+        context 'when the inline table has no version' do
+          let(:mise_toml) { ['[tools]', 'ruby = { lazy = true }'] }
+
+          it 'uses the default ruby version' do
+            expect(target_ruby.version).to eq default_version
+          end
+        end
+      end
+
       context 'when mise.toml contains different runtimes' do
         let(:mise_toml) { ['[tools]', 'nodejs = "14.9.0"', 'ruby = "3.0.0"'] }
         let(:ruby_version_to_f) { 3.0 }
