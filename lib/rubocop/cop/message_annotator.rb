@@ -75,14 +75,12 @@ module RuboCop
         url = cop_config['StyleGuide']
         return nil if url.nil? || url.empty?
 
-        self.class.style_guide_urls[url] ||= begin
-          base_url = style_guide_base_url
-          if base_url.nil? || base_url.empty?
-            url
-          else
-            URI.join(base_url, url).to_s
-          end
-        end
+        base_url = style_guide_base_url
+        return url if base_url.nil? || base_url.empty?
+
+        # Departments can have style guides of their own, so the same guideline
+        # can resolve against different bases.
+        self.class.style_guide_urls[[base_url, url]] ||= URI.join(base_url, url).to_s
       end
 
       # Returns the base style guide URL from AllCops or the specific department

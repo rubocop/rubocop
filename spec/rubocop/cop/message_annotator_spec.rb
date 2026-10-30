@@ -111,6 +111,28 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
         end
       end
 
+      context 'when cops in departments with different style guides use the same guideline' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => {
+              'StyleGuideBaseURL' => 'http://example.org/styleguide'
+            },
+            'Foo' => {
+              'StyleGuideBaseURL' => 'http://foo.example.org'
+            },
+            'Foo/Cop' => { 'StyleGuide' => '#guideline_in_both_guides' },
+            'Cop/Cop' => { 'StyleGuide' => '#guideline_in_both_guides' }
+          )
+        end
+
+        it 'links each cop to the style guide of its department' do
+          foo_urls = described_class.new(config, 'Foo/Cop', config['Foo/Cop'], options).urls
+
+          expect(foo_urls).to eq(%w[http://foo.example.org#guideline_in_both_guides])
+          expect(annotator.urls).to eq(%w[http://example.org/styleguide#guideline_in_both_guides])
+        end
+      end
+
       context 'when a nested department is specified' do
         let(:config) do
           RuboCop::Config.new(
