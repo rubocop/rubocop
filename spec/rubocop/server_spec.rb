@@ -26,4 +26,24 @@ RSpec.describe RuboCop::Server do
       end
     end
   end
+
+  describe '.wait_for_process_exit!' do
+    before { allow(described_class).to receive(:sleep) }
+
+    it 'returns when the process exits' do
+      expect(RuboCop::Server::Cache)
+        .to receive(:pid_running?).with(4242).exactly(3).times.and_return(true, true, false)
+
+      described_class.wait_for_process_exit!(4242)
+    end
+
+    it 'exits with a warning when the process does not exit in time' do
+      allow(RuboCop::Server::Cache).to receive(:pid_running?).with(4242).and_return(true)
+      allow(Time).to receive(:now).and_return(Time.at(0), Time.at(described_class::TIMEOUT + 1))
+
+      message = "RuboCop server (4242) did not exit after #{described_class::TIMEOUT} seconds!\n"
+      expect { described_class.wait_for_process_exit!(4242) }
+        .to raise_error(SystemExit).and output(message).to_stderr
+    end
+  end
 end

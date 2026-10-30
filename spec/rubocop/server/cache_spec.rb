@@ -195,7 +195,35 @@ RSpec.describe RuboCop::Server::Cache do
       end
     end
 
+    describe '.pid', :isolated_environment do
+      before { cache_class.cache_root_path = Dir.pwd }
+
+      it 'returns the pid from the pid file' do
+        cache_class.pid_path.write('4242')
+
+        expect(cache_class.pid).to eq(4242)
+      end
+
+      it 'returns nil when the pid file is empty' do
+        cache_class.pid_path.write('')
+
+        expect(cache_class.pid).to be_nil
+      end
+
+      it 'returns nil without creating the cache directory when the pid file is missing' do
+        expect(cache_class.pid).to be_nil
+        expect(File).not_to exist(File.join(Dir.pwd, 'rubocop_cache'))
+      end
+    end
+
     describe '.pid_running?', :isolated_environment do
+      it 'is false when the pid file is empty' do
+        cache_class.cache_root_path = Dir.pwd
+        cache_class.pid_path.write('')
+
+        expect(cache_class).not_to be_pid_running
+      end
+
       it 'does not create the cache directory when checking for a running server' do
         cache_class.cache_root_path = Dir.pwd
         cache_root = File.join(Dir.pwd, 'rubocop_cache')

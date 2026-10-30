@@ -18,12 +18,17 @@ module RuboCop
         def run
           return unless check_running_server
 
-          pid = fork do
+          server_pid = Cache.pid
+          client_pid = fork do
             send_request(command: 'stop')
-            Server.wait_for_running_status!(false)
+            if server_pid
+              Server.wait_for_process_exit!(server_pid)
+            else
+              Server.wait_for_running_status!(false)
+            end
           end
 
-          Process.waitpid(pid)
+          Process.waitpid(client_pid)
         end
       end
     end

@@ -110,10 +110,19 @@ module RuboCop
           dir.join('stderr')
         end
 
-        def pid_running?
-          Process.kill(0, pid_path(create_dir: false).read.to_i) == 1
-        rescue Errno::ESRCH, Errno::ENOENT, Errno::EACCES, Errno::EPERM, Errno::EROFS,
-               Errno::ENAMETOOLONG, Errno::ENOTDIR
+        def pid
+          pid = pid_path(create_dir: false).read.to_i
+          pid if pid.positive?
+        rescue Errno::ENOENT, Errno::EACCES, Errno::EPERM, Errno::EROFS, Errno::ENAMETOOLONG,
+               Errno::ENOTDIR
+          nil
+        end
+
+        def pid_running?(pid = self.pid)
+          return false unless pid
+
+          Process.kill(0, pid) == 1
+        rescue Errno::ESRCH, Errno::EPERM
           false
         end
 
