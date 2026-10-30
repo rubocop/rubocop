@@ -8,7 +8,8 @@ module RuboCop
       #
       # In the default style (require_parentheses), macro methods are allowed.
       # Additional methods can be added to the `AllowedMethods` or
-      # `AllowedPatterns` list. These options are valid only in the default
+      # `AllowedPatterns` list, and calls on specific receivers can be allowed
+      # with `AllowedReceivers`. These options are valid only in the default
       # style. Macros can be included by either setting `IgnoreMacros` to false,
       # adding specific macros to the `IncludedMacros` list, or using
       # `IncludedMacroPatterns` for pattern-based matching.
@@ -150,6 +151,17 @@ module RuboCop
       #   assert_match(/foo/, bar)
       #   # still enforces parentheses on other methods
       #   array.delete(e)
+      #
+      # @example AllowedReceivers: ["Rails.logger"]
+      #
+      #   # good
+      #   Rails.logger.debug "Hello world"
+      #   ::Rails.logger.info "Hello world"
+      #
+      #   # bad
+      #   # still enforces parentheses on other receivers
+      #   logger.debug "Hello world"
+      #   Rails.application.logger.debug "Hello world"
       #
       # @example IncludedMacroPatterns: ["^assert", "^refute"]
       #
