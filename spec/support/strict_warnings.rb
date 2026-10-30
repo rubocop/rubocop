@@ -13,6 +13,7 @@ module StrictWarnings
   SUPPRESSED_WARNINGS = Regexp.union(
     %r{lib/parser/builders/default.*Unknown escape},
     %r{lib/parser/builders/default.*character class has duplicated range},
+    %r{lib/addressable/idna/.*character class has duplicated range},
     /Float.*out of range/, # also from the parser gem
     /`Process` does not respond to `fork` method/, # JRuby
     /File#readline accesses caller method's state and should not be aliased/, # JRuby, test stub

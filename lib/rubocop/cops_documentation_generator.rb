@@ -297,7 +297,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def references(cop, see_objects) # rubocop:disable Metrics/AbcSize
     cop_config = config.for_cop(cop)
-    urls = RuboCop::Cop::MessageAnnotator.new(config, cop.name, cop_config, {}).urls
+    urls = RuboCop::Cop::MessageAnnotator.new(config, cop.cop_name, cop_config, {}).urls
     return '' if urls.empty? && see_objects.empty?
 
     content = cop_subsection('References', cop)
