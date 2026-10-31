@@ -20,7 +20,8 @@ concurrency:
 jobs:
   spec-ubuntu:
     name: Spec - ubuntu ${{ matrix.ruby }}
-    runs-on: ubuntu-latest
+    # ruby/setup-ruby has no Ruby < 3.2 for ubuntu-26.04, which ubuntu-latest now points to
+    runs-on: ${{ matrix.ruby < 3.2 && 'ubuntu-24.04' || 'ubuntu-latest' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -83,7 +84,8 @@ jobs:
 
   ascii_spec:
     name: Ascii Spec - ${{ matrix.os }} ${{ matrix.ruby }}
-    runs-on: ${{ matrix.os }}-latest
+    # ruby/setup-ruby has no Ruby < 3.2 for ubuntu-26.04, which ubuntu-latest now points to
+    runs-on: ${{ matrix.os == 'ubuntu' && matrix.ruby == '2.7' && 'ubuntu-24.04' || format('{0}-latest', matrix.os) }}
     timeout-minutes: 20
 
     strategy:
@@ -119,7 +121,8 @@ jobs:
         run: bundle exec rake documentation_syntax_check
 
   prism:
-    runs-on: ubuntu-latest
+    # ruby/setup-ruby has no Ruby < 3.2 for ubuntu-26.04, which ubuntu-latest now points to
+    runs-on: ubuntu-24.04
     name: Prism
     timeout-minutes: 20
     steps:
