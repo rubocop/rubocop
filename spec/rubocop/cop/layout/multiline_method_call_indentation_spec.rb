@@ -2704,4 +2704,397 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       end
     end
   end
+
+  context 'when EnforcedStyle is indented_relative_to_chain' do
+    let(:cop_config) { { 'EnforcedStyle' => 'indented_relative_to_chain' } }
+
+    it 'accepts a chain indented one level from the line it starts on' do
+      expect_no_offenses(<<~RUBY)
+        result = VeryLongReceiverName
+          .call(input)
+      RUBY
+    end
+
+    it 'accepts a receiver that starts on the following line' do
+      expect_no_offenses(<<~RUBY)
+        result =
+          VeryLongReceiverName
+            .call(input)
+      RUBY
+    end
+
+    it 'accepts a chain on one line' do
+      expect_no_offenses(<<~RUBY)
+        result = VeryLongReceiverName.call(input)
+      RUBY
+    end
+
+    it 'accepts an inner chain indented from the outer call' do
+      expect_no_offenses(<<~RUBY)
+        Foo
+          .where(id: Bar.select(:id)
+            .joins(:bar))
+          .order(:name)
+      RUBY
+    end
+
+    it 'registers an offense and corrects a dot aligned with the receiver' do
+      expect_offense(<<~RUBY)
+        result = VeryLongReceiverName
+                 .call(input)
+                 ^^^^^ Use 2 (not 9) spaces for indenting an expression in an assignment spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result = VeryLongReceiverName
+          .call(input)
+      RUBY
+    end
+
+    it 'registers an offense and corrects one extra indent' do
+      expect_offense(<<~RUBY)
+        result = VeryLongReceiverName
+            .call(input)
+            ^^^^^ Use 2 (not 4) spaces for indenting an expression in an assignment spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result = VeryLongReceiverName
+          .call(input)
+      RUBY
+    end
+
+    it 'registers an offense and corrects a dot on the statement column' do
+      expect_offense(<<~RUBY)
+        result = VeryLongReceiverName
+        .call(input)
+        ^^^^^ Use 2 (not 0) spaces for indenting an expression in an assignment spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result = VeryLongReceiverName
+          .call(input)
+      RUBY
+    end
+
+    it 'registers an offense and corrects a dot indented from the assignment when the receiver is already on the next line' do
+      expect_offense(<<~RUBY)
+        result =
+          VeryLongReceiverName
+          .call(input)
+          ^^^^^ Use 2 (not 0) spaces for indenting an expression in an assignment spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result =
+          VeryLongReceiverName
+            .call(input)
+      RUBY
+    end
+
+    it 'registers an offense and corrects a chain inside parentheses' do
+      expect_offense(<<~RUBY)
+        parent.call(
+          left.cover(label)
+          .or(right.cover(other_label))
+          ^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        parent.call(
+          left.cover(label)
+            .or(right.cover(other_label))
+        )
+      RUBY
+    end
+
+    it 'registers an offense and corrects a chain passed to a dotted call' do
+      expect_offense(<<~RUBY)
+        scope.where(
+          Order.eq(user_id)
+          .or(Order.eq(other_id))
+          ^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        scope.where(
+          Order.eq(user_id)
+            .or(Order.eq(other_id))
+        )
+      RUBY
+    end
+
+    it 'registers an offense and corrects a chain inside an outer chain argument' do
+      expect_offense(<<~RUBY)
+        list
+          .or(table.gteq(date)
+              .and(other))
+              ^^^^ Use 2 (not 4) spaces for indenting an expression spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        list
+          .or(table.gteq(date)
+            .and(other))
+      RUBY
+    end
+
+    it 'accepts a chain inside an outer chain argument indented from that chain' do
+      expect_no_offenses(<<~RUBY)
+        list
+          .or(table.gteq(date)
+            .and(other))
+      RUBY
+    end
+
+    it 'registers an offense and corrects a dot on the receiver column inside parentheses' do
+      expect_offense(<<~RUBY)
+        outer(
+          document
+          .pages
+          ^^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+          .reject { |page| page.empty? }
+          ^^^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        outer(
+          document
+            .pages
+            .reject { |page| page.empty? }
+        )
+      RUBY
+    end
+
+    it 'registers an offense and corrects a multiline block inside parentheses' do
+      expect_offense(<<~RUBY)
+        outer(
+          document
+          .reject { |page|
+          ^^^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+            page.empty?
+          }
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        outer(
+          document
+            .reject { |page|
+              page.empty?
+            }
+        )
+      RUBY
+    end
+
+    it 'accepts a hash value chain indented from the line it starts on' do
+      expect_no_offenses(<<~RUBY)
+        settings = {
+          'primary' => {
+            kind: 'note'
+          }.merge(first)
+            .merge(second)
+        }
+      RUBY
+    end
+
+    it 'registers an offense and corrects a hash value chain indented from the key' do
+      expect_offense(<<~RUBY)
+        settings = {
+          'primary' => {
+            kind: 'note'
+          }.merge(first)
+              .merge(second)
+              ^^^^^^ Use 2 (not 4) spaces for indenting an expression in an assignment spanning multiple lines.
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        settings = {
+          'primary' => {
+            kind: 'note'
+          }.merge(first)
+            .merge(second)
+        }
+      RUBY
+    end
+
+    it 'accepts safe navigation indented from the line the chain starts on' do
+      expect_no_offenses(<<~RUBY)
+        result = VeryLongReceiverName
+          &.call(input)
+
+        outer(
+          document
+            &.pages
+            &.reject { |page| page.empty? }
+        )
+      RUBY
+    end
+
+    it 'registers an offense and corrects safe navigation aligned with the receiver' do
+      expect_offense(<<~RUBY)
+        result = VeryLongReceiverName
+                 &.call(input)
+                 ^^^^^^ Use 2 (not 9) spaces for indenting an expression in an assignment spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result = VeryLongReceiverName
+          &.call(input)
+      RUBY
+    end
+
+    it 'registers an offense and corrects a dot aligned with the name after !' do
+      expect_offense(<<~RUBY)
+        def check
+          !running
+           .empty?
+           ^^^^^^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def check
+          !running
+            .empty?
+        end
+      RUBY
+    end
+
+    it 'accepts a dot indented from the line that starts with !' do
+      expect_no_offenses(<<~RUBY)
+        def check
+          !running
+            .empty?
+            .select { |item| item.ready? }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects a grouped expression' do
+      expect_offense(<<~RUBY)
+        (
+          a.
+          b
+          ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (
+          a.
+            b
+        )
+      RUBY
+    end
+
+    it 'accepts a dot indented from the receiver on a while line' do
+      expect_no_offenses(<<~RUBY)
+        while receiver
+                .nil?
+          something
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a dot that sits on the while body' do
+      expect_offense(<<~RUBY)
+        while receiver
+          .nil?
+          ^^^^^ Indent `.nil?` 2 spaces more than `receiver` on line 1.
+          something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        while receiver
+                .nil?
+          something
+        end
+      RUBY
+    end
+
+    it 'accepts a dot indented from the receiver on an if line' do
+      expect_no_offenses(<<~RUBY)
+        if receiver
+             .nil?
+          something
+        end
+      RUBY
+    end
+
+    it 'accepts one indentation when the receiver starts on the line after if' do
+      expect_no_offenses(<<~RUBY)
+        if (record =
+              receiver
+                .nil?)
+          something
+        end
+      RUBY
+    end
+
+    it 'accepts a dot indented from the receiver on an unless line' do
+      expect_no_offenses(<<~RUBY)
+        unless receiver
+                 .nil?
+          something
+        end
+      RUBY
+    end
+
+    it 'accepts one indentation when the receiver starts on the line after unless' do
+      expect_no_offenses(<<~RUBY)
+        unless (record =
+                  receiver
+                    .nil?)
+          something
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a dot that sits on the unless body' do
+      expect_offense(<<~RUBY)
+        unless receiver
+          .nil?
+          ^^^^^ Indent `.nil?` 2 spaces more than `receiver` on line 1.
+          something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless receiver
+                 .nil?
+          something
+        end
+      RUBY
+    end
+
+    context 'when indentation width is overridden for this cop' do
+      let(:cop_indent) { 4 }
+
+      it 'accepts a chain indented by the configured width' do
+        expect_no_offenses(<<~RUBY)
+          result = VeryLongReceiverName
+              .call(input)
+        RUBY
+      end
+
+      it 'registers an offense when the chain uses the default width' do
+        expect_offense(<<~RUBY)
+          result = VeryLongReceiverName
+            .call(input)
+            ^^^^^ Use 4 (not 2) spaces for indenting an expression in an assignment spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          result = VeryLongReceiverName
+              .call(input)
+        RUBY
+      end
+    end
+  end
 end
