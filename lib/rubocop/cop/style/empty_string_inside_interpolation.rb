@@ -128,14 +128,12 @@ module RuboCop
         end
 
         def ternary_style_autocorrect(node, outcome, keyword)
+          return if outcome.multiline?
+
           add_offense(node, message: MSG_TERNARY) do |corrector|
             next if empty_string_conditional_in_condition?(node)
 
-            head = node.source_range.begin.join(outcome.source_range.begin)
-            tail = outcome.source_range.end.join(node.source_range.end)
-
-            corrector.remove(head)
-            corrector.replace(tail, " #{keyword} #{node.condition.source}")
+            autocorrect_to_trailing_conditional(corrector, node, outcome, keyword)
           end
         end
 
@@ -145,6 +143,14 @@ module RuboCop
 
             empty_if_outcome?(node) || empty_else_outcome?(node)
           end
+        end
+
+        def autocorrect_to_trailing_conditional(corrector, node, outcome, keyword)
+          head = node.source_range.begin.join(outcome.source_range.begin)
+          tail = outcome.source_range.end.join(node.source_range.end)
+
+          corrector.remove(head)
+          corrector.replace(tail, " #{keyword} #{node.condition.source}")
         end
       end
     end

@@ -143,6 +143,26 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
         "#{'foo' if "#{inner ? 'bar' : 'baz'}".empty?}"
       RUBY
     end
+
+    it 'does not register an offense when the non-empty outcome of an `if` with a `nil` else branch is multiline' do
+      expect_no_offenses(<<~'RUBY')
+        "#{if condition
+             foo(
+               bar
+             )
+           else
+             nil
+           end}"
+      RUBY
+    end
+
+    it 'does not register an offense when the non-empty outcome of a ternary is multiline' do
+      expect_no_offenses(<<~'RUBY')
+        "#{condition ? '' : foo(
+          bar
+        )}"
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is ternary' do
