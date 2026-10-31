@@ -3944,6 +3944,109 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/ClassStructure` with `Style/AccessModifierDeclarations`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo
+        private
+
+        def x
+          1
+        end
+        public def y
+          2
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Layout/ClassStructure,Style/AccessModifierDeclarations']
+    )
+
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo
+        private
+
+        def x
+          1
+        end
+      public
+
+      def y
+          2
+        end
+      end
+    RUBY
+  end
+
+  it 'corrects `Layout/ClassStructure` with `Style/BisectedAttrAccessor`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ClassStructure:
+        Categories:
+          attribute_macros:
+            - attr_reader
+            - attr_writer
+        ExpectedOrder:
+          - public_attribute_macros
+          - public_methods
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo
+        attr_reader :x
+
+        def a
+          1
+        end
+        attr_writer :x
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Layout/ClassStructure,Style/BisectedAttrAccessor']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo
+        attr_accessor :x
+
+        def a
+          1
+        end
+      end
+    RUBY
+  end
+
+  it 'corrects `Layout/ClassStructure` with `Style/RedundantInitialize`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo
+        def a
+          1
+        end
+        def initialize; end
+      end
+    RUBY
+
+    status = cli.run(
+      ['--autocorrect-all', '--only', 'Layout/ClassStructure,Style/RedundantInitialize']
+    )
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo
+        def a
+          1
+        end
+      end
+    RUBY
+  end
+
   # A case where two cops, EmptyLinesAroundBody and EmptyLines, try to
   # remove the same line in autocorrect.
   it 'can correct two empty lines at end of class body' do
