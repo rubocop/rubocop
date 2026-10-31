@@ -225,6 +225,46 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using an at sign' do
+    expect_offense(<<~RUBY)
+      'user@example.com'.split(/@/)
+                               ^^^ Use string `'@'` as argument instead of regexp `/@/`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      'user@example.com'.split('@')
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using an escaped hash before an at sign' do
+    expect_offense(<<~'RUBY')
+      'a#@foo'.split(/\#@foo/)
+                     ^^^^^^^^ Use string `'#@foo'` as argument instead of regexp `/\#@foo/`.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      'a#@foo'.split('#@foo')
+    RUBY
+  end
+
+  it 'does not register an offense when the regexp interpolates an instance variable' do
+    expect_no_offenses(<<~'RUBY')
+      'foo'.gsub(/#@foo/, 'X')
+    RUBY
+  end
+
+  it 'does not register an offense when the regexp interpolates a class variable' do
+    expect_no_offenses(<<~'RUBY')
+      'foo'.gsub(/#@@foo/, 'X')
+    RUBY
+  end
+
+  it 'does not register an offense when a literal precedes an interpolated instance variable' do
+    expect_no_offenses(<<~'RUBY')
+      'foo'.split(/a#@foo/)
+    RUBY
+  end
+
   it 'accepts methods other than pattern argument method' do
     expect_no_offenses("'a,b,c'.insert(2, 'a')")
   end
