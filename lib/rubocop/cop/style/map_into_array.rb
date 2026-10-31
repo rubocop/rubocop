@@ -63,6 +63,10 @@ module RuboCop
 
         MSG = 'Use `%<new_method_name>s` instead of `each` to map elements into an array.'
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
+
         # @!method suitable_argument_node?(node)
         def_node_matcher :suitable_argument_node?, <<-PATTERN
           !{splat forwarded-restarg forwarded-args (hash (forwarded-kwrestarg)) block-pass}
