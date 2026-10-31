@@ -463,6 +463,44 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
+    it 'accepts uniformly padded tokens aligned with differently spaced tokens in the same column' do
+      expect_no_offenses(<<~RUBY)
+        def create(
+          features: DEFAULTS,
+          dummy:    nil,
+          async:    false,
+          admin:    nil
+        )
+        end
+      RUBY
+    end
+
+    it 'accepts uniformly padded command arguments aligned with differently spaced tokens' do
+      expect_no_offenses(<<~RUBY)
+        call_long DEFAULTS
+        bar       nil
+        baz       nil
+      RUBY
+    end
+
+    it 'registers offenses and corrects extra spacing before interpolated strings' do
+      expect_offense(<<~'RUBY')
+        result << "class: #{self.class}\n"
+        result <<  "task needed: #{needed?}\n"
+                 ^ Unnecessary spacing detected.
+        result <<  "timestamp: #{timestamp}\n"
+                 ^ Unnecessary spacing detected.
+        result << "pre-requisites: \n"
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        result << "class: #{self.class}\n"
+        result << "task needed: #{needed?}\n"
+        result << "timestamp: #{timestamp}\n"
+        result << "pre-requisites: \n"
+      RUBY
+    end
+
     it 'accepts extra spacing that aligns tokens of different kinds' do
       expect_no_offenses(<<~RUBY)
         register(:a,    1)

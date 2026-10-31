@@ -1,0 +1,1 @@
+* [#16166](https://github.com/rubocop/rubocop/issues/16166): Fix a false positive for `Layout/ExtraSpacing` when uniformly padded tokens are aligned with differently spaced tokens in the same column. ([@Don-Yin][])
