@@ -869,6 +869,58 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       end
     end
 
+    context 'when `Layout/MultilineArrayBraceLayout` is enabled with `EnforcedStyle: new_line`' do
+      let(:other_cops) do
+        { 'Layout/MultilineArrayBraceLayout' => { 'Enabled' => true,
+                                                  'EnforcedStyle' => 'new_line' } }
+      end
+
+      it 'does not register an offense for the closing bracket on its own line after a nested array' do
+        expect_no_offenses(<<~RUBY)
+          multiline = [[ 1, 2 ],
+            [ 3, 4 ]
+          ]
+        RUBY
+      end
+
+      it 'keeps the closing bracket on its own line when collapsing the opening brackets' do
+        expect_offense(<<~RUBY)
+          multiline = [
+                       ^{} #{no_space_message}
+            [ 1, 2 ],
+            [ 3, 4 ]
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          multiline = [[ 1, 2 ],
+            [ 3, 4 ]
+          ]
+        RUBY
+      end
+    end
+
+    context 'when `Layout/MultilineArrayBraceLayout` is disabled with `EnforcedStyle: new_line`' do
+      let(:other_cops) do
+        { 'Layout/MultilineArrayBraceLayout' => { 'Enabled' => false,
+                                                  'EnforcedStyle' => 'new_line' } }
+      end
+
+      it 'registers an offense and corrects the closing bracket on its own line after a nested array' do
+        expect_offense(<<~RUBY)
+          multiline = [[ 1, 2 ],
+            [ 3, 4 ]
+          ]
+          ^{} #{no_space_message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          multiline = [[ 1, 2 ],
+            [ 3, 4 ]]
+        RUBY
+      end
+    end
+
     it 'registers an offense and corrects 2-dimensional array with extra spaces' do
       expect_offense(<<~RUBY)
         [ [ a, b ], [ 1, 7 ] ]
