@@ -2416,6 +2416,77 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a named capture is not a valid local variable name' do
+    it 'accepts a name starting with an uppercase letter' do
+      expect_no_offenses(<<~'RUBY')
+        def some_method(str)
+          /(?<Indent> *)\w+\n\g<Indent>\w+/ =~ str
+        end
+      RUBY
+    end
+
+    it 'accepts a name starting with a non-ASCII uppercase letter' do
+      expect_no_offenses(<<~'RUBY')
+        def some_method(str)
+          /(?<Été>\d+)/ =~ str
+        end
+      RUBY
+    end
+
+    it 'accepts a name that is a reserved word' do
+      expect_no_offenses(<<~'RUBY')
+        def some_method(str)
+          /(?<class>\w+)/ =~ str
+        end
+      RUBY
+    end
+
+    it 'registers an offense only for an unreferenced capture that is a local variable' do
+      expect_offense(<<~'RUBY')
+        def some_method(str)
+          /(?<Year>\d+)-(?<month>\d+)/ =~ str
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless assignment to variable - `month`.
+          $~[:Year]
+        end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        def some_method(str)
+          /(?<Year>\d+)-(?:\d+)/ =~ str
+          $~[:Year]
+        end
+      RUBY
+    end
+  end
+
+  context 'when a named capture with a non-ASCII name is referenced' do
+    it 'accepts' do
+      expect_no_offenses(<<~'RUBY')
+        def some_method(str)
+          /(?<année>\d+)/ =~ str
+          année
+        end
+      RUBY
+    end
+  end
+
+  context 'when a named capture with a non-ASCII name is unreferenced' do
+    it 'registers an offense' do
+      expect_offense(<<~'RUBY')
+        def some_method(str)
+          /(?<année>\d+)/ =~ str
+          ^^^^^^^^^^^^^^^ Useless assignment to variable - `année`.
+        end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        def some_method(str)
+          /(?:\d+)/ =~ str
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is referenced in rhs of named capture expression' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
