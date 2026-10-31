@@ -847,6 +847,25 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'does not register an offense when the next clause is on the last line of a multiline guard clause' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        return unless bar(
+        ); baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when a block starts on the last line of a multiline guard clause' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        return unless bar(
+        ); baz.each { |x|
+          x }
+      end
+    RUBY
+  end
+
   it 'registers an offense when the clause ends with a semicolon but the next clause is on the next line' do
     expect_offense(<<~RUBY)
       def foo(item)
