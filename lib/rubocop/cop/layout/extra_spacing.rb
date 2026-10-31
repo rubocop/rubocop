@@ -128,7 +128,7 @@ module RuboCop
           entries = by_column[column]
 
           if lines.size > 1
-            uniform_alignment_allowed?(token, lines, spacings)
+            uniform_alignment_allowed?(token, lines, spacings, entries)
           elsif entries.size > 1
             distinct_spacings(entries).size > 1
           else
@@ -136,11 +136,12 @@ module RuboCop
           end
         end
 
-        def uniform_alignment_allowed?(token, lines, spacings)
+        def uniform_alignment_allowed?(token, lines, spacings, entries)
           return @alignment_verdicts[lines] if @alignment_verdicts.key?(lines)
 
           @alignment_verdicts[lines] =
-            spacings.uniq.size > 1 || aligned_on_other_column?(token, lines)
+            spacings.uniq.size > 1 || distinct_spacings(entries).count(&:positive?) > 1 ||
+            aligned_on_other_column?(token, lines)
         end
 
         def aligned_on_other_column?(token, lines)
@@ -189,9 +190,7 @@ module RuboCop
           line_ranges = [(token.line - 1).downto(1),
                          (token.line + 1).upto(processed_source.lines.length)]
 
-          line_ranges.any? do |line_numbers|
-            nearest_spacing_differs?(line_numbers, token, spacing)
-          end
+          line_ranges.any? { |line_numbers| nearest_spacing_differs?(line_numbers, token, spacing) }
         end
 
         def nearest_spacing_differs?(line_numbers, token, spacing)
