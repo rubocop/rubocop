@@ -44,6 +44,40 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
     end
   end
 
+  context 'when `Layout/SpaceInsideArrayLiteralBrackets` uses the `compact` style' do
+    let(:cop_config) { { 'EnforcedStyle' => 'new_line' } }
+    let(:other_cops) do
+      {
+        'Layout/SpaceInsideArrayLiteralBrackets' => {
+          'Enabled' => true, 'EnforcedStyle' => 'compact'
+        }
+      }
+    end
+
+    it 'does not register an offense when the last element is an array literal' do
+      expect_no_offenses(<<~RUBY)
+        [[1, 2],
+         [3, 4]]
+      RUBY
+    end
+
+    it 'registers an offense when the last element is an index call' do
+      expect_offense(<<~RUBY)
+        [[1, 2],
+         foo[3]]
+               ^ The closing array brace must be on the line after the last array element.
+      RUBY
+    end
+
+    it 'registers an offense when the last element is not an array literal' do
+      expect_offense(<<~RUBY)
+        [[1, 2],
+         3]
+          ^ The closing array brace must be on the line after the last array element.
+      RUBY
+    end
+  end
+
   context 'when comment present before closing brace' do
     it 'corrects closing brace without crashing' do
       expect_offense(<<~RUBY)

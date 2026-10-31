@@ -26,6 +26,10 @@ module RuboCop
       # The closing brace of a multi-line array literal must be on the same
       # line as the last element of the array.
       #
+      # NOTE: An array whose last element is an array literal is not checked when
+      # `Layout/SpaceInsideArrayLiteralBrackets` is enabled with `EnforcedStyle: compact`,
+      # since that style joins the two closing brackets.
+      #
       # @example EnforcedStyle: symmetrical (default)
       #   # bad
       #   [ :a,
@@ -119,7 +123,22 @@ module RuboCop
         end
 
         def on_array(node)
+          return if compact_nested_array?(node)
+
           check_brace_layout(node)
+        end
+
+        private
+
+        def compact_nested_array?(node)
+          last_element = node.children.last
+          node.square_brackets? && last_element&.array_type? && last_element.square_brackets? &&
+            compact_array_brackets_enforced?
+        end
+
+        def compact_array_brackets_enforced?
+          config.cop_enabled?('Layout/SpaceInsideArrayLiteralBrackets') &&
+            config.for_cop('Layout/SpaceInsideArrayLiteralBrackets')['EnforcedStyle'] == 'compact'
         end
       end
     end
