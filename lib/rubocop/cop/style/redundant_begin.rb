@@ -70,7 +70,12 @@ module RuboCop
         SPACE_INSIDE_PARENS_STYLES = %w[space compact].freeze
 
         def self.autocorrect_incompatible_with
-          [Style::BlockDelimiters]
+          [
+            Style::BlockDelimiters,
+            Style::TrailingCommaInArguments,
+            Style::TrailingCommaInArrayLiteral,
+            Style::TrailingCommaInHashLiteral
+          ]
         end
 
         # @!method offensive_kwbegins(node)
