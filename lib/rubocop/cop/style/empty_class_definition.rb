@@ -107,11 +107,10 @@ module RuboCop
           corrector.replace(node, "class #{class_name} < #{parent_class_name}\n#{indent}end")
         end
 
-        # Preserve any namespace on the assigned constant (e.g. `Foo::Bar`),
+        # Preserve any namespace on the assigned constant (e.g. `Foo::Bar` or `::Bar`),
         # which `node.name` drops.
         def constant_name(node)
-          namespace = node.namespace
-          namespace ? "#{namespace.source}::#{node.name}" : node.name
+          node.loc.name.with(begin_pos: node.source_range.begin_pos).source
         end
 
         def autocorrect_class_definition(corrector, node)
