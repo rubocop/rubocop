@@ -184,6 +184,20 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     RUBY
   end
 
+  it 'does not register an offense when the operator method call has a `do` block' do
+    expect_no_offenses(<<~RUBY)
+      pool.<< [1, 2] do
+        foo
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the operator method call has a brace block' do
+    expect_no_offenses(<<~RUBY)
+      pool.<<([1, 2]) { foo }
+    RUBY
+  end
+
   it 'does not register an offense when using named block forwarding' do
     expect_no_offenses(<<~RUBY)
       def foo(&blk)
