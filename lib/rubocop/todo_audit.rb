@@ -21,8 +21,8 @@ module RuboCop
       entries = todo_exclude_entries
       return [] if entries.empty?
 
-      offending_cops = offending_cops_without_todo(entries)
-      entries.reject { |entry| offending_cops[absolute(entry.path)]&.include?(entry.cop_name) }
+      @todo_entries = entries
+      entries.reject { |entry| needed?(entry) }
     end
 
     def todo_file
@@ -59,37 +59,81 @@ module RuboCop
         Cop::Registry.global.contains_cop_matching?([cop_name])
     end
 
-    # Inspects every file the todo entries mention, with the todo exclusions
-    # subtracted from the configuration, and returns the names of the cops
-    # that still report offenses, keyed by absolute file path.
-    def offending_cops_without_todo(entries)
-      files = entries.map { |entry| absolute(entry.path) }.uniq.select { |file| File.file?(file) }
+    # An entry is needed when any expanded path still reports an offense for
+    # its cop. Stop at the first hit so live glob entries skip most matches.
+    def needed?(entry)
+      expand_path(entry.path).any? { |file| offending_cops(file).include?(entry.cop_name) }
+    end
 
-      files.to_h do |file|
-        offenses = inspect_file(file, entries)
-        [file, offenses.to_set(&:cop_name)]
+    def offending_cops(file)
+      @offending_cops ||= {}
+      @offending_cops[file] ||= inspect_file(file).to_set(&:cop_name)
+    end
+
+    def expand_path(path)
+      absolute_path = absolute(path)
+      files = File.file?(absolute_path) ? [absolute_path] : []
+      return files unless PathUtil.glob?(path)
+
+      files | target_files(path).select do |file|
+        PathUtil.match_path?(absolute_path, file)
       end
     end
 
-    def inspect_file(file, entries)
-      config = audit_config(@config_store.for_file(file), entries)
-      team = Cop::Team.mobilize(Cop::Registry.global, config, @options.merge(autocorrect: false))
+    # Scan from the longest glob-free prefix of the entry as written, so a
+    # glob in any directory segment (e.g. `**/models/*.rb`) is covered.
+    # Only the entry's own segments are inspected; metacharacters in the
+    # todo file's parent directories never move the scan root.
+    def target_files(path)
+      directory = scan_root(path)
+      @target_files ||= {}
+      @target_files[directory] ||= TargetFinder.new(@config_store, @options)
+                                               .target_files_in_dir(directory)
+    end
+
+    def scan_root(path)
+      segments = path.split('/', -1)
+      literal = segments.take_while { |segment| !PathUtil.glob?(segment) }
+      literal = segments[0...-1] if literal.size == segments.size
+      prefix = literal.join('/')
+      prefix = '/' if prefix.empty? && path.start_with?('/')
+      absolute(prefix.empty? ? '.' : prefix)
+    end
+
+    def inspect_file(file)
+      config = audit_config(@config_store.for_file(file))
+      team = Cop::Team.mobilize(todo_cops, config, @options.merge(autocorrect: false))
 
       processed_source = ProcessedSource.from_file(
         file, config.target_ruby_version, parser_engine: config.parser_engine
       )
       processed_source.config = config
-      processed_source.registry = Cop::Registry.global
+      processed_source.registry = todo_cops
 
       team.investigate(processed_source).offenses.reject(&:disabled?)
     end
 
+    # Registry limited to cops named in the todo, so each file only pays for
+    # the audits that can keep an entry.
+    def todo_cops
+      @todo_cops ||= begin
+        names = @todo_entries.map(&:cop_name).uniq
+        Cop::Registry.global.filter_by_badge { |badge| badge.match_name?(names) }
+      end
+    end
+
     # A copy of the configuration with the todo exclusions removed for the
     # audited cops, so their offenses in the listed files become visible.
-    def audit_config(config, entries)
+    # Memoized per underlying `Config` so cop lookups stay warm across files.
+    def audit_config(config)
+      @audit_configs ||= {}.compare_by_identity
+      @audit_configs[config] ||= build_audit_config(config)
+    end
+
+    def build_audit_config(config)
       hash = config.to_hash.dup
 
-      entries.group_by(&:cop_name).each do |cop_name, cop_entries|
+      @todo_entries.group_by(&:cop_name).each do |cop_name, cop_entries|
         cop_config = hash[cop_name]
         next unless cop_config.is_a?(Hash) && cop_config['Exclude'].is_a?(Array)
 
