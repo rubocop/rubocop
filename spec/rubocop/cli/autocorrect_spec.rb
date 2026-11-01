@@ -749,6 +749,31 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/CombinableLoops` with `EnforcedStyle: always` of `Style/ItBlockParameter`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/ItBlockParameter:
+        EnforcedStyle: always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      items.each do |item|
+        bars.each { |bar, baz| foo(item, bar, baz) }
+      end
+      items.each do |item|
+        do_something(item)
+      end
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/CombinableLoops,Style/ItBlockParameter'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      items.each do |item|
+        bars.each { |bar, baz| foo(item, bar, baz) }
+      do_something(item)
+       end
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineBlockLayout` with `EnforcedStyle: literal` of `Style/Lambda`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/Lambda:
