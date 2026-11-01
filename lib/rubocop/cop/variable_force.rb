@@ -32,6 +32,15 @@ module RuboCop
         VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE, PATTERN_MATCH_VARIABLE_TYPE
       ].freeze
 
+      # Ruby assigns a named capture to a local variable only when its name is a valid
+      # local variable name, so `(?<Foo>...)` and `(?<if>...)` declare no variable.
+      LOCAL_VARIABLE_NAME = /\A(?![[:upper:]\p{Lt}])[a-z_\P{ASCII}][a-zA-Z0-9_\P{ASCII}]*\z/.freeze
+      RESERVED_WORDS = %w[
+        __ENCODING__ __FILE__ __LINE__ BEGIN END alias and begin break case class def do else
+        elsif end ensure false for if in module next nil not or redo rescue retry return self
+        super then true undef unless until when while yield
+      ].to_set.freeze
+
       ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg,
         :kwarg, :kwoptarg, :kwrestarg,
@@ -192,7 +201,11 @@ module RuboCop
       def regexp_captured_names(node)
         regexp = node.to_regexp
 
-        regexp.named_captures.keys
+        regexp.names.select { |name| local_variable_name?(name) }
+      end
+
+      def local_variable_name?(name)
+        LOCAL_VARIABLE_NAME.match?(name) && !RESERVED_WORDS.include?(name)
       end
 
       def process_variable_operator_assignment(node)
