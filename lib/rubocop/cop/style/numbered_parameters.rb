@@ -16,6 +16,21 @@ module RuboCop
       #
       #   # good
       #   collection.each { puts _1 }
+      #   collection.foo
+      #             .each { puts _1 }
+      #   collection.foo.each { puts _1 }
+      #
+      # @example EnforcedStyle: allow_exact_single_line
+      #   # bad
+      #   collection.each do
+      #     puts _1
+      #   end
+      #   collection.foo
+      #             .each { puts _1 }
+      #
+      #   # good
+      #   collection.each { puts _1 }
+      #   collection.foo.each { puts _1 }
       #
       # @example EnforcedStyle: disallow
       #   # bad
@@ -34,10 +49,17 @@ module RuboCop
         minimum_target_ruby_version 2.7
 
         def on_numblock(node)
-          if style == :disallow
-            add_offense(node, message: MSG_DISALLOW)
-          elsif node.multiline?
+          case style
+          when :allow_single_line
+            return if node.single_line?
+
             add_offense(node, message: MSG_MULTI_LINE)
+          when :allow_exact_single_line
+            return if same_line?(node.source_range.begin, node.source_range.end)
+
+            add_offense(node, message: MSG_MULTI_LINE)
+          when :disallow
+            add_offense(node, message: MSG_DISALLOW)
           end
         end
       end
