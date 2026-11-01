@@ -141,9 +141,7 @@ module RuboCop
 
           words = node.children.map do |word|
             if word.dstr_type?
-              string_literal = to_string_literal(word.source)
-
-              trim_string_interpolation_escape_character(string_literal)
+              build_interpolated_string_literal(word)
             else
               to_string_literal(word.children[0])
             end

@@ -77,6 +77,27 @@ module RuboCop
         end
       end
 
+      # Builds a double-quoted string literal for an interpolated element of a `%W` or `%I`
+      # array. Only the text around the interpolations is escaped, the code inside them is
+      # kept as written.
+      # @param [RuboCop::AST::Node] node a `dstr` or `dsym` node
+      # @return [String]
+      def build_interpolated_string_literal(node)
+        contents = node.children.map do |child|
+          if child.str_type?
+            child.value.inspect[1..-2]
+          elsif child.begin_type?
+            child.source
+          else
+            # A variable interpolated without braces, such as `#@foo`. The braces keep
+            # the text that follows from becoming part of the variable name.
+            "\#{#{child.source}}"
+          end
+        end
+
+        "\"#{contents.join}\""
+      end
+
       # @param [RuboCop::AST::ArrayNode] node
       # @param [Array<String>] elements
       # @return [String]
@@ -97,7 +118,7 @@ module RuboCop
       # @return [String]
       def whitespace_between(node)
         if node.children.length >= 2
-          node.children[0].source_range.end.join(node.children[1].source_range.begin).source
+          node.children[0].source_range.end.join(element_begin(node.children[1])).source
         else
           ' '
         end
@@ -109,7 +130,19 @@ module RuboCop
       # @param [RuboCop::AST::ArrayNode] node
       # @return [String]
       def whitespace_leading(node)
-        node.loc.begin.end.join(node.children[0].source_range.begin).source
+        node.loc.begin.end.join(element_begin(node.children[0])).source
+      end
+
+      # The location of an element starting with a variable interpolated without
+      # braces, such as `#@foo`, does not include the `#`.
+      # @param [RuboCop::AST::Node] element
+      # @return [Parser::Source::Range]
+      def element_begin(element)
+        range = element.source_range.begin
+        return range unless element.type?(:dstr, :dsym)
+        return range if element.children.first.type?(:str, :begin)
+
+        range.adjust(begin_pos: -1, end_pos: -1)
       end
 
       # Provides trailing whitespace for building a bracketed array.
