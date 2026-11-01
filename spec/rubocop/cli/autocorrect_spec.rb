@@ -2307,6 +2307,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/MapIntoArray` with `EnforcedStyleForMultiline: comma` of `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      dest = []
+      src.each do |e|
+        dest.push(
+          e
+        )
+      end
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Style/MapIntoArray,Style/TrailingCommaInArguments'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      dest = src.map do |e|
+        e
+      end
+    RUBY
+  end
+
   it 'corrects `Style/SymbolProc` with `EnforcedStyleForMultiline: consistent_comma` of `Style/TrailingCommaInArguments`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/TrailingCommaInArguments:
