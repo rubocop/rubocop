@@ -60,6 +60,26 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
         expect($stdout.string).to include('RuboCop server starting on')
         expect($stderr.string).to eq ''
       end
+
+      context 'when using a TTL' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              ServerKeepAlive: 0
+          YAML
+
+          allow_any_instance_of(RuboCop::Server::Core).to receive(:server_mode?).and_return(true) # rubocop:disable RSpec/AnyInstance
+        end
+
+        it 'starts a server and shuts it down after the TTL' do
+          expect(TCPServer).to receive(:open).and_call_original
+
+          expect(cli.run(['--start-server', '--no-detach'])).to eq(0)
+          expect(cli).to be_exit
+          expect($stdout.string).to include('RuboCop server starting on')
+          expect($stderr.string).to eq ''
+        end
+      end
     end
 
     context 'when using `--stop-server` option' do
