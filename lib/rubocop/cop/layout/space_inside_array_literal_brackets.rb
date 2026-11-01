@@ -36,6 +36,8 @@ module RuboCop
       #   # The `compact` style normally requires a space inside
       #   # array brackets, with the exception that successive left
       #   # or right brackets are collapsed together in nested arrays.
+      #   # A right bracket on its own line is left there when
+      #   # `Layout/MultilineArrayBraceLayout` enforces the `new_line` style.
       #
       #   # bad
       #   array = [a, b, c, d]
@@ -216,11 +218,20 @@ module RuboCop
 
         # A closing bracket on its own line is only collapsed when the opening
         # bracket ends up on the first element's line, so that the brackets
-        # stay symmetrical (see `Layout/MultilineArrayBraceLayout`).
+        # stay symmetrical (see `Layout/MultilineArrayBraceLayout`). It is never
+        # collapsed when that cop requires it to stay on its own line.
         def closing_bracket_kept_apart?(node, tokens, left, right)
-          end_has_own_line?(right) &&
-            !multi_dimensional_array?(tokens, left, side: :left) &&
-            !same_line?(left, node.children.first)
+          return false unless end_has_own_line?(right)
+          return true if node.array_type? && closing_bracket_on_new_line_enforced?
+          return false if multi_dimensional_array?(tokens, left, side: :left)
+
+          !same_line?(left, node.children.first)
+        end
+
+        def closing_bracket_on_new_line_enforced?
+          return false unless config.cop_enabled?('Layout/MultilineArrayBraceLayout')
+
+          config.for_cop('Layout/MultilineArrayBraceLayout')['EnforcedStyle'] == 'new_line'
         end
 
         def compact_corrections(corrector, node, tokens, left, right)
