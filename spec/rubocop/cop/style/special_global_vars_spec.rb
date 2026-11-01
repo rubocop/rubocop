@@ -135,6 +135,13 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
         }
       end
 
+      it 'does not register an offense for global variables in `alias`' do
+        expect_no_offenses(<<~RUBY)
+          alias $ARGV $*
+          alias $ERROR_INFO $!
+        RUBY
+      end
+
       context 'when English has not been required at top-level' do
         it 'adds require English for $$' do
           expect_offense(<<~RUBY)
@@ -233,6 +240,13 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
 
   context 'when style is use_perl_names' do
     let(:cop_config) { { 'EnforcedStyle' => 'use_perl_names' } }
+
+    it 'does not register an offense for global variables in `alias`' do
+      expect_no_offenses(<<~RUBY)
+        alias $LOAD_PATH $:
+        alias $my_path $LOAD_PATH
+      RUBY
+    end
 
     it 'registers an offense for $LOAD_PATH' do
       expect_offense(<<~RUBY)
