@@ -995,6 +995,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/NumberConversion` with `Style/MethodCallWithArgsParentheses`' do
+    create_file('example.rb', <<~RUBY)
+      obj.map &:to_i
+    RUBY
+
+    expect(cli.run([
+                     '--autocorrect-all', '--only',
+                     'Lint/NumberConversion,Style/MethodCallWithArgsParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      obj.map { |i| Integer(i, 10) }
+    RUBY
+  end
+
+  it 'corrects `Lint/NumberConversion` with `Style/NestedParenthesizedCalls`' do
+    create_file('example.rb', <<~RUBY)
+      foo(obj.map &:to_i)
+    RUBY
+
+    expect(cli.run([
+                     '--autocorrect-all', '--only',
+                     'Lint/NumberConversion,Style/NestedParenthesizedCalls'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(obj.map { |i| Integer(i, 10) })
+    RUBY
+  end
+
   it 'corrects `Style/CombinableLoops` with `Layout/RedundantLineBreak`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/RedundantLineBreak:

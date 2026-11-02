@@ -1,0 +1,1 @@
+* [#16408](https://github.com/rubocop/rubocop/pull/16408): Fix an incorrect autocorrect for `Lint/NumberConversion` with `Style/MethodCallWithArgsParentheses` and `Style/NestedParenthesizedCalls`. ([@koic][])
