@@ -1421,6 +1421,182 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       RUBY
     end
 
+    it 'does not register an offense for a command call in a method definition in an array', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        [def foo
+          bar baz
+        end]
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition in a hash value', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        { key: def foo
+          bar baz
+        end }
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition in a ternary', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        condition ? def foo
+          bar baz
+        end : nil
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition in an operand of `&&`', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        condition && def foo
+          bar baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition in an operand of `and`', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        condition and def foo
+          bar baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a negated method definition', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        !def foo
+          bar baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition in an `if` condition', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        if def foo
+          bar baz
+        end
+          qux
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition in a multiple assignment', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        a, b = def foo
+          bar baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a command call in a method definition assigned by a setter', :ruby34 do
+      expect_offense(<<~RUBY)
+        obj.attr = def foo
+                   ^^^^^^^ Use endless method definitions.
+          bar baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj.attr = def foo = bar baz
+      RUBY
+    end
+
+    it 'registers an offense for a command call in a parenthesized method definition', :ruby40 do
+      expect_offense(<<~RUBY)
+        (def foo
+         ^^^^^^^ Use endless method definitions.
+          bar baz
+        end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (def foo = bar baz)
+      RUBY
+    end
+
+    it 'registers an offense for a command call in a method definition in a block', :ruby40 do
+      expect_offense(<<~RUBY)
+        do_something do
+          def foo
+          ^^^^^^^ Use endless method definitions.
+            bar baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something do
+          def foo = bar baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a `return` with a value in a method definition in an array', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        [def foo
+          return bar
+        end]
+      RUBY
+    end
+
+    it 'does not register an offense for a `return` with values in a method definition in a ternary', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        condition ? def foo
+          return bar, baz
+        end : nil
+      RUBY
+    end
+
+    it 'registers an offense for a `return` without a value in a method definition in an array', :ruby40 do
+      expect_offense(<<~RUBY)
+        [def foo
+         ^^^^^^^ Use endless method definitions.
+          return
+        end]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [def foo = return]
+      RUBY
+    end
+
+    it 'registers an offense for a `return` with a value in a statement method definition', :ruby40 do
+      expect_offense(<<~RUBY)
+        def foo
+        ^^^^^^^ Use endless method definitions.
+          return bar, baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo = return bar, baz
+      RUBY
+    end
+
+    it 'registers an offense only for the outer method definition with a nested command call body', :ruby40 do
+      expect_offense(<<~RUBY)
+        def foo
+        ^^^^^^^ Use endless method definitions.
+          def bar
+            baz qux
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo = def bar
+            baz qux
+          end
+      RUBY
+    end
+
+    it 'does not register an offense for a method definition whose body is an endless method with a command call body', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          def bar = baz qux
+        end
+      RUBY
+    end
+
     it 'does not register an offense for a `do...end` block in a method definition passed as an argument' do
       expect_no_offenses(<<~RUBY)
         private def foo
