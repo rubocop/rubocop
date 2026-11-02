@@ -454,6 +454,72 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       RUBY
     end
 
+    it 'registers an offense for a parent class with a `do...end` block on a parenthesized call' do
+      expect_offense(<<~RUBY)
+        class Foo < bar(:baz) do end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Foo = Class.new(bar(:baz) do end)
+      RUBY
+    end
+
+    it 'does not register an offense for a parent class with a `do...end` block on a command call' do
+      expect_no_offenses(<<~RUBY)
+        class Foo < bar :baz do end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a parent class chained from a `do...end` block on a command call' do
+      expect_no_offenses(<<~RUBY)
+        class Foo < obj.bar :baz do end.qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a parent class with a `do...end` block on a command call inside a brace block' do
+      expect_offense(<<~RUBY)
+        class Foo < bar { baz :qux do end }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Foo = Class.new(bar { baz :qux do end })
+      RUBY
+    end
+
+    it 'registers an offense for a parent class with a `do...end` block on a command call inside parentheses' do
+      expect_offense(<<~RUBY)
+        class Foo < bar((baz :qux do end))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Foo = Class.new(bar((baz :qux do end)))
+      RUBY
+    end
+
+    it 'registers an offense for a parent class with a `do...end` block on a command call inside a conditional' do
+      expect_offense(<<~RUBY)
+        class Foo < if bar
+        ^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
+          baz :qux do end
+        end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Foo = Class.new(if bar
+          baz :qux do end
+        end)
+      RUBY
+    end
+
     it 'does not register an offense for Class.new assignment' do
       expect_no_offenses(<<~RUBY)
         FooError = Class.new(StandardError)
