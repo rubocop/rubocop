@@ -43,12 +43,9 @@ module RuboCop
         def autocorrect(corrector, node, begin_of_arguments)
           arguments = node.arguments
           joined_arguments = arguments.map(&:source).join(', ')
-          last_line_source_of_arguments = last_line_source_of_arguments(arguments)
 
-          if last_line_source_of_arguments.start_with?(')')
-            joined_arguments = "#{joined_arguments}#{last_line_source_of_arguments}"
-
-            corrector.remove(range_by_whole_lines(arguments.loc.end, include_final_newline: true))
+          if last_line_source_of_arguments(arguments).start_with?(')')
+            remove_line_break_before_closing_parenthesis(corrector, arguments)
           end
 
           arguments_range = range_with_surrounding_space(arguments_range(node), side: :left)
@@ -66,6 +63,19 @@ module RuboCop
 
         def last_line_source_of_arguments(arguments)
           processed_source[arguments.last_line - 1].strip
+        end
+
+        def remove_line_break_before_closing_parenthesis(corrector, arguments)
+          closing_parenthesis = arguments.loc.end
+          closing_line = processed_source.buffer.line_range(closing_parenthesis.line)
+          end_of_last_argument = arguments.last.source_range.end
+
+          corrector.remove(end_of_last_argument.join(closing_parenthesis.begin))
+          corrector.insert_after(closing_line.end, text_between(end_of_last_argument, closing_line))
+        end
+
+        def text_between(range, line_range)
+          range.join(line_range.begin).source.delete_suffix("\n")
         end
 
         def opening_line(node)

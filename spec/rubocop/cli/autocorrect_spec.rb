@@ -745,6 +745,65 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/MultilineMethodSignature` with `EnforcedStyle: require_no_parentheses` of `Style/MethodDefParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MultilineMethodSignature:
+        Enabled: true
+      Style/MethodDefParentheses:
+        EnforcedStyle: require_no_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(a, b
+      )
+        c
+      end
+
+      def bar(a,
+              b)
+        c
+      end
+
+      def baz(a, b # comment
+        # another comment
+      )
+        c
+      end
+
+      def qux(a, b = <<~TEXT
+        text
+      TEXT
+      )
+        c
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect', '--only', 'Style/MultilineMethodSignature,Style/MethodDefParentheses']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo a, b
+        c
+      end
+
+      def bar a, b
+        c
+      end
+
+      def baz a, b # comment
+        # another comment
+        c
+      end
+
+      def qux a, b = <<~TEXT
+        text
+      TEXT
+        c
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
