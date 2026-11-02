@@ -223,4 +223,207 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
       PATH
     RUBY
   end
+
+  it 'registers an offense for and corrects the `File.open` with multiline write block with heredoc followed by code on the same line' do
+    expect_offense(<<~RUBY)
+      foo(File.open(filename, 'w') do |f|
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~EOS)
+          content
+        EOS
+      end, bar) if condition
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(File.write(filename, <<~EOS), bar) if condition
+          content
+        EOS
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with heredoc as a filename followed by code with a heredoc on the same line' do
+    expect_offense(<<~RUBY)
+      File.open(<<~PATH, 'w') do |f|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        path/to/file
+      PATH
+        f.write(content)
+      end; foo(<<~EOS)
+        bar
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(<<~PATH, content); foo(<<~EOS)
+        path/to/file
+      PATH
+        bar
+      EOS
+    RUBY
+  end
+
+  it 'registers an offense for and corrects two `File.open` with heredocs on the same line' do
+    expect_offense(<<~RUBY)
+      foo(File.open(a, 'w') do |f|
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~X)
+          x
+        X
+      end, File.open(b, 'w') do |g|
+           ^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        g.write(<<~Y)
+          y
+        Y
+      end)
+    RUBY
+
+    expect_correction(<<~RUBY, loop: true)
+      foo(File.write(a, <<~X), File.write(b, <<~Y))
+          x
+        X
+          y
+        Y
+    RUBY
+  end
+
+  it 'registers an offense for and corrects `File.open` with a heredoc followed by `File.open` without a heredoc on the same line' do
+    expect_offense(<<~RUBY)
+      foo(File.open(a, 'w') do |f|
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~X)
+          x
+        X
+      end, File.open(b, 'w') { |g| g.write(content) })
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+    RUBY
+
+    expect_correction(<<~RUBY, loop: true)
+      foo(File.write(a, <<~X), File.write(b, content))
+          x
+        X
+    RUBY
+  end
+
+  it 'registers an offense for and corrects `File.open` nested in the content of another `File.open`' do
+    expect_offense(<<~RUBY)
+      File.open(a, 'w') do |f|
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write((File.open(b, 'w') do |g|
+                 ^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+          g.write(<<~X)
+            x
+          X
+        end).to_s)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY, loop: true)
+      File.write(a, (File.write(b, <<~X)).to_s)
+            x
+          X
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with a heredoc whose body is inside the content' do
+    expect_offense(<<~RUBY)
+      foo(File.open(filename, 'w') do |f|
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~EOS +
+          content
+        EOS
+          bar)
+      end, baz)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(File.write(filename, <<~EOS +
+          content
+        EOS
+          bar), baz)
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with a heredoc nested in the body of another heredoc' do
+    expect_offense(<<~'RUBY')
+      foo(File.open(filename, 'w') do |f|
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~OUTER)
+          content #{<<~INNER}
+            inner
+          INNER
+        OUTER
+      end, bar)
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      foo(File.write(filename, <<~OUTER), bar)
+          content #{<<~INNER}
+            inner
+          INNER
+        OUTER
+    RUBY
+  end
+
+  it 'registers an offense but does not correct when a literal after the `File.open` with a heredoc continues on the next line' do
+    expect_offense(<<~RUBY)
+      foo(File.open(filename, 'w') do |f|
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~EOS)
+          content
+        EOS
+      end, %w[
+        bar baz
+      ])
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense for and corrects the `File.open` with a heredoc in an interpolation of a multiline string' do
+    expect_offense(<<~'RUBY')
+      x = "a #{
+        File.open(filename, 'w') do |f|
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+          f.write(<<~EOS)
+            content
+          EOS
+        end
+      } b"
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      x = "a #{
+        File.write(filename, <<~EOS)
+            content
+          EOS
+      } b"
+    RUBY
+  end
+
+  it 'registers an offense but does not correct when the string around the `File.open` with a heredoc continues on the next line' do
+    expect_offense(<<~'RUBY')
+      x = "a #{File.open(filename, 'w') do |f|
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~EOS)
+          content
+        EOS
+      end} b
+      c"
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense but does not correct when the `File.open` contains the body of a heredoc opened before it' do
+    expect_offense(<<~RUBY)
+      foo(<<~A, File.open(filename, 'w') do |f|
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        a
+      A
+        f.write(content)
+      end)
+    RUBY
+
+    expect_no_corrections
+  end
 end
