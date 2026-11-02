@@ -3154,6 +3154,55 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/AmbiguousOperatorPrecedence` with `EnforcedStyleForMultiline: comma` of trailing comma cops' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: comma
+      Style/TrailingCommaInArrayLiteral:
+        EnforcedStyleForMultiline: comma
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      do_something(
+        a + b * (c +
+          d)
+      )
+      [
+        a + b * (c +
+          d)
+      ]
+      {
+        key: a + b * (c +
+          d)
+      }
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only',
+          'Lint/AmbiguousOperatorPrecedence,Style/TrailingCommaInArguments,' \
+          'Style/TrailingCommaInArrayLiteral,Style/TrailingCommaInHashLiteral'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(
+        a + (b * (c +
+          d)),
+      )
+      [
+        a + (b * (c +
+          d)),
+      ]
+      {
+        key: a + (b * (c +
+          d)),
+      }
+    RUBY
+  end
+
   it 'corrects `Style/MapIntoArray` with `EnforcedStyleForMultiline: comma` of `Style/TrailingCommaInArguments`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/TrailingCommaInArguments:
