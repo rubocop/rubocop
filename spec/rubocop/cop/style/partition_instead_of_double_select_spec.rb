@@ -161,6 +161,53 @@ RSpec.describe RuboCop::Cop::Style::PartitionInsteadOfDoubleSelect, :config do
         after_code
       RUBY
     end
+
+    it 'preserves code after the second call on the same line when correcting' do
+      expect_offense(<<~RUBY)
+        positives = arr.select { |x| x > 0 }
+        negatives = arr.reject { |x| x > 0 }; after_code
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `partition` instead of consecutive `select` and `reject` calls.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        positives, negatives = arr.partition { |x| x > 0 }; after_code
+      RUBY
+    end
+
+    it 'preserves a comment after the second call when correcting' do
+      expect_offense(<<~RUBY)
+        positives = arr.select { |x| x > 0 }
+        negatives = arr.reject { |x| x > 0 } # comment
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `partition` instead of consecutive `select` and `reject` calls.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        positives, negatives = arr.partition { |x| x > 0 } # comment
+      RUBY
+    end
+
+    it 'registers an offense and corrects when both calls are on the same line' do
+      expect_offense(<<~RUBY)
+        positives = arr.select { |x| x > 0 }; negatives = arr.reject { |x| x > 0 }
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `partition` instead of consecutive `select` and `reject` calls.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        positives, negatives = arr.partition { |x| x > 0 };
+      RUBY
+    end
+
+    it 'registers an offense and corrects inside an interpolation' do
+      expect_offense(<<~'RUBY')
+        "#{positives = arr.select { |x| x > 0 }
+        negatives = arr.reject { |x| x > 0 }}"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `partition` instead of consecutive `select` and `reject` calls.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{positives, negatives = arr.partition { |x| x > 0 }}"
+      RUBY
+    end
   end
 
   context 'when using select and reject with block_pass (&:sym) form' do
