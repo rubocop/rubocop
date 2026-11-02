@@ -73,6 +73,7 @@ module RuboCop
           return if end_keyword_before_closing_parenthesis?(node)
           return if subsequent_closing_parentheses_in_same_line?(outermost_send)
           return if exist_argument_between_heredoc_end_and_closing_parentheses?(node)
+          return if exist_argument_between_heredoc_end_and_closing_parentheses?(outermost_send)
 
           add_offense(outermost_send.loc.end) do |corrector|
             autocorrect(corrector, outermost_send)
