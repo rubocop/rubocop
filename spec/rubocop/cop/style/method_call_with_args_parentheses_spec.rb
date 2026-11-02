@@ -112,6 +112,115 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
+    it 'does not register an offense for a call with a `do`...`end` block in the arguments of a command call' do
+      expect_no_offenses(<<~RUBY)
+        foo bar, if baz
+          obj.do_something qux do
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a call with a numbered `do`...`end` block in the arguments of a command call' do
+      expect_no_offenses(<<~RUBY)
+        foo bar, k: if baz
+          obj.do_something qux do
+            _1
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a call with a `do`...`end` block in the arguments of a parenthesized call' do
+      expect_offense(<<~RUBY)
+        foo(bar, if baz
+          obj.do_something qux do
+          ^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(bar, if baz
+          obj.do_something(qux) do
+          end
+        end)
+      RUBY
+    end
+
+    it 'registers an offense for a call with a `do`...`end` block in a block body in the arguments of a command call' do
+      expect_offense(<<~RUBY)
+        foo bar, -> do
+          obj.do_something qux do
+          ^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo bar, -> do
+          obj.do_something(qux) do
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a call with a `do`...`end` block as the value of a setter call' do
+      expect_offense(<<~RUBY)
+        obj.value = obj.do_something qux do
+                    ^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj.value = obj.do_something(qux) do
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a call with a `do`...`end` block as the value of a setter call in the arguments of a command call' do
+      expect_no_offenses(<<~RUBY)
+        foo bar, if baz
+          obj.value = obj.do_something qux do
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a call with a `do`...`end` block in the brackets of an index in the arguments of a command call' do
+      expect_offense(<<~RUBY)
+        foo bar, obj[if baz
+          obj.do_something qux do
+          ^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        end]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo bar, obj[if baz
+          obj.do_something(qux) do
+          end
+        end]
+      RUBY
+    end
+
+    it 'registers an offense for a call with a `do`...`end` block as the value of `break` in the arguments of a command call' do
+      expect_offense(<<~RUBY)
+        foo bar, while baz
+          break obj.do_something qux do
+                ^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo bar, while baz
+          break obj.do_something(qux) do
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense and keeps the parens of a grouped `and` expression argument' do
       expect_offense(<<~RUBY)
         top.test (a and b)
