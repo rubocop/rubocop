@@ -44,11 +44,18 @@ module RuboCop
 
         def on_send(node)
           return unless require_call?(node)
+          return unless statement_sequence?(node.parent)
           return if @required[node.parent].add?("#{node.method_name}#{node.first_argument}")
 
           add_offense(node, message: format(MSG, method: node.method_name)) do |corrector|
-            corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
+            corrector.remove(range_for_statement_removal(node.source_range))
           end
+        end
+
+        private
+
+        def statement_sequence?(node)
+          node&.type?(:begin, :kwbegin)
         end
       end
     end

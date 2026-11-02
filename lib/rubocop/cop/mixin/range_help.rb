@@ -90,6 +90,19 @@ module RuboCop
         range.adjust(begin_pos: -range.column, end_pos: end_offset).intersect(buffer.source_range)
       end
 
+      # Returns the range to remove a statement: its whole lines, including a trailing comment
+      # and the final newline, when no other code shares them, and otherwise the range itself
+      # with the spaces after it.
+      def range_for_statement_removal(range)
+        rest_of_line = range.source_buffer.source_line(range.last_line)[range.last_column..]
+
+        if begins_its_line?(range) && rest_of_line.match?(/\A\s*(#|\z)/)
+          range_by_whole_lines(range, include_final_newline: true)
+        else
+          range_with_surrounding_space(range, side: :right, newlines: false)
+        end
+      end
+
       def column_offset_between(base_range, range)
         effective_column(base_range) - effective_column(range)
       end
