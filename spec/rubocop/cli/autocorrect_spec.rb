@@ -1412,6 +1412,46 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Lint/UselessAssignment` for an `if` value' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      do_something(foo = if bar
+        baz
+      end)
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Lint/UselessAssignment,Style/MethodCallWithArgsParentheses'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(if bar
+        baz
+      end)
+    RUBY
+  end
+
+  it 'corrects `Lint/UselessAssignment` with `Style/RescueModifier` for a heredoc value with a modifier `rescue`' do
+    create_file('example.rb', <<~RUBY)
+      do_something foo = bar(<<~EOS) rescue baz
+        text
+      EOS
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Lint/UselessAssignment,Style/RescueModifier'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something begin
+                     bar(<<~EOS)
+        text
+      EOS
+                   rescue
+                     baz
+                   end
+    RUBY
+  end
+
   it 'corrects `Layout/LineLength` with `EnforcedStyle: omit_parentheses` of ' \
      '`Style/MethodCallWithArgsParentheses`' do
     create_file('.rubocop.yml', <<~YAML)

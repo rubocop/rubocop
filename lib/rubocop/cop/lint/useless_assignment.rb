@@ -37,13 +37,24 @@ module RuboCop
       #     some_var = 1
       #     do_something(some_var)
       #   end
-      class UselessAssignment < Base
+      class UselessAssignment < Base # rubocop:disable Metrics/ClassLength
         extend AutoCorrector
 
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 
+        MODIFIER_KEYWORD = /\A(?:if|unless|while|until)\b/.freeze
+        AMBIGUOUS_COMMAND_ARGUMENT = %r{#{MODIFIER_KEYWORD}|\A(?:\{|[/+-]\s|/=|\.\.)}.freeze
+        CONDITIONAL_TYPES = %i[if while until case case_match].freeze
+        STATEMENTS_PARENT_TYPES = %i[
+          begin kwbegin any_block any_def class module sclass when in_pattern for resbody ensure
+        ].freeze
+
         def self.joining_forces
           VariableForce
+        end
+
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses, Style::RescueModifier]
         end
 
         def after_leaving_scope(scope, _variable_table)
@@ -245,9 +256,42 @@ module RuboCop
           if expression.array_type? && !expression.bracketed?
             corrector.replace(assignment_part, '[')
             corrector.insert_after(expression, ']')
+          elsif parentheses_required?(node, expression)
+            corrector.replace(assignment_part, '(')
+            corrector.insert_after(expression, ')')
           else
             corrector.remove(assignment_part)
           end
+        end
+
+        def parentheses_required?(node, expression)
+          return !rescue_modifier_allowed?(node) if expression.rescue_type?
+
+          ambiguous_without_assignment?(node, expression)
+        end
+
+        def rescue_modifier_allowed?(node)
+          parent = node.parent
+          return true if parent.nil? || parent.assignment?
+          return !parent.condition.equal?(node) if parent.type?(*CONDITIONAL_TYPES)
+
+          parent.type?(*STATEMENTS_PARENT_TYPES)
+        end
+
+        def ambiguous_without_assignment?(node, expression)
+          return false unless first_command_argument?(node)
+
+          keyword = node.parent.type?(:return, :break, :next)
+          expression.source.match?(keyword ? MODIFIER_KEYWORD : AMBIGUOUS_COMMAND_ARGUMENT)
+        end
+
+        def first_command_argument?(node)
+          parent = node.parent
+          return false unless parent&.type?(:call, :super, :yield, :return, :break, :next)
+          return false if parent.parenthesized?
+          return false if parent.call_type? && (parent.operator_method? || parent.setter_method?)
+
+          parent.first_argument.equal?(node)
         end
 
         def variable_in_loop_condition?(assignment_node, variable)
