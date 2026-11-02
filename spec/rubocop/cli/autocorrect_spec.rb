@@ -1487,6 +1487,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/DataInheritance` in a method argument' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: omit_parentheses
+    YAML
+
+    create_file('example.rb', <<~RUBY)
+      do_something(class Foo < Data.define(:bar)
+        def baz
+        end
+      end)
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Style/MethodCallWithArgsParentheses,Style/DataInheritance'])
+    ).to eq(0)
+
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(Foo = Data.define(:bar) do
+        def baz
+        end
+      end)
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/AndOr`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

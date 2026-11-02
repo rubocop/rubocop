@@ -44,6 +44,10 @@ module RuboCop
 
         minimum_target_ruby_version 3.2
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_class(node)
           return unless data_define?(node.parent_class)
           return if defines_constants?(node.body)
