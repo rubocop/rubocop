@@ -46,4 +46,36 @@ RSpec.describe CopsDocumentationGenerator do
       end
     end
   end
+
+  context 'when the department has its own `StyleGuideBaseURL`' do
+    before do
+      default_config = RuboCop::ConfigLoader.default_configuration
+      config_hash = default_config.to_h.merge(
+        'Style' => { 'StyleGuideBaseURL' => 'https://style.example.org' }
+      )
+      RuboCop::ConfigLoader.default_configuration =
+        RuboCop::Config.new(config_hash, default_config.loaded_path)
+      # Style guide URLs are cached by their `StyleGuide` value only.
+      RuboCop::Cop::MessageAnnotator.style_guide_urls.clear
+    end
+
+    after do
+      RuboCop::ConfigLoader.default_configuration = nil
+      RuboCop::Cop::MessageAnnotator.style_guide_urls.clear
+    end
+
+    it 'uses the department base URL for style guide references' do
+      Dir.mktmpdir do |tmpdir|
+        generator = described_class.new(departments: %w[Style], base_dir: tmpdir)
+        expect { generator.call }.to output.to_stdout
+
+        page = File.read(File.join(tmpdir, 'docs/modules/ROOT/pages/cops_style.adoc'))
+        expect(page).to include(<<~ADOC)
+          === References
+
+          * https://style.example.org#hash-literals
+        ADOC
+      end
+    end
+  end
 end
