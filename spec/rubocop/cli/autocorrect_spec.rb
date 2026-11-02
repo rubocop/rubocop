@@ -1848,6 +1848,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: always` of `Style/AndOr` with `Style/OperatorMethodCall`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/AndOr:
+        EnforcedStyle: always
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo and bar.+ baz
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/AndOr,Style/OperatorMethodCall'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo && (bar + baz)
+    RUBY
+  end
+
   it 'corrects `Layout/FirstMethodArgumentLineBreak` with `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/FirstMethodArgumentLineBreak:
