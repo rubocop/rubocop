@@ -79,5 +79,30 @@ RSpec.describe RuboCop::Cop::Style::AmbiguousEndlessMethodDefinition, :config do
         def foo = true || bar
       RUBY
     end
+
+    it 'does not register an offense when the body has a heredoc' do
+      expect_no_offenses(<<~RUBY)
+        def foo = bar(<<~EOS) if baz
+          text
+        EOS
+      RUBY
+    end
+
+    it 'registers an offense when only the condition has a heredoc' do
+      expect_offense(<<~RUBY)
+        def foo = bar if baz(<<~EOS)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `if` statements with endless methods.
+          text
+        EOS
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar
+        end if baz(<<~EOS)
+          text
+        EOS
+      RUBY
+    end
   end
 end
