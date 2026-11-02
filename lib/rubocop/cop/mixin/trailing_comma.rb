@@ -168,8 +168,10 @@ module RuboCop
         range = autocorrect_range(last_item)
         msg = format(MSG, command: 'Put a', unit: format(kind, article: 'a multiline'))
 
+        # The comma is anchored to the whole item rather than to the offense range on its
+        # last line, so that parentheses other cops wrap around a part of the item precede it.
         add_offense(range, message: msg) do |corrector|
-          PunctuationCorrector.swap_comma(corrector, range)
+          corrector.insert_after(last_item, ',')
         end
       end
 
