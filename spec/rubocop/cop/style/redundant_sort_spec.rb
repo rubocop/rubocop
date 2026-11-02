@@ -296,6 +296,26 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     RUBY
   end
 
+  it 'does not register an offense when first is called on sort with a comment before the line break and a comma' do
+    expect_no_offenses(<<~RUBY)
+      foo(obj.sort # comment
+        .first, bar)
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort with a comment before the line break and a closing parenthesis' do
+    expect_offense(<<~RUBY)
+      foo(obj.sort # comment
+              ^^^^^^^^^^^^^^ Use `min` instead of `sort...first`.
+        .first)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(obj.min # comment
+        )
+    RUBY
+  end
+
   it 'does not register an offense when first is called on sort with a comment before the line break and a binary operator' do
     expect_no_offenses(<<~RUBY)
       x = obj.sort # comment

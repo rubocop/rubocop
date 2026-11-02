@@ -139,7 +139,7 @@ module RuboCop
 
           rest = code_after_accessor(node)
 
-          !rest.empty? && !rest.match?(/\A(#|&?\.|[)\]},])/)
+          !rest.empty? && !rest.match?(/\A(#|&?\.|[)\]}])/)
         end
 
         def code_after_accessor(node)
