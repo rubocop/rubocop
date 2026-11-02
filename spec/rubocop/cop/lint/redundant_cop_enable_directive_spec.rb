@@ -47,6 +47,32 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
     RUBY
   end
 
+  it 'registers an offense and keeps text other than a `--` reason after the directive as a comment' do
+    expect_offense(<<~RUBY)
+      foo
+      # rubocop:enable Layout/LineLength some text
+                       ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/LineLength.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo
+      # some text
+    RUBY
+  end
+
+  it 'registers an offense and keeps a comment after the directive without adding another `#`' do
+    expect_offense(<<~RUBY)
+      foo
+      # rubocop:enable Layout/LineLength # some text
+                       ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/LineLength.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo
+      # some text
+    RUBY
+  end
+
   it 'registers an offense and corrects when the first cop is unnecessarily enabled' do
     expect_offense(<<~RUBY)
       # rubocop:disable Layout/LineLength
@@ -403,6 +429,31 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
 
       expect_correction(<<~RUBY)
         foo = 1
+      RUBY
+    end
+
+    it 'registers an offense and removes the `--` reason with a `pop` without a matching `push`' do
+      expect_offense(<<~RUBY)
+        foo = 1
+        # rubocop:pop -- no longer needed
+        ^^^^^^^^^^^^^ Unnecessary `rubocop:pop` without a matching `rubocop:push`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = 1
+      RUBY
+    end
+
+    it 'registers an offense and keeps text after a `pop` without a matching `push` as a comment' do
+      expect_offense(<<~RUBY)
+        foo = 1
+        # rubocop:pop (see above)
+        ^^^^^^^^^^^^^ Unnecessary `rubocop:pop` without a matching `rubocop:push`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = 1
+        # (see above)
       RUBY
     end
 

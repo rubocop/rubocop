@@ -76,7 +76,15 @@ module RuboCop
 
         def register_orphan_pop(directive)
           add_offense(directive.range, message: MSG_ORPHAN_POP) do |corrector|
-            corrector.remove(range_with_surrounding_space(directive.range, side: :right))
+            remove_directive(corrector, directive.range_with_reason, directive.comment)
+          end
+        end
+
+        def remove_directive(corrector, range, comment)
+          if range.end.join(comment.source_range.end).source.match?(/\A\s*(?:#|\z)/)
+            corrector.remove(range_with_surrounding_space(range, side: :right))
+          else
+            corrector.replace(range, '#')
           end
         end
 
@@ -89,18 +97,18 @@ module RuboCop
               range_of_offense(comment, name),
               message: format(MSG, cop: all_or_name(name))
             ) do |corrector|
-              corrector.remove(removal_range(directive, comment, cop_names, name))
+              correct_directive(corrector, directive, cop_names, name)
             end
           end
         end
 
-        # When every cop on the directive is redundant the whole comment goes, `--` reason
+        # When every cop on the directive is redundant the whole directive goes, `--` reason
         # included; otherwise just the one cop is spliced out of the list.
-        def removal_range(directive, comment, cop_names, name)
+        def correct_directive(corrector, directive, cop_names, name)
           if directive.match?(cop_names)
-            range_with_surrounding_space(directive.range_with_reason, side: :right)
+            remove_directive(corrector, directive.range_with_reason, directive.comment)
           else
-            range_with_comma(comment, name)
+            corrector.remove(range_with_comma(directive.comment, name))
           end
         end
 
