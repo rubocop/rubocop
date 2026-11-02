@@ -38,6 +38,10 @@ module RuboCop
         RESTRICT_ON_SEND = %i[sort].freeze
         GLOB_METHODS = %i[glob []].freeze
 
+        def self.autocorrect_incompatible_with
+          [Layout::DotPosition]
+        end
+
         def on_send(node)
           return unless dir_glob?(node.receiver)
           # `sort` with a comparator block or block-pass changes the order, so it is

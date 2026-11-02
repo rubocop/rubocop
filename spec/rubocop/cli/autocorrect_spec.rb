@@ -6565,6 +6565,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/DotPosition` and `Lint/RedundantDirGlobSort` offenses with a comment after a trailing dot' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.0
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      Dir.glob(pattern). # comment
+        sort.
+        each { |file| file }
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Layout/DotPosition,Lint/RedundantDirGlobSort'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      Dir.glob(pattern) # comment
+        .each { |file| file }
+    RUBY
+  end
+
   it 'corrects `Layout/HeredocArgumentClosingParenthesis` with `Layout/MultilineMethodCallBraceLayout`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/HeredocArgumentClosingParenthesis:
