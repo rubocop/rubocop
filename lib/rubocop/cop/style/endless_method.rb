@@ -153,8 +153,12 @@ module RuboCop
         # the body in the same pass, which a method passed as an argument needs.
         # `Style/IfUnlessModifier` and `Style/WhileUntilModifier` would turn the body into
         # a modifier form, which then applies to the whole endless definition.
+        # `Lint/LiteralAsCondition` and `Lint/UselessTimes` replace the body with
+        # the statements inside it, which an endless definition may not hold.
         def self.autocorrect_incompatible_with
           [
+            Lint::LiteralAsCondition,
+            Lint::UselessTimes,
             Style::GuardClause,
             Style::IfUnlessModifier,
             Style::MethodCallWithArgsParentheses,
