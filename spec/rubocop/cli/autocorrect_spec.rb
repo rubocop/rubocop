@@ -7124,6 +7124,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/BlockDelimiters` with `EnforcedStyle: always_braces` and `Style/RescueStandardError` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/BlockDelimiters:
+        EnforcedStyle: always_braces
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo do
+      rescue
+      end
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/BlockDelimiters,Style/RescueStandardError'])).to eq(0)
+
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo {
+      begin
+      rescue StandardError
+      end
+      }
+    RUBY
+  end
+
   it 'does not crash when using `Layout/CaseIndentation` and `Layout/ElseAlignment`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
