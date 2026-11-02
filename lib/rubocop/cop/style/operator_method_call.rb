@@ -69,8 +69,7 @@ module RuboCop
         end
 
         def wrap_in_parentheses_if_chained(corrector, node)
-          return unless node.parent&.call_type?
-          return if node.parent.first_argument == node
+          return unless chained?(node)
 
           operator = node.loc.selector
 
@@ -84,14 +83,20 @@ module RuboCop
           selector = node.loc.selector
 
           return true if selector.end_pos == rhs.source_range.begin_pos
-          return false if node.parent&.call_type? # if chained, a space is already added
+          return false if chained?(node) # if chained, a space is already added
 
-          # For `/` operations, if the RHS starts with a `(` without space,
-          # add one to avoid a syntax error.
-          range = selector.end.join(rhs.source_range.begin)
-          return true if node.method?(:/) && range.source == '('
+          # Without a space, `foo +(bar)` is parsed as `foo(+(bar))` and `foo /(bar)` starts
+          # a regexp literal.
+          node.parenthesized?
+        end
 
-          false
+        def chained?(node)
+          parent = node.parent
+          return false unless parent&.call_type?
+
+          return true unless parent.first_argument.equal?(node)
+
+          parent.binary_operation? && !parent.method?(:[])
         end
       end
     end
