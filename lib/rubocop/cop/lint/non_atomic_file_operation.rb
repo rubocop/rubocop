@@ -42,6 +42,7 @@ module RuboCop
       #   FileUtils.rm_f(path)
       #
       class NonAtomicFileOperation < Base
+        include RangeHelp
         extend AutoCorrector
 
         MSG_REMOVE_FILE_EXIST_CHECK = 'Remove unnecessary existence check ' \
@@ -110,7 +111,7 @@ module RuboCop
           range = parent.loc.keyword.begin.join(parent.condition.source_range.end)
 
           add_offense(range, message: message_remove_file_exist_check(exist_node)) do |corrector|
-            autocorrect(corrector, node, range) unless parent.elsif?
+            autocorrect(corrector, node, range) if autocorrectable?(node)
           end
         end
 
@@ -124,6 +125,34 @@ module RuboCop
           format(MSG_REMOVE_FILE_EXIST_CHECK, receiver: receiver, method_name: method_name)
         end
 
+        def autocorrectable?(node)
+          parent = node.parent
+          return false if parent.elsif?
+          return true if parent.modifier_form?
+          return true unless code_after_end?(parent)
+          return false if !node.parenthesized? || last_heredoc_end_pos(node)
+
+          !processed_source.contains_comment?(body_to_end_range(node))
+        end
+
+        def code_after_end?(if_node)
+          end_keyword = if_node.loc.end
+
+          !end_keyword.source_line[end_keyword.last_column..].match?(/\A\s*(?:#|\z)/)
+        end
+
+        def body_to_end_range(node)
+          begin_pos = [node.source_range.end_pos, last_heredoc_end_pos(node)].compact.max
+
+          range_between(begin_pos, node.parent.loc.end.end_pos)
+        end
+
+        def last_heredoc_end_pos(node)
+          node.each_descendant(:any_str).select(&:heredoc?).map do |heredoc|
+            heredoc.loc.heredoc_end.end_pos
+          end.max
+        end
+
         def autocorrect(corrector, node, range)
           corrector.remove(range)
           autocorrect_replace_method(corrector, node)
@@ -131,8 +160,15 @@ module RuboCop
           if node.parent.modifier_form?
             corrector.remove(node.source_range.end.join(node.parent.loc.keyword.begin))
           else
-            corrector.remove(node.parent.loc.end)
+            corrector.remove(end_keyword_range(node))
           end
+        end
+
+        def end_keyword_range(node)
+          range = body_to_end_range(node)
+          return node.parent.loc.end if processed_source.contains_comment?(range)
+
+          range
         end
 
         def autocorrect_replace_method(corrector, node)
