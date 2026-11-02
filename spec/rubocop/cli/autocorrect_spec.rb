@@ -562,8 +562,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     ).to eq(0)
     expect(File.read('example.rb')).to eq(<<~RUBY)
       [
-        FileUtils.mkdir_p(path)
-      ]
+        FileUtils.mkdir_p(path)]
     RUBY
   end
 

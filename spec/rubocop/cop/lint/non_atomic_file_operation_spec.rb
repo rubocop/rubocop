@@ -13,7 +13,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     expect_correction(<<~RUBY)
 
       #{trailing_whitespace}#{trailing_whitespace}FileUtils.mkdir_p(path)
-
     RUBY
   end
 
@@ -29,7 +28,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       expect_correction(<<~RUBY)
 
         #{trailing_whitespace}#{trailing_whitespace}FileUtils.#{make_method}(path)
-
       RUBY
     end
   end
@@ -47,7 +45,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       expect_correction(<<~RUBY)
 
         #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_f(path)
-
       RUBY
     end
   end
@@ -65,7 +62,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       expect_correction(<<~RUBY)
 
         #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_rf(path)
-
       RUBY
     end
   end
@@ -82,7 +78,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       expect_correction(<<~RUBY)
 
         #{trailing_whitespace}#{trailing_whitespace}FileUtils.#{remove_method}(path)
-
       RUBY
     end
   end
@@ -108,7 +103,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     expect_correction(<<~RUBY)
 
       #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path, force: true)
-
     RUBY
   end
 
@@ -144,7 +138,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     expect_correction(<<~RUBY)
 
       #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path, verbose: true)
-
     RUBY
   end
 
@@ -159,7 +152,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     expect_correction(<<~RUBY)
 
       #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path)
-
     RUBY
   end
 
@@ -174,7 +166,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     expect_correction(<<~RUBY)
 
       #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path)
-
     RUBY
   end
 
@@ -252,6 +243,115 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
   end
 
+  it 'registers an offense when use `FileTest.exist?` before remove file in an argument followed by another argument' do
+    expect_offense(<<~RUBY)
+      foo(if FileTest.exist?(path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.remove(path)
+        ^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+      end, bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(
+        FileUtils.rm_f(path), bar)
+    RUBY
+  end
+
+  it 'registers an offense when use `FileTest.exist?` before remove file with a comment before `end`' do
+    expect_offense(<<~RUBY)
+      if FileTest.exist?(path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.remove(path) # comment
+        ^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_f(path) # comment
+
+    RUBY
+  end
+
+  it 'registers an offense but does not autocorrect when use `FileTest.exist?` before remove file with a comment in an argument followed by another argument' do
+    expect_offense(<<~RUBY)
+      foo(if FileTest.exist?(path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.remove(path) # comment
+        ^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+      end, bar)
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense when use `FileTest.exist?` before remove file with a heredoc argument' do
+    expect_offense(<<~RUBY)
+      if FileTest.exist?(path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.remove(path, <<~TEXT)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+          text
+        TEXT
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_f(path, <<~TEXT)
+          text
+        TEXT
+    RUBY
+  end
+
+  it 'registers an offense but does not autocorrect when use `FileTest.exist?` before remove file with a heredoc argument in an argument followed by another argument' do
+    expect_offense(<<~RUBY)
+      foo(if FileTest.exist?(path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.remove(path, <<~TEXT)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+          text
+        TEXT
+      end, bar)
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense when use `FileTest.exist?` before remove file with arguments after a heredoc body' do
+    expect_offense(<<~RUBY)
+      if FileTest.exist?(path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.remove(path, <<~TEXT,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+          text
+        TEXT
+          verbose: false)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_f(path, <<~TEXT,
+          text
+        TEXT
+          verbose: false)
+    RUBY
+  end
+
+  it 'registers an offense but does not autocorrect when use `FileTest.exist?` before remove file without parentheses in an argument followed by another argument' do
+    expect_offense(<<~RUBY)
+      foo(if FileTest.exist?(path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.remove path
+        ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+      end, bar)
+    RUBY
+
+    expect_no_corrections
+  end
+
   context 'with fully-qualified constant names' do
     it 'registers an offense when existence check uses fully qualified constant name' do
       expect_offense(<<~RUBY)
@@ -265,7 +365,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       expect_correction(<<~RUBY)
 
         #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_f(path)
-
       RUBY
     end
 
@@ -281,7 +380,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       expect_correction(<<~RUBY)
 
         #{trailing_whitespace}#{trailing_whitespace}::FileUtils.rm_f(path)
-
       RUBY
     end
 
@@ -297,7 +395,6 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       expect_correction(<<~RUBY)
 
         #{trailing_whitespace}#{trailing_whitespace}::FileUtils.rm_f(path)
-
       RUBY
     end
   end
