@@ -192,6 +192,56 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
       expect_no_corrections
     end
 
+    it 'does not try to correct a block if the block arg is reassigned' do
+      expect_offense(<<~RUBY)
+        1.times do |i|
+        ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+          do_something(i)
+          i = i * 2
+          do_something_else(i)
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not try to correct a block if the block arg is reassigned by rightward pattern matching', :ruby30 do
+      expect_offense(<<~RUBY)
+        1.times do |i|
+        ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+          do_something(i)
+          foo => i
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not try to correct a block if the block arg is reassigned by a named capture' do
+      expect_offense(<<~RUBY)
+        1.times do |i|
+        ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+          do_something(i)
+          /(?<i>\\d)/ =~ str
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects a block if a named capture has another name than the block arg' do
+      expect_offense(<<~RUBY)
+        1.times do |i|
+        ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+          /(?<j>\\d)/ =~ str
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        /(?<j>\\d)/ =~ str
+      RUBY
+    end
+
     it 'does not try to correct a block if the block arg is changed in parallel assignment' do
       expect_offense(<<~RUBY)
         1.times do |i|
