@@ -45,7 +45,7 @@ module RuboCop
         QUOTE_DELIMITERS = %w[' "].freeze
 
         def self.autocorrect_incompatible_with
-          [Style::RedundantInterpolation]
+          [Style::RedundantInterpolation, Lint::AmbiguousOperatorPrecedence]
         end
 
         def on_new_investigation
