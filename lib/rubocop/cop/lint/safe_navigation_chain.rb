@@ -28,6 +28,7 @@ module RuboCop
       #   x&.foo || bar
       class SafeNavigationChain < Base
         include NilMethods
+        include RescueNode
         extend AutoCorrector
         extend TargetRubyVersion
 
@@ -35,6 +36,9 @@ module RuboCop
 
         MSG = 'Do not chain ordinary method call after safe navigation operator.'
         PLUS_MINUS_METHODS = %i[+@ -@].freeze
+        BODY_PARENT_TYPES = %i[
+          block numblock itblock when in_pattern while until class module sclass
+        ].to_set.freeze
 
         # @!method bad_method?(node)
         def_node_matcher :bad_method?, <<~PATTERN
@@ -121,18 +125,67 @@ module RuboCop
         end
 
         def require_parentheses?(send_node)
-          return true if operator_inside_collection_literal?(send_node)
-          return false unless send_node.comparison_method?
-          return false unless (node = send_node.parent)
+          return false if send_node.loc.dot || brackets?(send_node)
 
-          (node.respond_to?(:logical_operator?) && node.logical_operator?) ||
-            (node.respond_to?(:comparison_method?) && node.comparison_method?)
+          !command_call_allowed?(send_node)
         end
 
-        def operator_inside_collection_literal?(send_node)
-          # If an operator call (without a dot) is inside an array or a hash, it needs
-          # to be parenthesized when converted to safe navigation.
-          send_node.parent&.type?(:array, :pair) && !send_node.loc.dot
+        def command_call_allowed?(node)
+          return true unless (parent = node.parent)
+          return sole_argument?(node, parent) if argument_taking?(parent)
+          return true if condition?(node, parent)
+
+          statement?(node, parent)
+        end
+
+        def argument_taking?(node)
+          return node.type?(:yield, :super, :return, :break, :next) unless node.call_type?
+
+          !node.assignment? && !node.operator_method?
+        end
+
+        def sole_argument?(node, parent)
+          return false unless parent.arguments.one?
+          return false unless node.equal?(parent.first_argument)
+          return false if parent.parenthesized? && parent.multiline?
+
+          !processed_source.buffer.source.match?(/\G\s*,/, node.source_range.end_pos)
+        end
+
+        def condition?(node, parent)
+          case parent.type
+          when :and, :or then parent.semantic_operator?
+          when :if then !parent.ternary? && node.equal?(parent.condition)
+          when :while, :until, :while_post, :until_post, :case, :case_match
+            node.equal?(parent.condition)
+          else false
+          end
+        end
+
+        def statement?(node, parent)
+          return true if parent.type?(:begin, :kwbegin, :rescue, :ensure)
+          return node.equal?(parent.body) if BODY_PARENT_TYPES.include?(parent.type)
+          return branch?(node, parent) if parent.type?(:if, :case, :case_match)
+
+          case parent.type
+          when :def, :defs then !parent.endless?
+          when :resbody then node.equal?(parent.body) && !rescue_modifier?(parent)
+          else assigned_value_in_statement?(node, parent)
+          end
+        end
+
+        def branch?(node, parent)
+          return false if parent.if_type? && parent.ternary?
+
+          !node.equal?(parent.condition)
+        end
+
+        def assigned_value_in_statement?(node, parent)
+          return false unless parent.assignment?
+          return false unless node.equal?(parent.children.last)
+          return true unless (grandparent = parent.parent)
+
+          statement?(parent, grandparent)
         end
       end
     end
