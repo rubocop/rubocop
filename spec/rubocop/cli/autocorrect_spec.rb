@@ -910,6 +910,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` with `Lint/HeredocMethodCallPosition`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Lint/HeredocMethodCallPosition:
+        Enabled: true
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      do_something(<<~TEXT
+        foo
+      TEXT
+      .strip,
+      )
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Lint/HeredocMethodCallPosition'
+        ]
+      )
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      do_something(<<~TEXT.strip,
+        foo
+      TEXT
+      )
+    RUBY
+  end
+
   it 'corrects `Style/CombinableLoops` with `Layout/RedundantLineBreak`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/RedundantLineBreak:

@@ -18,6 +18,20 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     expect_no_offenses('{}')
   end
 
+  context 'when `Lint/HeredocMethodCallPosition` is enabled' do
+    let(:other_cops) { { 'Lint/HeredocMethodCallPosition' => { 'Enabled' => true } } }
+
+    it 'does not register an offense when the last value is a method call after the HEREDOC terminator' do
+      expect_no_offenses(<<~RUBY)
+        { a: <<~EOS
+          text
+        EOS
+        .do_something
+        }
+      RUBY
+    end
+  end
+
   it_behaves_like 'multiline literal brace layout' do
     let(:open) { '{' }
     let(:close) { '}' }

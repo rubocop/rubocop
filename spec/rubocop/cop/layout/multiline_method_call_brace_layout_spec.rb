@@ -62,6 +62,68 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     RUBY
   end
 
+  context 'when `Lint/HeredocMethodCallPosition` is enabled' do
+    let(:other_cops) { { 'Lint/HeredocMethodCallPosition' => { 'Enabled' => true } } }
+
+    it 'does not register an offense when the last argument is a method call after the HEREDOC terminator' do
+      expect_no_offenses(<<~RUBY)
+        foo(<<~EOS
+          text
+        EOS
+        .do_something
+        )
+      RUBY
+    end
+
+    it 'does not register an offense when the last argument is a safe navigation method call after the HEREDOC terminator' do
+      expect_no_offenses(<<~RUBY)
+        foo(<<~EOS
+          text
+        EOS
+        &.do_something
+        )
+      RUBY
+    end
+
+    it 'registers an offense when the last argument is a method call on the HEREDOC opening line' do
+      expect_offense(<<~RUBY)
+        foo(<<~EOS.do_something, arg
+          text
+        EOS
+        )
+        ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(<<~EOS.do_something, arg)
+          text
+        EOS
+      RUBY
+    end
+  end
+
+  context 'when `Lint/HeredocMethodCallPosition` is disabled' do
+    let(:other_cops) { { 'Lint/HeredocMethodCallPosition' => { 'Enabled' => false } } }
+
+    it 'registers an offense when the last argument is a method call after the HEREDOC terminator' do
+      expect_offense(<<~RUBY)
+        foo(<<~EOS
+          text
+        EOS
+        .do_something
+        )
+        ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(<<~EOS
+          text
+        EOS
+        .do_something)
+      RUBY
+    end
+  end
+
   it_behaves_like 'multiline literal brace layout' do
     let(:open) { 'foo(' }
     let(:close) { ')' }
