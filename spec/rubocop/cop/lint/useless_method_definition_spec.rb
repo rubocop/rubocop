@@ -132,37 +132,204 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
     expect_correction("\n")
   end
 
-  it 'registers an offense and corrects when method definition with `protected` access modifier containing only `super` call' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when method definition with `protected` access modifier containing only `super` call' do
+    expect_no_offenses(<<~RUBY)
       protected def method
-                ^^^^^^^^^^ Useless method definition detected.
         super
       end
     RUBY
-
-    expect_correction("\n")
   end
 
-  it 'registers an offense and corrects when method definition with `private` access modifier containing only `super` call' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when method definition with `private` access modifier containing only `super` call' do
+    expect_no_offenses(<<~RUBY)
       private def method
-              ^^^^^^^^^^ Useless method definition detected.
         super
       end
     RUBY
-
-    expect_correction("\n")
   end
 
-  it 'registers an offense and corrects when method definition with `module_function` access modifier containing only `super` call' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when method definition with `module_function` access modifier containing only `super` call' do
+    expect_no_offenses(<<~RUBY)
       module_function def method
-                      ^^^^^^^^^^ Useless method definition detected.
         super
       end
     RUBY
+  end
 
-    expect_correction("\n")
+  it 'does not register an offense for method containing only `super` call after bare `private`' do
+    expect_no_offenses(<<~RUBY)
+      class Child < Parent
+        private
+
+        def method
+          super
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for method containing only `super` call after bare `protected`' do
+    expect_no_offenses(<<~RUBY)
+      class Child < Parent
+        protected
+
+        def method
+          super
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for method containing only `super` call made private by `private :method`' do
+    expect_offense(<<~RUBY)
+      class Child < Parent
+        def method
+        ^^^^^^^^^^ Useless method definition detected.
+          super
+        end
+        private :method
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Child < Parent
+       #{trailing_whitespace}
+        private :method
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for method containing only `super` call after bare `private` and made public by `public :method`' do
+    expect_offense(<<~RUBY)
+      class Child < Parent
+        private
+
+        def method
+        ^^^^^^^^^^ Useless method definition detected.
+          super
+        end
+        public :method
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Child < Parent
+        private
+
+       #{trailing_whitespace}
+        public :method
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for method containing only `super` call after bare `private` in `class << self`' do
+    expect_no_offenses(<<~RUBY)
+      class Child < Parent
+        class << self
+          private
+
+          def method
+            super
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for method containing only `super` call after bare `public` following `private`' do
+    expect_offense(<<~RUBY)
+      class Child < Parent
+        private
+
+        def private_method
+          do_something
+        end
+
+        public
+
+        def method
+        ^^^^^^^^^^ Useless method definition detected.
+          super
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Child < Parent
+        private
+
+        def private_method
+          do_something
+        end
+
+        public
+
+       #{trailing_whitespace}
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for singleton method containing only `super` call after bare `private`' do
+    expect_offense(<<~RUBY)
+      class Child < Parent
+        private
+
+        def self.method
+        ^^^^^^^^^^^^^^^ Useless method definition detected.
+          super
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Child < Parent
+        private
+
+       #{trailing_whitespace}
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for `initialize` containing only `super` call after bare `private`' do
+    expect_offense(<<~RUBY)
+      class Child < Parent
+        private
+
+        def initialize
+        ^^^^^^^^^^^^^^ Useless method definition detected.
+          super
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Child < Parent
+        private
+
+       #{trailing_whitespace}
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for `respond_to_missing?` containing only `super` call after bare `private`' do
+    expect_offense(<<~RUBY)
+      class Child < Parent
+        private
+
+        def respond_to_missing?(name, include_private)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless method definition detected.
+          super
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Child < Parent
+        private
+
+       #{trailing_whitespace}
+      end
+    RUBY
   end
 
   it 'does not register an offense for method containing additional code to `super`' do
