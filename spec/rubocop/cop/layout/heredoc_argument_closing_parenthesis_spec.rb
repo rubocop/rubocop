@@ -198,6 +198,42 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
         RUBY
       end
 
+      it 'accepts a closing parenthesis followed by a modifier `if`' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(<<~SQL
+            baz
+          SQL
+          ) if cond
+        RUBY
+      end
+
+      it 'accepts a closing parenthesis followed by a binary operator' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(<<~SQL
+            baz
+          SQL
+          ) + qux
+        RUBY
+      end
+
+      it 'accepts a closing parenthesis followed by a range operator' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(<<~SQL
+            baz
+          SQL
+          )..qux
+        RUBY
+      end
+
+      it 'accepts a closing parenthesis followed by a block' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(<<~SQL
+            baz
+          SQL
+          ) { qux }
+        RUBY
+      end
+
       context 'invocation after the HEREDOC' do
         it 'ignores tr' do
           expect_no_offenses(<<~RUBY)
@@ -306,6 +342,44 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
               foo
             SQL
             &.baz
+          RUBY
+        end
+      end
+
+      context 'simple incorrect case with comment after' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            foo#{dot}bar(<<~SQL
+              foo
+            SQL
+            ) # comment
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo#{dot}bar(<<~SQL)
+              foo
+            SQL
+             # comment
+          RUBY
+        end
+      end
+
+      context 'simple incorrect case with semicolon after' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            foo#{dot}bar(<<~SQL
+              foo
+            SQL
+            ); baz
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo#{dot}bar(<<~SQL)
+              foo
+            SQL
+            ; baz
           RUBY
         end
       end
