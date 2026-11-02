@@ -670,6 +670,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not double the closing parenthesis when `Style/HashSyntax` includes an omitted hash value before a semicolon removed by `Style/Semicolon`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+      Style/HashSyntax:
+        EnforcedShorthandSyntax: never
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo bar, baz:;
+      qux
+    RUBY
+
+    expect(cli.run(['--autocorrect', '--only', 'Style/HashSyntax,Style/Semicolon'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(bar, baz: baz)
+      qux
+    RUBY
+  end
+
   it 'does not double the closing parenthesis when `Layout/MultilineMethodDefinitionBraceLayout` ' \
      'and `Style/MultilineMethodSignature` both move it' do
     create_file('.rubocop.yml', <<~YAML)

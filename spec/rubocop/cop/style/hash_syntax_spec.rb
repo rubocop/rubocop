@@ -1776,6 +1776,30 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'does not add parentheses when including a hash value that is not the last one in a method call without parentheses' do
+        expect_offense(<<~RUBY)
+          foo bar, baz:, qux: qux if condition
+                   ^^^ Include the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar, baz: baz, qux: qux if condition
+        RUBY
+      end
+
+      it 'does not add parentheses when including the omitted hash value before a semicolon' do
+        expect_offense(<<~RUBY)
+          foo bar:;
+              ^^^ Include the hash value.
+          baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar: bar;
+          baz
+        RUBY
+      end
+
       it 'registers and corrects an offense only for the hash value that is not named after a keyword' do
         expect_offense(<<~RUBY)
           def do_something(if:, next:, bar:)
@@ -1881,6 +1905,17 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
         expect_correction(<<~RUBY)
           {foo:, bar:}
+        RUBY
+      end
+
+      it 'does not add parentheses when including the omitted hash value in a method call without parentheses' do
+        expect_offense(<<~RUBY)
+          foo bar:, baz: qux, quux: quux if condition
+              ^^^ Do not mix explicit and implicit hash values. Include the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar: bar, baz: qux, quux: quux if condition
         RUBY
       end
 
