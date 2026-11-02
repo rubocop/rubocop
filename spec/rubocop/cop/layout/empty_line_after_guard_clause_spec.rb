@@ -887,6 +887,17 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'does not register an offense when there are multiple clauses on the same line in `begin`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        return if condition; foo do
+          bar
+        end
+        baz
+      end
+    RUBY
+  end
+
   it 'does not register an offense when the next clause is on the last line of a multiline guard clause' do
     expect_no_offenses(<<~RUBY)
       def foo

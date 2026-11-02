@@ -204,7 +204,7 @@ module RuboCop
           parent = node.parent
           return false unless parent
 
-          parent.begin_type? && node.last_line == node.right_sibling.first_line
+          parent.type?(:begin, :kwbegin) && node.last_line == node.right_sibling.first_line
         end
 
         # SimpleCov excludes code from the coverage report by wrapping it in directive comments:
