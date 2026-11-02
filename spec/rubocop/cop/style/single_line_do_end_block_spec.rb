@@ -121,6 +121,127 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
     RUBY
   end
 
+  it 'registers an offense when using single line `do`...`end` with a heredoc in the method call' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS) do |arg| bar(arg) end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(<<~EOS) do |arg|
+        text
+      EOS
+      bar(arg)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using single line `do`...`end` with a heredoc receiver and an empty body' do
+    expect_offense(<<~RUBY)
+      <<~EOS.foo do end
+      ^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      <<~EOS.foo do
+        text
+      EOS
+      end
+    RUBY
+  end
+
+  it 'registers an offense but does not autocorrect single line `do`...`end` with a heredoc in the method call and a method chain after `end`' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS) do |arg| bar(arg) end.baz
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense when using single line `do`...`end` with a heredoc in the method call and a comment after `end`' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS) do |arg| bar(arg) end # comment
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(<<~EOS) do |arg| # comment
+        text
+      EOS
+      bar(arg)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using single line `do`...`end` with a heredoc opened before the method call' do
+    expect_offense(<<~RUBY)
+      x = <<~EOS + foo do bar end
+                   ^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<~EOS + foo do
+        text
+      EOS
+      bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense but does not autocorrect single line `do`...`end` with a heredoc in a preceding argument' do
+    expect_offense(<<~RUBY)
+      baz(<<~EOS, foo do |arg| bar(arg) end)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense but does not autocorrect single line `do`...`end` with a heredoc in a preceding array element' do
+    expect_offense(<<~RUBY)
+      [<<~EOS, foo do bar end]
+               ^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense when using single line `do`...`end` with heredocs in the method call and the body' do
+    expect_offense(<<~RUBY)
+      foo(<<~ONE) do bar(<<~TWO) end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        one
+      ONE
+        two
+      TWO
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(<<~ONE) do
+        one
+      ONE
+      bar(<<~TWO)
+        two
+      TWO
+      end
+    RUBY
+  end
+
   it 'registers an offense when using single line `do`...`end` with `->` block' do
     expect_offense(<<~RUBY)
       ->(arg) do foo arg end

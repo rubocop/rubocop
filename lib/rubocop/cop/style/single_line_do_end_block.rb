@@ -36,22 +36,18 @@ module RuboCop
 
         MSG = 'Prefer multiline `do`...`end` block.'
 
-        # rubocop:disable-next Metrics/AbcSize
         def on_block(node)
           return if node.multiline? || node.braces?
           return if single_line_blocks_preferred? && suitable_as_single_line?(node)
 
           add_offense(node) do |corrector|
-            corrector.insert_after(do_line(node), "\n")
+            if (heredoc = heredoc_opened_before_do(node))
+              # Code after the `end`, such as a method chain, would be left behind after the `do`.
+              next if code_after_end?(node.loc.end)
 
-            if (heredoc = trailing_heredoc(node.body))
-              # The heredoc body extends past the `end` on the source, so the
-              # `end` has to be moved after it rather than before, which would
-              # otherwise move it into the heredoc body and break the syntax.
-              corrector.remove(node.loc.end)
-              corrector.insert_after(heredoc.loc.heredoc_end, "\nend")
+              move_body_after_heredoc(corrector, node, heredoc)
             else
-              corrector.insert_before(node.loc.end, "\n")
+              break_block_body(corrector, node)
             end
           end
         end
@@ -60,16 +56,53 @@ module RuboCop
 
         private
 
-        # Returns the heredoc opened on the block's line whose body extends the
-        # furthest down, whether it is the block body itself or nested within it.
-        def trailing_heredoc(node_body)
-          return unless node_body
+        def single_line_blocks_preferred?
+          @config.for_enabled_cop('Layout/RedundantLineBreak')['InspectBlocks']
+        end
 
-          heredocs = [node_body, *node_body.each_descendant].select do |node|
-            node.respond_to?(:heredoc?) && node.heredoc?
+        def code_after_end?(end_keyword)
+          rest = end_keyword.source_line[end_keyword.last_column..].strip
+
+          !rest.empty? && !rest.start_with?('#')
+        end
+
+        def move_body_after_heredoc(corrector, node, heredoc)
+          body = node.body
+
+          corrector.remove(do_line(node).end.join(node.loc.end.end))
+          corrector.insert_after(heredoc.loc.heredoc_end, "\n#{body.source}") if body
+
+          last_heredoc = trailing_heredoc(body) || heredoc
+          corrector.insert_after(last_heredoc.loc.heredoc_end, "\nend")
+        end
+
+        def break_block_body(corrector, node)
+          corrector.insert_after(do_line(node), "\n")
+
+          if (heredoc = trailing_heredoc(node.body))
+            corrector.remove(node.loc.end)
+            corrector.insert_after(heredoc.loc.heredoc_end, "\nend")
+          else
+            corrector.insert_before(node.loc.end, "\n")
+          end
+        end
+
+        # Returns the heredoc opened before the `do` on the block's line whose body extends
+        # the furthest down. It can be opened outside the block, such as in a preceding argument.
+        def heredoc_opened_before_do(node)
+          do_begin_pos = node.loc.begin.begin_pos
+
+          heredocs = processed_source.ast.each_node(:any_str).select do |str_node|
+            heredoc_opened_on_line_before?(str_node, node.first_line, do_begin_pos)
           end
 
           heredocs.max_by { |heredoc| heredoc.loc.heredoc_end.line }
+        end
+
+        def heredoc_opened_on_line_before?(str_node, line, pos)
+          return false unless str_node.heredoc?
+
+          str_node.first_line == line && str_node.source_range.end_pos <= pos
         end
 
         def do_line(node)
@@ -77,12 +110,16 @@ module RuboCop
              node.arguments.children.empty? || node.send_node.lambda_literal?
             node.loc.begin
           else
-            node.arguments
+            node.arguments.source_range
           end
         end
 
-        def single_line_blocks_preferred?
-          @config.for_enabled_cop('Layout/RedundantLineBreak')['InspectBlocks']
+        def trailing_heredoc(root)
+          return unless root
+
+          heredocs = root.each_node(:any_str).select(&:heredoc?)
+
+          heredocs.max_by { |heredoc| heredoc.loc.heredoc_end.line }
         end
       end
     end
