@@ -82,6 +82,62 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
     RUBY
   end
 
+  it 'registers an offense when extending instance of Struct with an empty brace block' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name) { }
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct with a brace block' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name) { include Comparable }
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do include Comparable
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct with a brace block without inner spaces' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name) {include Comparable}
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do include Comparable
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct with a multiline brace block' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name) {
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        include Comparable
+      }
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do
+        include Comparable
+
+      end
+    RUBY
+  end
+
   it 'registers an offense when extending instance of ::Struct with do ... end' do
     expect_offense(<<~RUBY)
       class Person < ::Struct.new(:first_name, :last_name) do end
