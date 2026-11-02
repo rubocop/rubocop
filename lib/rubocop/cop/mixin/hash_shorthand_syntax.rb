@@ -77,6 +77,7 @@ module RuboCop
         add_offense(node.value, message: message) do |corrector|
           corrector.replace(node, replacement)
 
+          next if node.value_omission?
           next unless (def_node = def_node_that_require_parentheses(node))
 
           last_argument = def_node.last_argument
