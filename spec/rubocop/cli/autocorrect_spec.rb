@@ -6871,6 +6871,53 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/SingleLineBlockChain` with `Style/CollectionQuerying`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo(obj.count { |x| x.do_something }.positive?, bar)
+      obj.count { |x| x.do_something }.positive? if baz
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Layout/SingleLineBlockChain,Style/CollectionQuerying'])
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo(obj.any? { |x| x.do_something }, bar)
+      obj.any? { |x| x.do_something } if baz
+    RUBY
+  end
+
+  it 'corrects `Layout/SingleLineBlockChain` with `Style/HashTransformKeys`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo(obj.to_h.map { |k, v| [k.to_sym, v] }.to_h, bar)
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Layout/SingleLineBlockChain,Style/HashTransformKeys'])
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo(obj.to_h.transform_keys { |k| k.to_sym }, bar)
+    RUBY
+  end
+
+  it 'corrects `Layout/SingleLineBlockChain` with `Style/HashTransformValues`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo(obj.to_h.map { |k, v| [k, v.to_s] }.to_h, bar)
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Layout/SingleLineBlockChain,Style/HashTransformValues'])
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo(obj.to_h.transform_values { |v| v.to_s }, bar)
+    RUBY
+  end
+
   it 'corrects `Style/BlockDelimiters` with `EnforcedStyle: braces_for_chaining` and `Style/RedundantBegin` offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/BlockDelimiters:
