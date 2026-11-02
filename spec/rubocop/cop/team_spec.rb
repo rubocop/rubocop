@@ -412,6 +412,58 @@ RSpec.describe RuboCop::Cop::Team do
     end
   end
 
+  describe '#investigate_fragments' do
+    let(:cop_classes) { [RuboCop::Cop::Layout::LineLength] }
+    let(:long_line) { "x = '#{'a' * 120}'" }
+    let(:original) { RuboCop::ProcessedSource.new('', ruby_version, 'example.html.erb', parser_engine: parser_engine) }
+    let(:offenses) { team.investigate_fragments(fragments, original: original) }
+
+    def fragment(code)
+      source = RuboCop::ProcessedSource.new(
+        code, ruby_version, 'example.html.erb', parser_engine: parser_engine
+      )
+      source.config = config
+      source.registry = RuboCop::Cop::Registry.new(RuboCop::Cop::Registry.global.cops)
+      { offset: 0, processed_source: source }
+    end
+
+    context 'when a file is split into several fragments' do
+      let(:fragments) { Array.new(3) { fragment(long_line) } }
+
+      it 'checks whether the file is excluded once per cop' do
+        calls = 0
+        allow_any_instance_of(RuboCop::Cop::Layout::LineLength)
+          .to receive(:excluded_file?).and_wrap_original do |method, *args|
+            calls += 1
+            method.call(*args)
+          end
+
+        expect(offenses.size).to eq(3)
+        expect(calls).to eq(1)
+      end
+    end
+
+    context 'when a cop disabled in the config is opted back in by one fragment' do
+      let(:config) do
+        RuboCop::ConfigLoader.merge_with_default(
+          RuboCop::Config.new('Layout/LineLength' => { 'Enabled' => false }), ''
+        )
+      end
+      let(:cop_classes) { RuboCop::Cop::Registry.global }
+      let(:fragments) do
+        [
+          fragment(long_line),
+          fragment("# rubocop:enable Layout/LineLength\n#{long_line}"),
+          fragment(long_line)
+        ]
+      end
+
+      it 'reports offenses of the opted in fragment only' do
+        expect(offenses.map(&:cop_name).count('Layout/LineLength')).to eq(1)
+      end
+    end
+  end
+
   describe '#cops' do
     subject(:cops) { team.cops }
 
