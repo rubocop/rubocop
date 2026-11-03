@@ -548,6 +548,18 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           end
         RUBY
       end
+
+      it "accepts blank line after #{access_modifier} followed by another access modifier" do
+        expect_no_offenses(<<~RUBY)
+          class Test
+            #{access_modifier}
+
+            public
+
+            def test; end
+          end
+        RUBY
+      end
     end
 
     %w[public module_function].each do |access_modifier|
@@ -579,6 +591,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
             something
 
             #{access_modifier}
+            def test; end
+          end
+        RUBY
+      end
+
+      it "registers an offense for missing blank line before #{access_modifier} followed by another access modifier" do
+        expect_offense(<<~RUBY)
+          class Test
+            something
+            #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line before `#{access_modifier}`.
+
+            private
+            def test; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+            something
+
+            #{access_modifier}
+
+            private
             def test; end
           end
         RUBY

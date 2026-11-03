@@ -114,7 +114,7 @@ module RuboCop
         end
 
         def allowed_only_before_style?(node)
-          if node.special_modifier?
+          if node.special_modifier? && !followed_by_access_modifier?(node)
             return true if processed_source[node.last_line] == 'end'
             return false if next_line_empty_and_exists?(node.last_line)
           end
@@ -129,7 +129,7 @@ module RuboCop
           when :around
             corrector.insert_after(line, "\n") unless next_line_empty?(node.last_line)
           when :only_before
-            if next_line_empty_and_exists?(node.last_line)
+            if next_line_empty_and_exists?(node.last_line) && !followed_by_access_modifier?(node)
               range = next_empty_line_range(node)
 
               corrector.remove(range)
@@ -206,11 +206,17 @@ module RuboCop
         def message_for_only_before_style(node)
           modifier = node.loc.selector.source
 
-          if next_line_empty?(node.last_line)
+          if next_line_empty?(node.last_line) && !followed_by_access_modifier?(node)
             format(MSG_AFTER_FOR_ONLY_BEFORE, modifier: modifier)
           else
             format(MSG_BEFORE_FOR_ONLY_BEFORE, modifier: modifier)
           end
+        end
+
+        def followed_by_access_modifier?(node)
+          sibling = node.right_sibling
+
+          sibling&.send_type? && sibling.bare_access_modifier?
         end
 
         def should_insert_line_before?(node)
