@@ -110,9 +110,16 @@ module RuboCop
         # `Layout/MultilineMethodCallBraceLayout` moves that call's closing parenthesis
         # before a comment in the same pass places the brace after the comment.
         # Moving it while `Style/HashAsLastArrayItem` or `Style/RedundantDoubleSplatHashBraces`
-        # removes the braces in the same pass leaves the brace behind.
+        # removes the braces in the same pass leaves the brace behind. Moving it with a comment
+        # before it while `Style/MethodCallWithArgsParentheses` adds the closing parenthesis
+        # after the brace in the same pass places the parenthesis after the comment.
         def self.autocorrect_incompatible_with
-          [Layout::MultilineMethodCallBraceLayout, Style::HashAsLastArrayItem, Style::RedundantDoubleSplatHashBraces]
+          [
+            Layout::MultilineMethodCallBraceLayout,
+            Style::HashAsLastArrayItem,
+            Style::RedundantDoubleSplatHashBraces,
+            Style::MethodCallWithArgsParentheses
+          ]
         end
 
         def on_hash(node)

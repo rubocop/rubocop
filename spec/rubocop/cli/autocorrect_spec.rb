@@ -2340,6 +2340,52 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineArrayBraceLayout` with a comment before the closing bracket and `Style/MethodCallWithArgsParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+        IgnoreMacros: false
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo bar, x = [1,
+                    2, # comment
+                   ]
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Layout/MultilineArrayBraceLayout,Style/MethodCallWithArgsParentheses']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(bar, x = [1,
+                    2,]) # comment
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineHashBraceLayout` with a comment before the closing brace and `Style/MethodCallWithArgsParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+        IgnoreMacros: false
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo bar, x = { a: 1,
+                     b: 2, # comment
+                   }
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Layout/MultilineHashBraceLayout,Style/MethodCallWithArgsParentheses']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(bar, x = { a: 1,
+                     b: 2,}) # comment
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Layout/MultilineArrayBraceLayout` and ' \
      '`Layout/SpaceInsideArrayLiteralBrackets` with `EnforcedStyle: compact`' do
     create_file('.rubocop.yml', <<~YAML)
