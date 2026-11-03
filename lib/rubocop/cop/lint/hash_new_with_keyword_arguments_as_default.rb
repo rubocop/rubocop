@@ -52,7 +52,20 @@ module RuboCop
           end
 
           add_offense(first_argument) do |corrector|
+            autocorrect(corrector, node, first_argument)
+          end
+        end
+
+        private
+
+        def autocorrect(corrector, node, first_argument)
+          if node.parenthesized?
             corrector.wrap(first_argument, '{', '}')
+          else
+            gap = node.loc.selector.end.join(first_argument.source_range.begin)
+
+            corrector.replace(gap, '({')
+            corrector.insert_after(first_argument, '})')
           end
         end
       end

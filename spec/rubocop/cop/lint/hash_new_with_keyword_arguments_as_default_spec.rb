@@ -35,6 +35,76 @@ RSpec.describe RuboCop::Cop::Lint::HashNewWithKeywordArgumentsAsDefault, :config
     RUBY
   end
 
+  it 'registers an offense when using `Hash.new` with keyword arguments for default without parentheses' do
+    expect_offense(<<~RUBY)
+      Hash.new key: :value
+               ^^^^^^^^^^^ Use a hash literal instead of keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Hash.new({key: :value})
+    RUBY
+  end
+
+  it 'registers an offense when using `::Hash.new` with keyword arguments for default without parentheses' do
+    expect_offense(<<~RUBY)
+      ::Hash.new key: :value
+                 ^^^^^^^^^^^ Use a hash literal instead of keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::Hash.new({key: :value})
+    RUBY
+  end
+
+  it 'registers an offense when using `Hash.new` with multiple keyword arguments for default without parentheses' do
+    expect_offense(<<~RUBY)
+      Hash.new foo: 1, bar: 2
+               ^^^^^^^^^^^^^^ Use a hash literal instead of keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Hash.new({foo: 1, bar: 2})
+    RUBY
+  end
+
+  it 'registers an offense when using `Hash.new` with keyword arguments for default without parentheses and a block' do
+    expect_offense(<<~RUBY)
+      Hash.new key: :value do |hash, key|
+               ^^^^^^^^^^^ Use a hash literal instead of keyword arguments.
+        hash[key] = key
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Hash.new({key: :value}) do |hash, key|
+        hash[key] = key
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `Hash.new` with keyword arguments for default without parentheses as a receiver' do
+    expect_offense(<<~RUBY)
+      (Hash.new key: :value).do_something
+                ^^^^^^^^^^^ Use a hash literal instead of keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (Hash.new({key: :value})).do_something
+    RUBY
+  end
+
+  it 'registers an offense when using `Hash.new` with keyword arguments for default without parentheses as an argument' do
+    expect_offense(<<~RUBY)
+      do_something Hash.new key: :value
+                            ^^^^^^^^^^^ Use a hash literal instead of keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something Hash.new({key: :value})
+    RUBY
+  end
+
   it 'registers an offense when using `Hash.new` with hash rocket argument for default' do
     expect_offense(<<~RUBY)
       Hash.new(:key => :value)
