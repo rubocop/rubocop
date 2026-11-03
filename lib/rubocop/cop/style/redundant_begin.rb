@@ -163,7 +163,6 @@ module RuboCop
         end
 
         def end_cannot_join_statement_line?(node)
-          return false if use_modifier_form_after_multiline_begin_block?(node)
           return false unless code_after_end_on_its_own_line?(node)
 
           range_with_end_line_break(node).begin_pos != statement_end_pos(node)
@@ -177,12 +176,21 @@ module RuboCop
         end
 
         def code_after_end_on_its_own_line?(node)
-          end_range = node.loc.end
-          return false unless begins_its_line?(end_range)
+          return false unless begins_its_line?(node.loc.end)
 
-          rest_of_line = end_range.source_line[end_range.last_column..].lstrip
+          rest_of_line = rest_of_line(closing_range(node)).lstrip
 
           !rest_of_line.empty? && !rest_of_line.start_with?('#')
+        end
+
+        def closing_range(node)
+          return node.loc.end unless use_modifier_form_after_multiline_begin_block?(node)
+
+          node.loc.end.join(condition_range(node.parent))
+        end
+
+        def rest_of_line(range)
+          range.source_buffer.source_line(range.last_line)[range.last_column..]
         end
 
         def range_with_end_line_break(node)
@@ -270,7 +278,20 @@ module RuboCop
           condition_range = condition_range(node.parent)
 
           corrector.insert_after(node.children.first, " #{condition_range.source}")
-          corrector.remove(range_by_whole_lines(condition_range, include_final_newline: true))
+          corrector.remove(modifier_form_closing_removal_range(node))
+        end
+
+        def modifier_form_closing_removal_range(node)
+          closing_range = closing_range(node)
+
+          if range_with_end_line_break(node).begin_pos == statement_end_pos(node)
+            range_with_surrounding_space(closing_range, side: :left, newlines: true)
+          elsif rest_of_line(closing_range).strip.empty?
+            range_by_whole_lines(closing_range, include_final_newline: true)
+          else
+            # Only a comment can follow here, and it stays on its own line.
+            range_with_surrounding_space(closing_range, side: :right, newlines: false)
+          end
         end
 
         def condition_range(node)

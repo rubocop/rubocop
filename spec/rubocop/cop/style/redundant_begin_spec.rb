@@ -1188,6 +1188,86 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     expect_correction("\n  foo unless condition\n")
   end
 
+  it 'reports an offense when multi-line `begin` block has single statement with modifier condition followed by code' do
+    expect_offense(<<~'RUBY')
+      "#{begin
+         ^^^^^ Redundant `begin` block detected.
+        foo
+      end unless condition}"
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "#{
+        foo unless condition}"
+    RUBY
+  end
+
+  it 'reports an offense when multi-line `begin` block has single statement with modifier condition followed by a comment' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        foo
+      end unless condition # comment
+    RUBY
+
+    expect_correction("\n  foo unless condition # comment\n")
+  end
+
+  it 'reports an offense when multi-line `begin` block has a heredoc statement with modifier condition followed by a comment' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        foo(<<~EOS)
+          text
+        EOS
+      end if condition # comment
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+        foo(<<~EOS) if condition
+          text
+        EOS
+      # comment
+    RUBY
+  end
+
+  it 'reports an offense when multi-line `begin` block has single statement and a comment with modifier condition followed by a comment' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        foo
+        # inner
+      end if condition # comment
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+        foo if condition
+        # inner
+      # comment
+    RUBY
+  end
+
+  it 'does not register an offense when multi-line `begin` block has a heredoc statement with modifier condition followed by code' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        foo(<<~EOS)
+          text
+        EOS
+      end if condition; bar
+    RUBY
+  end
+
+  it 'does not register an offense when multi-line `begin` block has single statement and a comment with modifier condition followed by code' do
+    expect_no_offenses(<<~'RUBY')
+      "#{begin
+        foo
+        # inner
+      end if condition}"
+    RUBY
+  end
+
   it 'reports an offense when multi-line `begin` block is the condition of a modifier `if`' do
     expect_offense(<<~RUBY)
       foo if begin begin
