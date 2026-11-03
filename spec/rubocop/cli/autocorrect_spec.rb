@@ -5283,6 +5283,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/ParenthesesAsGroupedExpression` with `Style/RedundantParentheses` when nested parentheses hold multiple statements' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.3
+    YAML
+    create_file('example.rb', <<~RUBY)
+      obj.do_something ((foo; bar))
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Lint/ParenthesesAsGroupedExpression,Style/RedundantParentheses']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      obj.do_something((foo; bar))
+    RUBY
+  end
+
   it 'corrects `Style/TernaryParentheses` offenses and accepts `Lint/ParenthesesAsGroupedExpression`' do
     create_file('example.rb', <<~RUBY)
       json.asdf (foo || bar) ? 1 : 2

@@ -21,6 +21,10 @@ module RuboCop
 
         MSG = '`%<argument>s` interpreted as grouped expression.'
 
+        def self.autocorrect_incompatible_with
+          [Style::RedundantParentheses]
+        end
+
         def on_send(node)
           return if valid_context?(node)
 
