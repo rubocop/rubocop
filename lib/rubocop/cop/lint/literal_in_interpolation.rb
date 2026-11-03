@@ -156,9 +156,9 @@ module RuboCop
         end
 
         def autocorrected_value_for_array(node)
-          return node.source.gsub('"', '\"') unless node.percent_literal?
+          return escape_string_content(node.source) unless node.percent_literal?
 
-          contents_range(node).source.split.to_s.gsub('"', '\"')
+          escape_string_content(node.values.map { |value| value.value.to_s }.to_s)
         end
 
         def autocorrected_value_for_hash(node)

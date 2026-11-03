@@ -129,6 +129,33 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     it_behaves_like('literal interpolation', '%I[s1 s2]', '[\"s1\", \"s2\"]')
     it_behaves_like('literal interpolation', '%i[s1     s2]', '[\"s1\", \"s2\"]')
     it_behaves_like('literal interpolation', '%i[ s1   s2 ]', '[\"s1\", \"s2\"]')
+    it_behaves_like('literal interpolation', '%w["v1"]', '[\"\\\\\"v1\\\\\"\"]')
+    it_behaves_like('literal interpolation', '%w[#{v1}]', '[\"\\\\\#{v1}\"]')
+    it_behaves_like('literal interpolation', '%w[d\\ e]', '[\"d e\"]')
+    it_behaves_like('literal interpolation', '["\\""]', '[\"\\\\\"\"]')
+    it_behaves_like('literal interpolation', '["\\#{v1}"]', '[\"\\\\\#{v1}\"]')
+
+    it 'registers an offense and keeps the escaped backslash for a percent array' do
+      expect_offense(<<~'RUBY')
+        "#{%w[a\\b]}"
+           ^^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "[\"a\\\\b\"]"
+      RUBY
+    end
+
+    it 'registers an offense and keeps the escaped backslash for an array' do
+      expect_offense(<<~'RUBY')
+        "#{["a\\b"]}"
+           ^^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "[\"a\\\\b\"]"
+      RUBY
+    end
   end
 
   describe 'type hash' do
