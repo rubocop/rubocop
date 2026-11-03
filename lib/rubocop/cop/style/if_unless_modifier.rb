@@ -88,7 +88,7 @@ module RuboCop
         MSG_USE_NORMAL = 'Modifier form of `%<keyword>s` makes the line too long.'
 
         def self.autocorrect_incompatible_with
-          [Style::Next, Style::SoleNestedConditional]
+          [Style::MethodCallWithArgsParentheses, Style::Next, Style::SoleNestedConditional]
         end
 
         # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
