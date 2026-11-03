@@ -736,6 +736,93 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
+  it 'registers an offense when using heredoc in `else` branch and code follows `end` on its line' do
+    expect_offense(<<~'RUBY')
+      "#{if condition
+         ^^ Use a guard clause (`raise(<<~MESSAGE) unless condition`) instead of wrapping the code inside a conditional expression.
+        foo
+      else
+        raise(<<~MESSAGE)
+          text
+        MESSAGE
+      end}"
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "#{raise(<<~MESSAGE) unless condition
+          text
+        MESSAGE
+      foo
+      }"
+    RUBY
+  end
+
+  it 'registers an offense when using heredoc in `else` branch and a statement follows `end` on its line' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise(<<~MESSAGE) unless condition`) instead of wrapping the code inside a conditional expression.
+          foo
+        else
+          raise(<<~MESSAGE)
+            text
+          MESSAGE
+        end; bar
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        raise(<<~MESSAGE) unless condition
+            text
+          MESSAGE
+      foo
+        ; bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense but does not correct when using heredoc in `else` branch and a modifier follows `end`' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise(<<~MESSAGE) unless condition`) instead of wrapping the code inside a conditional expression.
+          foo
+        else
+          raise(<<~MESSAGE)
+            text
+          MESSAGE
+        end if other_condition
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not move comments before `else` into the heredoc when using heredoc in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise(<<~MESSAGE) unless condition`) instead of wrapping the code inside a conditional expression.
+          foo # comment
+        else # comment
+          raise(<<~MESSAGE)
+            text
+          MESSAGE
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        raise(<<~MESSAGE) unless condition
+            text
+          MESSAGE
+      foo
+      end
+    RUBY
+  end
+
   it 'registers an offense when using heredoc as an argument of raise in `then` branch in `unless`' do
     expect_offense(<<~RUBY)
       def func

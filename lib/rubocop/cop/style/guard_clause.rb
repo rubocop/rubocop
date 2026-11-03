@@ -100,7 +100,7 @@ module RuboCop
       #     end
       #   end
       #
-      class GuardClause < Base
+      class GuardClause < Base # rubocop:disable Metrics/ClassLength
         extend AutoCorrector
         include RangeHelp
         include MinBodyLength
@@ -195,6 +195,7 @@ module RuboCop
 
           add_offense(node.loc.keyword, message: format(MSG, example: example)) do |corrector|
             next if node.else? && guard.nil?
+            next if code_after_end_needs_conditional?(node, guard)
 
             autocorrect(corrector, node, example, replacement, guard)
           end
@@ -250,7 +251,7 @@ module RuboCop
         end
 
         def autocorrect_heredoc_argument(corrector, node, heredoc_node, leave_branch, guard)
-          remove_whole_lines(corrector, node.loc.end)
+          remove_end(corrector, node.loc.end)
           return unless node.else?
 
           if leave_branch
@@ -260,6 +261,14 @@ module RuboCop
 
           remove_whole_lines(corrector, node.loc.else)
           remove_whole_lines(corrector, range_of_branch_to_remove(node, guard))
+        end
+
+        def remove_end(corrector, end_range)
+          if range_by_whole_lines(end_range).source.strip == end_range.source
+            remove_whole_lines(corrector, end_range)
+          else
+            corrector.remove(end_range)
+          end
         end
 
         def range_of_branch_to_remove(node, guard)
@@ -325,6 +334,15 @@ module RuboCop
           return false unless node.if_branch
 
           node.branches.one? && !node.if_branch.if_type? && !node.if_branch.begin_type?
+        end
+
+        def code_after_end_needs_conditional?(node, guard)
+          guard_branch = guard == :else ? node.else_branch : node.if_branch
+          return false unless find_heredoc_argument(guard_branch)
+
+          end_keyword = node.loc.end
+
+          !end_keyword.source_line[end_keyword.last_column..].match?(/\A\s*(?:\z|[#;)\]}])/)
         end
 
         def accepted_if?(node, ending)
