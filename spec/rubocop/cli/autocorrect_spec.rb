@@ -6590,6 +6590,78 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RedundantSort` with an accessor kept on its own line and trailing comma cops' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: comma
+      Style/TrailingCommaInArrayLiteral:
+        EnforcedStyleForMultiline: comma
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: comma
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo(
+        obj.sort # comment
+          .first
+      )
+      [
+        obj.sort # comment
+          .first
+      ]
+      {
+        key: obj.sort # comment
+          .first
+      }
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only',
+          'Style/RedundantSort,Style/TrailingCommaInArguments,' \
+          'Style/TrailingCommaInArrayLiteral,Style/TrailingCommaInHashLiteral'
+        ]
+      )
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      foo(
+        obj.min, # comment
+      #{trailing_whitespace * 4}
+      )
+      [
+        obj.min, # comment
+      #{trailing_whitespace * 4}
+      ]
+      {
+        key: obj.min, # comment
+      #{trailing_whitespace * 4}
+      }
+    RUBY
+  end
+
+  it 'corrects `Style/RedundantSort` with an accessor kept on its own line and a trailing comma to remove' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      [
+        obj.sort # comment
+          .first,
+      ]
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Style/RedundantSort,Style/TrailingCommaInArrayLiteral'])
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      [
+        obj.min # comment
+      #{trailing_whitespace * 4}
+      ]
+    RUBY
+  end
+
   it 'corrects `Layout/DotPosition` with `EnforcedStyle: leading` and `Style/SafeNavigation` offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/DotPosition:

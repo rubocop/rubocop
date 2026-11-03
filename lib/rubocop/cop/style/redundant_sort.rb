@@ -101,6 +101,10 @@ module RuboCop
           }
         MATCHER
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments, Style::TrailingCommaInArrayLiteral, Style::TrailingCommaInHashLiteral]
+        end
+
         def on_send(node)
           ancestor, sort_node, sorter, accessor =
             find_redundant_sort(node.parent, node.parent&.parent)
@@ -139,7 +143,7 @@ module RuboCop
 
           rest = code_after_accessor(node)
 
-          !rest.empty? && !rest.match?(/\A(#|&?\.|[)\]},])/)
+          !rest.empty? && !rest.match?(/\A(#|&?\.|[)\]}])/)
         end
 
         def code_after_accessor(node)
