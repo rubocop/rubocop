@@ -298,9 +298,8 @@ module RuboCop
             parent.assignment? && (grandparent.conditional? || grandparent.when_type?)
           end
 
-          # rubocop:disable-next Metrics/PerceivedComplexity
           def command_assignment_in_expression?(node)
-            value = node.parent&.type?(:any_block, :rescue) ? node.parent : node
+            value = assigned_value(node)
             assignment = outermost_assignment(value)
             return false if assignment.equal?(value)
 
@@ -308,7 +307,16 @@ module RuboCop
               call_in_logical_operators?(assignment) ||
               call_in_optional_arguments?(assignment) ||
               call_as_argument_or_chain?(assignment) ||
+              call_in_match_pattern?(assignment) ||
               assignment.parent&.type?(:masgn, :return, :next, :break, :defined?)
+          end
+
+          def assigned_value(node)
+            parent = node.parent
+            return parent if parent&.rescue_type?
+            return parent if parent&.any_block_type? && parent.send_node.equal?(node)
+
+            node
           end
 
           def outermost_assignment(value)

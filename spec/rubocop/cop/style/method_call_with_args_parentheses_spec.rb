@@ -1271,6 +1271,25 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in a command assignment used as the value of one-line pattern matching', :ruby30 do
+      expect_no_offenses(<<~RUBY)
+        x = foo(bar) in baz
+        x ||= foo(bar) in baz
+        x += foo(bar) => baz
+      RUBY
+    end
+
+    it 'registers an offense for parens in the body of a block assigned as the value of one-line pattern matching', :ruby30 do
+      expect_offense(<<~RUBY)
+        x = foo { bar(baz) } in qux
+                     ^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = foo { bar baz } in qux
+      RUBY
+    end
+
     context 'allowing parenthesis in chaining' do
       let(:cop_config) do
         {
