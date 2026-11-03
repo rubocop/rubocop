@@ -14,7 +14,8 @@ module RuboCop
       color config debug display_cop_names display_style_guide display_time
       display_only_fail_level_offenses display_only_failed editor_mode except extra_details
       fail_level fix_layout force_exclusion format formatters ignore_disable_comments lint
-      max_offenses_per_cop only only_guide_cops out preview require safe
+      max_offenses_per_cop only only_guide_cops out preview report_unused_todo_entries
+      require safe
       autocorrect safe_autocorrect autocorrect_all
     ].freeze
 
