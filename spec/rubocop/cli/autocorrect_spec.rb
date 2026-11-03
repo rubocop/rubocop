@@ -1367,6 +1367,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Lint/TrailingCommaInAttributeDeclaration`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+        IgnoreMacros: false
+    YAML
+    create_file('example.rb', <<~RUBY)
+      class Foo
+        attr_reader :bar,
+
+        def baz; end
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Lint/TrailingCommaInAttributeDeclaration,Style/MethodCallWithArgsParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      class Foo
+        attr_reader(:bar)
+
+        def baz; end
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
