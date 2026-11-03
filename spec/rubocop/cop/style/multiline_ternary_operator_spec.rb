@@ -290,6 +290,99 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     expect_no_offenses('a = cond ? b : c')
   end
 
+  it 'does not register an offense when the body of a heredoc in the if branch follows the else branch' do
+    expect_no_offenses(<<~RUBY)
+      cond ? foo(
+        <<~EOS, bar) : baz
+          text
+        EOS
+    RUBY
+  end
+
+  it 'does not register an offense when the body of a heredoc in the if branch precedes the else branch' do
+    expect_no_offenses(<<~RUBY)
+      cond ? foo(<<~EOS) :
+        text
+      EOS
+        bar
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the body of a heredoc in the if branch follows the ternary operator of `return`' do
+    expect_offense(<<~RUBY)
+      return cond ?
+             ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+        foo(<<~EOS) : baz
+          text
+        EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      return cond ? foo(<<~EOS) : baz
+          text
+        EOS
+    RUBY
+  end
+
+  it 'does not register an offense when the body of a heredoc in the condition precedes the branches of `return`' do
+    expect_no_offenses(<<~RUBY)
+      return foo(<<~EOS) ?
+        text
+      EOS
+        bar : baz
+    RUBY
+  end
+
+  it 'does not register an offense when the body of a heredoc in an earlier argument is between the lines of the ternary operator' do
+    expect_no_offenses(<<~RUBY)
+      foo(<<~EOS, cond ?
+        text
+      EOS
+        bar : baz)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the body of a heredoc in an earlier argument precedes the ternary operator' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS,
+        text
+      EOS
+        cond ?
+        ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+        bar : baz)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(<<~EOS,
+        text
+      EOS
+        cond ? bar : baz)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the body of a heredoc is inside the if branch' do
+    expect_offense(<<~RUBY)
+      cond ? foo(
+      ^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        <<~EOS, bar
+          text
+        EOS
+      ) : baz
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if cond
+        foo(
+        <<~EOS, bar
+          text
+        EOS
+      )
+      else
+        baz
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when the if branch and the else branch are ' \
      'on a separate line from the condition and not contains a comment' do
     expect_offense(<<~RUBY)
