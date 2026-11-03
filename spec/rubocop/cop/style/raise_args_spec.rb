@@ -311,6 +311,57 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           RUBY
         end
 
+        it 'reports an offense and removes the trailing comma after the heredoc' do
+          expect_offense(<<~RUBY)
+            raise ArgumentError.new(
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+              <<~MSG.strip,
+                text
+              MSG
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            raise ArgumentError, <<~MSG.strip
+                text
+              MSG
+
+          RUBY
+        end
+
+        it 'reports an offense and removes the trailing comma and the space before it after the heredoc' do
+          expect_offense(<<~RUBY)
+            raise ArgumentError.new(
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+              <<~MSG.strip ,
+                text
+              MSG
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            raise ArgumentError, <<~MSG.strip
+                text
+              MSG
+
+          RUBY
+        end
+
+        it 'reports an offense and removes the trailing comma after the heredoc with parentheses' do
+          expect_offense(<<~RUBY)
+            raise(ArgumentError.new(<<~MSG,))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+              text
+            MSG
+          RUBY
+
+          expect_correction(<<~RUBY)
+            raise(ArgumentError, <<~MSG)
+              text
+            MSG
+          RUBY
+        end
+
         it 'reports an offense and keeps the heredoc body without parentheses' do
           expect_offense(<<~RUBY)
             raise ArgumentError.new(
