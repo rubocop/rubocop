@@ -262,6 +262,24 @@ RSpec.shared_examples 'empty_lines_around_class_or_module_body' do |type|
         end
       end
 
+      context 'source with method definition on the same line as the preceding statement' do
+        it "registers an offense only for #{type} not ending with a blank line" do
+          expect_offense(<<~RUBY)
+            #{type} SomeObject
+              do_something; def do_something_else; end
+            end
+            ^ #{missing_end}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{type} SomeObject
+              do_something; def do_something_else; end
+
+            end
+          RUBY
+        end
+      end
+
       context 'source with comment before method definition' do
         it "registers an offense for #{type} beginning with a blank line" do
           expect_offense(<<~RUBY)
