@@ -234,7 +234,9 @@ module RuboCop
         end
 
         def inside_block?(node)
-          node.parent.block_type? || (node.parent.begin_type? && node.parent.parent&.block_type?)
+          return true if node.parent.any_block_type?
+
+          node.parent.begin_type? && node.parent.parent&.any_block_type?
         end
 
         def no_empty_lines_around_block_body?
