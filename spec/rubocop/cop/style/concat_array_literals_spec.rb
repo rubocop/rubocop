@@ -98,6 +98,39 @@ RSpec.describe RuboCop::Cop::Style::ConcatArrayLiterals, :config do
     RUBY
   end
 
+  it 'registers an offense when using `concat` with multiple multiline array literal arguments followed by a trailing comma' do
+    expect_offense(<<~RUBY)
+      arr.concat([
+          ^^^^^^^^ Use `push(foo, bar)` instead of `concat([[...]
+        foo
+      ], [
+        bar
+      ],)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.push(
+        foo,#{trailing_whitespace}
+        bar,)
+    RUBY
+  end
+
+  it 'registers an offense when using `concat` with a multiline array literal argument with a trailing comma followed by a trailing comma' do
+    expect_offense(<<~RUBY)
+      arr.concat([
+          ^^^^^^^^ Use `push(foo)` instead of `concat([[...]
+        foo,
+      ],
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.push(
+        foo,
+      )
+    RUBY
+  end
+
   it 'registers an offense when using `concat` without parentheses with a line break after the opening bracket' do
     expect_offense(<<~RUBY)
       arr.concat [
