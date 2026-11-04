@@ -465,6 +465,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       RUBY
     end
 
+    it 'accepts an empty line at the end of a class whose body is on the class line' do
+      expect_no_offenses(<<~RUBY)
+        class SomeClass; do_something
+
+        end
+      RUBY
+    end
+
     it 'registers an offense for an empty line at the end of a class' do
       expect_offense(<<~RUBY)
         class SomeClass

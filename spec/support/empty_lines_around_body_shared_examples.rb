@@ -306,6 +306,121 @@ RSpec.shared_examples 'empty_lines_around_class_or_module_body' do |type|
         end
       end
 
+      context "source with statement on the #{type} line" do
+        it "registers an offense for #{type} without a blank line before method definition" do
+          expect_offense(<<~RUBY)
+            #{type} SomeObject; do_something
+              def do_something_else; end
+            ^ #{missing_def}
+            end
+            ^ #{missing_end}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{type} SomeObject; do_something
+
+              def do_something_else; end
+
+            end
+          RUBY
+        end
+
+        it "does not register an offense for #{type} with a blank line before method definition" do
+          expect_no_offenses(<<~RUBY)
+            #{type} SomeObject; do_something
+
+              def do_something_else; end
+
+            end
+          RUBY
+        end
+
+        it "does not register an offense for #{type} with a blank line and a comment before method definition" do
+          expect_no_offenses(<<~RUBY)
+            #{type} SomeObject; do_something
+
+              # Comment
+              def do_something_else; end
+
+            end
+          RUBY
+        end
+
+        it "registers an offense for #{type} beginning with a blank line and without method definition" do
+          expect_offense(<<~RUBY)
+            #{type} SomeObject; do_something
+
+            ^{} #{extra_begin}
+              do_something_else
+
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{type} SomeObject; do_something
+              do_something_else
+
+            end
+          RUBY
+        end
+
+        it "registers an offense only for the end of #{type} with method definition on the #{type} line" do
+          expect_offense(<<~RUBY)
+            #{type} SomeObject; do_something; def do_something_else; end
+              do_something
+            end
+            ^ #{missing_end}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{type} SomeObject; do_something; def do_something_else; end
+              do_something
+
+            end
+          RUBY
+        end
+
+        it "registers an offense for an empty line after #{type} line with method definition on it" do
+          expect_offense(<<~RUBY)
+            #{type} SomeObject; do_something; def do_something_else; end
+
+            ^{} #{extra_begin}
+              do_something
+
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{type} SomeObject; do_something; def do_something_else; end
+              do_something
+
+            end
+          RUBY
+        end
+
+        it "registers an offense for #{type} without a blank line before `end` when the body is on the #{type} line" do
+          expect_offense(<<~RUBY)
+            #{type} SomeObject; do_something
+            end
+            ^ #{missing_end}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{type} SomeObject; do_something
+
+            end
+          RUBY
+        end
+
+        it "does not register an offense for #{type} with a blank line before `end` when the body is on the #{type} line" do
+          expect_no_offenses(<<~RUBY)
+            #{type} SomeObject; do_something
+
+            end
+          RUBY
+        end
+      end
+
       context "when #{type} has a namespace" do
         it 'requires no empty lines for namespace ' \
            "and does not require blank line at the beginning of #{type} body " \

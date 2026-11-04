@@ -67,7 +67,7 @@ module RuboCop
             if first_child_requires_empty_line?(body)
               check_beginning(:empty_lines, body, first_line)
             else
-              check_beginning(:no_empty_lines, body, first_line)
+              check_no_empty_line_at_beginning(body, first_line)
               check_deferred_empty_line(body)
             end
             check_ending(:empty_lines, body, last_line)
@@ -89,6 +89,7 @@ module RuboCop
         end
 
         def check_beginning(style, body, first_line)
+          return if style == :no_empty_lines && body && body.last_line <= first_line
           return if style == :empty_lines && body&.first_line == first_line
 
           check_source(style, first_line, 'beginning')
@@ -125,6 +126,20 @@ module RuboCop
           first_token = processed_source.sorted_tokens.find { |token| token.line == line }
 
           LEADING_DOT_TYPES.include?(first_token&.type)
+        end
+
+        def check_no_empty_line_at_beginning(body, first_line)
+          return if deferred_empty_line_at_beginning?(body, first_line)
+
+          check_beginning(:no_empty_lines, body, first_line)
+        end
+
+        def deferred_empty_line_at_beginning?(body, first_line)
+          node = first_empty_line_required_child(body)
+          return false unless node
+          return false if node.first_line <= first_line
+
+          previous_line_ignoring_comments(node.first_line) <= first_line
         end
 
         def check_deferred_empty_line(body)
