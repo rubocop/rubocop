@@ -58,6 +58,7 @@ module RuboCop
 
           node = innermost_expression(node)
           return false unless node
+          return true if multiple_values_assignment?(node)
 
           keyword_operator?(node) || modifier_expression?(node) || command_call_operand?(node)
         end
@@ -69,6 +70,14 @@ module RuboCop
         def innermost_expression(node)
           node = node.children.first while node&.begin_type? && node.children.one?
           node
+        end
+
+        def multiple_values_assignment?(node)
+          return true if node.masgn_type?
+          return false unless node.assignment? || (node.call_type? && node.assignment_method?)
+
+          value = node.children.last
+          value.array_type? && !value.bracketed?
         end
 
         def keyword_operator?(node)

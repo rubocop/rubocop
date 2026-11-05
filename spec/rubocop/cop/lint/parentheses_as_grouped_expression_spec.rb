@@ -339,6 +339,53 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
+  it 'does not register an offense for a parenthesized multiple assignment' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (a, b = 1, 2)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized splat multiple assignment' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (*a = foo)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized assignment of multiple values' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x = 1, 2)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized assignment of a splat' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x = *foo)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized setter assignment of multiple values' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x.y = 1, 2)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized index assignment of multiple values' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x[0] = 1, 2)
+    RUBY
+  end
+
+  it 'registers an offense and corrects for a parenthesized assignment of an array literal' do
+    expect_offense(<<~RUBY)
+      obj.do_something (x = [1, 2])
+                      ^ `(x = [1, 2])` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something(x = [1, 2])
+    RUBY
+  end
+
   it 'does not register an offense for parenthesized negation of a command call' do
     expect_no_offenses(<<~RUBY)
       obj.do_something (!foo 'baz')
