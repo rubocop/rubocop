@@ -28,11 +28,12 @@ module RuboCop
           # put the comment.
           return if new_line_needed_before_closing_brace?(node)
           return if nested_closing_bracket_moved_before_comment?
+          return if nested_heredoc_argument_bracket_to_move?
 
           end_range = last_element_range_with_trailing_comma(node).end
 
           correct_next_line_brace(corrector, end_range)
-          correct_heredoc_argument_method_chain(corrector, end_range)
+          correct_code_after_heredoc_argument_brace(corrector, end_range)
         end
       end
 
@@ -78,6 +79,15 @@ module RuboCop
         comment_before_closing_brace?(literal, last_element)
       end
 
+      def nested_heredoc_argument_bracket_to_move?
+        last_line = children(node).last.last_line
+
+        node.each_descendant(:call).any? do |nested|
+          heredoc_first_argument?(nested) && closing_bracket_on_own_line?(nested, last_line) &&
+            !new_line_needed_before_closing_brace?(nested)
+        end
+      end
+
       def correct_next_line_brace(corrector, end_range)
         corrector.remove(space_before_closing_brace(end_range))
         corrector.insert_before(end_range, content_if_comment_present(corrector, node))
@@ -90,14 +100,18 @@ module RuboCop
         range.with(begin_pos: end_range.end_pos)
       end
 
-      def correct_heredoc_argument_method_chain(corrector, end_range)
-        return unless (parent = node.parent)
-        return unless use_heredoc_argument_method_chain?(parent)
+      def correct_code_after_heredoc_argument_brace(corrector, end_range)
+        return unless heredoc_first_argument?(node)
+        return if comment_before_closing_brace?(node, children(node).last)
 
-        chained_method = range_between(parent.loc.dot.begin_pos, parent.source_range.end_pos)
+        code_after_brace = code_after_closing_brace
 
-        corrector.remove(chained_method)
-        corrector.insert_after(end_range, chained_method.source)
+        corrector.remove(code_after_brace)
+        corrector.insert_after(end_range, code_after_brace.source)
+      end
+
+      def code_after_closing_brace
+        range_between(node.loc.end.end_pos, range_by_whole_lines(node.loc.end).end_pos)
       end
 
       def content_if_comment_present(corrector, node)
@@ -114,11 +128,11 @@ module RuboCop
         processed_source.each_comment_in_lines(lines_before_closing_brace).any?
       end
 
-      def use_heredoc_argument_method_chain?(parent)
-        return false unless node.respond_to?(:first_argument)
-        return false unless (first_argument = node.first_argument)
+      def heredoc_first_argument?(call)
+        return false unless call.respond_to?(:first_argument)
+        return false unless (first_argument = call.first_argument)
 
-        parent.call_type? && first_argument.str_type? && first_argument.heredoc?
+        first_argument.any_str_type? && first_argument.heredoc?
       end
 
       def select_content_to_be_inserted_after_last_element(corrector, node)

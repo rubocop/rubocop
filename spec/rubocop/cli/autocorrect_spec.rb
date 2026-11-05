@@ -1772,6 +1772,53 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` with `Style/RedundantParentheses`' do
+    create_file('example.rb', <<~RUBY)
+      x = (foo(<<~EOS, arg
+        text
+      EOS
+      ))
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Style/RedundantParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      x = foo(<<~EOS, arg)
+        text
+      EOS
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` with `Layout/BlockEndNewline`' do
+    create_file('example.rb', <<~RUBY)
+      [1].map { foo(<<~EOS, arg
+        text
+      EOS
+      ) }
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Layout/BlockEndNewline'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      [1].map { foo(<<~EOS, arg)
+        text
+      EOS
+      }
+    RUBY
+  end
+
   it 'corrects `Style/RedundantInterpolation` with `Style/MethodCallWithArgsParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
