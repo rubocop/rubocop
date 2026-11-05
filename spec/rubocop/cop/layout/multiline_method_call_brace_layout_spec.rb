@@ -62,6 +62,120 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects a method chain of several calls for heredoc argument' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS, arg
+        text
+        more
+      EOS
+      ).do_something(1).other
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(<<~EOS, arg).do_something(1).other
+        text
+        more
+      EOS
+    RUBY
+  end
+
+  it 'registers an offense but does not correct when a method chain for heredoc argument spans multiple lines' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS, arg
+        text
+      EOS
+      ).do_something(
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+        other
+      )
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense but does not correct when code other than a method chain follows the brace for heredoc argument' do
+    expect_offense(<<~RUBY)
+      bar(foo(<<~EOS, arg
+        text
+      EOS
+      ))
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      foo(<<~EOS, arg
+        text
+      EOS
+      ) + bar
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      foo(<<~EOS, arg
+        text
+      EOS
+      )[0]
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      foo(<<~EOS, arg
+        text
+      EOS
+      ) # comment
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense and corrects a call with heredoc argument that is an operand' do
+    expect_offense(<<~RUBY)
+      !foo(<<~EOS, arg
+        text
+      EOS
+      )
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !foo(<<~EOS, arg)
+        text
+      EOS
+    RUBY
+  end
+
+  it 'corrects the inner brace first when nested calls with heredoc argument have their braces on their own lines' do
+    expect_offense(<<~RUBY)
+      bar(foo(<<~EOS, arg
+        text
+      EOS
+      )
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      )
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      bar(foo(<<~EOS, arg)
+        text
+      EOS
+      )
+    RUBY
+  end
+
+  it 'corrects the outer brace when the brace of the nested call with heredoc argument is not moved' do
+    expect_offense(<<~RUBY)
+      bar(foo(
+        <<~EOS, arg
+          text
+        EOS
+      )
+      )
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      bar(foo(
+        <<~EOS, arg
+          text
+        EOS
+      ))
+    RUBY
+  end
+
   context 'when `Lint/HeredocMethodCallPosition` is enabled' do
     let(:other_cops) { { 'Lint/HeredocMethodCallPosition' => { 'Enabled' => true } } }
 

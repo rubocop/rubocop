@@ -45,6 +45,135 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect($stdout.string).to include('no offenses detected')
   end
 
+  it 'does not wait for an uncorrected nested brace with block parameters' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/MultilineMethodDefinitionBraceLayout:
+        Enabled: true
+        EnforcedStyle: symmetrical
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(a, b = proc { |x = <<~EOS, y = 1
+        text
+      EOS
+      | }
+      )
+      end
+    RUBY
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(a, b = proc { |x = <<~EOS, y = 1
+        text
+      EOS
+      | })
+      end
+    RUBY
+  end
+
+  it 'does not wait for an uncorrected nested brace with MultilineMethodDefinitionBraceLayout' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/MultilineMethodDefinitionBraceLayout:
+        Enabled: true
+        EnforcedStyle: symmetrical
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(a, b = ->(x = <<~EOS, y = 1
+        text
+      EOS
+      ) {}
+      )
+      end
+    RUBY
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(a, b = ->(x = <<~EOS, y = 1
+        text
+      EOS
+      ) {})
+      end
+    RUBY
+  end
+
+  it 'does not wait for an uncorrected nested brace with MultilineHashBraceLayout' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/MultilineHashBraceLayout:
+        Enabled: true
+        EnforcedStyle: symmetrical
+    YAML
+    create_file('example.rb', <<~RUBY)
+      {a: {b: <<~EOS, c: arg
+        text
+      EOS
+      } # rubocop:disable Layout/MultilineHashBraceLayout
+      }
+    RUBY
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      {a: {b: <<~EOS, c: arg
+        text
+      EOS
+      }} # rubocop:disable Layout/MultilineHashBraceLayout
+    RUBY
+  end
+
+  it 'does not wait for an uncorrected nested brace with MultilineArrayBraceLayout' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/MultilineArrayBraceLayout:
+        Enabled: true
+        EnforcedStyle: symmetrical
+    YAML
+    create_file('example.rb', <<~RUBY)
+      [[<<~EOS, arg
+        text
+      EOS
+      ] # rubocop:disable Layout/MultilineArrayBraceLayout
+      ]
+    RUBY
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      [[<<~EOS, arg
+        text
+      EOS
+      ]] # rubocop:disable Layout/MultilineArrayBraceLayout
+    RUBY
+  end
+
+  it 'does not wait for an uncorrected nested brace with MultilineMethodCallBraceLayout' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/MultilineMethodCallBraceLayout:
+        Enabled: true
+        EnforcedStyle: symmetrical
+    YAML
+    create_file('example.rb', <<~RUBY)
+      bar(foo(<<~EOS, arg
+        text
+      EOS
+      ) # rubocop:disable Layout/MultilineMethodCallBraceLayout
+      )
+    RUBY
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      bar(foo(<<~EOS, arg
+        text
+      EOS
+      )) # rubocop:disable Layout/MultilineMethodCallBraceLayout
+    RUBY
+  end
+
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/HashAlignment:
@@ -1869,6 +1998,99 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       raise RuntimeError, <<~MSG
           message
         MSG
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` with `Style/YodaCondition`' do
+    create_file('example.rb', <<~RUBY)
+      1 == foo(<<~EOS, arg
+        text
+      EOS
+      )
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Style/YodaCondition'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(<<~EOS, arg) == 1
+        text
+      EOS
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` with `Style/DoubleNegation`' do
+    create_file('example.rb', <<~RUBY)
+      !!foo(<<~EOS, arg
+        text
+      EOS
+      )
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Style/DoubleNegation'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      !foo(<<~EOS, arg).nil?
+        text
+      EOS
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` with `Style/RedundantParentheses`' do
+    create_file('example.rb', <<~RUBY)
+      x = (foo(<<~EOS, arg
+        text
+      EOS
+      ))
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Style/RedundantParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      x = foo(<<~EOS, arg)
+        text
+      EOS
+    RUBY
+  end
+
+  it 'corrects `Layout/MultilineMethodCallBraceLayout` with `Layout/BlockEndNewline`' do
+    create_file('example.rb', <<~RUBY)
+      [1].map { foo(<<~EOS, arg
+        text
+      EOS
+      ) }
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/MultilineMethodCallBraceLayout,Layout/BlockEndNewline'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      [1].map { foo(<<~EOS, arg)
+        text
+      EOS
+      }
     RUBY
   end
 
