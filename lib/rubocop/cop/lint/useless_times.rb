@@ -96,7 +96,7 @@ module RuboCop
           source = node.body.source
           source.gsub!(/\b#{block_arg}\b/, '0') if block_arg
 
-          corrector.replace(node, fix_indentation(source, node.loc.column...node.body.loc.column))
+          corrector.replace(node, fix_indentation(source, node))
         end
 
         def reducible_to_body?(node, block_arg)
@@ -124,14 +124,14 @@ module RuboCop
           regexp.to_regexp.names.include?(name.to_s)
         end
 
-        def fix_indentation(source, range)
-          # Cleanup indentation in a multiline block
+        def fix_indentation(source, node)
+          shift = node.body.loc.column - node.loc.column
+          shift_range = begins_its_line?(node.body.source_range) ? "0,#{shift}" : shift
+          excess_indentation = /\A([ \t]{#{node.loc.column}})[ \t]{#{shift_range}}/
           source_lines = source.split("\n")
 
           source_lines[1..].each do |line|
-            next if line.empty?
-
-            line[range] = ''
+            line.sub!(excess_indentation, '\1')
           end
           source_lines.join("\n")
         end
