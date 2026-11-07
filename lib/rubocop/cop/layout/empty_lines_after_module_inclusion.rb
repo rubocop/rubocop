@@ -28,7 +28,6 @@ module RuboCop
       #   end
       #
       class EmptyLinesAfterModuleInclusion < Base
-        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Add an empty line after module inclusion.'
@@ -41,20 +40,29 @@ module RuboCop
           return if node.receiver || node.arguments.empty?
           return if node.parent&.type?(:send, :any_block, :array)
 
-          return if next_line_empty_or_enable_directive_comment?(node.last_line)
+          last_line = last_line_with_heredocs(node)
+          return if next_line_empty_or_enable_directive_comment?(last_line)
 
           next_line_node = next_line_node(node)
           return unless require_empty_line?(next_line_node)
 
-          add_offense(node) { |corrector| autocorrect(corrector, node) }
+          add_offense(node) { |corrector| autocorrect(corrector, last_line) }
         end
 
         private
 
-        def autocorrect(corrector, node)
-          node_range = range_by_whole_lines(node.source_range)
+        def last_line_with_heredocs(node)
+          heredoc_end_lines = processed_source.ast.each_node(:any_str).filter_map do |str|
+            str.loc.heredoc_end.line if str.heredoc? && str.first_line == node.last_line
+          end
 
-          next_line = node_range.last_line + 1
+          [node.last_line, *heredoc_end_lines].max
+        end
+
+        def autocorrect(corrector, last_line)
+          node_range = processed_source.buffer.line_range(last_line)
+
+          next_line = last_line + 1
           if enable_directive_comment?(next_line)
             node_range = processed_source.comment_at_line(next_line)
           end

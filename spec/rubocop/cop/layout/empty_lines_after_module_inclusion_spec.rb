@@ -326,4 +326,87 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
       end
     RUBY
   end
+
+  it 'registers an offense and corrects after the heredoc body when module inclusion has a heredoc argument' do
+    expect_offense(<<~RUBY)
+      class Foo
+        include Module.new(<<~EOS)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an empty line after module inclusion.
+          str
+        EOS
+        def do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        include Module.new(<<~EOS)
+          str
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects after the heredoc body when a heredoc is opened before module inclusion on the same line' do
+    expect_offense(<<~RUBY)
+      class Foo
+        include Module.new(<<~EOS); include Bar
+                                    ^^^^^^^^^^^ Add an empty line after module inclusion.
+          str
+        EOS
+        def do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        include Module.new(<<~EOS); include Bar
+          str
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects after the heredoc body when a heredoc is opened after module inclusion on the same line' do
+    expect_offense(<<~RUBY)
+      class Foo
+        include Bar; do_something(<<~EOS)
+        ^^^^^^^^^^^ Add an empty line after module inclusion.
+          str
+        EOS
+        do_something_else
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        include Bar; do_something(<<~EOS)
+          str
+        EOS
+
+        do_something_else
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the heredoc body of a module inclusion is followed by an empty line' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        include Module.new(<<~EOS)
+          str
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
 end
