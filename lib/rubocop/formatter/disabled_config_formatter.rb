@@ -19,6 +19,7 @@ module RuboCop
 
       EXCLUDED_CONFIG_KEYS = %w[
         AutoCorrect
+        AllowedOffenses
         Description
         Enabled
         Exclude
@@ -46,6 +47,7 @@ module RuboCop
         super
         @cops_with_offenses ||= Hash.new(0)
         @files_with_offenses ||= {}
+        @offenses_by_file ||= Hash.new { |hash, cop_name| hash[cop_name] = Hash.new(0) }
       end
 
       def file_started(_file, options)
@@ -56,10 +58,15 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
+        file_path = PathUtil.normalized_relative_path(
+          file, @config_for_pwd.base_dir_for_path_parameters
+        )
+
         offenses.each do |o|
           @cops_with_offenses[o.cop_name] += 1
           @files_with_offenses[o.cop_name] ||= Set.new
           @files_with_offenses[o.cop_name] << file
+          @offenses_by_file[o.cop_name][file_path] += 1
         end
       end
 
@@ -91,7 +98,7 @@ module RuboCop
       def command
         command = 'rubocop --auto-gen-config'
 
-        command += ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
+        command += auto_gen_option
         command += ' --disable-pending-cops' if @options[:disable_pending_cops]
         command += ' --enable-pending-cops' if @options[:enable_pending_cops]
         command += preview_option
@@ -103,6 +110,13 @@ module RuboCop
         command += ' --no-auto-gen-enforced-style' unless auto_gen_enforced_style?
 
         command
+      end
+
+      def auto_gen_option
+        return ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
+        return ' --auto-gen-allowed-offenses' if @options[:auto_gen_allowed_offenses]
+
+        ''
       end
 
       def preview_option
@@ -136,7 +150,7 @@ module RuboCop
       def output_cop(cop_name, offense_count)
         output.puts
         cfg = self.class.config_to_allow_offenses[cop_name] || {}
-        set_max(cfg, cop_name)
+        configure_cop(cfg, cop_name)
 
         # To avoid malformed YAML when potentially reading the config in
         # #excludes, we use an output buffer and append it to the actual output
@@ -147,16 +161,40 @@ module RuboCop
         output.puts(output_buffer.string)
       end
 
+      def configure_cop(cfg, cop_name)
+        if @options[:auto_gen_allowed_offenses]
+          return unless filtered_config(cfg).empty?
+
+          # Keep the same threshold settings as the default mode when possible.
+          exclude_limit_config_generated = set_max(cfg, cop_name)
+          return if exclude_limit_config_generated || allowed_offenses_limit_exceeded?(cop_name)
+
+          set_allowed_offenses(cfg, cop_name)
+        else
+          set_max(cfg, cop_name)
+        end
+      end
+
+      def allowed_offenses_limit_exceeded?(cop_name)
+        !no_exclude_limit? && @files_with_offenses[cop_name].size > @exclude_limit
+      end
+
       def set_max(cfg, cop_name)
         exclude_limits = RuboCop::ExcludeLimit.read_limits(cop_name)
         cfg[:exclude_limit] = exclude_limits unless exclude_limits.empty?
 
         return unless cfg[:exclude_limit]
 
-        cfg.merge!(cfg[:exclude_limit]) if should_set_max?(cop_name)
+        exclude_limit_config_generated = should_set_max?(cop_name)
+        cfg.merge!(cfg[:exclude_limit]) if exclude_limit_config_generated
 
         # Remove already used exclude_limit.
         cfg.reject! { |key| key == :exclude_limit }
+        exclude_limit_config_generated
+      end
+
+      def set_allowed_offenses(cfg, cop_name)
+        cfg['AllowedOffenses'] = @offenses_by_file[cop_name].sort.to_h
       end
 
       def should_set_max?(cop_name)
@@ -225,11 +263,22 @@ module RuboCop
         filtered_cfg = filtered_config(cfg)
         output_buffer.puts "#{cop_name}:"
         filtered_cfg.each do |key, value|
-          value = value[0] if value.is_a?(Array)
-          output_buffer.puts "  #{key}: #{value}"
+          output_config(output_buffer, key, value)
         end
 
         output_offending_files(output_buffer, filtered_cfg, cop_name)
+      end
+
+      def output_config(output_buffer, key, value)
+        if value.is_a?(Hash)
+          output_buffer.puts "  #{key}:"
+          YAML.dump(value).lines.drop(1).each do |line|
+            output_buffer.write("    #{line}")
+          end
+        else
+          value = value[0] if value.is_a?(Array)
+          output_buffer.puts "  #{key}: #{value}"
+        end
       end
 
       def filtered_config(cfg)

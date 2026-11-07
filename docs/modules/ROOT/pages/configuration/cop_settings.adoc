@@ -86,6 +86,38 @@ Style/Alias:
   Enabled: true
 ----
 
+== AllowedOffenses
+
+`AllowedOffenses` sets per-file offense limits for a cop. It is a map from
+relative file paths to number of allowed offenses in that file:
+
+[source,yaml]
+----
+Style/StringLiterals:
+  AllowedOffenses:
+    lib/a.rb: 3
+    lib/b.rb: 1
+----
+
+An offense is suppressed while the count for the cop in that file is not
+exceeding its allowance. If the count is exceeded, all offenses for that cop in
+that file are reported and the run fails, regardless of the cop's severity or
+`--fail-level`. Other files are evaluated independently. A file absent from the
+map has an allowance of zero.
+
+Paths use the same base directory as other paths in `.rubocop*` configuration.
+Glob patterns and absolute paths are not supported. The setting can be
+configured for an individual cop or a department, but not under `AllCops`. A
+department map applies to cops without their own setting.
+
+To generate a TODO file with per-file allowances instead of file exclusions,
+run `rubocop --auto-gen-config --auto-gen-allowed-offenses` over the full
+project. Threshold settings such as `Max` are still generated when
+available. The generated maps obey `--exclude-limit`. Use `--no-exclude-limit`
+to generate maps with any number of files.  Unlike `--max-offenses-per-cop`,
+the allowance affects the exit status, while the display cap can still limit
+the messages shown.
+
 == Severity
 
 Every offense carries a severity, which is what `--fail-level` and
