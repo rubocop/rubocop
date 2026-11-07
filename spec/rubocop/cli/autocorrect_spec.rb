@@ -4163,6 +4163,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/EmptyLinesAroundClassBody` with `EnforcedStyle: empty_lines_special` and `Layout/EmptyLinesAroundAccessModifier` with `EnforcedStyle: only_before` for a conditional access modifier' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundAccessModifier:
+        EnforcedStyle: only_before
+      Layout/EmptyLinesAroundClassBody:
+        EnforcedStyle: empty_lines_special
+    YAML
+    create_file('example.rb', <<~RUBY)
+      class Foo
+        private if condition
+        def do_something; end
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['-A', '--only', 'Layout/EmptyLinesAroundAccessModifier,Layout/EmptyLinesAroundClassBody']
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      class Foo
+
+        private if condition
+        def do_something; end
+
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/EmptyLinesAroundClassBody` and `Layout/IndentationWidth` offenses without a whitespace-only line' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/EmptyLinesAroundClassBody:

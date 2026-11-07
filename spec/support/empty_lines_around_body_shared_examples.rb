@@ -145,6 +145,63 @@ RSpec.shared_examples 'empty_lines_around_class_or_module_body' do |type|
       end
     end
 
+    context 'when first child is a conditional access modifier' do
+      it 'registers no offense with blank lines at the beginning and ending of the body' do
+        expect_no_offenses(<<~RUBY)
+          #{type} SomeObject
+
+            private if condition
+            def do_something; end
+
+          end
+        RUBY
+      end
+
+      it 'registers and corrects an offense with no blank lines at the beginning of the body' do
+        expect_offense(<<~RUBY)
+          #{type} SomeObject
+            private unless condition
+          ^ #{missing_begin}
+            def do_something; end
+
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{type} SomeObject
+
+            private unless condition
+            def do_something; end
+
+          end
+        RUBY
+      end
+
+      it 'does not treat a multiline conditional containing an access modifier as an access modifier' do
+        expect_offense(<<~RUBY)
+          #{type} SomeObject
+            if condition
+              private
+            end
+            def do_something; end
+          ^ #{missing_def}
+
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{type} SomeObject
+            if condition
+              private
+            end
+
+            def do_something; end
+
+          end
+        RUBY
+      end
+    end
+
     context 'when first child is NOT a method' do
       it "does not require blank line at the beginning of #{type} body " \
          'but requires blank line before first def definition ' \
