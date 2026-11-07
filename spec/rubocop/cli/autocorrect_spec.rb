@@ -3558,6 +3558,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: for` of `Style/For` with `Style/BlockDelimiters` for a brace block in the receiver' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/For:
+        EnforcedStyle: for
+    YAML
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo.select { |x|
+        bar(x)
+      }.each { |y|
+        baz(y)
+      }
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only', 'Style/For,Style/BlockDelimiters'])
+
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      foo.select do |x|
+        bar(x)
+      end.each do |y|
+        baz(y)
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: for` of `Style/For` with `EnforcedStyle: always` of `Style/ItBlockParameter`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
