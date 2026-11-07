@@ -48,6 +48,9 @@ $ rubocop --report-unused-todo-entries
   Style/ClassVars: lib/fixed_file.rb
 ----
 
+A glob entry is judged against its matching source files, not as a literal
+path, and is kept when any of those files still trigger that cop.
+
 Regenerating the todo also removes stale entries, but the two commands
 serve opposite purposes. Regeneration re-baselines: it rewrites the whole
 file, and in doing so also *absorbs any new offenses* into the todo list -
