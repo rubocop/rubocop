@@ -737,6 +737,136 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/BlockEndNewline` with `Lint/AmbiguousBlockAssociation` when the block ends with a heredoc argument' do
+    create_file('example.rb', <<~RUBY)
+      foo bar {
+        baz(<<~EOS) }
+          text
+        EOS
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Layout/BlockEndNewline,Lint/AmbiguousBlockAssociation'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(bar {
+        baz(<<~EOS)
+          text
+        EOS
+      })
+    RUBY
+  end
+
+  it 'corrects `Layout/BlockEndNewline` with `Style/MethodCallWithArgsParentheses` when the block ends with a heredoc argument' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        IgnoreMacros: false
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo bar, baz {
+        qux(<<~EOS) }
+          text
+        EOS
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Layout/BlockEndNewline,Style/MethodCallWithArgsParentheses'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(bar, baz {
+        qux(<<~EOS)
+          text
+        EOS
+      })
+    RUBY
+  end
+
+  it 'corrects `Layout/BlockEndNewline` with `Style/NestedParenthesizedCalls` when the block ends with a heredoc argument' do
+    create_file('example.rb', <<~RUBY)
+      do_something(foo bar {
+        baz(<<~EOS) }
+          text
+        EOS
+      )
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Layout/BlockEndNewline,Style/NestedParenthesizedCalls'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(foo(bar {
+        baz(<<~EOS)
+          text
+        EOS
+      })
+      )
+    RUBY
+  end
+
+  it 'corrects `Layout/BlockEndNewline` with the trailing comma cops when the block ends with a heredoc argument' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: consistent_comma
+      Style/TrailingCommaInArrayLiteral:
+        EnforcedStyleForMultiline: consistent_comma
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo(
+        bar {
+          baz(<<~EOS) }
+            text
+          EOS
+      )
+      x = [
+        bar {
+          baz(<<~EOS) }
+            text
+          EOS
+      ]
+      y = {
+        k: bar {
+          baz(<<~EOS) }
+            text
+          EOS
+      }
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect-all', '--only',
+          'Layout/BlockEndNewline,Style/TrailingCommaInArguments,' \
+          'Style/TrailingCommaInArrayLiteral,Style/TrailingCommaInHashLiteral'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(
+        bar {
+          baz(<<~EOS)
+            text
+          EOS
+      },
+      )
+      x = [
+        bar {
+          baz(<<~EOS)
+            text
+          EOS
+      },
+      ]
+      y = {
+        k: bar {
+          baz(<<~EOS)
+            text
+          EOS
+      },
+      }
+    RUBY
+  end
+
   it 'corrects `Lint/HeredocMethodCallPosition` with `Style/MethodCallWithArgsParentheses`' do
     create_file('example.rb', <<~RUBY)
       App.info '', <<~EOS

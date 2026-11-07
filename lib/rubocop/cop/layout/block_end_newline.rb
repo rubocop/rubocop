@@ -30,6 +30,19 @@ module RuboCop
 
         MSG = 'Expression at %<line>d, %<column>d should be on its own line.'
 
+        # Moving the closing brace below a heredoc leaves behind text that another cop
+        # inserts right after the brace in the same pass.
+        def self.autocorrect_incompatible_with
+          [
+            Lint::AmbiguousBlockAssociation,
+            Style::MethodCallWithArgsParentheses,
+            Style::NestedParenthesizedCalls,
+            Style::TrailingCommaInArguments,
+            Style::TrailingCommaInArrayLiteral,
+            Style::TrailingCommaInHashLiteral
+          ]
+        end
+
         def on_block(node)
           return if node.single_line?
 
