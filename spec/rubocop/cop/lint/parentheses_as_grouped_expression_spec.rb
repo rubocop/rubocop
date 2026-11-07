@@ -256,6 +256,52 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
+  it 'does not register an offense for empty parentheses' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something ()
+    RUBY
+  end
+
+  it 'does not register an offense for parentheses containing only a semicolon', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (;)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized expression preceded by a semicolon', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (; foo)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized expression followed by a semicolon', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (foo;)
+    RUBY
+  end
+
+  it 'registers an offense for a parenthesized expression containing a semicolon in a block' do
+    expect_offense(<<~RUBY)
+      obj.do_something (foo { bar; baz })
+                      ^ `(foo { bar; baz })` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something(foo { bar; baz })
+    RUBY
+  end
+
+  it 'registers an offense for doubly parenthesized empty parentheses', :ruby34 do
+    expect_offense(<<~RUBY)
+      obj.do_something ((;))
+                      ^ `((;))` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something((;))
+    RUBY
+  end
+
   it 'does not register an offense for parenthesized multiline statements', :ruby34 do
     expect_no_offenses(<<~RUBY)
       obj.do_something (foo

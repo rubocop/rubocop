@@ -54,7 +54,7 @@ module RuboCop
         end
 
         def invalid_bare_argument?(node)
-          return true if multiple_statements?(node)
+          return true if multiple_statements?(node) || not_a_single_expression?(node)
 
           node = innermost_expression(node)
           return false unless node
@@ -64,6 +64,17 @@ module RuboCop
 
         def multiple_statements?(node)
           node.begin_type? && node.children.size > 1
+        end
+
+        def not_a_single_expression?(node)
+          return false unless node.begin_type?
+
+          expression = node.children.first
+          return true unless expression
+
+          processed_source.tokens_within(node).any? do |token|
+            token.semicolon? && !expression.source_range.contains?(token.pos)
+          end
         end
 
         def innermost_expression(node)
