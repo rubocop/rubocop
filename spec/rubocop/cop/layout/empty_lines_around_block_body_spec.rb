@@ -167,6 +167,71 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
     end
   end
 
+  context 'when `EnforcedStyle` is `empty_lines` and the body starts on the opening line' do
+    let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
+
+    it 'does not register an offense when the body continues on the closing line' do
+      expect_no_offenses(<<~RUBY)
+        -> { foo \\
+          if bar }
+      RUBY
+    end
+
+    it 'registers an offense only at the body end when the body ends before the closing line' do
+      expect_offense(<<~RUBY)
+        foo do |bar| baz \\
+          if bar
+        end
+        ^ Empty line missing at block body end.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo do |bar| baz \\
+          if bar
+
+        end
+      RUBY
+    end
+  end
+
+  context 'when `EnforcedStyle` is `empty_lines` and the body ends on the closing line' do
+    let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
+
+    it 'registers an offense only at the body beginning' do
+      expect_offense(<<~RUBY)
+        foo {
+          bar \\
+        ^ Empty line missing at block body beginning.
+            if baz }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo {
+
+          bar \\
+            if baz }
+      RUBY
+    end
+  end
+
+  context 'when `EnforcedStyle` is `no_empty_lines` and the body starts on the opening line' do
+    let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
+
+    it 'registers an offense and removes the blank line after the opening line' do
+      expect_offense(<<~RUBY)
+        foo { bar(
+
+        ^{} Extra empty line detected at block body beginning.
+          baz) }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo { bar(
+          baz) }
+      RUBY
+    end
+  end
+
   context 'when `EnforcedStyle` is `empty_lines` and `do` follows a line continuation' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
 

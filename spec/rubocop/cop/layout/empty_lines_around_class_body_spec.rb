@@ -165,6 +165,22 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     it 'accepts singleton classes with an empty body' do
       expect_no_offenses("class << self\nend")
     end
+
+    it 'registers an offense only at the body end when the body starts on the class line' do
+      expect_offense(<<~RUBY)
+        class SomeClass; do_something \\
+          if condition
+        end
+        ^ #{missing_end}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass; do_something \\
+          if condition
+
+        end
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is empty_lines_except_namespace' do

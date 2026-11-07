@@ -39,15 +39,15 @@ module RuboCop
           when :empty_lines_special
             check_empty_lines_special(body, first_line, last_line)
           else
-            check_both(style, first_line, last_line)
+            check_both(style, body, first_line, last_line)
           end
         end
 
         def check_empty_lines_except_namespace(body, first_line, last_line)
           if namespace?(body, with_one_child: true)
-            check_both(:no_empty_lines, first_line, last_line)
+            check_both(:no_empty_lines, body, first_line, last_line)
           else
-            check_both(:empty_lines, first_line, last_line)
+            check_both(:empty_lines, body, first_line, last_line)
           end
         end
 
@@ -55,37 +55,41 @@ module RuboCop
           return unless body
 
           if namespace?(body, with_one_child: true)
-            check_both(:no_empty_lines, first_line, last_line)
+            check_both(:no_empty_lines, body, first_line, last_line)
           else
             if first_child_requires_empty_line?(body)
-              check_beginning(:empty_lines, first_line)
+              check_beginning(:empty_lines, body, first_line)
             else
-              check_beginning(:no_empty_lines, first_line)
+              check_beginning(:no_empty_lines, body, first_line)
               check_deferred_empty_line(body)
             end
-            check_ending(:empty_lines, last_line)
+            check_ending(:empty_lines, body, last_line)
           end
         end
 
-        def check_both(style, first_line, last_line)
+        def check_both(style, body, first_line, last_line)
           case style
           when :beginning_only
-            check_beginning(:empty_lines, first_line)
-            check_ending(:no_empty_lines, last_line)
+            check_beginning(:empty_lines, body, first_line)
+            check_ending(:no_empty_lines, body, last_line)
           when :ending_only
-            check_beginning(:no_empty_lines, first_line)
-            check_ending(:empty_lines, last_line)
+            check_beginning(:no_empty_lines, body, first_line)
+            check_ending(:empty_lines, body, last_line)
           else
-            check_beginning(style, first_line)
-            check_ending(style, last_line)
+            check_beginning(style, body, first_line)
+            check_ending(style, body, last_line)
           end
         end
 
-        def check_beginning(style, first_line)
+        def check_beginning(style, body, first_line)
+          return if style == :empty_lines && body&.first_line == first_line
+
           check_source(style, first_line, 'beginning')
         end
 
-        def check_ending(style, last_line)
+        def check_ending(style, body, last_line)
+          return if style == :empty_lines && body&.last_line == last_line
+
           check_source(style, last_line - 2, 'end')
         end
 
