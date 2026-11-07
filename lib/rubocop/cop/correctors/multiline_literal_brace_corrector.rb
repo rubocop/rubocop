@@ -84,7 +84,7 @@ module RuboCop
       end
 
       def space_before_closing_brace(end_range)
-        range = range_with_surrounding_space(node.loc.end, side: :left)
+        range = range_with_surrounding_space(node.loc.end, side: :left, continuations: true)
         return range if range.begin_pos >= end_range.end_pos
 
         range.with(begin_pos: end_range.end_pos)

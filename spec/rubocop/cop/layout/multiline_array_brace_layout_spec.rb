@@ -140,5 +140,19 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
         ]
       RUBY
     end
+
+    it 'registers an offense and corrects an array with a line continuation before the closing brace' do
+      expect_offense(<<~'RUBY')
+        foo = [
+          1 \
+        ]; bar
+        ^ The closing array brace must be on the same line as the last array element.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = [
+          1] ; bar
+      RUBY
+    end
   end
 end
