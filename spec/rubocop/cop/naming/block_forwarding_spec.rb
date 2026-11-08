@@ -105,6 +105,28 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
         RUBY
       end
 
+      it 'registers and corrects an offense when using explicit block forwarding in an index call' do
+        expect_offense(<<~RUBY)
+          def foo(&block)
+                  ^^^^^^ Use anonymous block forwarding.
+            bar[&block]
+                ^^^^^^ Use anonymous block forwarding.
+            baz[1, &block]
+                   ^^^^^^ Use anonymous block forwarding.
+            qux.[] &block
+                   ^^^^^^ Use anonymous block forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(&)
+            bar[&]
+            baz[1, &]
+            qux.[](&)
+          end
+        RUBY
+      end
+
       it 'registers and corrects an only explicit block forwarding when using multiple proc arguments' do
         expect_offense(<<~RUBY)
           def foo(bar, &block)

@@ -133,13 +133,19 @@ module RuboCop
 
               arguments = block_argument.parent
 
-              add_parentheses(arguments, corrector) unless arguments.parenthesized_call?
+              unless arguments.parenthesized_call? || index_call?(arguments)
+                add_parentheses(arguments, corrector)
+              end
             else
               unless use_block_argument_as_local_variable?(node, block_forwarding_name)
                 corrector.replace(block_argument, "&#{block_forwarding_name}")
               end
             end
           end
+        end
+
+        def index_call?(node)
+          node.call_type? && node.method?(:[]) && !node.loc.dot
         end
 
         def use_block_argument_as_local_variable?(node, last_argument)
