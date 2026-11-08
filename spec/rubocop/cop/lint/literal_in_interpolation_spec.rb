@@ -724,4 +724,47 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
       /#{%w[a b c]}/
     RUBY
   end
+
+  context 'when the value contains a delimiter of the enclosing literal' do
+    it 'does not register an offense for an opening brace inside a %r{} `regexp`' do
+      expect_no_offenses(<<~'RUBY')
+        %r{foo#{'{'}bar}
+      RUBY
+    end
+
+    it 'does not register an offense for a closing parenthesis inside a %() string' do
+      expect_no_offenses(<<~'RUBY')
+        %(foo#{')'}bar)
+      RUBY
+    end
+
+    it 'does not register an offense for a backtick inside backticks' do
+      expect_no_offenses(<<~'RUBY')
+        `foo#{'`'}bar`
+      RUBY
+    end
+
+    it 'does not register an offense for a closing bracket inside a %W[] array' do
+      expect_no_offenses(<<~'RUBY')
+        %W[foo#{']'}bar]
+      RUBY
+    end
+
+    it 'does not register an offense for a forward slash inside a %// string' do
+      expect_no_offenses(<<~'RUBY')
+        %/foo#{'/'}bar/
+      RUBY
+    end
+
+    it 'registers an offense for a double quote inside a %Q"" string' do
+      expect_offense(<<~'RUBY')
+        %Q"foo#{'"'}bar"
+                ^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %Q"foo\"bar"
+      RUBY
+    end
+  end
 end

@@ -71,6 +71,7 @@ module RuboCop
           # interpolation should not be removed if the expanded value
           # contains a space character.
           return if in_array_percent_literal?(begin_node) && /\s|\A\z/.match?(value)
+          return if breaks_delimiters?(begin_node, value)
 
           value
         end
@@ -220,6 +221,40 @@ module RuboCop
 
           grandparent = parent.parent
           grandparent&.array_type? && grandparent.percent_literal?
+        end
+
+        def breaks_delimiters?(begin_node, value)
+          return false unless (literal = delimited_literal(begin_node))
+
+          opening = literal.loc.begin.source[-1]
+          closing = literal.loc.end.source[0]
+          return !balanced?(value, opening, closing) if opening != closing
+
+          !escaped_delimiter?(literal, closing) && value.include?(closing)
+        end
+
+        def delimited_literal(begin_node)
+          parent = begin_node.parent
+          literal = in_array_percent_literal?(begin_node) ? parent.parent : parent
+
+          literal if literal.loc?(:begin) && literal.loc?(:end)
+        end
+
+        def balanced?(value, opening, closing)
+          depth = 0
+          value.each_char do |char|
+            depth += 1 if char == opening
+            depth -= 1 if char == closing
+            return false if depth.negative?
+          end
+
+          depth.zero?
+        end
+
+        def escaped_delimiter?(literal, delimiter)
+          return true if delimiter == '"'
+
+          delimiter == '/' && literal.regexp_type? && literal.slash_literal?
         end
 
         def escape_trailing_hash_sign(begin_node, value)
