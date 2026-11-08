@@ -188,6 +188,16 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
         RUBY
       end
 
+      it 'accepts a HEREDOC argument in the interpolation of another HEREDOC' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(<<~SQL)
+            \#{baz(<<~TEXT)}
+              qux
+            TEXT
+          SQL
+        RUBY
+      end
+
       context 'invocation after the HEREDOC' do
         it 'ignores tr' do
           expect_no_offenses(<<~RUBY)

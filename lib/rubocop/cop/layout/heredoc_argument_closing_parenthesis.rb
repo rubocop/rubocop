@@ -120,7 +120,7 @@ module RuboCop
           previous = heredoc
           current = previous.parent
           until send_missing_closing_parens?(current, previous, heredoc)
-            return if current&.any_block_type? && !current.send_node.equal?(previous)
+            return if body_boundary?(current, previous)
 
             previous = current
             current = current.parent
@@ -134,6 +134,12 @@ module RuboCop
             parent.arguments.include?(child) &&
             parent.loc.begin &&
             parent.loc.end.line != heredoc.last_line
+        end
+
+        def body_boundary?(node, child)
+          return true if heredoc_node?(node)
+
+          node&.any_block_type? && !node.send_node.equal?(child)
         end
 
         def extract_heredoc_argument(node)
