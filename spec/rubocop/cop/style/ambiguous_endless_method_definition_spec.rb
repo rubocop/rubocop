@@ -65,6 +65,17 @@ RSpec.describe RuboCop::Cop::Style::AmbiguousEndlessMethodDefinition, :config do
             end #{operator} bar
           RUBY
         end
+
+        it "registers an offense but does not correct an endless method with a HEREDOC followed by `#{operator}`" do
+          expect_offense(<<~RUBY, operator: operator)
+            def foo = bar(<<~EOS) #{operator} baz
+            ^^^^^^^^^^^^^^^^^^^^^^^{operator}^^^^ Avoid using `#{operator}` statements with endless methods.
+              text
+            EOS
+          RUBY
+
+          expect_no_corrections
+        end
       end
     end
 

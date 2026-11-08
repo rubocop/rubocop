@@ -54,6 +54,8 @@ module RuboCop
           return unless modifier_form?(operation)
 
           add_offense(operation, message: format(MSG, keyword: keyword(operation))) do |corrector|
+            next if use_heredoc?(node)
+
             correct_to_multiline(corrector, node)
           end
         end
@@ -73,6 +75,10 @@ module RuboCop
           else
             operation.operator
           end
+        end
+
+        def use_heredoc?(node)
+          node.each_descendant(:any_str).any?(&:heredoc?)
         end
       end
     end
