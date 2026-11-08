@@ -148,6 +148,8 @@ module RuboCop
       end
 
       def to_string_literal(string)
+        return string.inspect unless string.valid_encoding?
+
         if needs_escaping?(string) && compatible_external_encoding_for?(string)
           string.inspect
         else
