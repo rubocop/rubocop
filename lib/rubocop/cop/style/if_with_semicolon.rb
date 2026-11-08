@@ -126,8 +126,9 @@ module RuboCop
         def lower_precedence_than_ternary?(node)
           return true if node.type?(*LOWER_PRECEDENCE_THAN_TERNARY_TYPES)
           return true if node.send_type? && (node.prefix_not? || prefix_bang_on_command?(node))
+          return true if command_assignment?(node)
 
-          node.type?(:yield, :super, :defined?) && node.arguments.any? && !node.parenthesized?
+          keyword_command?(node)
         end
 
         def operand_of_parent?(node)
@@ -172,6 +173,35 @@ module RuboCop
           receiver = node.receiver
 
           require_argument_parentheses?(receiver) || lower_precedence_than_ternary?(receiver)
+        end
+
+        def command_assignment?(node)
+          return false unless node.assignment?
+
+          value = node.call_type? ? node.last_argument : node.expression
+          return true if value.array_type? && !value.bracketed?
+
+          value = value.body if value.rescue_type?
+
+          command_value?(value)
+        end
+
+        def command_value?(node)
+          node = node.send_node if node.any_block_type?
+          return true if command_assignment?(node)
+          return false if node.defined_type?
+          return true if keyword_command?(node)
+          return false if binary_operator_call?(node)
+
+          require_argument_parentheses?(node)
+        end
+
+        def keyword_command?(node)
+          node.type?(:yield, :super, :defined?) && node.arguments.any? && !node.parenthesized?
+        end
+
+        def binary_operator_call?(node)
+          node.call_type? && node.binary_operation? && !node.loc.dot
         end
 
         def require_argument_parentheses?(node)

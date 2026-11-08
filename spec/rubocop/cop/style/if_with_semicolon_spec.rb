@@ -85,6 +85,76 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when a branch assigns a method call with unparenthesized arguments' do
+    expect_offense(<<~RUBY)
+      if cond; x = foo a else @y ||= bar b end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      if cond; x += foo a else Y = z = bar b end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      if cond; obj.x = foo a else obj[k] = bar b end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? (x = foo a) : (@y ||= bar b)
+      cond ? (x += foo a) : (Y = z = bar b)
+      cond ? (obj.x = foo a) : (obj[k] = bar b)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a branch assigns a method call with unparenthesized arguments and a block' do
+    expect_offense(<<~RUBY)
+      if cond; x = foo a do end else y = bar a rescue nil end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? (x = foo a do end) : (y = bar a rescue nil)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a branch assigns multiple values' do
+    expect_offense(<<~RUBY)
+      if cond; x = 1, 2 else y = *a end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      if cond; obj.x = 1, *a else y end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? (x = 1, 2) : (y = *a)
+      cond ? (obj.x = 1, *a) : y
+    RUBY
+  end
+
+  it 'does not parenthesize an assignment of a method call with parenthesized arguments' do
+    expect_offense(<<~RUBY)
+      if cond; x = foo(a) else y ||= bar end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? x = foo(a) : y ||= bar
+    RUBY
+  end
+
+  it 'does not parenthesize an assignment of a value that is valid in a ternary operand' do
+    expect_offense(<<~RUBY)
+      if cond; x = a || b else y = a ? b : c end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      if cond; x = a == b else y = a rescue b end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      if cond; x = defined? a else y = [1, 2] end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? x = a || b : y = a ? b : c
+      cond ? x = a == b : y = a rescue b
+      cond ? x = defined? a : y = [1, 2]
+    RUBY
+  end
+
   it 'does not parenthesize `!` applied to a method call with parenthesized arguments' do
     expect_offense(<<~RUBY)
       if !foo(a); !bar[b] else dont end
