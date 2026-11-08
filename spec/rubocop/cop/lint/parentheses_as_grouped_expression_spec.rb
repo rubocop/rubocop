@@ -299,6 +299,46 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
+  it 'does not register an offense for a parenthesized command call with a `do` block' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (foo 'baz' do end)
+    RUBY
+  end
+
+  it 'does not register an offense for a parenthesized command call with a `do` block in a method chain' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (foo 'baz' do end.bar)
+    RUBY
+  end
+
+  it 'does not register an offense for parenthesized assignment of a command call with a `do` block in a method chain' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something (x = foo 'baz' do end.bar)
+    RUBY
+  end
+
+  it 'registers an offense and corrects for a parenthesized command call with a `{` block' do
+    expect_offense(<<~RUBY)
+      obj.do_something (foo('baz') { })
+                      ^ `(foo('baz') { })` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something(foo('baz') { })
+    RUBY
+  end
+
+  it 'registers an offense and corrects for a parenthesized method call with parentheses and a `do` block' do
+    expect_offense(<<~RUBY)
+      obj.do_something (foo('baz') do end)
+                      ^ `(foo('baz') do end)` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something(foo('baz') do end)
+    RUBY
+  end
+
   it 'does not register an offense for parenthesized negation of a command call' do
     expect_no_offenses(<<~RUBY)
       obj.do_something (!foo 'baz')

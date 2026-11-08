@@ -86,7 +86,7 @@ module RuboCop
           elsif node.send_type? && node.prefix_bang?
             command_call_value?(node.receiver)
           else
-            false
+            command_call_with_do_block?(node)
           end
         end
 
@@ -99,6 +99,13 @@ module RuboCop
           return false unless node.type?(:call, :super, :yield)
 
           node.arguments? && !node.parenthesized? && !node.operator_method?
+        end
+
+        def command_call_with_do_block?(node)
+          node = node.receiver while node.call_type? && node.receiver
+          return false unless node.any_block_type?
+
+          node.keywords? && command_call?(node)
         end
 
         def chained_calls?(node)
