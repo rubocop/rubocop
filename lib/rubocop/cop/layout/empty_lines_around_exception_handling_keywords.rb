@@ -70,6 +70,7 @@ module RuboCop
         alias on_defs on_def
         alias on_block on_def
         alias on_numblock on_def
+        alias on_itblock on_def
 
         def on_kwbegin(node)
           check_body(node.children.first, node.loc.line)

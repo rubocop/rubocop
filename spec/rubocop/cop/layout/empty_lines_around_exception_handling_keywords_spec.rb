@@ -241,6 +241,26 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, 
     RUBY
   end
 
+  it 'registers an offense when there is a blank line above `rescue` keyword in an `it` block', :ruby34 do
+    expect_offense(<<~RUBY)
+      foo do
+        f1(it)
+
+      #{message} before the `rescue`.
+      rescue
+        f2
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do
+        f1(it)
+      rescue
+        f2
+      end
+    RUBY
+  end
+
   it_behaves_like 'accepts', 'no empty line', <<~RUBY
     begin
       f1
