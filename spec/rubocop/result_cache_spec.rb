@@ -476,6 +476,32 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       expect($stdout.string).to eq("Removing the 2 oldest files from #{custom_rubocop_cache_dir}\n")
     end
 
+    context 'when the server has state files in the cache root' do
+      let(:server_dir) { "#{rubocop_cache_dir}/server/foo+project" }
+
+      before do
+        %w[version lock pid port token].each do |name|
+          path = create_file("#{server_dir}/#{name}", name)
+          # Make the server state files older than any cache entry, so that
+          # they would be the first to go if they were treated as entries.
+          FileUtils.touch(path, mtime: Time.now - 3600)
+        end
+      end
+
+      it 'leaves the server state files alone' do
+        cache.save(offenses)
+        described_class.new('other.rb', team, options, config_store, cache_root).save(offenses)
+        underscore_dir = File.dirname(cache.path)
+        expect(Dir["#{underscore_dir}/*"].size).to eq(2)
+
+        cache.class.cleanup(config_store, :verbose, cache_root)
+
+        expect(Dir["#{server_dir}/*"].size).to eq(5)
+        expect(File).not_to exist(underscore_dir)
+        expect($stdout.string).to eq("Removing the 2 oldest files from #{rubocop_cache_dir}\n")
+      end
+    end
+
     shared_examples 'unwritable cache' do |error|
       it 'leaves the cache as it is' do
         cache.save(offenses)

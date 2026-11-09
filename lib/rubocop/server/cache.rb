@@ -81,7 +81,7 @@ module RuboCop
                              CacheConfig.root_dir_from_toplevel_config
                            end
 
-          File.expand_path(File.join(cache_root_dir, 'server'))
+          File.expand_path(File.join(cache_root_dir, CacheConfig::SERVER_DIR))
         end
 
         def port_path
