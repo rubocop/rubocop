@@ -346,6 +346,39 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects a single-line `if/;/end` when the then body contains a setter call' do
+    expect_offense(<<~RUBY)
+      if cond; foo.bar = value else baz end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? foo.bar = value : baz
+    RUBY
+  end
+
+  it 'registers an offense and corrects a single-line `if/;/end` when the else body contains a safe navigation setter call' do
+    expect_offense(<<~RUBY)
+      if cond; baz else foo&.bar = value end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? baz : foo&.bar = value
+    RUBY
+  end
+
+  it 'registers an offense and corrects a single-line `if/;/end` when the then body contains a setter call with a `rescue` modifier value' do
+    expect_offense(<<~RUBY)
+      if cond; foo.bar = value rescue nil else baz end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? foo.bar = value rescue nil : baz
+    RUBY
+  end
+
   it 'registers an offense when using multiple expressions in the `else` branch' do
     expect_offense(<<~RUBY)
       if cond; foo else bar'arg'; baz end
