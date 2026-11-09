@@ -76,6 +76,26 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'registers and corrects an offense for `for` in the collection of another `for`' do
+      expect_offense(<<~RUBY)
+        for y in for x in foo do
+                 ^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+          bar(x)
+        end do
+          baz(y)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.each do |x|
+          bar(x)
+        end.each do |y|
+          baz(y)
+        end
+      RUBY
+    end
+
     context 'autocorrect' do
       it 'does not autocorrect when the body uses a numbered parameter' do
         expect_offense(<<~RUBY)
