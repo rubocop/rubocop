@@ -335,6 +335,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, 
     else foo end
   RUBY
 
+  it 'does not register an offense for a `rescue` modifier after a multiline endless method body', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      def foo = if bar
+        baz
+      end rescue nil
+    RUBY
+  end
+
   it 'registers an offense for an empty line between an empty `rescue` and `end` in a block' do
     expect_offense(<<~RUBY)
       do_something do

@@ -65,6 +65,8 @@ module RuboCop
         MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'
 
         def on_def(node)
+          return if node.any_def_type? && node.endless?
+
           check_body(node.body, node.loc.line)
         end
         alias on_defs on_def
