@@ -52,6 +52,7 @@ module RuboCop
           return unless operation
 
           return unless modifier_form?(operation)
+          return if heredoc_in_body?(node)
 
           add_offense(operation, message: format(MSG, keyword: keyword(operation))) do |corrector|
             correct_to_multiline(corrector, node)
@@ -65,6 +66,10 @@ module RuboCop
           return true if operation.operator_keyword?
 
           operation.modifier_form?
+        end
+
+        def heredoc_in_body?(node)
+          node.body.each_node(:any_str).any?(&:heredoc?)
         end
 
         def keyword(operation)
