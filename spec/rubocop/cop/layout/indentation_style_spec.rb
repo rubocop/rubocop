@@ -195,6 +195,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
       expect_no_offenses("x = <<HELLO\n\thello\n\t\n\t\t\nhello\nHELLO")
     end
 
+    it 'accepts a closing delimiter of a heredoc nested in another heredoc' do
+      expect_no_offenses(<<~'RUBY')
+        foo(<<~A, <<~B)
+          #{bar(<<~C)}
+            c
+          C
+        A
+          b
+        B
+      RUBY
+    end
+
     it 'registers and corrects an offense for a line indented with fractional number of' \
        'indentation groups by rounding down' do
       expect_offense(<<~RUBY)
