@@ -6,8 +6,6 @@ module RuboCop
     class ForToEachCorrector
       extend NodePattern::Macros
 
-      CORRECTION = '%<collection>s%<dot>seach do |%<argument>s|'
-
       def initialize(for_node)
         @for_node        = for_node
         @variable_node   = for_node.variable
@@ -15,9 +13,11 @@ module RuboCop
       end
 
       def call(corrector)
-        offending_range = for_node.source_range.begin.join(end_range)
-
-        corrector.replace(offending_range, correction)
+        corrector.replace(
+          for_node.source_range.begin.join(collection_node.source_range.begin),
+          requires_parentheses? ? '(' : ''
+        )
+        corrector.replace(collection_end.end.join(end_range), correction)
       end
 
       private
@@ -25,20 +25,10 @@ module RuboCop
       attr_reader :for_node, :variable_node, :collection_node
 
       def correction
-        format(
-          CORRECTION,
-          collection: collection_source,
-          dot: collection_node.csend_type? ? '&.' : '.',
-          argument: variable_node.source
-        )
-      end
+        closing_parenthesis = requires_parentheses? ? ')' : ''
+        dot = collection_node.csend_type? ? '&.' : '.'
 
-      def collection_source
-        if requires_parentheses?
-          "(#{collection_node.source})"
-        else
-          collection_node.source
-        end
+        "#{closing_parenthesis}#{dot}each do |#{variable_node.source}|"
       end
 
       def requires_parentheses?
