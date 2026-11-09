@@ -163,11 +163,18 @@ module RuboCop
         def register_endless_method_offense(line, line_index)
           message = format(MSG, length: line_length(line), max: max)
           loc = excess_range(nil, line, line_index)
+          node = endless_methods_by_line[line_index]
 
           add_offense(loc, message: message) do |corrector|
             self.max = line_length(line)
 
-            correct_to_multiline(corrector, endless_methods_by_line[line_index])
+            correct_to_multiline(corrector, node) unless heredoc_body_after_method?(node)
+          end
+        end
+
+        def heredoc_body_after_method?(node)
+          heredoc_openers.any? do |opener|
+            opener.line == node.last_line && opener.begin_pos < node.source_range.end_pos
           end
         end
 

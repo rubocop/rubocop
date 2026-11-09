@@ -1771,6 +1771,68 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             RUBY
           end
         end
+
+        context 'with a heredoc in the body' do
+          it 'adds an offense but does not autocorrect' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name = some_long_method_name_that_exceeds_the_maximum(<<~TEXT)
+                                                                                              ^^^ Line is too long. [83/80]
+                text
+              TEXT
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'with a heredoc entirely inside a multiline body' do
+          it 'still converts the endless method to a multiline definition' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name = some_long_method_name_that_exceeds_the_maximum.then do |x|
+                                                                                              ^^^^^^ Line is too long. [86/80]
+                x.bar(<<~TEXT)
+                  text
+                TEXT
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def very_long_method_name
+                some_long_method_name_that_exceeds_the_maximum.then do |x|
+                x.bar(<<~TEXT)
+                  text
+                TEXT
+              end
+              end
+            RUBY
+          end
+        end
+
+        context 'with a heredoc opened before the method' do
+          it 'does not put the method end before the heredoc body' do
+            expect_offense(<<~RUBY)
+              foo(<<~TEXT); def very_long_method_name = some_long_expression_here_that_exceeds_maximum
+                                                                                              ^^^^^^^^ Line is too long. [88/80]
+                text
+              TEXT
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'with a heredoc in a default argument' do
+          it 'adds an offense but does not autocorrect' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name(arg = <<~TEXT) = some_long_method_name_that_exceeds(arg)
+                                                                                              ^^ Line is too long. [82/80]
+                text
+              TEXT
+            RUBY
+
+            expect_no_corrections
+          end
+        end
       end
 
       context 'when Style/EndlessMethod requires endless methods' do
