@@ -33,8 +33,10 @@ module RuboCop
       return unless File.exist?(rubocop_cache_dir)
 
       # We know the cache entries are 3 level deep, so globing
-      # for `*/*/*` only returns files.
-      files = Dir[File.join(rubocop_cache_dir, '*/*/*')]
+      # for `*/*/*` only returns files. The server keeps its state files at
+      # the same depth, under `server`, so they are excluded here.
+      files = Dir[File.join(rubocop_cache_dir, '*/*/*')] -
+              Dir[File.join(rubocop_cache_dir, CacheConfig::SERVER_DIR, '*/*')]
       return unless requires_file_removal?(files.length, config_store)
 
       remove_oldest_files(files, rubocop_cache_dir, verbose)
