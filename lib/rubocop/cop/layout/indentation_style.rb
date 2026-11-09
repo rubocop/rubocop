@@ -101,7 +101,7 @@ module RuboCop
             loc = str.location
 
             if str.heredoc?
-              ranges << loc.heredoc_body
+              ranges << loc.heredoc_body.join(loc.heredoc_end.begin)
             elsif str.loc?(:begin)
               ranges << loc.expression
             end
