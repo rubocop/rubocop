@@ -77,6 +77,10 @@ module RuboCop
           (pair (sym :force) (:false))
         PATTERN
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_send(node)
           return unless node.receiver&.const_type?
           return unless if_node_child?(node)
