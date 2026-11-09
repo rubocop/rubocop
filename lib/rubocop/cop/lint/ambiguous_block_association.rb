@@ -89,6 +89,10 @@ module RuboCop
           group_by filter_map
         ].to_set.freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::AndOr]
+        end
+
         def on_send(node)
           return unless node.arguments?
 

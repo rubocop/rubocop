@@ -1643,6 +1643,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/AmbiguousBlockAssociation` with `Style/AndOr`' do
+    create_file('example.rb', <<~RUBY)
+      if foo bar, baz.map { |x| x } and qux
+        do_something
+      end
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Lint/AmbiguousBlockAssociation,Style/AndOr'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if foo(bar, baz.map { |x| x }) && qux
+        do_something
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
      '`EnforcedStyle: conditionals` of `Style/AndOr`' do
     create_file('.rubocop.yml', <<~YAML)
