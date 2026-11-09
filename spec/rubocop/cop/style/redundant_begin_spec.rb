@@ -246,6 +246,116 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using `begin` with a command call for or assignment' do
+    expect_offense(<<~RUBY)
+      var ||= begin
+              ^^^^^ Redundant `begin` block detected.
+        foo bar
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var ||= foo bar
+
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with a command call for or assignment in a method argument' do
+    expect_offense(<<~RUBY)
+      do_something var ||= begin
+                           ^^^^^ Redundant `begin` block detected.
+        foo bar
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something var ||= (foo bar)
+
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with a command call for chained assignment in a method argument' do
+    expect_offense(<<~RUBY)
+      do_something(x = var = begin
+                             ^^^^^ Redundant `begin` block detected.
+        foo bar
+      end)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(x = var = (foo bar))
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with a command call for assignment in a `for` body' do
+    expect_offense(<<~RUBY)
+      for x in y
+        var = begin
+              ^^^^^ Redundant `begin` block detected.
+          foo bar
+        end
+      end
+    RUBY
+
+    expect_correction("for x in y\n  var = foo bar\n  \nend\n")
+  end
+
+  it 'registers and corrects an offense when using `begin` with a command call for assignment in a `when` condition' do
+    expect_offense(<<~RUBY)
+      case x
+      when var = begin
+                 ^^^^^ Redundant `begin` block detected.
+        foo bar
+      end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case x
+      when var = (foo bar)
+
+      end
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with a command call for an optional argument' do
+    expect_offense(<<~RUBY)
+      def m(a = begin
+                ^^^^^ Redundant `begin` block detected.
+        foo bar
+      end, b: begin
+              ^^^^^ Redundant `begin` block detected.
+        foo bar
+      end)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m(a = (foo bar), b: (foo bar))
+      end
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with a command call with a block for assignment in a condition' do
+    expect_offense(<<~RUBY)
+      if var = begin
+               ^^^^^ Redundant `begin` block detected.
+        foo bar do
+        end
+      end
+        baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if var = (foo bar do
+        end)
+
+        baz
+      end
+    RUBY
+  end
+
   it 'registers and corrects an offense when using modifier `if` single statement in `begin` block' do
     expect_offense(<<~RUBY)
       var ||= begin
