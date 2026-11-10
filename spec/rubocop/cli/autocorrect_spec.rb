@@ -532,6 +532,41 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/LiteralInInterpolation` with `Style/RegexpLiteral` to slashes' do
+    create_file('example.rb', <<~'RUBY')
+      %r{foo#{'/'}bar}
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Lint/LiteralInInterpolation,Style/RegexpLiteral'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      %r{foo/bar}
+    RUBY
+  end
+
+  it 'corrects `Lint/LiteralInInterpolation` with `Style/RegexpLiteral` to percent literal' do
+    create_file('example.rb', <<~'RUBY')
+      /\/foo#{"{"}bar/
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Lint/LiteralInInterpolation,Style/RegexpLiteral'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~'RUBY')
+      /\/foo{bar/
+    RUBY
+  end
+
+  it 'corrects `Lint/LiteralInInterpolation` with `Style/PercentLiteralDelimiters`' do
+    create_file('example.rb', <<~'RUBY')
+      %r[foo#{"}"}bar]
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Lint/LiteralInInterpolation,Style/PercentLiteralDelimiters'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      %r[foo}bar]
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/RedundantParentheses` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
