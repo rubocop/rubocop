@@ -72,6 +72,8 @@ module RuboCop
 
             if node.method?(:freeze)
               corrector.replace(node, 'ENV')
+            elsif node.method?(:attr)
+              correct_attr(corrector, node)
             else
               corrector.replace(offense_range, prefer)
             end
@@ -92,10 +94,7 @@ module RuboCop
 
         def preferred_method(node)
           if node.method?(:attr)
-            boolean_argument = node.arguments[1].source
-            preferred_attr_method = boolean_argument == 'true' ? 'attr_accessor' : 'attr_reader'
-
-            "#{preferred_attr_method} #{node.first_argument.source}"
+            "#{preferred_attr_method(node)} #{node.first_argument.source}"
           elsif dir_env_file_const?(node.receiver)
             prefer = PREFERRED_METHODS[node.method_name]
 
@@ -103,6 +102,17 @@ module RuboCop
           else
             PREFERRED_METHODS[node.method_name]
           end
+        end
+
+        def preferred_attr_method(node)
+          node.arguments[1].true_type? ? 'attr_accessor' : 'attr_reader'
+        end
+
+        def correct_attr(corrector, node)
+          corrector.replace(node.loc.selector, preferred_attr_method(node))
+          first_argument, boolean_argument = node.arguments
+
+          corrector.remove(first_argument.source_range.end.join(boolean_argument.source_range.end))
         end
 
         def socket_const?(node)
