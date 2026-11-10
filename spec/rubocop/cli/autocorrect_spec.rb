@@ -6794,6 +6794,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/HashTransformKeys` and `Layout/SingleLineBlockChain` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      { a: 1 }.map { |k, v| [k.to_s, v] }.to_h if foo
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Style/HashTransformKeys,Layout/SingleLineBlockChain'])
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      { a: 1 }.transform_keys { |k| k.to_s } if foo
+    RUBY
+  end
+
+  it 'corrects `Style/HashTransformValues` and `Layout/SingleLineBlockChain` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      { a: 1 }.map { |k, v| [k, v.to_s] }.to_h if foo
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Style/HashTransformValues,Layout/SingleLineBlockChain'])
+    ).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      { a: 1 }.transform_values { |v| v.to_s } if foo
+    RUBY
+  end
+
   it 'corrects `Style/RedundantFilterChain` and `Layout/SingleLineBlockChain` offenses' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

@@ -40,6 +40,10 @@ module RuboCop
 
         minimum_target_ruby_version 2.4
 
+        def self.autocorrect_incompatible_with
+          [Layout::SingleLineBlockChain]
+        end
+
         # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block

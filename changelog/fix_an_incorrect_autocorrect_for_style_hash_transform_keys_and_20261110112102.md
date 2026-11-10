@@ -1,0 +1,1 @@
+* [#16341](https://github.com/rubocop/rubocop/pull/16341): Fix an incorrect autocorrect for `Style/HashTransformKeys` and `Style/HashTransformValues` with `Layout/SingleLineBlockChain`. ([@Starlexxx][])
