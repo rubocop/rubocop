@@ -135,6 +135,10 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
 
   let(:gem_versions) { {} }
 
+  # The gems the target depends on directly, defaulting to all of `gem_versions`. Override it
+  # to distinguish a direct dependency from one that another gem pulled in.
+  let(:direct_gem_versions) { gem_versions }
+
   let(:path_sourced_gems) { [] }
 
   ### Utilities
@@ -180,6 +184,9 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
         'railties' => rails_version_in_gemfile,
         **gem_versions.transform_values { |value| Gem::Version.new(value) }
       }
+    )
+    allow(config).to receive(:direct_gem_versions_in_target).and_return(
+      direct_gem_versions.transform_values { |value| Gem::Version.new(value) }
     )
     allow(config).to receive(:path_sourced_gems_in_target).and_return(path_sourced_gems)
 
