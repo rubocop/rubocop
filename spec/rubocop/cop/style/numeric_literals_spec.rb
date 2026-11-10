@@ -118,15 +118,19 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     RUBY
   end
 
-  it 'autocorrects numbers with spaces between leading minus and numbers' do
+  # The parser gem parses a unary minus separated from its number as a negative literal,
+  # unlike Ruby, which parses it as a call to `-@`.
+  # https://github.com/whitequark/parser/issues/1016
+  it 'autocorrects only the number when a unary minus is separated from it', broken_on: :parser do
     expect_offense(<<~RUBY)
       a = -
-          ^ Use underscores(_) as thousands separator and separate every 3 digits with them.
         12345
+        ^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
 
     expect_correction(<<~RUBY)
-      a = -12_345
+      a = -
+        12_345
     RUBY
   end
 
