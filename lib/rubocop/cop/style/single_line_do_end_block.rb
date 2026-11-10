@@ -38,7 +38,7 @@ module RuboCop
 
         # rubocop:disable-next Metrics/AbcSize
         def on_block(node)
-          return if node.multiline? || node.braces?
+          return if node.multiline? || node.braces? || heredoc_in_send_node?(node)
           return if single_line_blocks_preferred? && suitable_as_single_line?(node)
 
           add_offense(node) do |corrector|
@@ -59,6 +59,10 @@ module RuboCop
         alias on_itblock on_block
 
         private
+
+        def heredoc_in_send_node?(node)
+          node.send_node.each_node(:any_str).any?(&:heredoc?)
+        end
 
         # Returns the heredoc opened on the block's line whose body extends the
         # furthest down, whether it is the block body itself or nested within it.

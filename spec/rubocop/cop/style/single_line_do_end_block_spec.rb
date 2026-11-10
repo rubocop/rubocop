@@ -121,6 +121,22 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
     RUBY
   end
 
+  it 'does not register an offense when using single line `do`...`end` with a heredoc receiver' do
+    expect_no_offenses(<<~RUBY)
+      <<~TEXT.lines.each do |line| foo(line) end
+        text
+      TEXT
+    RUBY
+  end
+
+  it 'does not register an offense when using single line `do`...`end` with a heredoc argument' do
+    expect_no_offenses(<<~RUBY)
+      foo(<<~TEXT) do |line| bar(line) end
+        text
+      TEXT
+    RUBY
+  end
+
   it 'registers an offense when using single line `do`...`end` with `->` block' do
     expect_offense(<<~RUBY)
       ->(arg) do foo arg end
