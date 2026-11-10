@@ -105,6 +105,17 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects parenthesized `attr` with boolean argument in an argument' do
+      expect_offense(<<~RUBY)
+        foo bar, attr(:name, true)
+                 ^^^^^^^^^^^^^^^^^ `attr(:name, true)` is deprecated in favor of `attr_accessor :name`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo bar, attr_accessor(:name)
+      RUBY
+    end
+
     it 'does not register an offense for `attr` without boolean argument' do
       expect_no_offenses('attr :name')
     end
