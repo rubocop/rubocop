@@ -74,7 +74,15 @@ module RuboCop
         end
 
         def remove_node(corrector, node)
+          return if code_after?(node)
+
           corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
+        end
+
+        def code_after?(node)
+          last_line = processed_source.buffer.source_line(node.last_line)
+
+          last_line[node.loc.last_column..].match?(/\A\s*[^\s#]/)
         end
 
         def autocorrect_block_pass(corrector, node, proc_name)
