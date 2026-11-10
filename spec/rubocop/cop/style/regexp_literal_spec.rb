@@ -196,7 +196,8 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line `%r` regex with an escaped delimiter' do
-      it 'registers an offense and unescapes the delimiter' do
+      # Prism 2 rejects `(?\!x)` in `%r!...!` as an undefined group option, while Ruby accepts it.
+      it 'registers an offense and unescapes the delimiter', broken_on: :prism do
         expect_offense(<<~'RUBY')
           foo = %r!(?\!x)!
                 ^^^^^^^^^^ Use `//` around regular expression.
