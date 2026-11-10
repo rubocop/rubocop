@@ -4799,6 +4799,23 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/MethodCallWithArgsParentheses` with `Style/Semicolon` after an omitted hash value' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+    YAML
+    create_file('example.rb', <<~RUBY)
+      obj.do_something foo, key:;
+      bar
+    RUBY
+
+    expect(cli.run(%w[-a --only Style/MethodCallWithArgsParentheses,Style/Semicolon])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      obj.do_something(foo, key:)
+      bar
+    RUBY
+  end
+
   it 'can correct SpaceAfterComma and HashSyntax offenses' do
     create_file('example.rb', "I18n.t('description',:property_name => property.name)")
     expect(cli.run(%w[-D --autocorrect-all --format emacs
@@ -6665,6 +6682,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         x(1)
         y(2)
         z(3)
+      end
+    RUBY
+  end
+
+  it 'does not double the closing parenthesis when `Style/Semicolon` and `Style/SuperWithArgsParentheses` both add parentheses' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+      Style/SuperWithArgsParentheses:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(bar:)
+        super bar:;
+        baz
+      end
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/Semicolon,Style/SuperWithArgsParentheses'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(bar:)
+        super(bar:)
+        baz
       end
     RUBY
   end

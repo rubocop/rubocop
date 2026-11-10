@@ -35,7 +35,7 @@ module RuboCop
         MSG = 'Do not use semicolons to terminate expressions.'
 
         def self.autocorrect_incompatible_with
-          [Style::SingleLineMethods]
+          [Style::MethodCallWithArgsParentheses, Style::SingleLineMethods, Style::SuperWithArgsParentheses]
         end
 
         def on_new_investigation
