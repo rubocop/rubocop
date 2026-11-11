@@ -8,17 +8,23 @@ module CopHelper
 
   @integrated_plugins = false
 
+  # Whether the specs run on one of the Prism parser engines.
+  def self.prism_engine?
+    %w[parser_prism prism].include?(ENV.fetch('PARSER_ENGINE', nil))
+  end
+
   class << self
     attr_accessor :integrated_plugins
   end
 
   let(:ruby_version) do
     # The minimum version Prism can parse is 3.3.
-    ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : RuboCop::TargetRuby::DEFAULT_VERSION
+    CopHelper.prism_engine? ? 3.3 : RuboCop::TargetRuby::DEFAULT_VERSION
   end
   let(:parser_engine) do
+    engine = ENV.fetch('PARSER_ENGINE', :parser_whitequark).to_sym
     # The maximum version Parser can correctly parse is 3.3.
-    ruby_version >= 3.4 ? :parser_prism : ENV.fetch('PARSER_ENGINE', :parser_whitequark).to_sym
+    engine == :parser_whitequark && ruby_version >= 3.4 ? :parser_prism : engine
   end
   let(:rails_version) { false }
 

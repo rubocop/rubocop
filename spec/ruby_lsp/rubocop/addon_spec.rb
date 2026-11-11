@@ -2,6 +2,8 @@
 
 # NOTE: These don't work in Ruby LSP.
 return if RUBY_VERSION < '3.0' || RUBY_ENGINE == 'jruby' || RuboCop::Platform.windows?
+# The specs for the `prism` parser engine run without Ruby LSP, which does not support Prism 2.
+return unless Gem.loaded_specs.key?('ruby-lsp')
 
 require 'ruby_lsp/internal'
 require 'ruby_lsp/rubocop/addon'

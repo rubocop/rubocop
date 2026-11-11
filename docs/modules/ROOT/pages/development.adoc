@@ -772,6 +772,15 @@ set the `PARSER_ENGINE` environment variable:
 $ PARSER_ENGINE=parser_prism bundle exec rspec spec/rubocop/cop/style/hash_syntax_spec.rb
 ----
 
+The experimental `prism` engine has its own task, `bundle exec rake native_prism_spec`. It needs Prism 2,
+which Ruby LSP does not support yet, so install the bundle with the same variable set to leave Ruby LSP out:
+
+[source,sh]
+----
+$ PARSER_ENGINE=prism bundle install
+$ PARSER_ENGINE=prism bundle exec rake spec
+----
+
 `bundle exec rake` runs the full CI suite: specs for both parser engines, self-linting, and documentation checks. Always run this before submitting a PR.
 
 [[documentation]]
