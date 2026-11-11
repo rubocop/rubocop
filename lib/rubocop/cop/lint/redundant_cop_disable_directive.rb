@@ -360,7 +360,8 @@ module RuboCop
 
         def solely_enables?(comment, cop)
           directive = DirectiveComment.new(comment)
-          directive.enabled? && !directive.enabled_all? && directive.raw_cop_names == [cop]
+          directive.enabled? && !directive.enabled_all? && !directive.malformed? &&
+            directive.raw_cop_names == [cop]
         end
 
         def code_follows_line?(line)

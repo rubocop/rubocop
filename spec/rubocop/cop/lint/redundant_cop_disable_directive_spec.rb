@@ -91,6 +91,49 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
               end
             end
 
+            describe 'when the matching `enable` also names another cop' do
+              let(:offenses) do
+                [
+                  RuboCop::Cop::Offense.new(:convention,
+                                            FakeLocation.new(line: 2, column: 0),
+                                            'Class has too many lines.',
+                                            'Metrics/ClassLength')
+                ]
+              end
+
+              it 'keeps the `enable`, since it still closes the other cop\'s `disable`' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable Metrics/ClassLength
+                  foo
+                  # rubocop:disable Metrics/MethodLength
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+                  # rubocop:enable Metrics/ClassLength, Metrics/MethodLength
+                RUBY
+
+                expect_correction(<<~RUBY)
+                  # rubocop:disable Metrics/ClassLength
+                  foo
+                  # rubocop:enable Metrics/ClassLength, Metrics/MethodLength
+                RUBY
+              end
+            end
+
+            describe 'when the matching `enable` is malformed' do
+              it 'leaves the `enable` alone, since `Lint/CopDirectiveSyntax` reports it' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable Metrics/MethodLength
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+                  foo
+                  # rubocop:enable Metrics/MethodLength keep this note
+                RUBY
+
+                expect_correction(<<~RUBY)
+                  foo
+                  # rubocop:enable Metrics/MethodLength keep this note
+                RUBY
+              end
+            end
+
             describe 'if that cop has offenses' do
               it 'returns an offense' do
                 expect_offense(<<~RUBY)
