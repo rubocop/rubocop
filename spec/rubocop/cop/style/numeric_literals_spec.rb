@@ -121,7 +121,9 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   # The parser gem parses a unary minus separated from its number as a negative literal,
   # unlike Ruby, which parses it as a call to `-@`.
   # https://github.com/whitequark/parser/issues/1016
-  it 'autocorrects only the number when a unary minus is separated from it', broken_on: :parser do
+  # The parser translation of Prism did the same before Prism 2.
+  it 'autocorrects only the number when a unary minus is separated from it',
+     broken_on: :parser, if: Prism::VERSION.to_i >= 2 do
     expect_offense(<<~RUBY)
       a = -
         12345
