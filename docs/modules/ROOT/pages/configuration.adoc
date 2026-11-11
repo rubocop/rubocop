@@ -165,13 +165,14 @@ version, and will instead try to find a target Ruby version elsewhere.
 NOTE: The parser engine configuration was introduced in RuboCop 1.62. Since RuboCop 1.75, RuboCop chooses the parser engine automatically, so you don't need to configure it yourself.
 
 RuboCop allows switching the backend parser by specifying either
-`parser_whitequark` or `parser_prism` as the value for the `ParserEngine`.
+`parser_whitequark`, `parser_prism` or `prism` as the value for the `ParserEngine`.
 
 Here are the parsers used as backends for each value:
 
 - `ParserEngine: default`
 - `ParserEngine: parser_whitequark` ... https://github.com/whitequark/parser
 - `ParserEngine: parser_prism` ... https://github.com/ruby/prism (`Prism::Translation::Parser`)
+- `ParserEngine: prism` ... https://github.com/ruby/prism (experimental, without the translation layer)
 
 `parser_whitequark` can analyze source code from Ruby 2.0 until Ruby 3.4:
 
@@ -191,6 +192,17 @@ AllCops:
 ----
 
 TIP: `parser_prism` tends to perform analysis faster than `parser_whitequark`.
+
+`prism` is an experimental engine that builds the AST from Prism directly, without
+`Prism::Translation::Parser`. Like `parser_prism` it can analyze source code from Ruby 3.3
+and above, and it needs Prism 2.0 or later:
+
+[source,yaml]
+----
+AllCops:
+  ParserEngine: prism
+  TargetRubyVersion: 3.3
+----
 
 == Setting the style guide URL
 

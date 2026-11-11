@@ -308,3 +308,8 @@ desc 'Run RSpec code examples with Prism'
 task :prism_spec do
   sh('PARSER_ENGINE=parser_prism bundle exec rake spec')
 end
+
+desc 'Run RSpec code examples with the native Prism parser engine'
+task :native_prism_spec do
+  sh('PARSER_ENGINE=prism bundle exec rake spec')
+end

@@ -42,11 +42,12 @@ IMPORTANT: The table above is about *runtime* support (which Ruby can run RuboCo
 
 == Parser engines
 
-RuboCop supports two parser backends, configured via
+RuboCop supports three parser backends, configured via
 xref:configuration.adoc#setting-the-parser-engine[`ParserEngine`]:
 
 * **`parser_whitequark`** — the https://github.com/whitequark/parser[Parser] gem. Supports analyzing code targeting Ruby 2.0+.
 * **`parser_prism`** — the https://github.com/ruby/prism[Prism] translation layer. Supports analyzing Ruby 3.3+ code and tends to be faster.
+* **`prism`** — Prism without the translation layer. Experimental, supports analyzing Ruby 3.3+ code and needs Prism 2.0 or later.
 
 Since RuboCop 1.75, `parser_prism` is used by default when `TargetRubyVersion` is 3.4 or higher.
 
