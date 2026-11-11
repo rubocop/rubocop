@@ -220,8 +220,7 @@ module RuboCop
           replacement = "#{select_var}, #{reject_var} = #{partition_call}"
 
           corrector.replace(sibling_container, replacement)
-          range = range_by_whole_lines(container.source_range, include_final_newline: true)
-          corrector.remove(range)
+          corrector.remove(range_with_surrounding_space(container.source_range, side: :left))
         end
 
         def complementary_variable_order(sibling, container, sibling_container)
