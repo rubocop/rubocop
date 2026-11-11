@@ -54,7 +54,7 @@ module RuboCop
         def find_offense_node(node, regexp_receiver)
           return node if first_argument_is_regexp?(node) || !node.parent
 
-          if (node.parent.send_type? && node.receiver) ||
+          if (node.parent.call_type? && node.receiver) ||
              method_chain_to_regexp_receiver?(node, regexp_receiver) ||
              part_of_hash_argument?(node)
             node = find_offense_node(node.parent, regexp_receiver)
@@ -64,7 +64,7 @@ module RuboCop
         end
 
         def first_argument_is_regexp?(node)
-          node.send_type? && node.first_argument&.regexp_type?
+          node.call_type? && node.first_argument&.regexp_type?
         end
 
         def method_chain_to_regexp_receiver?(node, regexp_receiver)

@@ -160,6 +160,28 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral, :config do
           puts line.grep(/pattern/)
         RUBY
       end
+
+      it 'registers an offense and corrects when using a safe navigation call in a parenthesized argument' do
+        expect_offense(<<~RUBY)
+          foo(obj&.do_something /pattern/)
+                                ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(obj&.do_something(/pattern/))
+        RUBY
+      end
+
+      it 'registers an offense and corrects when sending method to regexp in an argument of a safe navigation call' do
+        expect_offense(<<~RUBY)
+          obj&.do_something /pattern/.match(foo)
+                            ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          obj&.do_something(/pattern/.match(foo))
+        RUBY
+      end
     end
 
     context 'with parentheses' do
