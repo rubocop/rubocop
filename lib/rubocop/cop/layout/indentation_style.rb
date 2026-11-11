@@ -97,7 +97,7 @@ module RuboCop
           return [] if ast.nil?
 
           ranges = Set.new
-          ast.each_node(:str, :dstr) do |str|
+          ast.each_node(:any_str) do |str|
             loc = str.location
 
             if str.heredoc?
