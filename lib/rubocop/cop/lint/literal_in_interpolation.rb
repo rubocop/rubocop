@@ -24,6 +24,10 @@ module RuboCop
         MSG = 'Literal interpolation detected.'
         COMPOSITE = %i[array hash pair irange erange].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::PercentLiteralDelimiters, Style::RegexpLiteral]
+        end
+
         def on_interpolation(begin_node)
           final_node = begin_node.children.last
           return unless offending?(final_node)
