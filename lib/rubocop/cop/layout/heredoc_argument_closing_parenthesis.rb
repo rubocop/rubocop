@@ -73,6 +73,7 @@ module RuboCop
           return if end_keyword_before_closing_parenthesis?(node)
           return if subsequent_closing_parentheses_in_same_line?(outermost_send)
           return if exist_argument_between_heredoc_end_and_closing_parentheses?(node)
+          return if unmovable_closing_parenthesis?(outermost_send, heredoc_arg)
 
           add_offense(outermost_send.loc.end) do |corrector|
             autocorrect(corrector, outermost_send)
@@ -243,6 +244,13 @@ module RuboCop
           arguments.flat_map { |argument| argument.each_node(:any_str).to_a }.filter_map do |node|
             node.loc.heredoc_end.end_pos if node.loc?(:heredoc_end)
           end.max
+        end
+
+        def unmovable_closing_parenthesis?(outermost_send, heredoc_arg)
+          return false if outermost_send.last_argument.last_line <= heredoc_arg.first_line
+
+          outermost_send.loc.end.line == outermost_send.last_argument.last_line ||
+            outermost_send.loc.begin.line != outermost_send.first_argument.first_line
         end
 
         # Internal trailing comma helpers.

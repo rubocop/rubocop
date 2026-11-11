@@ -228,6 +228,38 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
           RUBY
         end
       end
+
+      context 'when the last argument of the outer call ends after the HEREDOC' do
+        it 'ignores an argument after the HEREDOC' do
+          expect_no_offenses(<<~RUBY)
+            foo#{dot}bar(baz(<<~SQL),
+              text
+            SQL
+              qux)
+          RUBY
+        end
+
+        it 'ignores a method chain after the HEREDOC' do
+          expect_no_offenses(<<~RUBY)
+            foo#{dot}bar(
+              baz
+                #{dot}qux(<<~SQL)
+                  text
+                SQL
+                #{dot}quux)
+          RUBY
+        end
+
+        it 'ignores a multiline argument starting on the HEREDOC opening line' do
+          expect_no_offenses(<<~RUBY)
+            foo#{dot}bar(baz(<<~SQL), [
+              text
+            SQL
+              1, 2
+            ])
+          RUBY
+        end
+      end
     end
   end
 
@@ -722,6 +754,28 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
             SQL
               bar
             NOSQL
+          RUBY
+        end
+      end
+
+      context 'multiline argument after the HEREDOC with the closing parenthesis on its own line' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            foo#{dot}bar(baz(<<~SQL), [
+              text
+            SQL
+              1, 2
+            ]
+            )
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo#{dot}bar(baz(<<~SQL), [
+              text
+            SQL
+              1, 2
+            ])
           RUBY
         end
       end
