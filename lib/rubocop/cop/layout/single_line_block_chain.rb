@@ -29,8 +29,15 @@ module RuboCop
         # which must not start a line of its own.
         def self.autocorrect_incompatible_with
           [
-            Style::FloatDivision, Style::MapToHash, Style::MapToSet, Style::NilComparison,
-            Style::RedundantFilterChain, Style::RedundantSort
+            Style::CollectionQuerying,
+            Style::FloatDivision,
+            Style::HashTransformKeys,
+            Style::HashTransformValues,
+            Style::MapToHash,
+            Style::MapToSet,
+            Style::NilComparison,
+            Style::RedundantFilterChain,
+            Style::RedundantSort
           ]
         end
 
