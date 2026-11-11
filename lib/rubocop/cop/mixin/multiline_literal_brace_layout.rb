@@ -16,6 +16,7 @@ module RuboCop
         # to adjust the brace layout because this will result in invalid code.
         return if last_line_heredoc?(node.children.last)
         return if heredoc_opened_on_closing_brace_line?(node)
+        return if heredoc_method_call_to_be_repositioned?(node.children.last)
 
         check(node)
       end
@@ -143,6 +144,17 @@ module RuboCop
 
         node.each_descendant(:any_str).any? do |str|
           str.heredoc? && str.first_line == closing_brace_line
+        end
+      end
+
+      def heredoc_method_call_to_be_repositioned?(node)
+        return false unless config.cop_enabled?('Lint/HeredocMethodCallPosition')
+
+        node.each_node(:call).any? do |call_node|
+          receiver = call_node.receiver
+          next false unless receiver&.any_str_type? && receiver.heredoc?
+
+          receiver.loc.heredoc_end.end_pos < call_node.source_range.end_pos
         end
       end
     end
