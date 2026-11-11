@@ -60,12 +60,12 @@ RSpec.configure do |config|
   config.after(:suite) { RuboCop::Cop::Registry.reset! }
 
   # A single filter, because RSpec keeps only the first exclusion registered for a key.
-  broken_environments = [ENV['PARSER_ENGINE'] == 'parser_prism' ? :prism : :parser]
+  broken_environments = [CopHelper.prism_engine? ? :prism : :parser]
   broken_environments << :ruby_head if ENV['CI_RUBY_VERSION'] == 'head'
   broken_environments << :jruby if RUBY_ENGINE == 'jruby'
   broken = ->(environment) { broken_environments.include?(environment) }
   config.filter_run_excluding broken_on: broken
 
   # Prism supports Ruby 3.3+ parsing.
-  config.filter_run_excluding unsupported_on: :prism if ENV['PARSER_ENGINE'] == 'parser_prism'
+  config.filter_run_excluding unsupported_on: :prism if CopHelper.prism_engine?
 end

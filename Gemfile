@@ -24,8 +24,13 @@ gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.27.0', require: false
 gem 'rubocop-rake', '~> 0.7.0', require: false
 gem 'rubocop-rspec', '~> 3.10.1', require: false
-# Ruby LSP supports Ruby 3.0+.
-gem 'ruby-lsp', '~> 0.24', platform: :mri if RUBY_VERSION >= '3.0'
+if ENV['PARSER_ENGINE'] == 'prism'
+  # The `prism` parser engine needs Prism 2, which Ruby LSP does not support yet.
+  gem 'prism', '>= 2.0'
+elsif RUBY_VERSION >= '3.0'
+  # Ruby LSP supports Ruby 3.0+.
+  gem 'ruby-lsp', '~> 0.24', platform: :mri
+end
 # Optional project-wide static-analysis index used by `AllCops/UseProjectIndex`.
 # Not a runtime dependency of the rubocop gem itself; only listed here so that
 # the development environment can exercise the integration. The gem only publishes

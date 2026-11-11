@@ -133,3 +133,19 @@ jobs:
         env:
           PARSER_ENGINE: parser_prism
         run: bundle exec rake prism_spec
+
+  native_prism:
+    runs-on: ubuntu-latest
+    name: Prism (native)
+    timeout-minutes: 20
+    env:
+      # Set for the whole job, because it changes what the Gemfile resolves to.
+      PARSER_ENGINE: prism
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby # Latest stable CRuby version
+          bundler-cache: true
+      - name: spec
+        run: bundle exec rake native_prism_spec

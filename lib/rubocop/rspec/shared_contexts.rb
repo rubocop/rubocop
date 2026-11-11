@@ -249,57 +249,57 @@ end
 
 RSpec.shared_context 'ruby 2.0' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.0 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.0 }
 end
 
 RSpec.shared_context 'ruby 2.1' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.1 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.1 }
 end
 
 RSpec.shared_context 'ruby 2.2' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.2 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.2 }
 end
 
 RSpec.shared_context 'ruby 2.3' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.3 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.3 }
 end
 
 RSpec.shared_context 'ruby 2.4' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.4 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.4 }
 end
 
 RSpec.shared_context 'ruby 2.5' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.5 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.5 }
 end
 
 RSpec.shared_context 'ruby 2.6' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.6 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.6 }
 end
 
 RSpec.shared_context 'ruby 2.7' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 2.7 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 2.7 }
 end
 
 RSpec.shared_context 'ruby 3.0' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 3.0 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 3.0 }
 end
 
 RSpec.shared_context 'ruby 3.1' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 3.1 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 3.1 }
 end
 
 RSpec.shared_context 'ruby 3.2' do
   # Prism supports parsing Ruby 3.3+.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : 3.2 }
+  let(:ruby_version) { CopHelper.prism_engine? ? 3.3 : 3.2 }
 end
 
 RSpec.shared_context 'ruby 3.3' do

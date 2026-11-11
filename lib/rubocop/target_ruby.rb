@@ -8,6 +8,7 @@ module RuboCop
       2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2, 3.3, 3.4, 4.0, 4.1
     ].freeze
     DEFAULT_VERSION = 2.7
+    PRISM_ENGINES = %i[parser_prism prism].freeze
 
     OBSOLETE_RUBIES = {
       1.9 => '0.41',
@@ -19,7 +20,7 @@ module RuboCop
       2.5 => '1.28',
       2.6 => '1.50'
     }.freeze
-    private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES
+    private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES, :PRISM_ENGINES
 
     # A place where information about a target ruby version is found.
     # @api private
@@ -120,14 +121,11 @@ module RuboCop
       end
 
       def version_from_gemspec_file(file)
-        # When using parser_prism, we need to use a Ruby version that Prism supports (3.3+)
+        # When using Prism, we need to use a Ruby version that Prism supports (3.3+)
         # for parsing the gemspec file. This doesn't affect the detected Ruby version,
         # it's just for the parsing step.
-        ruby_version_for_parsing = if @config.parser_engine == :parser_prism
-                                     3.3
-                                   else
-                                     DEFAULT_VERSION
-                                   end
+        prism = PRISM_ENGINES.include?(@config.parser_engine)
+        ruby_version_for_parsing = prism ? 3.3 : DEFAULT_VERSION
 
         processed_source = ProcessedSource.from_file(
           file, ruby_version_for_parsing, parser_engine: @config.parser_engine
