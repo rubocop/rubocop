@@ -7629,6 +7629,20 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/ImplicitStringConcatenation` with `Lint/TripleQuotes` offenses for an empty string' do
+    create_file('example.rb', <<~RUBY)
+      foo("""""", bar)
+    RUBY
+
+    expect(
+      cli.run(%w[--autocorrect --only Lint/ImplicitStringConcatenation,Lint/TripleQuotes])
+    ).to eq(0)
+
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo("", bar)
+    RUBY
+  end
+
   context '`Style/AccessModifierDeclarations` offenses with multiple groupable access modifiers' do
     it 'corrects multiple methods' do
       source_file = Pathname('example.rb')

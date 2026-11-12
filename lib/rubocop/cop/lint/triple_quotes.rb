@@ -44,6 +44,10 @@ module RuboCop
 
         MSG = 'Delimiting a string with multiple quotes has no effect, use a single quote instead.'
 
+        def self.autocorrect_incompatible_with
+          [Lint::ImplicitStringConcatenation]
+        end
+
         def on_dstr(node)
           return if (empty_str_nodes = empty_str_nodes(node)).none?
 
