@@ -29,7 +29,7 @@ module RuboCop
         MSG = 'Avoid modifier `%<keyword>s` after another conditional.'
 
         def self.autocorrect_incompatible_with
-          [Style::SoleNestedConditional]
+          [Style::MethodCallWithArgsParentheses, Style::SoleNestedConditional]
         end
 
         # rubocop:disable-next Metrics/AbcSize
