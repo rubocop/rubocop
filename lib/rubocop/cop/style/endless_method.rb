@@ -147,15 +147,17 @@ module RuboCop
 
         # `Style/MethodDefParentheses` adds the same parentheses a parameter list needs in
         # an endless definition, so letting both correct in the same pass would double them.
-        # `Style/GuardClause` turns a single `if` body into several statements,
-        # which an endless definition cannot hold.
+        # `Style/GuardClause`, `Style/IdenticalConditionalBranches` and `Lint/UselessTimes` turn
+        # a single body into several statements, which an endless definition cannot hold.
         # `Style/RaiseArgs` would drop the parentheses of a `raise` that becomes
         # the body in the same pass, which a method passed as an argument needs.
         # `Style/IfUnlessModifier` and `Style/WhileUntilModifier` would turn the body into
         # a modifier form, which then applies to the whole endless definition.
         def self.autocorrect_incompatible_with
           [
+            Lint::UselessTimes,
             Style::GuardClause,
+            Style::IdenticalConditionalBranches,
             Style::IfUnlessModifier,
             Style::MethodCallWithArgsParentheses,
             Style::MethodDefParentheses,
