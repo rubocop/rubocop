@@ -14,6 +14,26 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
 
   after do
     `ruby -I . "#{rubocop}" --stop-server`
+
+    wait_for_server_cleanup
+  end
+
+  # `--stop-server` returns as soon as the server has renamed its cache directory away,
+  # while the server is still deleting the renamed copy. The isolated environment is
+  # removed right after this hook, and that removal raises when an entry it has listed
+  # disappears under it, so wait until nothing but the live cache directory is left.
+  # That one may stay when an example ends without a running server, and nothing
+  # is deleting it then.
+  def wait_for_server_cleanup
+    cache_path = Pathname(RuboCop::Server::Cache.cache_path)
+    return unless cache_path.directory?
+
+    deadline = Time.now + RuboCop::Server::TIMEOUT
+    until (cache_path.children - [RuboCop::Server::Cache.dir_path]).empty?
+      raise "RuboCop server did not clean up #{cache_path} in time" if Time.now > deadline
+
+      sleep 0.1
+    end
   end
 
   if RuboCop::Server.support_server?
