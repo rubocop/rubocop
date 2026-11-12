@@ -1421,6 +1421,60 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       RUBY
     end
 
+    it 'does not register an offense for a command call in a method definition as a hash value', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        { key: def foo(x)
+          bar :baz, x
+        end }
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition as an array element', :ruby40 do
+      expect_no_offenses(<<~RUBY)
+        [def foo(x)
+          bar :baz, x
+        end]
+      RUBY
+    end
+
+    it 'does not register an offense for a command call in a method definition in a ternary branch' do
+      expect_no_offenses(<<~RUBY)
+        qux ? def foo(x)
+          bar :baz, x
+        end : nil
+      RUBY
+    end
+
+    it 'registers an offense for a command call in a method definition assigned to a variable', :ruby33 do
+      expect_offense(<<~RUBY)
+        qux = def foo(x)
+              ^^^^^^^^^^ Use endless method definitions.
+          bar :baz, x
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        qux = def foo(x) = bar :baz, x
+      RUBY
+    end
+
+    it 'registers an offense for a command call in a method definition in an `if` branch', :ruby33 do
+      expect_offense(<<~RUBY)
+        if qux
+          def foo(x)
+          ^^^^^^^^^^ Use endless method definitions.
+            bar :baz, x
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if qux
+          def foo(x) = bar :baz, x
+        end
+      RUBY
+    end
+
     it 'does not register an offense for a `do...end` block in a method definition passed as an argument' do
       expect_no_offenses(<<~RUBY)
         private def foo

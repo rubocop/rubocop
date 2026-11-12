@@ -5,6 +5,11 @@ module RuboCop
     # Common functionality for checking whether a method body can become the
     # body of an endless method definition without changing its meaning.
     module EndlessMethodBodyHelp
+      COMMAND_BODY_PARENT_TYPES = %i[
+        begin kwbegin class module sclass any_block when rescue resbody ensure while until
+        lvasgn ivasgn cvasgn gvasgn casgn op_asgn or_asgn and_asgn
+      ].freeze
+
       private
 
       def endless_method_body?(body)
@@ -58,11 +63,12 @@ module RuboCop
       end
 
       # `private def foo = bar baz` parses only on Ruby 4.0+, and only as the sole argument.
+      # As a hash value, an array element or a ternary branch it doesn't parse at all.
       def command_body_in_argument?(body)
         return false unless command_call?(body)
 
         call = argument_receiving_call(body.parent)
-        return false if call.nil?
+        return !command_body_position?(body.parent) if call.nil?
 
         target_ruby_version < 4.0 || !call.arguments.one?
       end
@@ -72,6 +78,14 @@ module RuboCop
         return unless call&.call_type?
 
         call if call.arguments.any? { |argument| argument.equal?(def_node) }
+      end
+
+      def command_body_position?(def_node)
+        parent = def_node.parent
+        return true if parent.nil? || parent.type?(*COMMAND_BODY_PARENT_TYPES)
+        return !parent.endless? if parent.any_def_type?
+
+        parent.if_type? && !parent.ternary? && !parent.condition.equal?(def_node)
       end
 
       def do_end_block_body_in_command_argument?(body)
