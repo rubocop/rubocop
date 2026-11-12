@@ -80,7 +80,7 @@ module RuboCop
 
         def correct_parent(parent, corrector)
           if parent.block_type?
-            corrector.remove(range_with_surrounding_space(parent.loc.end, newlines: false))
+            correct_block_parent(parent, corrector)
           elsif (class_node = parent.parent).body.nil?
             corrector.remove(range_for_empty_class_body(class_node, parent))
           elsif unparenthesized_struct_new?(parent)
@@ -88,6 +88,11 @@ module RuboCop
           else
             corrector.insert_after(parent, ' do')
           end
+        end
+
+        def correct_block_parent(parent, corrector)
+          corrector.replace(parent.loc.begin, 'do') if parent.braces?
+          corrector.remove(range_with_surrounding_space(parent.loc.end, newlines: false))
         end
 
         def range_for_empty_class_body(class_node, struct_new)

@@ -7124,6 +7124,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/BlockDelimiters` and `Style/StructInheritance` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Person < Struct.new(:name) do end
+      end
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/BlockDelimiters,Style/StructInheritance'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      Person = Struct.new(:name) do
+      end
+    RUBY
+  end
+
   it 'does not crash when using `Layout/CaseIndentation` and `Layout/ElseAlignment`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

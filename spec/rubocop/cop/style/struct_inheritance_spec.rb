@@ -59,6 +59,21 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
     RUBY
   end
 
+  it 'registers an offense when extending instance of Struct with braces' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name) {}
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        def name; end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do
+        def name; end
+      end
+    RUBY
+  end
+
   it 'registers an offense when extending instance of Struct without `do` ... `end` and class body is empty' do
     expect_offense(<<~RUBY)
       class Person < Struct.new(:first_name, :last_name)
