@@ -155,7 +155,9 @@ module RuboCop
         end
 
         def next_line_empty_and_exists?(last_send_line)
-          next_line_empty?(last_send_line) && last_send_line.next != processed_source.lines.size
+          return false unless next_line_empty?(last_send_line)
+
+          processed_source.lines.drop(last_send_line).any? { |source_line| !source_line.blank? }
         end
 
         def empty_lines_around?(node)
@@ -206,7 +208,7 @@ module RuboCop
         def message_for_only_before_style(node)
           modifier = node.loc.selector.source
 
-          if next_line_empty?(node.last_line) && !followed_by_access_modifier?(node)
+          if next_line_empty_and_exists?(node.last_line) && !followed_by_access_modifier?(node)
             format(MSG_AFTER_FOR_ONLY_BEFORE, modifier: modifier)
           else
             format(MSG_BEFORE_FOR_ONLY_BEFORE, modifier: modifier)
