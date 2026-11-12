@@ -227,6 +227,27 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
             )
           RUBY
         end
+
+        it 'ignores an outer call whose arguments continue after the heredoc of a nested call' do
+          expect_no_offenses(<<~RUBY)
+            foo(bar(<<~SQL)
+              baz
+            SQL
+              #{dot}qux, quux)
+          RUBY
+        end
+
+        it 'ignores an outer call whose argument has a block after the heredoc of a nested call' do
+          expect_no_offenses(<<~RUBY)
+            foo(
+              bar(<<~SQL)#{dot}each { |x|
+                baz
+              SQL
+                x
+              }
+            )
+          RUBY
+        end
       end
     end
   end
@@ -722,6 +743,27 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
             SQL
               bar
             NOSQL
+          RUBY
+        end
+      end
+
+      context 'nested call followed by another argument of the outer call' do
+        it 'detects and fixes only the nested call' do
+          expect_offense(<<~RUBY)
+            foo(bar#{dot}baz(
+              <<-SQL
+              qux
+            SQL
+            ), quux)
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo(bar#{dot}baz(
+              <<-SQL),
+              qux
+            SQL
+             quux)
           RUBY
         end
       end
