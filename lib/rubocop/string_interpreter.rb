@@ -42,7 +42,9 @@ module RuboCop
 
       def interpret_unicode(escape)
         if escape[2] == '{'
-          escape[3..].split(/\s+/).map(&:hex).pack('U*')
+          # Drop the closing `}` and split on whitespace so empty / padded
+          # escapes match Ruby (`\u{}` -> "", `\u{  41  }` -> "A").
+          escape[3...-1].split.map(&:hex).pack('U*')
         else
           [escape[2..].hex].pack('U')
         end
