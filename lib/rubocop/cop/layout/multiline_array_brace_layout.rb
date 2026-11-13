@@ -111,10 +111,15 @@ module RuboCop
         # that element's closing brace in the same pass places the bracket after whatever
         # follows the moved brace, such as a comment.
         # Moving it while `Style/ConcatArrayLiterals` removes the brackets in the same pass
-        # leaves the bracket behind.
+        # leaves the bracket behind. Moving it with a comment before it while
+        # `Style/MethodCallWithArgsParentheses` adds the closing parenthesis after
+        # the bracket in the same pass places the parenthesis after the comment.
         def self.autocorrect_incompatible_with
           [
-            Layout::MultilineHashBraceLayout, Layout::MultilineMethodCallBraceLayout, Style::ConcatArrayLiterals
+            Layout::MultilineHashBraceLayout,
+            Layout::MultilineMethodCallBraceLayout,
+            Style::ConcatArrayLiterals,
+            Style::MethodCallWithArgsParentheses
           ]
         end
 
