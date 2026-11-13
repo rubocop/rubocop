@@ -43,6 +43,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = "Omit the parentheses in defs when the method doesn't accept any arguments."
+        SPACES_BEFORE_ASSIGNMENT = /\A(?:[ \t]|\\\n)+\z/.freeze
 
         def on_def(node)
           return unless !node.arguments? && (arguments_range = node.arguments.source_range)
@@ -64,9 +65,15 @@ module RuboCop
           # signature from the body, so the parentheses can be removed (`def foo; end`).
           return false if token_after_argument == ';'
 
-          return true if node.single_line? && !node.endless?
+          return node.single_line? unless node.endless?
 
-          token_after_argument == '='
+          !spaces_before_assignment?(node, end_pos)
+        end
+
+        def spaces_before_assignment?(node, end_pos)
+          source = range_between(end_pos, node.loc.assignment.begin_pos).source
+
+          SPACES_BEFORE_ASSIGNMENT.match?(source)
         end
       end
     end
