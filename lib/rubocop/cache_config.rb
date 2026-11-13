@@ -4,6 +4,9 @@ module RuboCop
   # This class represents the cache config of the caching RuboCop runs.
   # @api private
   class CacheConfig
+    # The directory within the cache root where the server keeps its state files.
+    SERVER_DIR = 'server'
+
     def self.root_dir
       root = ENV.fetch('RUBOCOP_CACHE_ROOT', nil)
       root ||= yield
