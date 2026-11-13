@@ -191,6 +191,9 @@ AllCops:
   # For now this will behave as if set to false but in future ruby versions
   # (likely 4.0) it will be true by default.
   StringLiteralsFrozenByDefault: ~
+  # Server keep-alive timeout. If a running RuboCop server does not receive any requests
+  # within this period (in seconds), it will shut down automatically.
+  ServerKeepAlive: 86400
 
 #################### Bundler ###############################
 
