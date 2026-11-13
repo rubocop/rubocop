@@ -46,10 +46,11 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless redundant_require_statement?(node)
+          return unless redundant_require_statement?(node) && statement?(node)
+          return unless modifier_form_body?(node) || own_lines?(node)
 
           add_offense(node) do |corrector|
-            if node.parent.respond_to?(:modifier_form?) && node.parent.modifier_form?
+            if modifier_form_body?(node)
               corrector.insert_after(node.parent, "\nend")
 
               range = range_with_surrounding_space(node.source_range, side: :right)
@@ -62,6 +63,29 @@ module RuboCop
         end
 
         private
+
+        def statement?(node)
+          parent = node.parent
+          return true unless parent
+          return !parent.endless? if parent.any_def_type?
+          return !parent.ternary? && !parent.condition.equal?(node) if parent.if_type?
+          return !parent.condition.equal?(node) if parent.type?(:while, :until)
+
+          parent.type?(:begin, :kwbegin, :any_block, :class, :module, :sclass, :case,
+                       :when, :in_pattern, :rescue, :resbody, :ensure)
+        end
+
+        def modifier_form_body?(node)
+          node.parent.respond_to?(:modifier_form?) && node.parent.modifier_form?
+        end
+
+        def own_lines?(node)
+          range = node.source_range
+          lines = range_by_whole_lines(range)
+
+          lines.with(end_pos: range.begin_pos).source.strip.empty? &&
+            lines.with(begin_pos: range.end_pos).source.match?(/\A\s*(#.*)?\z/)
+        end
 
         # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def redundant_feature?(feature_name)

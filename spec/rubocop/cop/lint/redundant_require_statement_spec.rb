@@ -43,6 +43,110 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
     RUBY
   end
 
+  it 'registers an offense when using requiring `enumerator` as the last statement of a method' do
+    expect_offense(<<~RUBY)
+      def foo
+        bar
+        require 'enumerator'
+        ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using requiring `enumerator` in a block and a `rescue` branch' do
+    expect_offense(<<~RUBY)
+      foo do
+        require 'enumerator'
+        ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+      end
+
+      begin
+        bar
+      rescue LoadError
+        require 'enumerator' # comment
+        ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do
+      end
+
+      begin
+        bar
+      rescue LoadError
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the return value of requiring `enumerator` is assigned' do
+    expect_no_offenses(<<~RUBY)
+      x ||=
+        require 'enumerator'
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is used as an argument' do
+    expect_no_offenses(<<~RUBY)
+      foo(
+        require('enumerator')
+      )
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is used as an array element' do
+    expect_no_offenses(<<~RUBY)
+      [
+        require('enumerator'),
+        foo
+      ]
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is used as an operand' do
+    expect_no_offenses(<<~RUBY)
+      foo &&
+        require('enumerator')
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is used as a ternary branch' do
+    expect_no_offenses(<<~RUBY)
+      foo ?
+        require('enumerator') :
+        bar
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is the body of an endless method', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      def foo =
+        require('enumerator')
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is the condition of a modifier `if`' do
+    expect_no_offenses(<<~RUBY)
+      foo if require('enumerator')
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` shares its line with other code' do
+    expect_no_offenses(<<~RUBY)
+      foo; require 'enumerator'
+      require 'enumerator'; bar
+      baz { require 'enumerator' }
+      if foo then require 'enumerator' else bar end
+      require 'enumerator' rescue nil
+    RUBY
+  end
+
   context 'target ruby version <= 2.0', :ruby20, unsupported_on: :prism do
     it 'does not register an offense when using requiring `thread`' do
       expect_no_offenses(<<~RUBY)
