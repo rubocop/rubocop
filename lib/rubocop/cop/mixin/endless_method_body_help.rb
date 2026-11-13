@@ -5,6 +5,10 @@ module RuboCop
     # Common functionality for checking whether a method body can become the
     # body of an endless method definition without changing its meaning.
     module EndlessMethodBodyHelp
+      STATEMENT_BODY_PARENT_TYPES = %i[
+        resbody when in_pattern while until for class module sclass any_block
+      ].freeze
+
       private
 
       def endless_method_body?(body)
@@ -45,7 +49,7 @@ module RuboCop
 
       def command_disallowed_in_endless_body?(body)
         return true if body.assignment? && command_call?(assigned_value(body))
-        return true if body_disallowed_in_argument?(body)
+        return true if body_disallowed_outside_statement?(body)
         return true if negated_command_call?(body)
 
         body.each_node(:any_block).any? do |block|
@@ -53,18 +57,51 @@ module RuboCop
         end
       end
 
-      def body_disallowed_in_argument?(body)
-        command_body_in_argument?(body) || do_end_block_body_in_command_argument?(body)
+      def body_disallowed_outside_statement?(body)
+        return true if endless_method_with_command_body?(body)
+
+        command_body_outside_statement?(body) || do_end_block_body_in_command_argument?(body)
       end
 
-      # `private def foo = bar baz` parses only on Ruby 4.0+, and only as the sole argument.
-      def command_body_in_argument?(body)
+      def endless_method_with_command_body?(node)
+        node.any_def_type? && node.endless? && command_call?(node.body)
+      end
+
+      def command_body_outside_statement?(body)
         return false unless command_call?(body)
+        return false if command_position?(body.parent)
 
         call = argument_receiving_call(body.parent)
-        return false if call.nil?
+        return true if call.nil?
 
         target_ruby_version < 4.0 || !call.arguments.one?
+      end
+
+      def command_position?(def_node)
+        parent = def_node.parent
+        return true if parent.nil? || parent.type?(:begin, :kwbegin, :rescue, :ensure)
+        return false if parent.masgn_type?
+        return true if parent.assignment?
+        return parent.last_argument.equal?(def_node) if setter_call?(parent)
+
+        statement_body?(def_node, parent)
+      end
+
+      def setter_call?(node)
+        node.call_type? && node.assignment_method?
+      end
+
+      def statement_body?(def_node, parent)
+        return def_node.equal?(parent.body) if parent.type?(*STATEMENT_BODY_PARENT_TYPES)
+
+        case parent.type
+        when :if
+          !parent.ternary? && !def_node.equal?(parent.condition)
+        when :case, :case_match
+          def_node.equal?(parent.else_branch)
+        else
+          false
+        end
       end
 
       def argument_receiving_call(def_node)
@@ -90,8 +127,10 @@ module RuboCop
         node
       end
 
+      # `return foo` is a command too, even as `return(foo)`.
       def command_call?(node)
         node = node.send_node if node.any_block_type?
+        return node.arguments? if node.return_type?
         return false unless node.type?(:call, :super, :yield)
 
         node.arguments? && !node.parenthesized? && !node.operator_method? && !node.setter_method?

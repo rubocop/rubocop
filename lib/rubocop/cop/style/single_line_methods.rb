@@ -102,7 +102,7 @@ module RuboCop
         end
 
         # The body gets parenthesized when it becomes endless, so it is no longer a command.
-        def command_body_in_argument?(body)
+        def command_body_outside_statement?(body)
           !require_parentheses?(body) && super
         end
 
