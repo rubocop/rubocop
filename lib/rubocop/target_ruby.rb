@@ -120,14 +120,12 @@ module RuboCop
       end
 
       def version_from_gemspec_file(file)
-        # When using parser_prism, we need to use a Ruby version that Prism supports (3.3+)
-        # for parsing the gemspec file. This doesn't affect the detected Ruby version,
-        # it's just for the parsing step.
-        ruby_version_for_parsing = if @config.parser_engine == :parser_prism
-                                     3.3
-                                   else
-                                     DEFAULT_VERSION
-                                   end
+        # The version is only for parsing the gemspec, it doesn't affect the
+        # detected Ruby version. Prism parses Ruby 3.3 and later, and it is
+        # what the default engine picks for such a version, so `parser` is
+        # only needed here when it was asked for.
+        whitequark = @config.parser_engine == :parser_whitequark
+        ruby_version_for_parsing = whitequark ? DEFAULT_VERSION : 3.3
 
         processed_source = ProcessedSource.from_file(
           file, ruby_version_for_parsing, parser_engine: @config.parser_engine
