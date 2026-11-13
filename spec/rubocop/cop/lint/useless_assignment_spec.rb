@@ -627,6 +627,369 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned with binary operator assignment and unreferenced' do
+    it 'wraps a method call with arguments without parentheses' do
+      expect_offense(<<~RUBY)
+        def m0(foo)
+          foo += bar baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m1(foo)
+          foo -= qux.quux baz
+          ^^^ Useless assignment to variable - `foo`. Use `-` instead of `-=`.
+        end
+
+        def m2(foo)
+          foo *= qux&.quux baz
+          ^^^ Useless assignment to variable - `foo`. Use `*` instead of `*=`.
+        end
+
+        def m3(foo)
+          foo += qux::quux baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m4(foo)
+          foo += bar baz, qux
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def m0(foo)
+          foo + (bar baz)
+        end
+
+        def m1(foo)
+          foo - (qux.quux baz)
+        end
+
+        def m2(foo)
+          foo * (qux&.quux baz)
+        end
+
+        def m3(foo)
+          foo + (qux::quux baz)
+        end
+
+        def m4(foo)
+          foo + (bar baz, qux)
+        end
+      RUBY
+    end
+
+    it 'wraps `yield` and `super` with arguments without parentheses' do
+      expect_offense(<<~RUBY)
+        def m0(foo)
+          foo += yield bar
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m1(foo)
+          foo *= super bar
+          ^^^ Useless assignment to variable - `foo`. Use `*` instead of `*=`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def m0(foo)
+          foo + (yield bar)
+        end
+
+        def m1(foo)
+          foo * (super bar)
+        end
+      RUBY
+    end
+
+    it 'wraps a value with a lower precedence than the operator' do
+      expect_offense(<<~RUBY)
+        def m0(foo)
+          foo *= bar + baz
+          ^^^ Useless assignment to variable - `foo`. Use `*` instead of `*=`.
+        end
+
+        def m1(foo)
+          foo <<= bar << baz
+          ^^^ Useless assignment to variable - `foo`. Use `<<` instead of `<<=`.
+        end
+
+        def m2(foo)
+          foo += bar == baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m3(foo)
+          foo += bar && baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m4(foo)
+          foo += bar ? baz : qux
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m5(foo)
+          foo += bar..baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m6(foo)
+          foo += bar rescue baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m7(foo)
+          foo += not(bar)
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m8(foo)
+          foo += defined? bar
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m9(foo)
+          foo += bar =~ baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def m0(foo)
+          foo * (bar + baz)
+        end
+
+        def m1(foo)
+          foo << (bar << baz)
+        end
+
+        def m2(foo)
+          foo + (bar == baz)
+        end
+
+        def m3(foo)
+          foo + (bar && baz)
+        end
+
+        def m4(foo)
+          foo + (bar ? baz : qux)
+        end
+
+        def m5(foo)
+          foo + (bar..baz)
+        end
+
+        def m6(foo)
+          foo + (bar rescue baz)
+        end
+
+        def m7(foo)
+          foo + (not(bar))
+        end
+
+        def m8(foo)
+          foo + (defined? bar)
+        end
+
+        def m9(foo)
+          foo + (bar =~ baz)
+        end
+      RUBY
+    end
+
+    it 'does not wrap an assignment' do
+      expect_offense(<<~RUBY)
+        def m0(foo)
+          foo += @bar = baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m1(foo)
+          foo += bar.baz = qux
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m2(foo)
+          foo += bar[baz] = qux
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m3(foo)
+          foo += @bar ||= baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def m0(foo)
+          foo + @bar = baz
+        end
+
+        def m1(foo)
+          foo + bar.baz = qux
+        end
+
+        def m2(foo)
+          foo + bar[baz] = qux
+        end
+
+        def m3(foo)
+          foo + @bar ||= baz
+        end
+      RUBY
+    end
+
+    it 'wraps an operator assignment that is corrected in the same pass' do
+      expect_offense(<<~RUBY)
+        def some_method(foo, bar)
+          foo *= bar += baz
+          ^^^ Useless assignment to variable - `foo`. Use `*` instead of `*=`.
+                 ^^^ Useless assignment to variable - `bar`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(foo, bar)
+          foo * (bar + baz)
+        end
+      RUBY
+    end
+
+    it 'does not wrap a value that binds tighter than the operator' do
+      expect_offense(<<~RUBY)
+        def m0(foo)
+          foo += bar
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m2(foo)
+          foo += bar(baz)
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m4(foo)
+          foo += bar[baz]
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m5(foo)
+          foo += -bar
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m6(foo)
+          foo += !bar
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m7(foo)
+          foo += bar { baz }
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m8(foo)
+          foo += -> { bar }
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m9(foo)
+          foo += [bar, baz]
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m10(foo)
+          foo += { bar: baz }
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m11(foo)
+          foo += (bar + baz)
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m12(foo)
+          foo += Bar::Baz
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m13(foo)
+          foo += yield
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m14(foo)
+          foo += super
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+
+        def m15(foo)
+          foo += /bar/
+          ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def m0(foo)
+          foo + bar
+        end
+
+        def m2(foo)
+          foo + bar(baz)
+        end
+
+        def m4(foo)
+          foo + bar[baz]
+        end
+
+        def m5(foo)
+          foo + -bar
+        end
+
+        def m6(foo)
+          foo + !bar
+        end
+
+        def m7(foo)
+          foo + bar { baz }
+        end
+
+        def m8(foo)
+          foo + -> { bar }
+        end
+
+        def m9(foo)
+          foo + [bar, baz]
+        end
+
+        def m10(foo)
+          foo + { bar: baz }
+        end
+
+        def m11(foo)
+          foo + (bar + baz)
+        end
+
+        def m12(foo)
+          foo + Bar::Baz
+        end
+
+        def m13(foo)
+          foo + yield
+        end
+
+        def m14(foo)
+          foo + super
+        end
+
+        def m15(foo)
+          foo + /bar/
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned in loop body and unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
