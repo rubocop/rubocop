@@ -434,6 +434,42 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
               end
             RUBY
           end
+
+          it 'registers an offense and partially corrects for a numbered parameter block', :ruby27 do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              Module.new do
+                _1
+                %{access_modifier}
+                ^{access_modifier} Keep a blank line before and after `%{access_modifier}`.
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              Module.new do
+                _1
+
+                #{access_modifier}
+              end
+            RUBY
+          end
+
+          it 'registers an offense and partially corrects for an `it` parameter block', :ruby34 do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              Module.new do
+                it
+                %{access_modifier}
+                ^{access_modifier} Keep a blank line before and after `%{access_modifier}`.
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              Module.new do
+                it
+
+                #{access_modifier}
+              end
+            RUBY
+          end
         end
       end
 
