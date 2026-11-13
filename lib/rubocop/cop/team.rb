@@ -262,11 +262,33 @@ module RuboCop
 
       def roundup_relevant_cops(processed_source)
         (cops + opted_in_standby_cops(processed_source)).select do |cop|
-          next false if cop.excluded_file?(processed_source.file_path)
+          next false if excluded_file?(cop, processed_source.file_path)
           next true if processed_source.comment_config.cop_opted_in?(cop)
-          next false unless @registry.enabled?(cop, @config)
 
-          support_target_ruby_version?(cop) && support_target_rails_version?(cop)
+          enabled_for_target_versions?(cop)
+        end
+      end
+
+      # A team investigates each fragment of a file, and each file sharing its config,
+      # with fresh cop instances. What only depends on the path or the config is
+      # cached by cop class, so that a file split into many fragments by a Ruby
+      # extractor (ERB, Slim, Haml...) does not recompute it for every fragment.
+      def excluded_file?(cop, path)
+        unless @excluded_file_path == path
+          @excluded_file_path = path
+          @excluded_file_by_cop_class = {}
+        end
+        @excluded_file_by_cop_class.fetch(cop.class) do |cop_class|
+          @excluded_file_by_cop_class[cop_class] = cop.excluded_file?(path)
+        end
+      end
+
+      def enabled_for_target_versions?(cop)
+        @enabled_for_target_versions_by_cop_class ||= {}
+        @enabled_for_target_versions_by_cop_class.fetch(cop.class) do |cop_class|
+          @enabled_for_target_versions_by_cop_class[cop_class] =
+            @registry.enabled?(cop, @config) &&
+            support_target_ruby_version?(cop) && support_target_rails_version?(cop)
         end
       end
 

@@ -1,0 +1,1 @@
+* [#16114](https://github.com/rubocop/rubocop/issues/16114): Improve performance of inspecting files split into many fragments by a Ruby extractor (ERB, Slim, Haml...) by caching which cops apply to the file. ([@czj][])
