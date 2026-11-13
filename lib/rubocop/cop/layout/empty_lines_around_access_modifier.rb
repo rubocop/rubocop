@@ -114,10 +114,7 @@ module RuboCop
         end
 
         def allowed_only_before_style?(node)
-          if node.special_modifier? && !followed_by_access_modifier?(node)
-            return true if processed_source[node.last_line] == 'end'
-            return false if next_line_empty_and_exists?(node.last_line)
-          end
+          return false if node.special_modifier? && removable_blank_line_after?(node)
 
           previous_line_empty?(node.first_line)
         end
@@ -129,7 +126,7 @@ module RuboCop
           when :around
             corrector.insert_after(line, "\n") unless next_line_empty?(node.last_line)
           when :only_before
-            if next_line_empty_and_exists?(node.last_line) && !followed_by_access_modifier?(node)
+            if removable_blank_line_after?(node)
               range = next_empty_line_range(node)
 
               corrector.remove(range)
@@ -152,12 +149,6 @@ module RuboCop
           next_line = processed_source[last_send_line]
 
           body_end?(last_send_line) || next_line.blank?
-        end
-
-        def next_line_empty_and_exists?(last_send_line)
-          return false unless next_line_empty?(last_send_line)
-
-          processed_source.lines.drop(last_send_line).any? { |source_line| !source_line.blank? }
         end
 
         def empty_lines_around?(node)
@@ -208,17 +199,29 @@ module RuboCop
         def message_for_only_before_style(node)
           modifier = node.loc.selector.source
 
-          if next_line_empty_and_exists?(node.last_line) && !followed_by_access_modifier?(node)
+          if removable_blank_line_after?(node)
             format(MSG_AFTER_FOR_ONLY_BEFORE, modifier: modifier)
           else
             format(MSG_BEFORE_FOR_ONLY_BEFORE, modifier: modifier)
           end
         end
 
+        def removable_blank_line_after?(node)
+          return false if followed_by_access_modifier?(node)
+
+          next_line_blank_and_exists?(node.last_line)
+        end
+
         def followed_by_access_modifier?(node)
           sibling = node.right_sibling
 
           sibling&.send_type? && sibling.bare_access_modifier?
+        end
+
+        def next_line_blank_and_exists?(last_send_line)
+          return false unless processed_source[last_send_line].blank?
+
+          processed_source.lines.drop(last_send_line).any? { |source_line| !source_line.blank? }
         end
 
         def should_insert_line_before?(node)

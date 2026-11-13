@@ -590,6 +590,46 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
         RUBY
       end
+
+      it "does not register an offense when `end` followed by code immediately after #{access_modifier}" do
+        expect_no_offenses(<<~RUBY)
+          foo(class Test
+            something
+
+            #{access_modifier}
+          end, bar)
+        RUBY
+      end
+
+      it "does not register an offense when an indented `end` immediately after #{access_modifier}" do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            class Test
+              something
+
+              #{access_modifier}
+            end
+          end
+        RUBY
+      end
+
+      it "registers an offense for missing blank line before #{access_modifier} followed by `end`" do
+        expect_offense(<<~RUBY)
+          class Test
+            something
+            #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line before `#{access_modifier}`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+            something
+
+            #{access_modifier}
+          end
+        RUBY
+      end
     end
 
     %w[public module_function].each do |access_modifier|
@@ -646,6 +686,28 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
             private
             def test; end
+          end
+        RUBY
+      end
+
+      it "registers an offense for missing blank line before #{access_modifier} followed by an indented `end`" do
+        expect_offense(<<~RUBY)
+          module Foo
+            class Test
+              something
+              #{access_modifier}
+              #{'^' * access_modifier.size} Keep a blank line before `#{access_modifier}`.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module Foo
+            class Test
+              something
+
+              #{access_modifier}
+            end
           end
         RUBY
       end
