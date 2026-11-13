@@ -140,5 +140,30 @@ RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     it 'does not register an offense when a keyword argument default value is a hash with braces' do
       expect_no_offenses('->(options: {}) { options }')
     end
+
+    it 'does not register an offense when there are block-local variables' do
+      expect_no_offenses(<<~RUBY)
+        ->(a; b) { a }
+        ->(a, c;b) do a end
+      RUBY
+    end
+
+    it 'does not register an offense when the first argument is destructured' do
+      expect_no_offenses(<<~RUBY)
+        ->((a, b)) { a }
+        ->((a, b), c) { a }
+      RUBY
+    end
+
+    it 'registers an offense when an argument other than the first one is destructured' do
+      expect_offense(<<~RUBY)
+        ->(a, (b, c)) { a }
+          ^^^^^^^^^^^ Do not wrap stabby lambda arguments with parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ->a, (b, c) { a }
+      RUBY
+    end
   end
 end
