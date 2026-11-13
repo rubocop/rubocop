@@ -84,6 +84,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
       expect_no_offenses("x = <<HELLO\n\thello\n\t\n\t\t\nhello\nHELLO")
     end
 
+    it 'accepts a line which begins with tab in a command heredoc' do
+      expect_no_offenses("x = <<`HELLO`\n\techo hello\nHELLO")
+    end
+
+    it 'accepts a line which begins with tab in a command literal' do
+      expect_no_offenses("x = `echo\n\thello`")
+    end
+
     it 'registers and corrects an offense for a line with tab in a string indented with tab' do
       expect_offense(<<~RUBY)
         \t(x = "\t")
@@ -193,6 +201,10 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
 
     it 'accepts a line which begins with tab in a multiline heredoc' do
       expect_no_offenses("x = <<HELLO\n\thello\n\t\n\t\t\nhello\nHELLO")
+    end
+
+    it 'accepts a line which begins with spaces in a command heredoc' do
+      expect_no_offenses("x = <<~`HELLO`\n  echo hello\nHELLO")
     end
 
     it 'accepts a closing delimiter of a heredoc nested in another heredoc' do
