@@ -95,7 +95,7 @@ module RuboCop
 
         # @!method to_method_symbol(node)
         def_node_matcher :to_method_symbol, <<~PATTERN
-          (call _ $_ ${
+          (call _ _ ${
             {
               (sym ${#{METHODS}})
               (block_pass (sym ${#{METHODS}}))
@@ -131,8 +131,8 @@ module RuboCop
         end
 
         def handle_as_symbol(node)
-          to_method_symbol(node) do |receiver, sym_node, to_method|
-            next if receiver.nil? || !node.arguments.one? || node.operator_method?
+          to_method_symbol(node) do |sym_node, to_method|
+            next if allow_symbol_argument?(node)
 
             message = format(
               MSG,
@@ -147,6 +147,13 @@ module RuboCop
               corrector.replace(sym_node, correct_sym_method(to_method))
             end
           end
+        end
+
+        # The symbol is replaced with a block, which only works for the sole argument
+        # of a method called on a receiver that does not already take a block.
+        def allow_symbol_argument?(node)
+          node.receiver.nil? || node.block_literal? || !node.arguments.one? ||
+            node.operator_method?
         end
 
         def correct_method(node, receiver)
