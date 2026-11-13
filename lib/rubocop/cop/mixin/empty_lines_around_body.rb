@@ -130,6 +130,7 @@ module RuboCop
         def check_deferred_empty_line(body)
           node = first_empty_line_required_child(body)
           return unless node
+          return if same_line_as_previous_statement?(node)
 
           line = previous_line_ignoring_comments(node.first_line)
           return if processed_source[line].empty?
@@ -165,6 +166,10 @@ module RuboCop
           elsif empty_line_required?(body)
             body
           end
+        end
+
+        def same_line_as_previous_statement?(node)
+          node.left_sibling.last_line == node.first_line
         end
 
         def previous_line_ignoring_comments(send_line)

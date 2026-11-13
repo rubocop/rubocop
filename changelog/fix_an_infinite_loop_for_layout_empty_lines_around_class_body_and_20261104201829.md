@@ -1,0 +1,1 @@
+* [#16372](https://github.com/rubocop/rubocop/pull/16372): Fix an infinite loop for `Layout/EmptyLinesAroundClassBody` and `Layout/EmptyLinesAroundModuleBody` with a definition after a semicolon. ([@koic][])
