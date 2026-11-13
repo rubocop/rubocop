@@ -11,9 +11,7 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
 
     expect_correction(<<~RUBY)
       module C
-      module_function
-
-        def class_method; end
+        def self.class_method; end
       end
     RUBY
   end
@@ -32,13 +30,11 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
 
     expect_correction(<<~RUBY)
       module C
-      module_function
+        def self.class_method; end
 
-        def class_method; end
-
-       #{trailing_whitespace}
+        class << self
           def other_class_method; end
-       #{trailing_whitespace}
+        end
       end
     RUBY
   end
@@ -67,11 +63,9 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
 
     expect_correction(<<~RUBY)
       module C
-      module_function
-
         CONST = 1
 
-        def class_method; end
+        def self.class_method; end
       end
     RUBY
   end
@@ -136,10 +130,8 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
 
     expect_correction(<<~RUBY)
       module C
-      module_function
-
         extend M
-        def class_method; end
+        def self.class_method; end
       end
     RUBY
   end
