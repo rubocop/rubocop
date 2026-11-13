@@ -57,6 +57,8 @@ module RuboCop
         end
 
         def arguments_require_parentheses?(arguments)
+          return true if arguments.first.mlhs_type? || arguments.any?(&:shadowarg_type?)
+
           arguments.each_descendant(:any_block, :hash).any? do |node|
             !node.hash_type? || node.braces?
           end

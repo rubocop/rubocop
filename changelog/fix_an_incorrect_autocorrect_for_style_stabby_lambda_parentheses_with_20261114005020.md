@@ -1,0 +1,1 @@
+* [#16391](https://github.com/rubocop/rubocop/pull/16391): Fix an incorrect autocorrect for `Style/StabbyLambdaParentheses` with block-local variables or a destructured first argument. ([@Starlexxx][])
