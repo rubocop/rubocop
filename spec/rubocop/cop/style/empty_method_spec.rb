@@ -143,6 +143,30 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
       it 'allows single line method' do
         expect_no_offenses('def self.foo; end')
       end
+
+      it 'registers an offense and keeps a parenthesized receiver' do
+        expect_offense(<<~RUBY)
+          def (foo.bar).baz(qux)
+          ^^^^^^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo.bar).baz(qux); end
+        RUBY
+      end
+
+      it 'registers an offense and keeps the `::` operator' do
+        expect_offense(<<~RUBY)
+          def self::foo
+          ^^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self::foo; end
+        RUBY
+      end
     end
 
     context 'with a non-empty class method definition' do
@@ -286,6 +310,18 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
         expect_correction(<<~RUBY)
           def self.foo
+          end
+        RUBY
+      end
+
+      it 'registers an offense for single line method and keeps a parenthesized receiver' do
+        expect_offense(<<~RUBY)
+          def (foo.bar).baz; end
+          ^^^^^^^^^^^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo.bar).baz
           end
         RUBY
       end

@@ -81,15 +81,20 @@ module RuboCop
         end
 
         def corrected(node)
-          scope = node.receiver ? "#{node.receiver.source}." : ''
           arguments = if node.arguments?
                         args = node.arguments.map(&:source).join(', ')
 
                         parentheses?(node.arguments) ? "(#{args})" : " #{args}"
                       end
-          signature = [scope, node.method_name, arguments].join
+          signature = [scope(node), node.method_name, arguments].join
 
           ["def #{signature}", 'end'].join(joint(node))
+        end
+
+        def scope(node)
+          return '' unless node.receiver
+
+          node.loc.keyword.end.join(node.loc.name.begin).source.lstrip
         end
 
         def correction_exceeds_line_length?(correction)

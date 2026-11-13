@@ -2,6 +2,19 @@
 
 RSpec.describe RuboCop::Cop::Style::AmbiguousEndlessMethodDefinition, :config do
   context 'Ruby >= 3.0', :ruby30 do
+    it 'keeps the parentheses around a singleton receiver' do
+      expect_offense(<<~RUBY)
+        def (foo.bar).baz = true and qux
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `and` statements with endless methods.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def (foo.bar).baz
+          true
+        end and qux
+      RUBY
+    end
+
     it 'does not register an offense for a non endless method' do
       expect_no_offenses(<<~RUBY)
         def foo

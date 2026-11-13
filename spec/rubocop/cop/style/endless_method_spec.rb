@@ -15,6 +15,19 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
     context 'EnforcedStyle: disallow' do
       let(:cop_config) { { 'EnforcedStyle' => 'disallow' } }
 
+      it 'registers an offense and keeps the parentheses around a singleton receiver' do
+        expect_offense(<<~RUBY)
+          def (foo.bar).baz = qux
+          ^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo.bar).baz
+            qux
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects nested endless method definitions' do
         expect_offense(<<~RUBY)
           def a = def b = 1
@@ -110,6 +123,20 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
 
     context 'EnforcedStyle: allow_single_line' do
       let(:cop_config) { { 'EnforcedStyle' => 'allow_single_line' } }
+
+      it 'registers an offense and keeps the parentheses around a singleton receiver of a multiline endless method' do
+        expect_offense(<<~RUBY)
+          def (foo.bar).baz(a) =
+          ^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+            qux
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo.bar).baz(a)
+            qux
+          end
+        RUBY
+      end
 
       it 'does not register an offense for an endless method' do
         expect_no_offenses(<<~RUBY)

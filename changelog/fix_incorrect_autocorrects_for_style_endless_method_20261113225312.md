@@ -1,0 +1,1 @@
+* [#16390](https://github.com/rubocop/rubocop/pull/16390): Fix incorrect autocorrects for `Style/EndlessMethod`, `Style/AmbiguousEndlessMethodDefinition`, `Layout/LineLength` and `Style/EmptyMethod` with a parenthesized singleton receiver. ([@Starlexxx][])

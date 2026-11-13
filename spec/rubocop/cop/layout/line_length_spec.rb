@@ -1708,6 +1708,21 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'when over limit' do
+        context 'with a parenthesized singleton receiver' do
+          it 'adds an offense and keeps the parentheses' do
+            expect_offense(<<~RUBY)
+              def (foo.bar).very_long_method_name = some_long_expression_here_that_exceeds_maximum
+                                                                                              ^^^^ Line is too long. [84/80]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def (foo.bar).very_long_method_name
+                some_long_expression_here_that_exceeds_maximum
+              end
+            RUBY
+          end
+        end
+
         context 'with a simple expression' do
           it 'adds an offense and autocorrects to multiline definition' do
             expect_offense(<<~RUBY)
