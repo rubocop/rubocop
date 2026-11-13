@@ -319,8 +319,12 @@ module RuboCop
       end
 
       # There should be very limited reasons for a Cop to do it's own parsing
+      # The source is parsed the way the file under investigation was.
       def parse(source, path = nil)
-        ProcessedSource.new(source, target_ruby_version, path, parser_engine: parser_engine)
+        ruby_version = processed_source&.ruby_version || target_ruby_version
+        engine = processed_source&.parser_engine || parser_engine
+
+        ProcessedSource.new(source, ruby_version, path, parser_engine: engine)
       end
 
       # @api private

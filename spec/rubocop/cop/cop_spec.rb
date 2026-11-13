@@ -418,6 +418,23 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
   end
 
+  describe '#parse' do
+    let(:ruby_version) { 3.4 }
+
+    it 'parses the way the source under investigation was parsed' do
+      parsed = cop.parse('foo')
+
+      expect(parsed.ruby_version).to eq(processed_source.ruby_version)
+      expect(parsed.parser_engine).to eq(processed_source.parser_engine)
+    end
+
+    it 'parses the way the configuration says when no source is under investigation' do
+      parsed = cop_class.new(config).parse('foo')
+
+      expect(parsed.ruby_version).to eq(config.target_ruby_version)
+    end
+  end
+
   describe '#autocorrect?' do
     subject { cop.autocorrect? }
 
