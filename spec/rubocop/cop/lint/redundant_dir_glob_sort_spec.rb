@@ -73,6 +73,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantDirGlobSort, :config do
       RUBY
     end
 
+    it 'registers an offense and correction keeping a comment before `sort` with a leading dot followed by a method call' do
+      expect_offense(<<~RUBY)
+        Dir.glob(pattern) # comment
+          .sort.each { |file| file }
+           ^^^^ Remove redundant `sort`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Dir.glob(pattern) # comment
+          .each { |file| file }
+      RUBY
+    end
+
     it 'registers an offense and correction keeping a comment after a trailing dot before `sort`' do
       expect_offense(<<~RUBY)
         Dir.glob(pattern). # comment
