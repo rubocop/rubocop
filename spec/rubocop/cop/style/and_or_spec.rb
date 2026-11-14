@@ -364,7 +364,70 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       RUBY
 
       expect_correction(<<~RUBY)
+        foo && (bar.+ baz)
+      RUBY
+    end
+
+    it 'autocorrects "and" with an operator method called with a dot and parenthesized arguments' do
+      expect_offense(<<~RUBY)
+        foo and bar.+(baz)
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
         foo && bar.+(baz)
+      RUBY
+    end
+
+    it 'autocorrects "and" with an operator method called with a dot and a `do` block' do
+      expect_offense(<<~RUBY)
+        foo and bar.<< baz do
+            ^^^ Use `&&` instead of `and`.
+          x
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && (bar.<< baz do
+          x
+        end)
+      RUBY
+    end
+
+    it 'autocorrects "and" with a method chained onto an operator method called with a dot and a `do` block' do
+      expect_offense(<<~RUBY)
+        foo and bar.+ baz do |x|
+            ^^^ Use `&&` instead of `and`.
+          x
+        end.qux
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && (bar.+ baz do |x|
+          x
+        end).qux
+      RUBY
+    end
+
+    it 'autocorrects "and" with `[]` called with a dot' do
+      expect_offense(<<~RUBY)
+        foo and bar.[] baz
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && bar.[](baz)
+      RUBY
+    end
+
+    it 'autocorrects "and" with an operator method called with a safe navigation operator' do
+      expect_offense(<<~RUBY)
+        foo and bar&.+ baz
+            ^^^ Use `&&` instead of `and`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && bar&.+(baz)
       RUBY
     end
 
