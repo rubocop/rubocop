@@ -279,7 +279,8 @@ module RuboCop
           first_node = node.first_argument
           return false unless first_node.begin_type? && first_node.parenthesized_call?
 
-          first_node.children.one? && mergeable_parentheses?(first_node.children.first)
+          first_node.children.one? && mergeable_parentheses?(first_node.children.first) &&
+            !semicolon_around_grouped_expression?(first_node)
         end
 
         def mergeable_parentheses?(node)
@@ -294,6 +295,14 @@ module RuboCop
             false
           else
             true
+          end
+        end
+
+        def semicolon_around_grouped_expression?(node)
+          expression = node.children.first.source_range
+
+          processed_source.tokens_within(node).any? do |token|
+            token.semicolon? && !expression.contains?(token.pos)
           end
         end
       end
