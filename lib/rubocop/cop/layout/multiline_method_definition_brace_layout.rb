@@ -119,7 +119,7 @@ module RuboCop
                                    'on the same line as the last parameter.'
 
         def self.autocorrect_incompatible_with
-          [Style::MultilineMethodSignature]
+          [Style::MethodDefParentheses, Style::MultilineMethodSignature]
         end
 
         def on_def(node)
