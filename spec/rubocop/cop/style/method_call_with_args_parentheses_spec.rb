@@ -211,6 +211,20 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'registers an offense and keeps the parens of a grouped argument with a semicolon', :ruby33 do
+      expect_offense(<<~RUBY)
+        top.test (a;)
+        ^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+        top.test (; a)
+        ^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top.test((a;))
+        top.test((; a))
+      RUBY
+    end
+
     it 'registers an offense and merges the parens of a grouped ternary argument' do
       expect_offense(<<~RUBY)
         top.test (a ? b : c)
