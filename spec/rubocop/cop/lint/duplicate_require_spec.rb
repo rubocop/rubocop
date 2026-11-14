@@ -89,6 +89,45 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateRequire, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when duplicate `require` shares its line with other code' do
+    expect_offense(<<~'RUBY')
+      "#{require 'foo'
+      require 'foo'}"
+      ^^^^^^^^^^^^^ Duplicate `require` detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "#{require 'foo'
+      }"
+    RUBY
+  end
+
+  it 'registers and corrects an offense when duplicate `require` has a trailing comment' do
+    expect_offense(<<~RUBY)
+      require 'foo'
+      require 'foo' # comment
+      ^^^^^^^^^^^^^ Duplicate `require` detected.
+      require 'bar'
+    RUBY
+
+    expect_correction(<<~RUBY)
+      require 'foo'
+      require 'bar'
+    RUBY
+  end
+
+  it 'does not register an offense when duplicate `require`s are operands of `and`' do
+    expect_no_offenses(<<~RUBY)
+      require 'foo' and require 'foo'
+    RUBY
+  end
+
+  it 'does not register an offense when duplicate `require`s are method arguments' do
+    expect_no_offenses(<<~RUBY)
+      do_something(require('foo'), require('foo'))
+    RUBY
+  end
+
   it 'does not register an offense when there are no duplicate `require`s' do
     expect_no_offenses(<<~RUBY)
       require 'foo'

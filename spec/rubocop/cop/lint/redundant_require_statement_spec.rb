@@ -13,6 +13,48 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
     RUBY
   end
 
+  it 'registers an offense when requiring `enumerator` on a line shared with other code' do
+    expect_offense(<<~'RUBY')
+      "#{require 'enumerator'
+         ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+      require 'uri'}"
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "#{
+      require 'uri'}"
+    RUBY
+  end
+
+  it 'registers an offense when requiring `enumerator` after other code on the same line' do
+    expect_offense(<<~RUBY)
+      require 'uri'; require 'enumerator'
+                     ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      require 'uri';#{trailing_whitespace}
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is assigned' do
+    expect_no_offenses(<<~RUBY)
+      x = require 'enumerator'
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is a method argument' do
+    expect_no_offenses(<<~RUBY)
+      do_something(require 'enumerator')
+    RUBY
+  end
+
+  it 'does not register an offense when requiring `enumerator` is an operand of `and`' do
+    expect_no_offenses(<<~RUBY)
+      require 'enumerator' and do_something
+    RUBY
+  end
+
   it 'registers an offense when using requiring `enumerator` with modifier form' do
     expect_offense(<<~RUBY)
       require 'enumerator' if condition
