@@ -1046,6 +1046,22 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/CombinableLoops` with `Style/SymbolProc`' do
+    create_file('example.rb', <<~RUBY)
+      items.each { |item| item.foo }
+      items.each do |item|
+        bar(item)
+      end
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/CombinableLoops,Style/SymbolProc'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      items.each { |item| item.foo
+      bar(item)
+      }
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineBlockLayout` with `EnforcedStyle: literal` of `Style/Lambda`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/Lambda:
