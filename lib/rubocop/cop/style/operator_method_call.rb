@@ -5,7 +5,10 @@ module RuboCop
     module Style
       # Checks for redundant dot before operator method call.
       # The target operator methods are `|`, `^`, `&`, ``<=>``, `==`, `===`, `=~`, `>`, `>=`, `<`,
-      # ``<=``, `<<`, `>>`, `+`, `-`, `*`, `/`, `%`, `**`, `~`, `!`, `!=`, and `!~`.
+      # ``<=``, `<<`, `>>`, `+`, `-`, `*`, `/`, `%`, `**`, `!=`, and `!~`.
+      #
+      # `!` and `~` are not targeted because they have no binary operator form,
+      # so `foo.! bar` cannot be written as `foo ! bar`, which means `foo(!bar)`.
       #
       # @example
       #
@@ -21,7 +24,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant dot detected.'
-        RESTRICT_ON_SEND = %i[| ^ & <=> == === =~ > >= < <= << >> + - * / % ** ~ ! != !~].freeze
+        RESTRICT_ON_SEND = %i[| ^ & <=> == === =~ > >= < <= << >> + - * / % ** != !~].freeze
         INVALID_SYNTAX_ARG_TYPES = %i[
           splat kwsplat forwarded_args forwarded_restarg forwarded_kwrestarg block_pass
         ].freeze
@@ -29,7 +32,6 @@ module RuboCop
         # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return unless (dot = node.loc.dot)
-          return if unary_method_no_operator?(node)
           return if node.receiver.const_type? || !node.arguments.one? || node.block_literal?
 
           return unless (rhs = node.first_argument)
@@ -46,14 +48,6 @@ module RuboCop
         end
 
         private
-
-        # `foo.~@` and `foo.!@` call the method `~` and `!` respectively. While those
-        # are operator methods, we don't want to actually consider them as such.
-        def unary_method_no_operator?(node)
-          return false unless node.nonmutating_unary_operator_method?
-
-          node.method_name.to_s != node.selector.source
-        end
 
         # Checks for an acceptable case of `foo.+(bar).baz`.
         def method_call_with_parenthesized_arg?(argument)
