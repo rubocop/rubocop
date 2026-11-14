@@ -470,6 +470,80 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         expect_no_offenses('refute_match /^no/i, result')
       end
     end
+
+    context 'with AllowedReceivers' do
+      let(:cop_config) do
+        { 'AllowedReceivers' => %w[Rails.logger ::Foo::Bar.baz logger @log self] }
+      end
+
+      it 'accepts calls on an allowed method chain receiver' do
+        expect_no_offenses(<<~RUBY)
+          Rails.logger.debug 'message'
+          Rails.logger&.info 'message'
+          ::Rails.logger.warn 'message'
+        RUBY
+      end
+
+      it 'accepts calls on an allowed namespaced constant receiver' do
+        expect_no_offenses(<<~RUBY)
+          Foo::Bar.baz.qux 1
+          ::Foo::Bar.baz.qux 1
+        RUBY
+      end
+
+      it 'accepts calls on an allowed variable, method or `self` receiver' do
+        expect_no_offenses(<<~RUBY)
+          logger = Logger.new
+          logger.debug 'message'
+          @log.debug 'message'
+          self.debug 'message'
+        RUBY
+      end
+
+      it 'accepts calls on an allowed receiver that is a method call' do
+        expect_no_offenses(<<~RUBY)
+          logger.debug 'message'
+        RUBY
+      end
+
+      it 'registers an offense for calls on receivers that only partially match' do
+        expect_offense(<<~RUBY)
+          Rails.application.logger.debug 'message'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          Rails.debug 'message'
+          ^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          foo.logger.debug 'message'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          Bar.baz.qux 1
+          ^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          Rails.logger.debug.info 'message'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Rails.application.logger.debug('message')
+          Rails.debug('message')
+          foo.logger.debug('message')
+          Bar.baz.qux(1)
+          Rails.logger.debug.info('message')
+        RUBY
+      end
+
+      it 'registers an offense for calls without a receiver' do
+        expect_offense(<<~RUBY)
+          def foo
+            logger 'message'
+            ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            logger('message')
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is omit_parentheses' do
