@@ -13,6 +13,7 @@ module RuboCop
     module ProjectIndexHelp
       BUILTIN_DOCUMENT_URI = 'rubydex:built-in'
       FILE_URI_PREFIX = 'file://'
+      SIGNATURE_EXTENSION = '.rbs'
       # Matches the spurious leading slash before a Windows drive letter that
       # remains after stripping `file://` from a `file:///C:/...` URI.
       WINDOWS_DRIVE_PREFIX = %r{\A/(?=[A-Za-z]:[/\\])}.freeze
@@ -35,19 +36,31 @@ module RuboCop
 
       private
 
-      # Returns the definitions among `definitions` that live in a file other than the
-      # one being inspected, ordered by path and line. Definitions without a `file://`
-      # URI (e.g. Rubydex's built-in declarations) are ignored.
+      # Returns the definitions among `definitions` that live in a Ruby file other than
+      # the one being inspected, ordered by path and line.
       def definitions_in_other_files(definitions)
         current = processed_source.file_path
 
         definitions
-          .select { |definition| definition.location.uri.start_with?(FILE_URI_PREFIX) }
+          .select { |definition| ruby_definition?(definition) }
           .reject { |definition| File.identical?(definition.location.to_file_path, current) }
           .sort_by do |definition|
           [definition.location.to_file_path,
            definition.location.start_line]
         end
+      end
+
+      # Whether the definition comes from Ruby source, as opposed to an RBS signature
+      # file or one of Rubydex's built-in declarations. A signature declares a method or
+      # a constant, it does not define one, so an implementation and its `.rbs`
+      # declaration are not two definitions of the same thing. Ruby's core and standard
+      # library reach the index as the signature files of the `rbs` gem, so without this
+      # every reopening of a core class and every constant that shares a core name would
+      # look like a redefinition.
+      def ruby_definition?(definition)
+        uri = definition.location.uri
+
+        uri.start_with?(FILE_URI_PREFIX) && !uri.end_with?(SIGNATURE_EXTENSION)
       end
 
       def prior_definition_in_other_file(definitions)

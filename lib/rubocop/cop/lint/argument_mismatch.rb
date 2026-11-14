@@ -89,7 +89,8 @@ module RuboCop
         # private instance method of `Object`.
         def singleton_signature_shape(declaration, method_name)
           member = indexed_singleton_member(declaration, "#{method_name}()")
-          return nil unless member&.public?
+          return nil unless member
+          return nil if member.private?
 
           indexed_member_shape(member)
         end
