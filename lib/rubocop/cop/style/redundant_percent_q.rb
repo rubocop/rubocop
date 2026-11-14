@@ -30,6 +30,8 @@ module RuboCop
         PERCENT_CAPITAL_Q = '%Q'
         STRING_INTERPOLATION_REGEXP = /#\{.+\}/.freeze
         ESCAPED_NON_BACKSLASH = /\\[^\\]/.freeze
+        ESCAPED_QUOTE = /(?<!\\)(?:\\\\)*\\"/.freeze
+        UNESCAPED_QUOTE = /(?<!\\)(?:\\\\)*"/.freeze
 
         def on_dstr(node)
           return unless string_literal?(node)
@@ -53,7 +55,7 @@ module RuboCop
           return if interpolated_quotes?(node) || allowed_percent_q?(node)
 
           add_offense(node) do |corrector|
-            delimiter = /\A%Q[^"]+\z|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
+            delimiter = double_quotes_delimiter?(node.source) ? QUOTE : SINGLE_QUOTE
 
             corrector.replace(node.loc.begin, delimiter)
             corrector.replace(node.loc.end, delimiter)
@@ -67,6 +69,12 @@ module RuboCop
         def allowed_percent_q?(node)
           (node.source.start_with?(PERCENT_Q) && acceptable_q?(node)) ||
             (node.source.start_with?(PERCENT_CAPITAL_Q) && acceptable_capital_q?(node))
+        end
+
+        def double_quotes_delimiter?(src)
+          return true if /\A%Q[^"]+\z|'/.match?(src)
+
+          src.start_with?(PERCENT_CAPITAL_Q) && ESCAPED_QUOTE.match?(src)
         end
 
         def message(node)
@@ -102,7 +110,8 @@ module RuboCop
           src = node.source
           src.include?(QUOTE) &&
             (STRING_INTERPOLATION_REGEXP.match?(src) ||
-            (node.str_type? && double_quotes_required?(src)))
+            (node.str_type? && double_quotes_required?(src)) ||
+            (ESCAPED_QUOTE.match?(src) && UNESCAPED_QUOTE.match?(src)))
         end
       end
     end
