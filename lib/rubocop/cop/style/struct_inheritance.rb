@@ -80,6 +80,7 @@ module RuboCop
 
         def correct_parent(parent, corrector)
           if parent.block_type?
+            replace_opening_brace_with_do(corrector, parent) if parent.braces?
             corrector.remove(range_with_surrounding_space(parent.loc.end, newlines: false))
           elsif (class_node = parent.parent).body.nil?
             corrector.remove(range_for_empty_class_body(class_node, parent))
@@ -88,6 +89,19 @@ module RuboCop
           else
             corrector.insert_after(parent, ' do')
           end
+        end
+
+        def replace_opening_brace_with_do(corrector, block)
+          range = range_with_surrounding_space(block.loc.begin, side: :right, newlines: false)
+          return corrector.replace(range, 'do ') if block_content_follows?(range, block)
+
+          corrector.replace(block.loc.begin, 'do')
+        end
+
+        def block_content_follows?(opening_range, block)
+          return false if opening_range.end_pos == block.loc.end.begin_pos
+
+          opening_range.last_column < opening_range.source_line.length
         end
 
         def range_for_empty_class_body(class_node, struct_new)

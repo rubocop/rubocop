@@ -2087,6 +2087,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: no_space` of `Layout/SpaceInsideBlockBraces` with `Style/StructInheritance`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceInsideBlockBraces:
+        EnforcedStyle: no_space
+    YAML
+
+    create_file('example.rb', <<~RUBY)
+      class Foo < Struct.new(:bar) { include Comparable }
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        ['--autocorrect-all', '--only', 'Layout/SpaceInsideBlockBraces,Style/StructInheritance']
+      )
+    ).to eq(0)
+
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      Foo = Struct.new(:bar) do include Comparable
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/AndOr`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
