@@ -307,7 +307,9 @@ module RuboCop
         end
 
         def valid_begin_assignment?(node)
-          node.parent&.assignment? && (!node.children.one? || too_long_when_joined?(node))
+          return false unless node.parent&.assignment?
+
+          !node.children.one? || too_long_when_joined?(node) || multiline_memoization?(node)
         end
 
         def too_long_when_joined?(node)
@@ -331,6 +333,15 @@ module RuboCop
           style = config.for_cop('Layout/SpaceInsideParens')['EnforcedStyle']
 
           SPACE_INSIDE_PARENS_STYLES.include?(style)
+        end
+
+        def multiline_memoization?(node)
+          if !node.parent.or_asgn_type? || !config.cop_enabled?('Style/MultilineMemoization')
+            return false
+          end
+
+          statement = node.children.first
+          statement.multiline? && low_precedence_statement?(statement)
         end
 
         def inspect_branches(node)

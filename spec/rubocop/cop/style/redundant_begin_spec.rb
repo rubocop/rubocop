@@ -370,6 +370,35 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'does not register an offense when using a multiline modifier `while` single statement in a memoization `begin` block' do
+    expect_no_offenses(<<~RUBY)
+      var ||= begin
+        foo while bar &&
+                  baz
+      end
+    RUBY
+  end
+
+  context 'when `Style/MultilineMemoization` is disabled' do
+    let(:other_cops) { { 'Style/MultilineMemoization' => { 'Enabled' => false } } }
+
+    it 'registers and corrects an offense when using a multiline modifier `while` single statement in a memoization `begin` block' do
+      expect_offense(<<~RUBY)
+        var ||= begin
+                ^^^^^ Redundant `begin` block detected.
+          foo while bar &&
+                    baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var ||= (foo while bar &&
+                    baz)
+
+      RUBY
+    end
+  end
+
   context 'when the statement would not fit on the assignment line' do
     let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => true, 'Max' => 30 } } }
 

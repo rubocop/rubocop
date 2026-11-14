@@ -3836,6 +3836,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'does not loop between `Style/RedundantBegin` and `Style/MultilineMemoization` with a multiline modifier `while`' do
+    create_file('example.rb', <<~RUBY)
+      foo ||= (bar while baz &&
+                         qux)
+    RUBY
+
+    expect(cli.run(['-a', '--only', 'Style/RedundantBegin,Style/MultilineMemoization'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo ||= begin
+                bar while baz &&
+                         qux
+              end
+    RUBY
+  end
+
   it 'corrects `Style/CaseLikeIf` with `Style/IfInsideElse` when the `else` branch holds a modifier `if`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
