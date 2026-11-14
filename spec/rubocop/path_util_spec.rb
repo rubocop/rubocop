@@ -22,6 +22,23 @@ RSpec.describe RuboCop::PathUtil do
     end
   end
 
+  describe '#normalized_relative_path' do
+    it 'returns a slash-separated path relative to the given base directory' do
+      base_dir = File.join(Dir.pwd, 'project')
+      path = File.join(base_dir, 'lib', '..', 'lib', 'file.rb')
+
+      expect(described_class.normalized_relative_path(path, base_dir)).to eq('lib/file.rb')
+    end
+
+    it 'keeps a sibling path outside the base directory' do
+      base_dir = File.join(Dir.pwd, 'project')
+      path = File.join(Dir.pwd, 'project-other', 'lib', 'file.rb')
+
+      expect(described_class.normalized_relative_path(path, base_dir))
+        .to eq('../project-other/lib/file.rb')
+    end
+  end
+
   describe '#absolute?' do
     it 'returns a truthy value for a path beginning with slash' do
       expect(described_class).to be_absolute('/Users/foo')

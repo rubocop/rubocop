@@ -3,18 +3,46 @@
 If you have a code base with an overwhelming amount of offenses, it can
 be a good idea to use `rubocop --auto-gen-config`, which creates
 `.rubocop_todo.yml` and adds `inherit_from: .rubocop_todo.yml` in your
-`.rubocop.yml`. The generated file `.rubocop_todo.yml` contains
-configuration to disable cops that currently detect an offense in the
-code by changing the configuration for the cop, excluding the offending
-files, or disabling the cop altogether once a file count limit has been
-reached.
+`.rubocop.yml`. By default, the generated file contains
+configuration to silence offenses by changing cop settings, excluding
+offending files, or disabling a cop when its file limit is
+reached. This is the `--auto-gen-config` behavior.
 
-By adding the option `--exclude-limit COUNT`, e.g., `rubocop
---auto-gen-config --exclude-limit 5`, you can change how many files are
-excluded before the cop is entirely disabled. The default COUNT is 15.
-If you don't want the cop to be entirely disabled regardless of the
-number of files, use the `--no-exclude-limit` option, e.g.,
-`rubocop --auto-gen-config --no-exclude-limit`.
+To generate per-file offense allowances in place of `Exclude` lists,
+add the `--auto-gen-allowed-offenses` option. For example:
+
+[source,console]
+----
+$ rubocop --auto-gen-config --auto-gen-allowed-offenses
+----
+
+The generated `AllowedOffenses` maps record the offense count for each cop in
+each inspected file. Offenses remain suppressed while a file stays within its
+count; if a file exceeds its count, the run reports that file's offenses for
+the cop. Files absent from the map have an allowance of zero, so partial runs
+honor the same per-file baseline as full-project runs. Run the command over the
+full project for a complete baseline; if file paths are passed, only those
+files are included. The option is recorded in the generated TODO file so
+`--regenerate-todo` preserves it. See
+xref:configuration/cop_settings.adoc#allowedoffenses[AllowedOffenses] for
+details.
+
+Per-file maps are subject to `--exclude-limit` (15 files by default). If a cop
+has offenses in more files than the limit, RuboCop follows the default
+`--auto-gen-config` fallback for that cop: adjusting `Max` when possible or
+disabling the cop. Use `--no-exclude-limit` to generate maps with any number
+of files.
+
+`AllowedOffenses` now requires a file-to-count map; the previous integer form
+is no longer accepted. Regenerate an existing TODO file with
+`--auto-gen-allowed-offenses` after upgrading. This option cannot be combined
+with `--auto-gen-only-exclude`.
+
+By default, `--exclude-limit COUNT` controls how many files are excluded
+before a cop is disabled or a `Max` value is adjusted, and how many files can
+be included in a per-file allowance map. For example,
+`rubocop --auto-gen-config --exclude-limit 5` sets the limit to 5; the default
+is 15. Use `--no-exclude-limit` to avoid applying those limits.
 
 == Working through the TODO
 
@@ -71,12 +99,12 @@ automatically.
 
 == Metrics cops
 
-The cops in the `Metrics` department will by default get `Max` parameters
-generated in `.rubocop_todo.yml`. The value of these will be just high enough
-so that no offenses are reported the next time you run `rubocop`. If you
-prefer to exclude files, like for other cops, add `--auto-gen-only-exclude`
-when running with `--auto-gen-config`. It will still change the maximum if the
-number of excluded files is higher than the exclude limit.
+By default, Metrics cops get `Max` parameters that prevent offenses the next
+time you run `rubocop`. The `--auto-gen-only-exclude` option prefers `Exclude`
+entries instead, adjusting `Max` only when the number of files with offenses is
+greater than the `--exclude-limit`. `--auto-gen-allowed-offenses` preserves
+threshold settings such as `Max` and generates per-file allowances in place of
+`Exclude` entries when no threshold setting can be generated.
 
 == EnforcedStyle
 

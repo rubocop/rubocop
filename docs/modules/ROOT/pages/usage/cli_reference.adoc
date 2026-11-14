@@ -94,7 +94,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Run all cops enabled by configuration except the specified cop(s) and/or departments.
 
 | `--exclude-limit`
-| Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
+| Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters before a cop is disabled or its `Max` is adjusted. Default is 15; use `--no-exclude-limit` to disable the limit.
 
 | `-E/--extra-details`
 | Displays extra details in offense messages.
@@ -134,6 +134,12 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 
 | `-L/--list-target-files`
 | List all files RuboCop will inspect.
+
+| `--auto-gen-allowed-offenses`
+| Generate per-file `AllowedOffenses` settings when no threshold setting can be generated.
+  Existing settings such as `Max` are preserved. `--exclude-limit` applies to per-file maps;
+  use `--no-exclude-limit` to generate maps with any number of files. Cannot be combined
+  with `--auto-gen-only-exclude`. Default is false.
 
 | `--[no-]auto-gen-only-exclude`
 | Generate only `Exclude` parameters and not `Max` when running `--auto-gen-config`, except if the number of files with offenses is bigger than `exclude-limit`. Default is false.
