@@ -203,6 +203,31 @@ module RuboCop
 
         def remove_trailing_character_from_operator(corrector, node)
           corrector.remove(node.parent.location.operator.end.adjust(begin_pos: -1))
+
+          value = node.parent.expression
+          corrector.wrap(value, '(', ')') if operand_requires_parentheses?(value)
+        end
+
+        def operand_requires_parentheses?(node)
+          if node.any_block_type?
+            return true unless node.braces?
+
+            node = node.send_node
+          end
+          return call_requires_parentheses?(node) if node.type?(:call, :yield, :super)
+
+          return node.op_asgn_type? if node.assignment?
+
+          !node.basic_literal? && !node.variable? &&
+            !node.type?(:const, :self, :begin, :kwbegin, :zsuper, :array, :hash, :dstr, :dsym,
+                        :xstr, :regexp)
+        end
+
+        def call_requires_parentheses?(node)
+          return true if node.prefix_not?
+          return false if node.call_type? && node.assignment_method?
+
+          node.arguments? && !node.parenthesized? && !node.method?(:[])
         end
 
         def replace_named_capture_group_with_non_capturing_group(corrector, node, variable_name)
