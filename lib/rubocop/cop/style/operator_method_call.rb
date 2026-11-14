@@ -63,14 +63,23 @@ module RuboCop
         end
 
         def wrap_in_parentheses_if_chained(corrector, node)
-          return unless node.parent&.call_type?
-          return if node.parent.first_argument == node
+          return unless chained?(node)
 
-          operator = node.loc.selector
-
-          ParenthesesCorrector.correct(corrector, node)
-          corrector.insert_after(operator, ' ')
+          if node.parenthesized?
+            ParenthesesCorrector.correct(corrector, node)
+            corrector.insert_after(node.loc.selector, ' ')
+          end
           corrector.wrap(node, '(', ')')
+        end
+
+        def chained?(node)
+          return false unless (parent = node.parent)&.call_type?
+
+          !parent.first_argument.equal?(node) || operator_call_without_parentheses?(parent)
+        end
+
+        def operator_call_without_parentheses?(node)
+          node.operator_method? && !node.parenthesized? && !node.method?(:[]) && !node.method?(:[]=)
         end
 
         def insert_space_after?(node)
@@ -78,14 +87,11 @@ module RuboCop
           selector = node.loc.selector
 
           return true if selector.end_pos == rhs.source_range.begin_pos
-          return false if node.parent&.call_type? # if chained, a space is already added
+          return false if chained?(node) # a space is already added
 
-          # For `/` operations, if the RHS starts with a `(` without space,
-          # add one to avoid a syntax error.
+          # A `(` right after the operator would make the RHS a unary argument of a method call.
           range = selector.end.join(rhs.source_range.begin)
-          return true if node.method?(:/) && range.source == '('
-
-          false
+          range.source.start_with?('(')
         end
       end
     end
