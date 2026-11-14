@@ -107,9 +107,11 @@ module RuboCop
                                    'the same line as the last argument.'
 
         # Moving the closing parenthesis and removing it under `omit_parentheses` in the same pass
-        # leaves the moved parenthesis behind.
+        # leaves the moved parenthesis behind. Likewise, `Style/RedundantParentheses` removes the
+        # parentheses around a call with a heredoc argument while the code after its closing
+        # parenthesis is moved up.
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::RedundantParentheses]
         end
 
         def on_send(node)
