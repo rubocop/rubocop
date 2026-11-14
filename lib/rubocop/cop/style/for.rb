@@ -55,12 +55,14 @@ module RuboCop
         IMPLICIT_PARAMETERS = %i[_1 _2 _3 _4 _5 _6 _7 _8 _9 it].to_set.freeze
         SCOPE_TYPES = %i[any_def class module sclass].freeze
 
+        # `Style/BlockDelimiters` can turn a brace block in the receiver into `do...end`
+        # in the same pass, which is a syntax error in the `for` collection.
         # `Style/RedundantBegin` removes the `begin` of a block body in the same pass,
         # leaving a `rescue` or `ensure` clause directly in the `for` body.
         # `Style/ItBlockParameter` replaces block parameter references in the body
         # with `it` in the same pass, while they become `for` loop variables.
         def self.autocorrect_incompatible_with
-          [Style::RedundantBegin, Style::ItBlockParameter]
+          [Style::BlockDelimiters, Style::RedundantBegin, Style::ItBlockParameter]
         end
 
         def on_for(node)
