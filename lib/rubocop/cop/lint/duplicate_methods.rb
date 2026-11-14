@@ -205,15 +205,15 @@ module RuboCop
         end
 
         def on_def(node)
-          # if a method definition is inside an if, it is very likely
+          # if a method definition is inside a conditional, it is very likely
           # that a different definition is used depending on platform, etc.
-          return if node.each_ancestor.any?(&:if_type?)
+          return if inside_condition?(node)
 
           found_instance_method(node, node.method_name)
         end
 
         def on_defs(node)
-          return if node.each_ancestor.any?(&:if_type?)
+          return if inside_condition?(node)
 
           if node.receiver.const_type?
             _, const_name = *node.receiver
@@ -236,7 +236,7 @@ module RuboCop
             track_intentional_redefinition(node, name)
             return
           end
-          return if node.ancestors.any?(&:if_type?)
+          return if inside_condition?(node)
 
           found_instance_method(node, name)
         end
@@ -355,7 +355,7 @@ module RuboCop
         end
 
         def inside_condition?(node)
-          node.ancestors.any?(&:if_type?)
+          node.each_ancestor(:if, :case, :case_match).any?
         end
 
         def message_for_dup(node, method_name, key)

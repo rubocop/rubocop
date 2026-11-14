@@ -1274,6 +1274,46 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'ignores method definitions in `case` branches' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        case RUBY_PLATFORM
+        when /mswin|mingw/
+          def windows?
+            true
+          end
+          def self.windows?
+            true
+          end
+        else
+          def windows?
+            false
+          end
+          def self.windows?
+            false
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'ignores method definitions in pattern matching branches' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        case RUBY_ENGINE
+        in 'jruby'
+          def engine
+            :jruby
+          end
+        else
+          def engine
+            :other
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'ignores Class.new blocks which are assigned to local variables' do
     expect_no_offenses(<<~RUBY)
       a = Class.new do
