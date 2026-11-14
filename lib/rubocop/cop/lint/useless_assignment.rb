@@ -220,9 +220,39 @@ module RuboCop
           if expression.array_type? && !expression.bracketed?
             corrector.replace(assignment_part, '[')
             corrector.insert_after(expression, ']')
+          elsif parentheses_required?(node)
+            corrector.replace(assignment_part, '(')
+            corrector.insert_after(expression, ')')
           else
             corrector.remove(assignment_part)
           end
+        end
+
+        def parentheses_required?(node)
+          return false unless (parent = node.parent)
+
+          expression = node.expression
+          if expression.rescue_type?
+            parent.type?(:call, :super, :yield, :return, :break, :next, :array, :pair)
+          elsif keyword_conditional_or_loop?(expression)
+            first_argument_of_command?(node, parent)
+          else
+            false
+          end
+        end
+
+        def keyword_conditional_or_loop?(node)
+          return false unless node.type?(:if, :while, :until)
+
+          !node.modifier_form? && !(node.if_type? && node.ternary?)
+        end
+
+        def first_argument_of_command?(node, parent)
+          return parent.children.first.equal?(node) if parent.type?(:return, :break, :next)
+          return false unless parent.type?(:call, :super, :yield)
+          return false if parent.parenthesized? || parent.method?(:[]) || parent.method?(:[]=)
+
+          parent.first_argument.equal?(node)
         end
 
         def variable_in_loop_condition?(assignment_node, variable)

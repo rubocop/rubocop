@@ -431,6 +431,114 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when an unreferenced variable is assigned in an argument' do
+    %w[if unless while until].each do |keyword|
+      it "registers an offense and wraps `#{keyword}` in parentheses in a call without parentheses" do
+        expect_offense(<<~RUBY, keyword: keyword)
+          foo unused = %{keyword} baz
+              ^^^^^^ Useless assignment to variable - `unused`.
+            qux
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo (#{keyword} baz
+            qux
+          end)
+        RUBY
+      end
+
+      it "registers an offense and wraps `#{keyword}` in parentheses after `return`" do
+        expect_offense(<<~RUBY, keyword: keyword)
+          def foo
+            return unused = %{keyword} baz
+                   ^^^^^^ Useless assignment to variable - `unused`.
+              qux
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            return (#{keyword} baz
+              qux
+            end)
+          end
+        RUBY
+      end
+
+      it "registers an offense and keeps `#{keyword}` as is in a call with parentheses" do
+        expect_offense(<<~RUBY, keyword: keyword)
+          foo(unused = %{keyword} baz
+              ^^^^^^ Useless assignment to variable - `unused`.
+            qux
+          end)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(#{keyword} baz
+            qux
+          end)
+        RUBY
+      end
+    end
+
+    it 'registers an offense and keeps a ternary as is in a call without parentheses' do
+      expect_offense(<<~RUBY)
+        foo unused = baz ? qux : quux
+            ^^^^^^ Useless assignment to variable - `unused`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo baz ? qux : quux
+      RUBY
+    end
+
+    it 'registers an offense and wraps a `rescue` modifier in parentheses in a call without parentheses' do
+      expect_offense(<<~RUBY)
+        foo unused = baz rescue qux
+            ^^^^^^ Useless assignment to variable - `unused`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo (baz rescue qux)
+      RUBY
+    end
+
+    it 'registers an offense and wraps a `rescue` modifier in parentheses in a call with parentheses' do
+      expect_offense(<<~RUBY)
+        foo(unused = baz rescue qux)
+            ^^^^^^ Useless assignment to variable - `unused`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo((baz rescue qux))
+      RUBY
+    end
+
+    it 'registers an offense and wraps a `rescue` modifier in parentheses in an array' do
+      expect_offense(<<~RUBY)
+        [unused = baz rescue qux]
+         ^^^^^^ Useless assignment to variable - `unused`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [(baz rescue qux)]
+      RUBY
+    end
+
+    it 'registers an offense and keeps a `rescue` modifier as is in a statement' do
+      expect_offense(<<~RUBY)
+        unused = baz rescue qux
+        ^^^^^^ Useless assignment to variable - `unused`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        baz rescue qux
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned with operator assignment in top level' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

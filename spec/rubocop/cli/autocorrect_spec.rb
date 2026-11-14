@@ -567,6 +567,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/UselessAssignment` with `Style/MethodCallWithArgsParentheses` omitting parentheses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+        EnforcedStyle: omit_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo(unused = if bar
+        baz
+      end)
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Lint/UselessAssignment,Style/MethodCallWithArgsParentheses'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(if bar
+        baz
+      end)
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/RedundantParentheses` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
