@@ -2587,6 +2587,22 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/IfUnlessModifierOfIfUnless` with `Style/MethodCallWithArgsParentheses` ' \
+     'when the inner condition is a command call' do
+    create_file('example.rb', <<~RUBY)
+      do_something if foo 1 if bar
+    RUBY
+    expect(cli.run([
+                     '--autocorrect-all', '--only',
+                     'Style/IfUnlessModifierOfIfUnless,Style/MethodCallWithArgsParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if bar
+      do_something if foo(1)
+      end
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineHashBraceLayout` with `EnforcedStyle: no_braces` of `Style/HashAsLastArrayItem`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/HashAsLastArrayItem:
