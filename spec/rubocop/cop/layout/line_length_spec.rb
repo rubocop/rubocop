@@ -1771,6 +1771,32 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             RUBY
           end
         end
+
+        context 'with a heredoc in the body' do
+          it 'adds an offense but does not autocorrect' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name = some_long_method_name_that_exceeds_the_maximum(<<~TEXT)
+                                                                                              ^^^ Line is too long. [83/80]
+                text
+              TEXT
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'with a heredoc in a default argument' do
+          it 'adds an offense but does not autocorrect' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name(arg = <<~TEXT) = some_long_method_name_that_exceeds(arg)
+                                                                                              ^^ Line is too long. [82/80]
+                text
+              TEXT
+            RUBY
+
+            expect_no_corrections
+          end
+        end
       end
 
       context 'when Style/EndlessMethod requires endless methods' do
