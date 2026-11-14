@@ -109,6 +109,8 @@ module RuboCop
       #   already been defined.
       #
       #   Constants will only be moved when they are assigned with literals.
+      #   `Class.new`, `Module.new`, `Struct.new`, and `Data.define` are not
+      #   moved when `TreatClassLikeAssignmentsAsClassOrModule` is enabled.
       #
       # @example
       #   # bad
@@ -174,7 +176,73 @@ module RuboCop
       #     end
       #   end
       #
-      class ClassStructure < Base
+      # `TreatClassLikeAssignmentsAsClassOrModule` orders `Class.new`,
+      # `Module.new`, `Struct.new`, and `Data.define` with the `class` or
+      # `module` keyword. `Module.new` uses the category configured for
+      # `module`. The others use the category configured for `class`. List
+      # the keyword in `Categories` and that category in `ExpectedOrder`.
+      #
+      # NOTE: A namespaced assignment such as `Other::Row = Data.define(:name)`
+      # remains a constant.
+      #
+      # @example TreatClassLikeAssignmentsAsClassOrModule: false (default)
+      #   # bad
+      #   class Example
+      #     def call
+      #     end
+      #
+      #     Row = Data.define(:name) do
+      #       def label
+      #         name
+      #       end
+      #     end
+      #   end
+      #
+      #   # good
+      #   class Example
+      #     Row = Data.define(:name) do
+      #       def label
+      #         name
+      #       end
+      #     end
+      #
+      #     def call
+      #     end
+      #   end
+      #
+      # @example TreatClassLikeAssignmentsAsClassOrModule: true
+      #   # bad
+      #   class Example
+      #     Row = Data.define(:name) do
+      #       def label
+      #         name
+      #       end
+      #     end
+      #
+      #     def call
+      #     end
+      #
+      #     FOO = 1
+      #   end
+      #
+      #   # good
+      #   class Example
+      #     FOO = 1
+      #
+      #     def call
+      #     end
+      #
+      #     class Inner
+      #     end
+      #
+      #     Row = Data.define(:name) do
+      #       def label
+      #         name
+      #       end
+      #     end
+      #   end
+      #
+      class ClassStructure < Base # rubocop:disable Metrics/ClassLength
         include VisibilityHelp
         include CommentsHelp
         extend AutoCorrector
@@ -342,6 +410,7 @@ module RuboCop
             return "#{node_visibility(node)}_methods"
           end
           return class_method_category(node) if node.defs_type?
+          return class_like_assignment_category(node) if class_like_assignment?(node)
 
           HUMANIZED_NODE_TYPE[node.type] || node.type
         end
@@ -361,8 +430,36 @@ module RuboCop
           (send nil? {:private_class_method :public_class_method} <(sym %method_name) ...>)
         PATTERN
 
+        # @!method class_or_module_definition_assignment?(node)
+        def_node_matcher :class_or_module_definition_assignment?, <<~PATTERN
+          {
+            (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
+            (send (const {nil? cbase} :Data) :define ...)
+            (any_block
+              {
+                (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
+                (send (const {nil? cbase} :Data) :define ...)
+              }
+              ...)
+          }
+        PATTERN
+
+        def class_like_assignment?(node)
+          return false unless cop_config['TreatClassLikeAssignmentsAsClassOrModule']
+          return false unless node.casgn_type? && node.namespace.nil?
+
+          class_or_module_definition_assignment?(node.expression)
+        end
+
+        def class_like_assignment_category(node)
+          send_node = node.expression
+          send_node = send_node.send_node if send_node.any_block_type?
+          send_node.receiver.short_name == :Module ? :module : :class
+        end
+
         def dynamic_constant?(node)
           return false unless node.casgn_type? && node.namespace.nil?
+          return true if class_like_assignment?(node)
 
           expression = node.expression
           expression.send_type? &&
