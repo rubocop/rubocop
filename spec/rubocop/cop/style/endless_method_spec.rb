@@ -137,6 +137,21 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects for a multiline endless method with a parenthesized receiver' do
+        expect_offense(<<~RUBY)
+          def (foo.bar).baz = x
+          ^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+            .qux
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo.bar).baz
+            x
+            .qux
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects for a multiline endless method' do
         expect_offense(<<~RUBY)
           def my_method() = x.foo
