@@ -1,0 +1,1 @@
+* [#15671](https://github.com/rubocop/rubocop/issues/15671): Fix `Lint/RedundantCopDisableDirective` not removing the paired `rubocop:enable` comment when a `rubocop:disable` for a cop disabled in the config is autocorrected away and no code follows it. ([@jadhavgaurav][])
