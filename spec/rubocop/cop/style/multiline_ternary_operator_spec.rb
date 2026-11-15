@@ -353,4 +353,28 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
       end
     RUBY
   end
+
+  it 'registers an offense but does not correct when a branch has a heredoc' do
+    expect_offense(<<~RUBY)
+      cond ? foo(<<~EOS)
+      ^^^^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        text
+      EOS
+        : nil
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense but does not correct when returning a ternary with a heredoc' do
+    expect_offense(<<~RUBY)
+      return cond ? foo(<<~EOS)
+             ^^^^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+        text
+      EOS
+        : nil
+    RUBY
+
+    expect_no_corrections
+  end
 end

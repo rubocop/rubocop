@@ -48,7 +48,7 @@ module RuboCop
           message = enforce_single_line_ternary_operator?(node) ? MSG_SINGLE_LINE : MSG_IF
 
           add_offense(node, message: message) do |corrector|
-            next if part_of_ignored_node?(node)
+            next if part_of_ignored_node?(node) || heredoc?(node)
 
             autocorrect(corrector, node)
 
@@ -60,6 +60,10 @@ module RuboCop
 
         def offense?(node)
           node.ternary? && node.multiline? && node.source != replacement(node)
+        end
+
+        def heredoc?(node)
+          node.each_descendant(:any_str).any?(&:heredoc?)
         end
 
         def autocorrect(corrector, node)
