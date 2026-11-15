@@ -81,15 +81,24 @@ module RuboCop
         end
 
         def corrected(node)
-          scope = node.receiver ? "#{node.receiver.source}." : ''
           arguments = if node.arguments?
                         args = node.arguments.map(&:source).join(', ')
 
                         parentheses?(node.arguments) ? "(#{args})" : " #{args}"
                       end
-          signature = [scope, node.method_name, arguments].join
+          signature = [scope(node), node.method_name, arguments].join
 
           ["def #{signature}", 'end'].join(joint(node))
+        end
+
+        def scope(node)
+          return '' unless (receiver = node.receiver)
+
+          parenthesized_receiver?(node) ? "(#{receiver.source})." : "#{receiver.source}."
+        end
+
+        def parenthesized_receiver?(node)
+          node.loc.keyword.end.join(node.receiver.source_range.begin).source.include?('(')
         end
 
         def correction_exceeds_line_length?(correction)
@@ -102,10 +111,13 @@ module RuboCop
           compact_style? ? '; ' : "\n#{indent}"
         end
 
-        # A method with an argument spanning multiple lines (e.g. a hash default
+        # A method with a receiver or an argument spanning multiple lines (e.g. a hash default
         # value) can't be put on a single line, so it's as compact as it gets.
         def compact?(node)
-          node.single_line? || node.arguments.any?(&:multiline?)
+          return true if node.single_line?
+          return true if node.receiver&.multiline?
+
+          node.arguments.any?(&:multiline?)
         end
 
         def expanded?(node)

@@ -140,6 +140,53 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
         RUBY
       end
 
+      it 'registers an offense for empty method with a parenthesized receiver' do
+        expect_offense(<<~RUBY)
+          def (foo = bar).baz
+          ^^^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo = bar).baz; end
+        RUBY
+      end
+
+      it 'registers an offense for empty method with a parenthesized safe navigation receiver' do
+        expect_offense(<<~RUBY)
+          def (foo&.bar).baz
+          ^^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo&.bar).baz; end
+        RUBY
+      end
+
+      it 'registers an offense for empty method with a receiver in parentheses spanning multiple lines' do
+        expect_offense(<<~RUBY)
+          def (
+          ^^^^^ Put empty method definitions on a single line.
+            foo
+          ).bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo).bar; end
+        RUBY
+      end
+
+      it 'does not register an offense for empty method with a multiline receiver' do
+        expect_no_offenses(<<~RUBY)
+          def (foo(
+            bar
+          )).baz
+          end
+        RUBY
+      end
+
       it 'allows single line method' do
         expect_no_offenses('def self.foo; end')
       end
@@ -274,6 +321,18 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
         expect_no_offenses(<<~RUBY)
           def self.foo
 
+          end
+        RUBY
+      end
+
+      it 'registers an offense for single line method with a parenthesized receiver' do
+        expect_offense(<<~RUBY)
+          def (foo = bar).baz; end
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def (foo = bar).baz
           end
         RUBY
       end
