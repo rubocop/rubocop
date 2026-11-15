@@ -109,7 +109,7 @@ module RuboCop
         def correct_send(node, corrector)
           return correct_not(node, node.receiver, corrector) if node.method?(:!)
           return correct_setter(node, corrector) if node.setter_method?
-          return correct_other(node, corrector) if node.comparison_method?
+          return correct_other(node.block_node || node, corrector) if wrap_whole_call?(node)
 
           correct_block_receiver(node, corrector)
           return unless correctable_send?(node)
@@ -147,6 +147,13 @@ module RuboCop
           return if node.children.empty? && node.equal?(node.parent.children.last)
 
           corrector.wrap(node, '(', ')')
+        end
+
+        def wrap_whole_call?(node)
+          return true if node.comparison_method?
+          return false if node.method?(:[])
+
+          node.dot? && node.operator_method?
         end
 
         def keep_operator_precedence(corrector, node)
