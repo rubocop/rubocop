@@ -536,6 +536,20 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       described_class.relevant_options_digest(options)
       described_class.relevant_options_digest(options)
     end
+
+    # Keying the memoization by the caller's live Hash lets a caller that mutates its options
+    # between runs (like `--auto-gen-config`, which adds and removes `:only` between its two phases)
+    # be served the digest of the pre-mutation options: a small-Hash lookup compares
+    # a one-byte hash hint and then `eql?`, which short-circuits on object identity,
+    # so the stale entry matches whenever the hint collides (roughly 1 in 256 processes).
+    it 'does not key the memoization by the mutable options object itself' do
+      options = { only: ['Layout/EmptyLines'] }
+
+      described_class.relevant_options_digest(options)
+
+      memo = described_class.instance_variable_get(:@relevant_options_digest)
+      expect(memo.keys).to be_none { |key| key.equal?(options) }
+    end
   end
 
   describe 'the cache path' do

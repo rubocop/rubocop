@@ -228,7 +228,11 @@ module RuboCop
       # don't affect caching.
       def relevant_options_digest(options)
         @relevant_options_digest ||= {}
-        @relevant_options_digest[options] ||= begin
+        # The memo key must be a snapshot, not the live Hash: callers mutate their options
+        # between runs (`--auto-gen-config` adds and removes `:only` between its phases),
+        # and a stale entry keyed by the mutated object itself could be returned for options it
+        # was not computed from.
+        @relevant_options_digest[options.dup] ||= begin
           options = options.reject { |key, _| NON_CHANGING.include?(key) }
           options.to_s.gsub(/[^a-z]+/i, '_')
         end
