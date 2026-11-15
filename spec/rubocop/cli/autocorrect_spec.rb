@@ -45,6 +45,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect($stdout.string).to include('no offenses detected')
   end
 
+  it 'keeps a needed repeated directive and does not remove its code' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Lint/Void:
+        Enabled: true
+      Lint/RedundantCopDisableDirective:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def f
+        1 # rubocop:disable Lint/Void, Lint/Void -- Lint/Void is needed
+        2
+      end
+    RUBY
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def f
+        1 # rubocop:disable Lint/Void -- Lint/Void is needed
+        2
+      end
+    RUBY
+    expect(cli.run(['-A'])).to eq(0)
+  end
+
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/HashAlignment:

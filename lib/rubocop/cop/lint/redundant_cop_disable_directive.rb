@@ -92,15 +92,25 @@ module RuboCop
         def directive_range_in_list(range, ranges)
           # Is there any cop between this one and the end of the line, which
           # is NOT being removed?
-          if ends_its_line?(ranges.last) && trailing_range?(ranges, range)
+          if last_cop_in_directive?(ranges.last) && trailing_range?(ranges, range)
             # Eat the comma on the left.
             range = range_with_surrounding_space(range, side: :left)
             range = range_with_surrounding_comma(range, :left)
           end
 
           range = range_with_surrounding_comma(range, :right)
+          return range if followed_by_reason?(range)
+
           # Eat following spaces up to EOL, but not the newline itself.
           range_with_surrounding_space(range, side: :right, newlines: false)
+        end
+
+        def last_cop_in_directive?(range)
+          ends_its_line?(range) || followed_by_reason?(range)
+        end
+
+        def followed_by_reason?(range)
+          range.source_line[range.end.column..].lstrip.start_with?('--')
         end
 
         def each_redundant_disable(&block)
@@ -331,12 +341,33 @@ module RuboCop
 
         def add_offenses(redundant_cops)
           redundant_cops.each do |comment, cops|
-            if all_disabled?(comment) || directive_count(comment) == cops.size
+            if all_disabled?(comment) || entire_directive_redundant?(comment, cops)
               add_offense_for_entire_comment(comment, cops)
             else
               add_offense_for_some_cops(comment, cops)
             end
           end
+        end
+
+        def entire_directive_redundant?(comment, cops)
+          directive_count(comment) == cops.size &&
+            cops.none? { |cop| needed_duplicate?(comment, cop) }
+        end
+
+        def needed_duplicate?(comment, cop)
+          return false unless cop_ranges(comment, cop).size > 1
+
+          ranges = cop_disabled_line_ranges.fetch(cop, [])
+          index = ranges.index { |range| directive_comment(range) == comment }
+          return false unless first_disable_in_comment?(ranges, index)
+
+          ranges.drop(index).any? do |range|
+            directive_comment(range) == comment && !find_redundant_cop(cop, range)
+          end
+        end
+
+        def first_disable_in_comment?(ranges, index)
+          index && (index.zero? || !followed_ranges?(ranges[index - 1], ranges[index]))
         end
 
         def add_offense_for_entire_comment(comment, cops)
@@ -371,7 +402,11 @@ module RuboCop
         end
 
         def add_offense_for_some_cops(comment, cops)
-          cop_ranges = cops.map { |c| [c, cop_range(comment, c)] }
+          cop_ranges = cops.flat_map do |cop|
+            ranges = cop_ranges(comment, cop)
+            ranges = ranges.drop(1) if needed_duplicate?(comment, cop)
+            ranges.map { |range| [cop, range] }
+          end
           cop_ranges.sort_by! { |_, r| r.begin_pos }
           ranges = cop_ranges.map { |_, r| r }
 
@@ -411,22 +446,24 @@ module RuboCop
           !free_comment.empty? && !free_comment.start_with?('#')
         end
 
-        def cop_range(comment, cop)
+        def cop_ranges(comment, cop)
           cop = remove_department_marker(cop)
-          matching_range(comment.source_range, cop) ||
-            matching_range(comment.source_range, Badge.parse(cop).cop_name) ||
-            raise("Couldn't find #{cop} in comment: #{comment.text}")
+          directive_range = DirectiveComment.new(comment).range
+          ranges = matching_ranges(directive_range, cop)
+          ranges = matching_ranges(directive_range, Badge.parse(cop).cop_name) if ranges.empty?
+          raise("Couldn't find #{cop} in comment: #{comment.text}") if ranges.empty?
+
+          ranges
         end
 
-        def matching_range(haystack, needle)
+        def matching_ranges(haystack, needle)
           # Match the cop name as a whole token so a shorter name is not found inside a
           # longer one that shares its prefix (e.g. `Lint/AmbiguousOperator` in
           # `Lint/AmbiguousOperatorPrecedence`).
-          offset = haystack.source.index(/#{Regexp.escape(needle)}(?!\w)/)
-          return unless offset
-
-          offset += haystack.begin_pos
-          Parser::Source::Range.new(haystack.source_buffer, offset, offset + needle.size)
+          haystack.source.enum_for(:scan, %r{#{Regexp.escape(needle)}(?![\w/])}).map do
+            offset = Regexp.last_match.begin(0) + haystack.begin_pos
+            Parser::Source::Range.new(haystack.source_buffer, offset, offset + needle.size)
+          end
         end
 
         def trailing_range?(ranges, range)

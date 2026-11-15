@@ -340,6 +340,40 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/ClassLength
               RUBY
             end
+
+            it 'preserves cop names in the directive reason' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics/MethodLength, Metrics/ClassLength -- Metrics/MethodLength is noisy
+                                  ^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                # rubocop:disable Metrics/ClassLength -- Metrics/MethodLength is noisy
+              RUBY
+            end
+
+            it 'returns an offense for each occurrence of a repeated cop' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics/MethodLength, Metrics/ClassLength, Metrics/MethodLength
+                                  ^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+                                                                             ^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                # rubocop:disable Metrics/ClassLength
+              RUBY
+            end
+          end
+
+          context 'a cop repeated in the same directive' do
+            it 'returns an offense for the entire comment' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics/MethodLength, Metrics/MethodLength
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+
+              expect_correction('')
+            end
           end
 
           context 'multiple cops, and the leftmost one has no offenses' do
