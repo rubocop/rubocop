@@ -127,6 +127,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects to double quotes for a string with escaped double quotes' do
+      expect_offense(<<~'RUBY')
+        %Q(\"hi\")
+        ^^^^^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "\"hi\""
+      RUBY
+    end
+
+    it 'accepts a string with escaped and unescaped double quotes' do
+      expect_no_offenses(<<~'RUBY')
+        %Q("hi\")
+      RUBY
+    end
+
     it 'accepts a string with single quotes and double quotes' do
       expect_no_offenses("%Q('\"hi\"')")
     end
