@@ -17,7 +17,7 @@ module RuboCop
       private
 
       def receiver(node)
-        node.receiver ? "#{node.receiver.source}#{node.loc.operator.source}" : ''
+        node.receiver ? node.loc.keyword.end.join(node.loc.name.begin).source.lstrip : ''
       end
 
       def arguments(node, missing = '')

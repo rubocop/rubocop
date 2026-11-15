@@ -298,10 +298,6 @@ module RuboCop
           RUBY
         end
 
-        def receiver(node)
-          node.receiver ? "#{node.receiver.source}#{node.loc.operator.source}" : ''
-        end
-
         def arguments(node, missing = '')
           return missing unless node.arguments.any?
           return parenthesized_arguments(node) if unparenthesized_arguments?(node)
