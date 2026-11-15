@@ -767,6 +767,69 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
           RUBY
         end
       end
+
+      context 'with a method chained after the closing parenthesis' do
+        it 'detects and fixes' do
+          expect_offense(<<~RUBY)
+            foo#{dot}bar(<<-SQL
+              baz
+            SQL
+            ).qux if cond
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo#{dot}bar(<<-SQL)
+              baz
+            SQL
+            .qux if cond
+          RUBY
+        end
+      end
+
+      %w[if unless while until rescue].each do |keyword|
+        context "with a `#{keyword}` modifier after the closing parenthesis" do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY, keyword: keyword)
+              foo#{dot}bar(<<-SQL
+                baz
+              SQL
+              ) %{keyword} cond
+              ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+      end
+
+      context 'with a binary operator after the closing parenthesis' do
+        it 'registers an offense but does not correct' do
+          expect_offense(<<~RUBY)
+            foo#{dot}bar(<<-SQL
+              baz
+            SQL
+            ) == qux
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with an index after the closing parenthesis' do
+        it 'registers an offense but does not correct' do
+          expect_offense(<<~RUBY)
+            foo#{dot}bar(<<-SQL
+              baz
+            SQL
+            )[0]
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
     end
   end
 

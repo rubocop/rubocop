@@ -56,6 +56,7 @@ module RuboCop
 
         MSG = 'Put the closing parenthesis for a method call with a ' \
               'HEREDOC parameter on the same line as the HEREDOC opening.'
+        CODE_KEPT_AFTER_CLOSING_PARENTHESIS = /\A\s*(?:\z|[,;#)\]}]|&?\.(?!\.)|:(?!:))/.freeze
 
         # `Layout/MultilineMethodCallBraceLayout` can move the same closing parenthesis after
         # the last argument in the same pass, and both insertions are kept. `Style/RaiseArgs`
@@ -110,11 +111,19 @@ module RuboCop
         #   third_array_value,
         # ]
         def autocorrect(corrector, node)
+          return unless code_kept_after_closing_parenthesis?(node)
+
           fix_closing_parenthesis(node, corrector)
 
           remove_internal_trailing_comma(node, corrector) if internal_trailing_comma?(node)
 
           fix_external_trailing_comma(node, corrector) if external_trailing_comma?(node)
+        end
+
+        def code_kept_after_closing_parenthesis?(node)
+          closing_parenthesis = node.loc.end
+          closing_parenthesis.source_line[closing_parenthesis.last_column..]
+                             .match?(CODE_KEPT_AFTER_CLOSING_PARENTHESIS)
         end
 
         def outermost_send_on_same_line(heredoc)
