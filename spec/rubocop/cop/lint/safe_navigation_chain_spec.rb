@@ -321,6 +321,42 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense and wraps an operator call that is one of several arguments' do
+      expect_offense(<<~RUBY)
+        do_something a, x&.foo >= bar
+                              ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+        do_something(x&.foo + bar, a)
+                           ^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something a, (x&.foo&. >= bar)
+        do_something((x&.foo&. + bar), a)
+      RUBY
+    end
+
+    it 'registers an offense and wraps an operator call that is a ternary branch' do
+      expect_offense(<<~RUBY)
+        condition ? x&.foo > bar : nil
+                          ^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        condition ? (x&.foo&. > bar) : nil
+      RUBY
+    end
+
+    it 'registers an offense and wraps an operator call that is the receiver of another operator' do
+      expect_offense(<<~RUBY)
+        x&.foo + bar - baz
+              ^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (x&.foo&. + bar)&. - baz
+      RUBY
+    end
+
     it 'registers an offense for safe navigation with [] operator' do
       expect_offense(<<~RUBY)
         x&.foo[bar]

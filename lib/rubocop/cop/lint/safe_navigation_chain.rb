@@ -122,11 +122,25 @@ module RuboCop
 
         def require_parentheses?(send_node)
           return true if operator_inside_collection_literal?(send_node)
-          return false unless send_node.comparison_method?
-          return false unless (node = send_node.parent)
+          return false if send_node.loc.dot || brackets?(send_node)
+
+          command_disallowed?(send_node.parent, send_node)
+        end
+
+        def command_disallowed?(node, send_node)
+          return false unless node
+          return !node.condition.equal?(send_node) if node.if_type? && node.ternary?
 
           (node.respond_to?(:logical_operator?) && node.logical_operator?) ||
-            (node.respond_to?(:comparison_method?) && node.comparison_method?)
+            operand_or_one_of_arguments?(node, send_node)
+        end
+
+        def operand_or_one_of_arguments?(node, send_node)
+          return false unless node.call_type?
+          return false if node.assignment_method? || brackets?(node)
+          return true if node.binary_operation?
+
+          node.arguments.size > 1 && node.arguments.any? { |argument| argument.equal?(send_node) }
         end
 
         def operator_inside_collection_literal?(send_node)
