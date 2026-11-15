@@ -179,6 +179,43 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
       RUBY
     end
 
+    it 'corrects a short statement indentation' do
+      expect_offense(<<~RUBY)
+         x = 1
+        ^ Space detected in indentation.
+      RUBY
+
+      expect_correction("x = 1\n")
+    end
+
+    it 'corrects short indentation in a block body and its closing line' do
+      expect_offense(<<~RUBY)
+        \tarr.each do
+         p it
+        ^ Space detected in indentation.
+         end
+        ^ Space detected in indentation.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        \tarr.each do
+        p it
+        end
+      RUBY
+    end
+
+    it 'registers an offense but does not correct a line indented with fewer spaces than the indentation width' do
+      expect_offense(<<~RUBY)
+        {
+        \ta: 1,
+         b: 2
+        ^ Space detected in indentation.
+        }
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'accepts a line a tab other than indentation' do
       expect_no_offenses("\tfoo \t bar")
     end

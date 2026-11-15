@@ -45,6 +45,24 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect($stdout.string).to include('no offenses detected')
   end
 
+  it 'corrects short statement indentation without looping with IndentationWidth' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/IndentationStyle:
+        Enabled: true
+        EnforcedStyle: tabs
+      Layout/IndentationWidth:
+        Enabled: true
+        Width: 4
+    YAML
+    create_file('example.rb', "def foo\n\tbar\n foo rescue nil\nend\n")
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq("def foo\n\tbar\nfoo rescue nil\nend\n")
+    expect(cli.run(['-A'])).to eq(0)
+  end
+
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/HashAlignment:
@@ -9451,6 +9469,32 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     \t\tConversationMessagesResponse.new message
     \tend
     end
+    RUBY
+  end
+
+  it 'does not cause an infinite loop between `Layout/HashAlignment` and `Layout/IndentationStyle` with tabs' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/IndentationStyle:
+        EnforcedStyle: tabs
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<-RUBY.gsub(/^    /, ''))
+    {
+    \ta: 1,
+     b: 2
+    }
+    RUBY
+
+    status = cli.run(['--autocorrect-all', '--only',
+                      'Layout/HashAlignment,Layout/IndentationStyle'])
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<-RUBY.gsub(/^    /, ''))
+    {
+    \ta: 1,
+     b: 2
+    }
     RUBY
   end
 
