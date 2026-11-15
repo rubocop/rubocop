@@ -28,7 +28,7 @@ module RuboCop
         closing_parenthesis = requires_parentheses? ? ')' : ''
         dot = collection_node.csend_type? ? '&.' : '.'
 
-        "#{closing_parenthesis}#{dot}each do |#{variable_node.source}|"
+        "#{closing_parenthesis}#{dot}each do |#{block_parameters}|"
       end
 
       def requires_parentheses?
@@ -55,6 +55,30 @@ module RuboCop
         else
           collection_node.source_range
         end
+      end
+
+      def block_parameters
+        parameters = variable_node.source_range
+        source = parameters.source
+
+        trailing_commas_in_parentheses.reverse_each do |comma|
+          source[comma.begin_pos - parameters.begin_pos, comma.size] = ''
+        end
+        source << ',' if trailing_comma_required?
+        source
+      end
+
+      def trailing_commas_in_parentheses
+        variable_node.each_node(:mlhs).filter_map do |mlhs|
+          next unless mlhs.loc_is?(:end, ')')
+
+          gap = mlhs.children.last.source_range.end.join(mlhs.loc.end.begin)
+          gap if gap.source.include?(',')
+        end.sort_by(&:begin_pos)
+      end
+
+      def trailing_comma_required?
+        variable_node.mlhs_type? && variable_node.children.one? && !variable_node.loc.begin
       end
     end
   end
