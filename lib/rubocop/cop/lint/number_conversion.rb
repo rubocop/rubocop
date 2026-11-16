@@ -88,6 +88,10 @@ module RuboCop
         CONVERSION_METHODS = %i[Integer Float Complex Rational to_i to_f to_c to_r].freeze
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses, Style::NestedParenthesizedCalls]
+        end
+
         # @!method to_method(node)
         def_node_matcher :to_method, <<~PATTERN
           (call $_ ${#{METHODS}})
