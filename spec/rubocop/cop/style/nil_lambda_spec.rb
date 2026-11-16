@@ -98,6 +98,17 @@ RSpec.describe RuboCop::Cop::Style::NilLambda, :config do
         lambda {}
       RUBY
     end
+
+    it 'properly corrects single line `do`...`end`' do
+      expect_offense(<<~RUBY)
+        lambda do nil end
+        ^^^^^^^^^^^^^^^^^ Use an empty lambda instead of always returning nil.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        lambda do end
+      RUBY
+    end
   end
 
   context 'stabby lambda' do
@@ -168,6 +179,28 @@ RSpec.describe RuboCop::Cop::Style::NilLambda, :config do
       expect_correction(<<~RUBY)
         -> do
         end
+      RUBY
+    end
+
+    it 'properly corrects single line `do`...`end`' do
+      expect_offense(<<~RUBY)
+        -> do nil end
+        ^^^^^^^^^^^^^ Use an empty lambda instead of always returning nil.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        -> do end
+      RUBY
+    end
+
+    it 'properly corrects single line `do`...`end` with arguments' do
+      expect_offense(<<~RUBY)
+        foo(->(x) do next nil end)
+            ^^^^^^^^^^^^^^^^^^^^^ Use an empty lambda instead of always returning nil.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(->(x) do end)
       RUBY
     end
   end

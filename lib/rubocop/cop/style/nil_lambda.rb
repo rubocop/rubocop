@@ -65,7 +65,8 @@ module RuboCop
 
         def autocorrect(corrector, node)
           range = if node.single_line?
-                    range_with_surrounding_space(node.body.source_range)
+                    range_with_surrounding_space(node.body.source_range,
+                                                 side: node.braces? ? :both : :left)
                   else
                     range_by_whole_lines(node.body.source_range, include_final_newline: true)
                   end
