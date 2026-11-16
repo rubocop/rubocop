@@ -460,6 +460,337 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is a method argument' do
+      expect_offense(<<~RUBY)
+        do_something(a&.baz - 1, foo)
+                           ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something((a&.baz&. - 1), foo)
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the last method argument with a trailing comma' do
+      expect_offense(<<~RUBY)
+        do_something(
+          a&.baz > 1,
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(
+          (a&.baz&. > 1),
+        )
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the sole argument with a trailing comma' do
+      expect_offense(<<~RUBY)
+        do_something(a&.baz > 1,)
+                           ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something((a&.baz&. > 1),)
+      RUBY
+    end
+
+    it 'corrects safe navigation on the left-hand side of an operator when it is the sole argument with a trailing comma after CRLF line endings' do
+      new_source = autocorrect_source("foo\r\nbar\r\ndo_something(a&.baz > 1,)\r\n")
+
+      expect(new_source).to eq("foo\nbar\ndo_something((a&.baz&. > 1),)\n")
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the sole argument of a parenthesized call' do
+      expect_offense(<<~RUBY)
+        do_something(a&.baz - 1)
+                           ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(a&.baz&. - 1)
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the sole argument of a multiline parenthesized call' do
+      expect_offense(<<~RUBY)
+        do_something(
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(
+          (a&.baz&. - 1)
+        )
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the sole argument of a call without parentheses' do
+      expect_offense(<<~RUBY)
+        do_something a&.baz - 1
+                           ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something a&.baz&. - 1
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is followed by a block argument' do
+      expect_offense(<<~RUBY)
+        do_something(a&.baz - 1, &block)
+                           ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something((a&.baz&. - 1), &block)
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the argument of `yield`' do
+      expect_offense(<<~RUBY)
+        def do_something
+          yield a&.baz - 1
+                      ^^^^ Do not chain ordinary method call after safe navigation operator.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def do_something
+          yield a&.baz&. - 1
+        end
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the sole argument of an index' do
+      expect_offense(<<~RUBY)
+        x[a&.baz - 1]
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x[(a&.baz&. - 1)]
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator when it is the operand of another operator' do
+      expect_offense(<<~RUBY)
+        a&.baz + 1 + 2
+              ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a&.baz&. + 1)&. + 2
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in a `case` subject and a `when` body' do
+      expect_offense(<<~RUBY)
+        case a&.baz - 1
+                   ^^^^ Do not chain ordinary method call after safe navigation operator.
+        when 1
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case a&.baz&. - 1
+        when 1
+          a&.baz&. - 1
+        end
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in a `while` condition and body' do
+      expect_offense(<<~RUBY)
+        while a&.baz > 1
+                    ^^^^ Do not chain ordinary method call after safe navigation operator.
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        while a&.baz&. > 1
+          a&.baz&. - 1
+        end
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in `rescue` and `ensure` bodies' do
+      expect_offense(<<~RUBY)
+        begin
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        rescue
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        ensure
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          a&.baz&. - 1
+        rescue
+          a&.baz&. - 1
+        ensure
+          a&.baz&. - 1
+        end
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in a `rescue` modifier value' do
+      expect_offense(<<~RUBY)
+        x = foo rescue a&.baz - 1
+                             ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = foo rescue (a&.baz&. - 1)
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in a class body' do
+      expect_offense(<<~RUBY)
+        class Foo
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          a&.baz&. - 1
+        end
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in an assignment in an `and` operand' do
+      expect_offense(<<~RUBY)
+        foo and x = a&.baz - 1
+                          ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo and x = (a&.baz&. - 1)
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in a ternary branch' do
+      expect_offense(<<~RUBY)
+        cond ? a&.baz - 1 : foo
+                     ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? (a&.baz&. - 1) : foo
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator inside `&&`' do
+      expect_offense(<<~RUBY)
+        foo && a&.baz - 1
+                     ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo && (a&.baz&. - 1)
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in an assignment' do
+      expect_offense(<<~RUBY)
+        x = a&.baz - 1
+                  ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = a&.baz&. - 1
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in an assignment in a ternary branch' do
+      expect_offense(<<~RUBY)
+        cond ? x ||= a&.baz - 1 : foo
+                           ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? x ||= (a&.baz&. - 1) : foo
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in an assignment as a method argument' do
+      expect_offense(<<~RUBY)
+        do_something(x = a&.baz - 1)
+                               ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(x = (a&.baz&. - 1))
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in an index of an index assignment' do
+      expect_offense(<<~RUBY)
+        x[1, a&.baz - 1] = foo
+                   ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x[1, (a&.baz&. - 1)] = foo
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in an index assignment' do
+      expect_offense(<<~RUBY)
+        x[1] = a&.baz - 1
+                     ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x[1] = a&.baz&. - 1
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in a method body' do
+      expect_offense(<<~RUBY)
+        def do_something
+          a&.baz - 1
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def do_something
+          a&.baz&. - 1
+        end
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the left-hand side of an operator in an `if` condition' do
+      expect_offense(<<~RUBY)
+        if a&.baz > 1
+                 ^^^^ Do not chain ordinary method call after safe navigation operator.
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if a&.baz&. > 1
+          foo
+        end
+      RUBY
+    end
+
     context 'proper highlighting' do
       it 'when there are methods before' do
         expect_offense(<<~RUBY)
