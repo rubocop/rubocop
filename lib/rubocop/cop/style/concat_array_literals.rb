@@ -126,13 +126,22 @@ module RuboCop
           end
         end
 
-        # Whatever sits between the last element and the `]` of an array that isn't the
-        # last argument would end up before the following comma (a newline before it is a
-        # syntax error), so it's removed along with the `]`.
+        # Whatever sits between the last element and the `]` of an array followed by
+        # a comma would end up before that comma (a newline before it is a syntax error),
+        # so it's removed along with the `]`.
         def closing_bracket_range(node, argument)
-          return argument.loc.end if argument.equal?(node.last_argument)
+          return argument.loc.end if argument.equal?(node.last_argument) && !trailing_comma?(node)
 
           range_between(argument.children.last.source_range.end_pos, argument.loc.end.end_pos)
+        end
+
+        def trailing_comma?(node)
+          return false unless node.parenthesized?
+
+          tokens = processed_source.tokens_within(node)
+          closing_bracket_index = tokens.index(processed_source.last_token_of(node.last_argument))
+
+          tokens[closing_bracket_index + 1].comma?
         end
 
         def replace_selector(corrector, node)
