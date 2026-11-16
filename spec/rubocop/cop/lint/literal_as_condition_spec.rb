@@ -809,6 +809,54 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         x = nil
       RUBY
     end
+
+    it 'registers an offense and corrects to `nil` in a ternary branch' do
+      expect_offense(<<~RUBY)
+        cond ? if true
+                  ^^^^ Literal `true` appeared as a condition.
+        end : bar
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? nil : bar
+      RUBY
+    end
+
+    it 'registers an offense and corrects to `nil` in a modifier body' do
+      expect_offense(<<~RUBY)
+        if true
+           ^^^^ Literal `true` appeared as a condition.
+        end while cond
+      RUBY
+
+      expect_correction(<<~RUBY)
+        nil while cond
+      RUBY
+    end
+
+    it 'registers an offense and corrects to `nil` for a `while` loop that never runs' do
+      expect_offense(<<~RUBY)
+        foo(while false
+                  ^^^^^ Literal `false` appeared as a condition.
+        end, bar)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(nil, bar)
+      RUBY
+    end
+
+    it 'registers an offense and corrects to `nil` for an `until` loop that never runs' do
+      expect_offense(<<~RUBY)
+        x = until true
+                  ^^^^ Literal `true` appeared as a condition.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = nil
+      RUBY
+    end
   end
 
   context 'when a post-loop that runs once uses loop control keywords' do

@@ -83,7 +83,7 @@ module RuboCop
             end
           elsif node.condition.falsey_literal?
             add_offense(node.condition) do |corrector|
-              replace_node(corrector, node, '')
+              replace_node(corrector, node, removable?(node) ? '' : 'nil')
             end
           end
         end
@@ -114,7 +114,7 @@ module RuboCop
             end
           elsif node.condition.truthy_literal?
             add_offense(node.condition) do |corrector|
-              replace_node(corrector, node, '')
+              replace_node(corrector, node, removable?(node) ? '' : 'nil')
             end
           end
         end
@@ -286,15 +286,23 @@ module RuboCop
                        "#{node.else_branch.source.sub('elsif', 'if')}\nend"
                      elsif node.else? || node.ternary?
                        node.else_branch.source
-                     elsif node.value_used?
-                       'nil'
-                     else
+                     elsif removable?(node)
                        '' # Equivalent to removing the node
+                     else
+                       'nil'
                      end
 
           add_offense(cond) do |corrector|
             replace_node(corrector, node, new_node)
           end
+        end
+
+        def removable?(node)
+          return false if node.value_used?
+          return true unless (parent = node.parent)
+          return true if parent.type?(:begin, :kwbegin, :when)
+
+          parent.type?(:if, :while, :until) && parent.loc?(:end)
         end
 
         def replace_node(corrector, node, replacement)
