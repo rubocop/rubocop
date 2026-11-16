@@ -223,4 +223,21 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
       PATH
     RUBY
   end
+
+  it 'registers an offense for and corrects the `File.open` with heredoc and code after `end`' do
+    expect_offense(<<~RUBY)
+      { key: File.open(filename, 'w') do |f|
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~EOS)
+          content
+        EOS
+      end }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      { key: File.write(filename, <<~EOS) }
+          content
+        EOS
+    RUBY
+  end
 end

@@ -72,9 +72,9 @@ module RuboCop
 
             add_offense(write_node, message: message) do |corrector|
               range = range_between(node.loc.selector.begin_pos, write_node.source_range.end_pos)
-              replacement = replacement(mode, filename, content, write_node)
 
-              corrector.replace(range, replacement)
+              corrector.replace(range, replacement(mode, filename, content))
+              restore_heredocs(corrector, filename, content, write_node)
             end
           end
         end
@@ -102,17 +102,22 @@ module RuboCop
           mode.end_with?('b') ? :binwrite : :write
         end
 
-        def replacement(mode, filename, content, write_node)
-          replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
-          heredocs = removed_heredocs(filename, content, write_node)
-          return replacement if heredocs.empty?
-
-          [replacement, *heredocs.map { |heredoc| heredoc_range(heredoc).source }].join("\n")
+        def replacement(mode, filename, content)
+          "#{write_method(mode)}(#{filename.source}, #{content.source})"
         end
 
         # Heredocs opened in the arguments keep working in the replacement, but their
         # bodies are lost when they lie within the replaced range, so they need to be
-        # restored after the replacement.
+        # restored after the line the replacement ends on.
+        def restore_heredocs(corrector, filename, content, write_node)
+          heredocs = removed_heredocs(filename, content, write_node)
+          return if heredocs.empty?
+
+          line_end = processed_source.buffer.line_range(write_node.last_line).end
+          bodies = heredocs.map { |heredoc| "\n#{heredoc_range(heredoc).source}" }.join
+          corrector.insert_after(line_end, bodies)
+        end
+
         def removed_heredocs(filename, content, write_node)
           [filename, content].flat_map { |argument| find_heredocs(argument) }
                              .select { |heredoc| removed?(heredoc, write_node) }
