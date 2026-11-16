@@ -154,14 +154,22 @@ module RuboCop
         end
 
         def autocorrect(corrector, node, range)
-          corrector.remove(range)
+          if_node = node.parent
+
+          corrector.remove(condition_range(if_node, range))
           autocorrect_replace_method(corrector, node)
 
-          if node.parent.modifier_form?
-            corrector.remove(node.source_range.end.join(node.parent.loc.keyword.begin))
+          if if_node.modifier_form?
+            corrector.remove(node.source_range.end.join(if_node.loc.keyword.begin))
           else
             corrector.remove(end_keyword_range(node))
           end
+        end
+
+        def condition_range(if_node, range)
+          return range unless (separator = if_node.loc.begin)
+
+          range.join(separator)
         end
 
         def end_keyword_range(node)
