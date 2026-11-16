@@ -101,6 +101,10 @@ module RuboCop
           }
         MATCHER
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments, Style::TrailingCommaInArrayLiteral, Style::TrailingCommaInHashLiteral]
+        end
+
         def on_send(node)
           ancestor, sort_node, sorter, accessor =
             find_redundant_sort(node.parent, node.parent&.parent)
