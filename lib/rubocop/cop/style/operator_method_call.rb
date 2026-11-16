@@ -29,6 +29,10 @@ module RuboCop
           splat kwsplat forwarded_args forwarded_restarg forwarded_kwrestarg block_pass
         ].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
+
         # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return unless (dot = node.loc.dot)
