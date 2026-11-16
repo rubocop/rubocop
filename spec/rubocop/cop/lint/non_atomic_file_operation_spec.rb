@@ -387,4 +387,46 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       storage[:files].delete(file) unless File.exists?(file)
     RUBY
   end
+
+  it 'registers an offense and corrects when code follows `end` on the same line' do
+    expect_offense(<<~RUBY)
+      foo(unless FileTest.exist?(path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.mkdir(path)
+        ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+      end, bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(
+        FileUtils.mkdir_p(path), bar)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a modifier follows `end`' do
+    expect_offense(<<~RUBY)
+      unless FileTest.exist?(path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.mkdir(path)
+        ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+      end if cond
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.mkdir_p(path) if cond
+    RUBY
+  end
+
+  it 'registers an offense and corrects a single line `if` with `then`' do
+    expect_offense(<<~RUBY)
+      x = unless FileTest.exist?(path) then FileUtils.mkdir(path) end
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+                                            ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = FileUtils.mkdir_p(path)
+    RUBY
+  end
 end

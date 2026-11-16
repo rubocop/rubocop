@@ -42,11 +42,13 @@ module RuboCop
       #   FileUtils.rm_f(path)
       #
       class NonAtomicFileOperation < Base
+        include RangeHelp
         extend AutoCorrector
 
         MSG_REMOVE_FILE_EXIST_CHECK = 'Remove unnecessary existence check ' \
                                       '`%<receiver>s.%<method_name>s`.'
         MSG_CHANGE_FORCE_METHOD = 'Use atomic file operation method `FileUtils.%<method_name>s`.'
+        CODE_STARTING_LINE = /\A\s*(?:\z|[#;)\]}]|&?\.(?!\.)|:(?!:))/.freeze
         MAKE_FORCE_METHODS = %i[makedirs mkdir_p mkpath].freeze
         MAKE_METHODS = %i[mkdir].freeze
         REMOVE_FORCE_METHODS = %i[rm_f rm_rf].freeze
@@ -125,14 +127,32 @@ module RuboCop
         end
 
         def autocorrect(corrector, node, range)
-          corrector.remove(range)
+          parent = node.parent
+          corrector.remove(condition_range(parent, range))
           autocorrect_replace_method(corrector, node)
 
-          if node.parent.modifier_form?
-            corrector.remove(node.source_range.end.join(node.parent.loc.keyword.begin))
+          if parent.modifier_form?
+            corrector.remove(node.source_range.end.join(parent.loc.keyword.begin))
           else
-            corrector.remove(node.parent.loc.end)
+            corrector.remove(end_keyword_range(parent))
           end
+        end
+
+        def condition_range(if_node, range)
+          return range unless (then_keyword = if_node.loc.begin)
+
+          range_with_surrounding_space(range.join(then_keyword), side: :right, newlines: false)
+        end
+
+        def end_keyword_range(if_node)
+          end_keyword = if_node.loc.end
+          return end_keyword if if_node.multiline? && code_after_can_start_line?(end_keyword)
+
+          range_with_surrounding_space(end_keyword, side: :left)
+        end
+
+        def code_after_can_start_line?(range)
+          range.source_line[range.last_column..].match?(CODE_STARTING_LINE)
         end
 
         def autocorrect_replace_method(corrector, node)
