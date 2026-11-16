@@ -89,6 +89,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                revision, defaulting to HEAD. Untracked files
                                                count as changed. Pass a revision with
                                                `--changed=REVISION`.
+                  --files-from FILE            Inspect the paths listed in FILE, one per line
+                                               or NUL-delimited, as if given on the command
+                                               line. An empty list inspects nothing.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
                   --editor-mode                Optimize real-time feedback in editors,
