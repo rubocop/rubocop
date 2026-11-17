@@ -64,13 +64,25 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
-          range = if node.single_line?
-                    range_with_surrounding_space(node.body.source_range)
-                  else
-                    range_by_whole_lines(node.body.source_range, include_final_newline: true)
-                  end
+          body_range = node.body.source_range
 
-          corrector.remove(range)
+          if node.single_line?
+            corrector.replace(range_with_surrounding_space(body_range), node.braces? ? '' : ' ')
+          elsif own_lines?(body_range)
+            corrector.remove(range_by_whole_lines(body_range, include_final_newline: true))
+          else
+            corrector.remove(body_range_on_shared_line(body_range))
+          end
+        end
+
+        def own_lines?(range)
+          range_by_whole_lines(range).source.strip == range.source
+        end
+
+        def body_range_on_shared_line(body_range)
+          side = begins_its_line?(body_range) ? :right : :left
+
+          range_with_surrounding_space(body_range, side: side, newlines: false)
         end
       end
     end
