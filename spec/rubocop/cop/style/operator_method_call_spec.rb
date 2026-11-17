@@ -126,6 +126,18 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     RUBY
   end
 
+  it 'registers offenses when using `foo.+ bar` as the right operand of another operator' do
+    expect_offense(<<~RUBY)
+      c.- a.- b
+           ^ Redundant dot detected.
+       ^ Redundant dot detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      c - (a - b)
+    RUBY
+  end
+
   it 'registers an offense when using `foo.+(bar)` with a multiline argument' do
     expect_offense(<<~RUBY)
       foo.+(
