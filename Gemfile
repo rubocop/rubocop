@@ -20,6 +20,11 @@ gem 'rake', '~> 13.0'
 # until a stable release that supports JRuby ships.
 # https://github.com/ruby/rdoc/issues/1746
 gem 'rbs', '4.1.0.pre.2' if RUBY_ENGINE == 'jruby'
+# FIXME: regexp_parser 2.13.2 makes `Regexp::Syntax::Base.implements` private,
+# which json_schemer 2.5.0 (a dependency of mcp) calls when it is loaded, so the MCP server
+# fails to start. Remove the exclusion once a regexp_parser or json_schemer release fixes it.
+# https://github.com/ammar/regexp_parser/issues/116
+gem 'regexp_parser', '!= 2.13.2'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.27.0', require: false
 gem 'rubocop-rake', '~> 0.7.0', require: false
