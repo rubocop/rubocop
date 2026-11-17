@@ -98,6 +98,17 @@ RSpec.describe RuboCop::Cop::Style::NilLambda, :config do
         lambda {}
       RUBY
     end
+
+    it 'properly corrects single line `do`-`end`' do
+      expect_offense(<<~RUBY)
+        lambda do nil end
+        ^^^^^^^^^^^^^^^^^ Use an empty lambda instead of always returning nil.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        lambda do end
+      RUBY
+    end
   end
 
   context 'stabby lambda' do
@@ -157,6 +168,17 @@ RSpec.describe RuboCop::Cop::Style::NilLambda, :config do
       RUBY
     end
 
+    it 'properly corrects single line `do`-`end`' do
+      expect_offense(<<~RUBY)
+        -> do next nil end
+        ^^^^^^^^^^^^^^^^^^ Use an empty lambda instead of always returning nil.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        -> do end
+      RUBY
+    end
+
     it 'properly corrects multiline' do
       expect_offense(<<~RUBY)
         -> do
@@ -167,6 +189,60 @@ RSpec.describe RuboCop::Cop::Style::NilLambda, :config do
 
       expect_correction(<<~RUBY)
         -> do
+        end
+      RUBY
+    end
+
+    it 'properly corrects multiline with the body on the `do` line' do
+      expect_offense(<<~RUBY)
+        -> do nil
+        ^^^^^^^^^ Use an empty lambda instead of always returning nil.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        -> do
+        end
+      RUBY
+    end
+
+    it 'properly corrects multiline with the body on the `end` line' do
+      expect_offense(<<~RUBY)
+        -> do
+        ^^^^^ Use an empty lambda instead of always returning nil.
+          nil end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        -> do
+          end
+      RUBY
+    end
+
+    it 'properly corrects multiline with the body on the opening brace line' do
+      expect_offense(<<~RUBY)
+        -> { nil
+        ^^^^^^^^ Use an empty lambda instead of always returning nil.
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        -> {
+        }
+      RUBY
+    end
+
+    it 'properly corrects multiline with a comment after the body' do
+      expect_offense(<<~RUBY)
+        -> do
+        ^^^^^ Use an empty lambda instead of always returning nil.
+          nil # comment
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        -> do
+          # comment
         end
       RUBY
     end
