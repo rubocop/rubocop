@@ -1,1 +1,0 @@
-* [#16370](https://github.com/rubocop/rubocop/pull/16370): Fix an incorrect autocorrect for `Layout/MultilineArrayBraceLayout` and `Layout/MultilineHashBraceLayout` with `Style/MethodCallWithArgsParentheses`. ([@koic][])

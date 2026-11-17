@@ -1,1 +1,0 @@
-* [#11451](https://github.com/rubocop/rubocop/issues/11451): Fix plugin cops running on files whose configuration does not enable the plugin, and the JUnit formatter listing them as test cases for those files. ([@APX403][])
