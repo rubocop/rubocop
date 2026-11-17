@@ -7756,6 +7756,8 @@ array = [ a, [ b, c ] ]
 # The `compact` style normally requires a space inside
 # array brackets, with the exception that successive left
 # or right brackets are collapsed together in nested arrays.
+# A right bracket on its own line is left there when
+# `Layout/MultilineArrayBraceLayout` enforces the `new_line` style.
 
 # bad
 array = [a, b, c, d]

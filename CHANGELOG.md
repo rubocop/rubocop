@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.92.3 (2026-11-17)
+
 ### Bug fixes
 
 * [#16166](https://github.com/rubocop/rubocop/issues/16166): Fix a false positive for `Layout/ExtraSpacing` when uniformly padded tokens are aligned with differently spaced tokens in the same column. ([@Don-Yin][])
