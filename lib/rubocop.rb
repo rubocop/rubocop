@@ -17,6 +17,7 @@ require 'unicode/display_width'
 # we have to require RuboCop's version, before rubocop-ast's
 require_relative 'rubocop/version'
 require 'rubocop-ast'
+RuboCop::AST::NodePattern.lazy_compilation = true
 
 require_relative 'rubocop/ast_aliases'
 require_relative 'rubocop/ext/comment'
