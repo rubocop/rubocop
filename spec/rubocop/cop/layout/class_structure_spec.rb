@@ -1206,4 +1206,247 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       RUBY
     end
   end
+
+  context 'when TreatClassLikeAssignmentsAsClassOrModule is disabled' do
+    it 'orders a Data.define block with constants' do
+      expect_offense(<<~RUBY)
+        class Example
+          def call
+          end
+
+          Row = Data.define(:name) do
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+            def label
+              name
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Example
+          Row = Data.define(:name) do
+            def label
+              name
+            end
+          end
+          def call
+          end
+
+        end
+      RUBY
+    end
+  end
+
+  context 'when TreatClassLikeAssignmentsAsClassOrModule is enabled' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/ClassStructure' => {
+          'TreatClassLikeAssignmentsAsClassOrModule' => true,
+          'ExpectedOrder' => %w[
+            constants
+            public_methods
+            child_modules_and_classes
+          ],
+          'Categories' => {
+            'child_modules_and_classes' => %w[
+              class
+              module
+            ]
+          }
+        }
+      )
+    end
+
+    it 'accepts a class definition assignment after methods and with a nested class' do
+      expect_no_offenses(<<~RUBY)
+        class Example
+          FOO = 1
+
+          def call
+          end
+
+          class Inner
+          end
+
+          Error = Class.new(StandardError)
+          Pair = Struct.new(:left, :right) do
+            def sum
+              left + right
+            end
+          end
+          Helpers = Module.new do
+            def helper
+            end
+          end
+          Row = Data.define(:name) do
+            def label
+              name
+            end
+          end
+          Other = ::Data.define(:name) { _1 }
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a method after a class definition assignment and does not correct' do
+      expect_offense(<<~RUBY)
+        class Example
+          Row = Data.define(:name) do
+            def label
+              name
+            end
+          end
+
+          def call
+          ^^^^^^^^ `public_methods` is supposed to appear before `child_modules_and_classes`.
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense for a method after Module.new and does not correct' do
+      expect_offense(<<~RUBY)
+        class Example
+          Helpers = Module.new
+
+          def call
+          ^^^^^^^^ `public_methods` is supposed to appear before `child_modules_and_classes`.
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'still orders a plain constant before methods' do
+      expect_offense(<<~RUBY)
+        class Example
+          def call
+          end
+
+          FOO = 1
+          ^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Example
+          FOO = 1
+          def call
+          end
+
+        end
+      RUBY
+    end
+
+    it 'moves a plain constant that precedes a class definition assignment' do
+      expect_offense(<<~RUBY)
+        class Example
+          def call
+          end
+
+          FOO = 1
+          ^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          Row = Data.define(:name) do
+            def label
+              name
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Example
+          FOO = 1
+          def call
+          end
+
+          Row = Data.define(:name) do
+            def label
+              name
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not move a plain constant across a class definition assignment' do
+      expect_offense(<<~RUBY)
+        class Example
+          def call
+          end
+
+          Row = Data.define(:name) do
+            def label
+              name
+            end
+          end
+          FOO = 1
+          ^^^^^^^ `constants` is supposed to appear before `child_modules_and_classes`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'keeps a qualified class definition assignment in constants' do
+      expect_offense(<<~RUBY)
+        class Example
+          def call
+          end
+
+          Other::Row = Data.define(:name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Example
+          Other::Row = Data.define(:name)
+          def call
+          end
+
+        end
+      RUBY
+    end
+  end
+
+  context 'when TreatClassLikeAssignmentsAsClassOrModule is enabled without a class category' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/ClassStructure' => {
+          'TreatClassLikeAssignmentsAsClassOrModule' => true,
+          'ExpectedOrder' => %w[
+            constants
+            public_methods
+          ],
+          'Categories' => {
+            'module_inclusion' => %w[
+              include
+              prepend
+              extend
+            ]
+          }
+        }
+      )
+    end
+
+    it 'does not order a class definition assignment' do
+      expect_no_offenses(<<~RUBY)
+        class Example
+          def call
+          end
+
+          Row = Data.define(:name) do
+            def label
+              name
+            end
+          end
+        end
+      RUBY
+    end
+  end
 end

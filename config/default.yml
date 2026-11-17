@@ -543,7 +543,8 @@ Layout/ClassStructure:
   Enabled: false
   SafeAutoCorrect: false
   VersionAdded: '0.52'
-  VersionChanged: '1.89'
+  VersionChanged: '<<next>>'
+  TreatClassLikeAssignmentsAsClassOrModule: false
   Categories:
     module_inclusion:
       - include
