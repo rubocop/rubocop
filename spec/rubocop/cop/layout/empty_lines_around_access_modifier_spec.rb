@@ -543,6 +543,60 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
   context 'EnforcedStyle is `only_before`' do
     let(:cop_config) { { 'EnforcedStyle' => 'only_before' } }
 
+    context 'when empty lines around block bodies are required' do
+      let(:other_cops) do
+        { 'Layout/EmptyLinesAroundBlockBody' => { 'EnforcedStyle' => 'empty_lines' } }
+      end
+
+      it 'still removes a blank line before another statement' do
+        expect_offense(<<~RUBY)
+          block do
+
+            private
+            ^^^^^^^ Remove a blank line after `private`.
+
+            def foo; end
+
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          block do
+
+            private
+            def foo; end
+
+          end
+        RUBY
+      end
+
+      %w[private protected public module_function].each do |modifier|
+        it "accepts a blank line after a sole #{modifier}" do
+          expect_no_offenses(<<~RUBY)
+            block do
+
+              #{modifier}
+
+            end
+          RUBY
+        end
+
+        %w[something _1 it].each do |body|
+          it "accepts a blank line after trailing #{modifier} with #{body}", :ruby34 do
+            expect_no_offenses(<<~RUBY)
+              block do
+
+                #{body}
+
+                #{modifier}
+
+              end
+            RUBY
+          end
+        end
+      end
+    end
+
     %w[private protected].each do |access_modifier|
       it "accepts missing blank line after #{access_modifier}" do
         expect_no_offenses(<<~RUBY)

@@ -10,6 +10,41 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RuboCop::ConfigLoader.default_configuration.for_all_cops['SuggestExtensions'] = false
   end
 
+  it 'preserves empty lines around a block body ending with an access modifier' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/EmptyLinesAroundAccessModifier:
+        Enabled: true
+        EnforcedStyle: only_before
+      Layout/EmptyLinesAroundBlockBody:
+        Enabled: true
+        EnforcedStyle: empty_lines
+    YAML
+    create_file('example.rb', <<~RUBY)
+      block do
+        def foo
+        end
+
+        private
+      end
+    RUBY
+
+    expect(cli.run(['--autocorrect-all'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      block do
+
+        def foo
+        end
+
+        private
+
+      end
+    RUBY
+    expect(cli.run(['--autocorrect-all'])).to eq(0)
+    expect($stdout.string).to include('no offenses detected')
+  end
+
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/HashAlignment:

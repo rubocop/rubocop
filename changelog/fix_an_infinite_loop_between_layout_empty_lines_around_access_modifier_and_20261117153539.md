@@ -1,0 +1,1 @@
+* [#16431](https://github.com/rubocop/rubocop/pull/16431): Fix an infinite loop between `Layout/EmptyLinesAroundAccessModifier` and `Layout/EmptyLinesAroundBlockBody` with trailing access modifiers. ([@Starlexxx][])
