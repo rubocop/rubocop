@@ -208,8 +208,16 @@ module RuboCop
 
         def removable_blank_line_after?(node)
           return false if followed_by_access_modifier?(node)
+          return false if trailing_in_block_with_empty_lines?(node)
 
           next_line_blank_and_exists?(node.last_line)
+        end
+
+        def trailing_in_block_with_empty_lines?(node)
+          return false unless node.parent && inside_block?(node) && !node.right_sibling
+
+          config.for_enabled_cop('Layout/EmptyLinesAroundBlockBody')['EnforcedStyle'] ==
+            'empty_lines'
         end
 
         def followed_by_access_modifier?(node)
