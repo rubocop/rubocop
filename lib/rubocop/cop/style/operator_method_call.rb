@@ -65,10 +65,10 @@ module RuboCop
         def wrap_in_parentheses_if_chained(corrector, node)
           return unless chained?(node)
 
-          operator = node.loc.selector
-
-          ParenthesesCorrector.correct(corrector, node)
-          corrector.insert_after(operator, ' ')
+          if node.parenthesized?
+            ParenthesesCorrector.correct(corrector, node)
+            corrector.insert_after(node.loc.selector, ' ')
+          end
           corrector.wrap(node, '(', ')')
         end
 
