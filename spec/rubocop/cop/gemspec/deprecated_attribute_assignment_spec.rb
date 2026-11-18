@@ -91,6 +91,95 @@ RSpec.describe RuboCop::Cop::Gemspec::DeprecatedAttributeAssignment, :config do
     end
   end
 
+  %w[if unless].each do |keyword|
+    it "removes a deprecated assignment with an #{keyword} modifier" do
+      expect_offense(<<~RUBY)
+        Gem::Specification.new do |s|
+          s.test_files = [] #{keyword} include_tests?
+          ^^^^^^^^^^^^^^^^^ Do not set `test_files` in gemspec.
+          s.name = 'example'
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Gem::Specification.new do |s|
+          s.name = 'example'
+        end
+      RUBY
+    end
+  end
+
+  it 'keeps another field following a deprecated assignment on the same line' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do |s|
+        s.test_files = []; s.name = 'example'
+        ^^^^^^^^^^^^^^^^^ Do not set `test_files` in gemspec.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Gem::Specification.new do |s|
+        ; s.name = 'example'
+      end
+    RUBY
+  end
+
+  it 'keeps the preceding field and a trailing comment' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do |s|
+        s.name = 'example'; s.test_files += [] # keep
+                            ^^^^^^^^^^^^^^^^^^ Do not set `test_files` in gemspec.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Gem::Specification.new do |s|
+        s.name = 'example'; # keep
+      end
+    RUBY
+  end
+
+  it 'keeps the delimiters of a one-line gem specification' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new { |s| s.test_files = [] }
+                                   ^^^^^^^^^^^^^^^^^ Do not set `test_files` in gemspec.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Gem::Specification.new { |s| }
+    RUBY
+  end
+
+  it 'leaves an assignment used as an argument but still corrects the next statement' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do |s|
+        log(s.test_files = [])
+            ^^^^^^^^^^^^^^^^^ Do not set `test_files` in gemspec.
+        s.date = '2020-01-01'
+        ^^^^^^^^^^^^^^^^^^^^^ Do not set `date` in gemspec.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Gem::Specification.new do |s|
+        log(s.test_files = [])
+      end
+    RUBY
+  end
+
+  it 'does not leave a heredoc body behind' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do |s|
+        s.test_files = [<<~TEXT]; s.name = 'example'
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Do not set `test_files` in gemspec.
+          test.rb
+        TEXT
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it_behaves_like 'deprecated attributes', 'date', "Time.now.strftime('%Y-%m-%d')"
   it_behaves_like 'deprecated attributes', 'rubygems_version', '2.5'
   it_behaves_like 'deprecated attributes', 'specification_version', '2.5'
