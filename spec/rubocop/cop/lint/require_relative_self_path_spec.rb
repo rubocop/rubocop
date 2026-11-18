@@ -43,6 +43,46 @@ RSpec.describe RuboCop::Cop::Lint::RequireRelativeSelfPath, :config do
     RUBY
   end
 
+  it 'preserves the statement after the self-require' do
+    expect_offense(<<~RUBY, 'foo.rb')
+      require_relative 'foo'; register_handlers
+      ^^^^^^^^^^^^^^^^^^^^^^ Remove the `require_relative` that requires itself.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ; register_handlers
+    RUBY
+  end
+
+  it 'preserves the statement and comment before and after the self-require' do
+    expect_offense(<<~RUBY, 'foo.rb')
+      prepare; require_relative 'foo' # keep
+               ^^^^^^^^^^^^^^^^^^^^^^ Remove the `require_relative` that requires itself.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      prepare; # keep
+    RUBY
+  end
+
+  it 'does not remove a self-require used as an argument' do
+    expect_offense(<<~RUBY, 'foo.rb')
+      register(require_relative 'foo')
+               ^^^^^^^^^^^^^^^^^^^^^^ Remove the `require_relative` that requires itself.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not remove the condition of a modifier' do
+    expect_offense(<<~RUBY, 'foo.rb')
+      register if require_relative 'foo'
+                  ^^^^^^^^^^^^^^^^^^^^^^ Remove the `require_relative` that requires itself.
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense when using a variable as an argument of `require_relative`' do
     expect_no_offenses(<<~RUBY, 'foo.rb')
       Dir['test/**/test_*.rb'].each { |f| require_relative f }
