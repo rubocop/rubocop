@@ -163,7 +163,7 @@ module RuboCop
 
       def put_comma(items, kind)
         last_item = items.last
-        return if last_item.type?(:block_pass, :forwarded_args)
+        return if last_item.type?(:block_pass, :forwarded_args) || command_call?(last_item)
 
         range = autocorrect_range(last_item)
         msg = format(MSG, command: 'Put a', unit: format(kind, article: 'a multiline'))
@@ -173,6 +173,11 @@ module RuboCop
         add_offense(range, message: msg) do |corrector|
           corrector.insert_after(last_item, ',')
         end
+      end
+
+      def command_call?(node)
+        node.call_type? && node.arguments? && !node.parenthesized? &&
+          (!node.operator_method? || node.loc?(:dot))
       end
 
       def autocorrect_range(item)
