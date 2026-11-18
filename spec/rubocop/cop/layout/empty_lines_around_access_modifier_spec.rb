@@ -471,6 +471,78 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
             RUBY
           end
         end
+
+        context 'conditional access modifier is the only child of the block' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              Module.new do
+                %{access_modifier} if condition
+                ^{access_modifier} Keep a blank line after `%{access_modifier}`.
+              end
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'access modifier with nested conditional modifiers is the only child of the block' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              Module.new do
+                %{access_modifier} if condition unless other_condition
+                ^{access_modifier} Keep a blank line after `%{access_modifier}`.
+              end
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'access modifier in a ternary operator is the only child of the block' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              Module.new do
+                condition ? foo : %{access_modifier}
+                                  ^{access_modifier} Keep a blank line after `%{access_modifier}`.
+              end
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'conditional access modifier in parentheses is the only child of the block' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              Module.new do
+                (%{access_modifier}) if condition
+                 ^{access_modifier} Keep a blank line after `%{access_modifier}`.
+              end
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'conditional access modifier is the last child of the block' do
+          it 'registers an offense and partially corrects' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              Module.new do
+                foo
+                %{access_modifier} unless condition
+                ^{access_modifier} Keep a blank line before and after `%{access_modifier}`.
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              Module.new do
+                foo
+
+                #{access_modifier} unless condition
+              end
+            RUBY
+          end
+        end
       end
 
       context 'when `Layout/EmptyLinesAroundBlockBody` is configured with `EnforcedStyle: empty_lines`' do

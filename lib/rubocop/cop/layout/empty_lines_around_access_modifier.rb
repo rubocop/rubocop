@@ -234,22 +234,40 @@ module RuboCop
 
         def should_insert_line_before?(node)
           return false if previous_line_empty?(node.first_line)
-          return true unless inside_block?(node) && no_empty_lines_around_block_body?
-          return true unless node.parent.begin_type?
 
-          node.parent.children.first != node
+          statement = statement_of(node)
+          return true unless inside_block?(statement) && no_empty_lines_around_block_body?
+          return true unless statement.parent.begin_type?
+
+          statement.parent.children.first != statement
         end
 
         def should_insert_line_after?(node)
-          return true unless inside_block?(node) && no_empty_lines_around_block_body?
+          statement = statement_of(node)
+          return true unless inside_block?(statement) && no_empty_lines_around_block_body?
 
-          node.parent.children.last != node
+          statement.parent.children.last != statement
+        end
+
+        def statement_of(node)
+          node = node.parent while wraps_on_the_same_line?(node.parent)
+
+          node
+        end
+
+        def wraps_on_the_same_line?(parent)
+          return false if parent.nil?
+          return parent.modifier_form? || parent.ternary? if parent.if_type?
+
+          parent.type?(:begin, :kwbegin) && parent.loc?(:begin) && parent.single_line?
         end
 
         def inside_block?(node)
-          return true if node.parent.any_block_type?
+          parent = node.parent
+          return false if parent.nil?
+          return true if parent.any_block_type?
 
-          node.parent.begin_type? && node.parent.parent&.any_block_type?
+          parent.begin_type? && parent.parent&.any_block_type?
         end
 
         def no_empty_lines_around_block_body?
