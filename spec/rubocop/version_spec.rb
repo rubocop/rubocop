@@ -24,6 +24,47 @@ RSpec.describe RuboCop::Version do
     end
   end
 
+  describe '.parser_version', :isolated_environment do
+    subject(:parser_version) { described_class.parser_version(target_ruby_version) }
+
+    before { RuboCop::ConfigLoader.clear_options }
+
+    context 'when the target Ruby version is one that Prism cannot parse' do
+      let(:target_ruby_version) { 3.2 }
+
+      it 'only has the version of Parser' do
+        expect(parser_version).to eq("Parser #{Parser::VERSION}")
+      end
+    end
+
+    context 'when the target Ruby version is one that Prism can parse' do
+      let(:target_ruby_version) { 3.4 }
+
+      it 'has the parser engine that is used by default' do
+        expect(parser_version)
+          .to match(/\AParser #{Parser::VERSION}, Prism #{Prism::VERSION}, (parser_)?prism\z/o)
+      end
+
+      it 'has the parser engine that is used when `ParserEngine` is `default`' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            ParserEngine: default
+        YAML
+
+        expect(parser_version).to match(/, (parser_)?prism\z/)
+      end
+
+      it 'has the configured parser engine' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            ParserEngine: parser_whitequark
+        YAML
+
+        expect(parser_version).to end_with(', parser_whitequark')
+      end
+    end
+  end
+
   describe '.extension_versions', :isolated_environment, :restore_configuration, :restore_registry do
     subject(:extension_versions) { described_class.extension_versions(env) }
 
