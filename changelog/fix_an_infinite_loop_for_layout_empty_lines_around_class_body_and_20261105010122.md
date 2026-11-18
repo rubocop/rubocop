@@ -1,0 +1,1 @@
+* [#16436](https://github.com/rubocop/rubocop/pull/16436): Fix an infinite loop for `Layout/EmptyLinesAroundClassBody` and `Layout/EmptyLinesAroundModuleBody` with a statement on the class line. ([@koic][])
