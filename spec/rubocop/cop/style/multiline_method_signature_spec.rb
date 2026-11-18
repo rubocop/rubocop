@@ -17,6 +17,55 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when closing paren is on the following line after a comment' do
+        expect_offense(<<~RUBY)
+          def foo(bar,
+          ^^^^^^^^^^^^ Avoid multi-line method signatures.
+                  baz # comment
+          ); end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(bar, baz); end # comment
+        RUBY
+      end
+
+      it 'registers an offense and corrects when closing paren is on the following line after a comment line' do
+        expect_offense(<<~RUBY)
+          def foo(bar,
+          ^^^^^^^^^^^^ Avoid multi-line method signatures.
+                  baz
+                  # comment
+                 )
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(bar, baz)
+                  # comment
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when closing paren is on the following line after a heredoc' do
+        expect_offense(<<~RUBY)
+          def foo(bar,
+          ^^^^^^^^^^^^ Avoid multi-line method signatures.
+                  baz = <<~TEXT
+                    text
+                  TEXT
+                 )
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(bar, baz = <<~TEXT)
+                    text
+                  TEXT
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects when line break after opening parenthesis' do
         expect_offense(<<~RUBY)
           class Foo
