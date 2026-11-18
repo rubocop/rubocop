@@ -60,14 +60,20 @@ module RuboCop
       yaml = Util.silence_warnings do
         ConfigLoader.load_yaml_configuration(config_path)
       end
-      parser_engine = yaml.dig('AllCops', 'ParserEngine')
-      parser_engine_text = ", #{parser_engine}" if parser_engine
+      return "Parser #{Parser::VERSION}" if target_ruby_version < MINIMUM_PARSABLE_PRISM_VERSION
 
-      if target_ruby_version >= MINIMUM_PARSABLE_PRISM_VERSION
-        "Parser #{Parser::VERSION}, Prism #{Prism::VERSION}#{parser_engine_text}"
-      else
-        "Parser #{Parser::VERSION}"
-      end
+      parser_engine = parser_engine(yaml.dig('AllCops', 'ParserEngine'), target_ruby_version)
+
+      "Parser #{Parser::VERSION}, Prism #{Prism::VERSION}, #{parser_engine}"
+    end
+
+    # The default parser engine depends on the target Ruby version and on the
+    # version of Prism, so the one that is used is asked from RuboCop AST.
+    # @api private
+    def self.parser_engine(configured, target_ruby_version)
+      return configured unless configured.nil? || configured.to_s == 'default'
+
+      ProcessedSource.new('', target_ruby_version, parser_engine: :default).parser_engine
     end
 
     # @api private
