@@ -147,7 +147,7 @@ module RuboCop
         def sole_argument?(node, parent)
           return false unless parent.arguments.one?
           return false unless node.equal?(parent.first_argument)
-          return false if parent.parenthesized? && parent.multiline?
+          return false if parent.multiline?
 
           !processed_source.buffer.source.match?(/\G\s*,/, node.source_range.end_pos)
         end
