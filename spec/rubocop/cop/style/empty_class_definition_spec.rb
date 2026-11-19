@@ -579,4 +579,10 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       RUBY
     end
   end
+
+  it 'does not register an offense for `new` of a namespaced constant named `Class`' do
+    expect_no_offenses(<<~RUBY)
+      FooError = My::Class.new(StandardError)
+    RUBY
+  end
 end
