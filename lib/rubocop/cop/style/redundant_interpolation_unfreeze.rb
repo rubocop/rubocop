@@ -38,7 +38,7 @@ module RuboCop
         def_node_matcher :redundant_unfreeze?, <<~PATTERN
           {
             (send dstr_type? {:+@ :dup})
-            (send (const nil? :String) :new dstr_type?)
+            (send (const {nil? cbase} :String) :new dstr_type?)
           }
         PATTERN
 
