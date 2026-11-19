@@ -60,7 +60,11 @@ module RuboCop
 
         # @!method block_read?(node)
         def_node_matcher :block_read?, <<~PATTERN
-          (block _ (args (arg _name)) (send (lvar _name) :read))
+          {
+            (block _ (args (arg _name)) (send (lvar _name) :read))
+            (numblock _ 1 (send (lvar :_1) :read))
+            (itblock _ :it (send (lvar :it) :read))
+          }
         PATTERN
 
         def on_send(node)
