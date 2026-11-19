@@ -54,7 +54,7 @@ module RuboCop
           (if
             (send
               (lvar $_) :is_a?
-              (const nil? :Array)) nil?
+              (const {nil? cbase} :Array)) nil?
             (lvasgn $_
               (array
                 (lvar $_))))
