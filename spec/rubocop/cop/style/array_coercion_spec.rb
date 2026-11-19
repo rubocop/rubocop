@@ -23,6 +23,17 @@ RSpec.describe RuboCop::Cop::Style::ArrayCoercion, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when converting variable into array with check for `::Array`' do
+    expect_offense(<<~RUBY)
+      paths = [paths] unless paths.is_a?(::Array)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Array(paths)` instead of explicit `Array` check.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      paths = Array(paths)
+    RUBY
+  end
+
   it 'does not register an offense when splat is not in array' do
     expect_no_offenses(<<~RUBY)
       first_path, rest = *paths
