@@ -433,6 +433,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     RUBY
   end
 
+  it 'registers an offense when at(0) is called on sort_by with safe navigation' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]&.sort_by(&:foo)&.at(0)
+                 ^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...at(0)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]&.min_by(&:foo)
+    RUBY
+  end
+
   it 'registers an offense when slice(0) is called on sort_by' do
     expect_offense(<<~RUBY)
       [1, 2].sort_by(&:foo).slice(0)
