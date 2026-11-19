@@ -1,0 +1,1 @@
+* [#16448](https://github.com/rubocop/rubocop/pull/16448): Fix false negatives for `Style/HashTransformKeys` and `Style/HashTransformValues` when the receiver is a block that uses a numbered parameter or `it`. ([@bbatsov][])

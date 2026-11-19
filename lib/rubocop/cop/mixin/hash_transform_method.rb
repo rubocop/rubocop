@@ -33,9 +33,9 @@ module RuboCop
       def_node_matcher :hash_receiver?, <<~PATTERN
         {(hash ...)
          (send _ {:to_h :to_hash :merge :merge! :update :invert :except :tally} ...)
-         (block (send _ {:group_by :to_h :tally :transform_keys :transform_keys!
-                         :transform_values :transform_values!}) ...)
-         (block (send _ :each_with_object (hash)) ...)}
+         (any_block (send _ {:group_by :to_h :tally :transform_keys :transform_keys!
+                             :transform_values :transform_values!}) ...)
+         (any_block (send _ :each_with_object (hash)) ...)}
       PATTERN
 
       def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler -- the patterns matched here all name their block parameters

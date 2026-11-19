@@ -108,6 +108,28 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       RUBY
     end
 
+    it 'flags `to_h` with a block when the receiver is a block with a numbered parameter', :ruby27 do
+      expect_offense(<<~RUBY)
+        x.group_by { _1.type }.to_h {|k, v| [k, foo(v)]}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.group_by { _1.type }.transform_values {|v| foo(v)}
+      RUBY
+    end
+
+    it 'flags `to_h` with a block when the receiver is a block with `it`', :ruby34 do
+      expect_offense(<<~RUBY)
+        x.group_by { it.type }.to_h {|k, v| [k, foo(v)]}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.group_by { it.type }.transform_values {|v| foo(v)}
+      RUBY
+    end
+
     it 'flags each_with_object when receiver is a group_by block' do
       expect_offense(<<~RUBY)
         x.group_by { |e| e.type }.each_with_object({}) {|(k, v), h| h[k] = foo(v)}
