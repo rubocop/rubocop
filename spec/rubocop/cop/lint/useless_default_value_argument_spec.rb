@@ -218,4 +218,10 @@ RSpec.describe RuboCop::Cop::Lint::UselessDefaultValueArgument, :config do
       RUBY
     end
   end
+
+  it 'does not register an offense for `new` of a namespaced constant named `Array`' do
+    expect_no_offenses(<<~RUBY)
+      My::Array.new(size, default_value) { block_value }
+    RUBY
+  end
 end
