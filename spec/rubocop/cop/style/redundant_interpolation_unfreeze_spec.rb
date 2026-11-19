@@ -49,6 +49,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolationUnfreeze, :config do
       RUBY
     end
 
+    it 'registers an offense for `::String.new`' do
+      expect_offense(<<~'RUBY')
+        ::String.new("#{foo} bar")
+        ^^^^^^^^^^^^ Don't unfreeze interpolated strings as they are already unfrozen.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{foo} bar"
+      RUBY
+    end
+
     it 'registers an offense when a comment follows the unfreezing call' do
       expect_offense(<<~'RUBY')
         String.new("#{foo} bar") # comment
