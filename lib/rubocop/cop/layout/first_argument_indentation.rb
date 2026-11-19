@@ -283,7 +283,7 @@ module RuboCop
 
         # @!method eligible_method_call?(node)
         def_node_matcher :eligible_method_call?, <<~PATTERN
-          (send _ !:[]= ...)
+          (call _ !:[]= ...)
         PATTERN
 
         def base_range(send_node, arg_node)
