@@ -52,6 +52,8 @@ module RuboCop
           return if defines_constants?(node.body)
 
           add_offense(node.parent_class) do |corrector|
+            next if shared_empty_class_end?(node)
+
             corrector.remove(
               range_with_surrounding_space(node.loc.keyword, side: :right, newlines: false)
             )
@@ -76,6 +78,12 @@ module RuboCop
           return false unless class_body
 
           class_body.each_node(:casgn, :class, :module).any?
+        end
+
+        def shared_empty_class_end?(node)
+          return false if node.single_line? || node.body || node.parent_class.block_type?
+
+          node.loc.end.source_line.strip != 'end'
         end
 
         def correct_parent(parent, corrector)

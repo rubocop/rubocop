@@ -71,6 +71,16 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
     RUBY
   end
 
+  it 'does not autocorrect when another statement follows the closing keyword' do
+    expect_offense(<<~RUBY)
+      class Point < Struct.new(:x)
+                    ^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end; register(Point)
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'registers an offense when extending instance of Struct without `do` ... `end` and class body is empty and single line definition' do
     expect_offense(<<~RUBY)
       class Person < Struct.new(:first_name, :last_name); end

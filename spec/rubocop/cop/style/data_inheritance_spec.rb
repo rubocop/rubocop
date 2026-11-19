@@ -83,6 +83,16 @@ RSpec.describe RuboCop::Cop::Style::DataInheritance, :config do
       RUBY
     end
 
+    it 'does not autocorrect when another statement follows the closing keyword' do
+      expect_offense(<<~RUBY)
+        class Point < Data.define(:x)
+                      ^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Data.define`. Use a block to customize the class.
+        end; register(Point)
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'registers an offense when extending instance of `Data.define` without `do` ... `end` and class body is empty and single line definition' do
       expect_offense(<<~RUBY)
         class Person < Data.define(:first_name, :last_name); end
