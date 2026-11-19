@@ -48,7 +48,7 @@ module RuboCop
 
         # @!method ractor_block?(node)
         def_node_matcher :ractor_block?, <<~PATTERN
-          (block (send (const nil? :Ractor) :new ...) ...)
+          (block (send (const {nil? cbase} :Ractor) :new ...) ...)
         PATTERN
 
         def self.joining_forces
