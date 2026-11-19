@@ -36,6 +36,10 @@ module RuboCop
 
         RESTRICT_ON_SEND = MODULE_INCLUSION_METHODS
 
+        def on_new_investigation
+          @heredoc_end_lines = nil
+        end
+
         def on_send(node)
           return if node.receiver || node.arguments.empty?
           return if node.parent&.type?(:send, :any_block, :array)
@@ -52,11 +56,19 @@ module RuboCop
         private
 
         def last_line_with_heredocs(node)
-          heredoc_end_lines = processed_source.ast.each_node(:any_str).filter_map do |str|
-            str.loc.heredoc_end.line if str.heredoc? && str.first_line == node.last_line
-          end
+          [node.last_line, heredoc_end_lines[node.last_line]].compact.max
+        end
 
-          [node.last_line, *heredoc_end_lines].max
+        # @return [Hash{Integer => Integer}] the last line of the heredocs
+        #   that begin on a line
+        def heredoc_end_lines
+          @heredoc_end_lines ||=
+            processed_source.ast.each_node(:any_str).with_object({}) do |str, lines|
+              next unless str.heredoc?
+
+              end_line = str.loc.heredoc_end.line
+              lines[str.first_line] = [lines[str.first_line], end_line].compact.max
+            end
         end
 
         def autocorrect(corrector, last_line)
