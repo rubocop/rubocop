@@ -63,7 +63,11 @@ module RuboCop
 
         # @!method block_write?(node)
         def_node_matcher :block_write?, <<~PATTERN
-          (block _ (args (arg $_)) (send (lvar $_) :write $_))
+          {
+            (block _ (args (arg _name)) (send (lvar _name) :write $_))
+            (numblock _ 1 (send (lvar :_1) :write $_))
+            (itblock _ :it (send (lvar :it) :write $_))
+          }
         PATTERN
 
         def on_send(node)
@@ -90,9 +94,7 @@ module RuboCop
         private
 
         def file_open_write?(node)
-          content = send_write?(node) || block_write?(node) do |block_arg, lvar, write_arg|
-            write_arg if block_arg == lvar
-          end
+          content = send_write?(node) || block_write?(node)
           return false if content&.splat_type?
 
           yield(content) if content

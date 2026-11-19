@@ -223,4 +223,26 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
       PATH
     RUBY
   end
+
+  it 'registers an offense for and corrects the `File.open` with a numbered parameter write block', :ruby27 do
+    expect_offense(<<~RUBY)
+      File.open(filename, 'w') { _1.write(content) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(filename, content)
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with an `it` write block', :ruby34 do
+    expect_offense(<<~RUBY)
+      File.open(filename, 'w') { it.write(content) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(filename, content)
+    RUBY
+  end
 end
