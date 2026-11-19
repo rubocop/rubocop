@@ -56,7 +56,7 @@ module RuboCop
         # changes the trailing comma where it is appended, in the same pass.
         def self.autocorrect_incompatible_with
           [
-            Lint::UnusedMethodArgument, Style::LambdaCall, Style::MethodCallWithArgsParentheses,
+            Style::LambdaCall, Style::MethodCallWithArgsParentheses,
             Style::NestedParenthesizedCalls, Style::TrailingCommaInArguments
           ]
         end
