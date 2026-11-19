@@ -1,0 +1,1 @@
+* [#16450](https://github.com/rubocop/rubocop/pull/16450): Fix false negatives for `Style/ArgumentsForwarding` when anonymous arguments are all forwarded in a singleton method or with safe navigation. ([@bbatsov][])
