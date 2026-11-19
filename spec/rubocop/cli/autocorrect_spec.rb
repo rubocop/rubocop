@@ -2601,6 +2601,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RedundantInterpolationUnfreeze` with `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.4
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+    create_file('example.rb', <<~'RUBY')
+      String.new(
+        "#{foo} bar"
+      )
+    RUBY
+
+    cops = 'Style/RedundantInterpolationUnfreeze,Style/TrailingCommaInArguments'
+    expect(cli.run(['-A', '--only', cops])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~'RUBY')
+      "#{foo} bar"
+    RUBY
+  end
+
   it 'corrects `Layout/MultilineArrayBraceLayout` with `EnforcedStyle: same_line` and `Style/ConcatArrayLiterals`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/MultilineArrayBraceLayout:
