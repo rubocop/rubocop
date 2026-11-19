@@ -24,7 +24,6 @@ module RuboCop
       #   s = ''
       class EmptyLiteral < Base
         include FrozenStringLiteral
-        include RangeHelp
         include StringLiteralsHelp
         extend AutoCorrector
 
@@ -85,7 +84,9 @@ module RuboCop
           return unless (message = offense_message(node))
 
           add_offense(node, message: message) do |corrector|
-            corrector.replace(replacement_range(node), correction(node))
+            literal = correction(node)
+            corrector.replace(node, literal)
+            wrap_arguments(node.parent, corrector) if literal == '{}' && needs_parentheses?(node)
           end
         end
 
@@ -101,25 +102,19 @@ module RuboCop
           end
         end
 
-        def first_argument_unparenthesized?(node)
+        def needs_parentheses?(node)
           parent = node.parent
-          return false unless parent && %i[send super zsuper].include?(parent.type)
-          return false if parent.operator_method? && !parent.loc.dot
+          return false unless parent&.type?(:call, :super, :yield)
+          return false if parent.setter_method? || (parent.operator_method? && !parent.loc?(:dot))
 
-          node.equal?(parent.first_argument) && !parentheses?(node.parent)
+          node.equal?(parent.first_argument) && !parent.parenthesized?
         end
 
-        def replacement_range(node)
-          if offense_hash_node?(node) && first_argument_unparenthesized?(node)
-            # `some_method {}` is not same as `some_method Hash.new`
-            # because the braces are interpreted as a block. We will have
-            # to rewrite the arguments to wrap them in parenthesis.
-            args = node.parent.arguments
-
-            range_between(args[0].source_range.begin_pos - 1, args[-1].source_range.end_pos)
-          else
-            node.source_range
-          end
+        def wrap_arguments(call, corrector)
+          gap = args_begin(call).begin.join(call.first_argument.source_range.begin)
+          corrector.remove(gap)
+          corrector.insert_before(call.first_argument, '(')
+          corrector.insert_after(call.last_argument, ')')
         end
 
         def offense_array_node?(node)
@@ -137,15 +132,7 @@ module RuboCop
           elsif str_node(node)
             preferred_string_literal
           elsif offense_hash_node?(node)
-            if first_argument_unparenthesized?(node)
-              # `some_method {}` is not same as `some_method Hash.new`
-              # because the braces are interpreted as a block. We will have
-              # to rewrite the arguments to wrap them in parenthesis.
-              args = node.parent.arguments
-              "(#{args[1..].map(&:source).unshift('{}').join(', ')})"
-            else
-              '{}'
-            end
+            '{}'
           end
         end
 
