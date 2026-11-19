@@ -55,27 +55,12 @@ module RuboCop
           (send nil? :private_constant $...)
         PATTERN
 
-        # Matches class/module-like constant assignments. Nested `class` / `module`
-        # keyword definitions are not visited by this cop; these assignment forms are
-        # the equivalent syntax and should be treated the same way.
-        # @!method class_or_module_definition_assignment?(node)
-        def_node_matcher :class_or_module_definition_assignment?, <<~PATTERN
-          {
-            (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
-            (send (const {nil? cbase} :Data) :define ...)
-            (any_block
-              {
-                (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
-                (send (const {nil? cbase} :Data) :define ...)
-              }
-              ...)
-          }
-        PATTERN
-
         def on_casgn(node)
           return unless after_private_modifier?(node.left_siblings)
           return if private_constantize?(node.right_siblings, node.name)
-          return if class_or_module_definition_assignment?(node.expression)
+          # Nested `class` and `module` definitions are not visited by this cop, and
+          # these assignments are the same thing in another syntax.
+          return if node.expression&.class_constructor?
 
           add_offense(node)
         end
