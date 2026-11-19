@@ -302,6 +302,9 @@ module RuboCop
         PATTERN
 
         def on_send(node) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+          # Everything that is looked for here is called without a receiver.
+          return if node.receiver
+
           name, original_name = alias_method?(node)
 
           if name && original_name
