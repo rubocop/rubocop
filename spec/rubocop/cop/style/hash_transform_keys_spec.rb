@@ -356,4 +356,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       RUBY
     end
   end
+
+  it 'does not register an offense for `[]` of a namespaced constant named `Hash`' do
+    expect_no_offenses(<<~RUBY)
+      My::Hash[x.to_h.map { |k, v| [foo(k), v] }]
+    RUBY
+  end
 end
