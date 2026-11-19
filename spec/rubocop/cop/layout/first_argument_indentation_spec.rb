@@ -419,6 +419,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
+        it 'registers an offense and corrects when the outer call uses safe navigation' do
+          expect_offense(<<~RUBY)
+            foo&.run(:bar, defaults.merge(
+                                         baz: 3))
+                                         ^^^^^^ Indent the first argument one step more than `defaults.merge(`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo&.run(:bar, defaults.merge(
+                             baz: 3))
+          RUBY
+        end
+
         it 'corrects only the first argument in a method chain, not the entire chain' do
           expect_offense(<<~RUBY)
             run(:foo, Diagnostic.where(
