@@ -1931,6 +1931,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RaiseArgs` with `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      raise RuntimeError.new(
+        <<~MSG
+          message
+        MSG
+      )
+    RUBY
+
+    cops = 'Style/RaiseArgs,Style/TrailingCommaInArguments'
+    expect(cli.run(['-A', '--only', cops])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      raise RuntimeError, <<~MSG
+          message
+        MSG
+
+    RUBY
+  end
+
   it 'corrects `Style/RedundantInterpolation` with `Style/MethodCallWithArgsParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

@@ -311,6 +311,23 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           RUBY
         end
 
+        it 'removes the constructor comma without changing the heredoc or the following statement' do
+          expect_offense(<<~'RUBY')
+            raise ArgumentError.new(<<~MSG,) # keep
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+              #{format(a, b)}
+            MSG
+            finish
+          RUBY
+
+          expect_correction(<<~'RUBY')
+            raise ArgumentError, <<~MSG # keep
+              #{format(a, b)}
+            MSG
+            finish
+          RUBY
+        end
+
         it 'reports an offense and keeps the heredoc body without parentheses' do
           expect_offense(<<~RUBY)
             raise ArgumentError.new(
