@@ -28,6 +28,72 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
     expect_correction('')
   end
 
+  it 'keeps the next statement on the same line as the initializer' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def initialize; end; attr_reader :name
+        ^^^^^^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_reader :name
+      end
+    RUBY
+  end
+
+  it 'does not remove the final expression of a class used as a value' do
+    expect_offense(<<~RUBY)
+      value = class Foo; prepare; def initialize; end; end
+                                  ^^^^^^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'keeps the method after a multiline forwarding initializer' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def initialize
+        ^^^^^^^^^^^^^^ Remove unnecessary `initialize` method.
+          super
+        end; def run; end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        def run; end
+      end
+    RUBY
+  end
+
+  it 'keeps a heredoc body between a shared method header and its end' do
+    expect_offense(<<~RUBY)
+      class Foo
+        log(<<~TEXT); def initialize
+                      ^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
+          keep this text
+        TEXT
+        end; attr_reader :name
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not remove a method definition passed as an argument' do
+    expect_offense(<<~RUBY)
+      class Foo
+        record(def initialize; end)
+               ^^^^^^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense for an `initialize` method with only a comment' do
     expect_no_offenses(<<~RUBY)
       def initialize

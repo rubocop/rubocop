@@ -136,8 +136,26 @@ module RuboCop
 
         def register_offense(node, message)
           add_offense(node, message: message) do |corrector|
-            corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
+            range = removal_range(node)
+            corrector.remove(range) if range
           end
+        end
+
+        def removal_range(node)
+          source = node.source_range
+          lines = range_by_whole_lines(source, include_final_newline: true)
+          return lines if lines == range_for_statement_removal(source)
+          return unless node.single_line? || begins_its_line?(source)
+          return unless (sibling = following_statement_on_line(node))
+
+          source.begin.join(sibling.source_range.begin)
+        end
+
+        def following_statement_on_line(node)
+          return unless node.parent&.type?(:begin, :kwbegin)
+
+          sibling = node.right_sibling
+          sibling if sibling && node.last_line == sibling.first_line
         end
 
         def acceptable?(node)
