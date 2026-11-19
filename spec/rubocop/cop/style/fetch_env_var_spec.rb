@@ -4,6 +4,17 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
   let(:cop_config) { { 'AllowedVariables' => [] } }
 
   context 'when it is evaluated with no default values' do
+    it 'registers an offense for `::ENV`' do
+      expect_offense(<<~RUBY)
+        ::ENV['X']
+        ^^^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ::ENV.fetch('X', nil)
+      RUBY
+    end
+
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ENV['X']
