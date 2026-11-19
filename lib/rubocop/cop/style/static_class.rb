@@ -31,13 +31,11 @@ module RuboCop
       #
       #   # good
       #   module SomeModule
-      #     module_function
-      #
-      #     def some_method
+      #     def self.some_method
       #       # body omitted
       #     end
       #
-      #     def some_other_method
+      #     def self.some_other_method
       #       # body omitted
       #     end
       #   end
@@ -50,7 +48,6 @@ module RuboCop
       #
       class StaticClass < Base
         include ProjectIndexHelp
-        include RangeHelp
         include VisibilityHelp
         extend AutoCorrector
 
@@ -62,7 +59,7 @@ module RuboCop
           return if subclassed_in_project?(class_node)
 
           add_offense(class_node) do |corrector|
-            autocorrect(corrector, class_node)
+            corrector.replace(class_node.loc.keyword, 'module')
           end
         end
 
@@ -80,32 +77,6 @@ module RuboCop
           declaration.descendants.any? { |descendant| descendant.name != declaration.name }
         rescue StandardError
           false
-        end
-
-        def autocorrect(corrector, class_node)
-          corrector.replace(class_node.loc.keyword, 'module')
-          corrector.insert_after(class_node.loc.name, "\nmodule_function\n")
-
-          class_elements(class_node).each do |node|
-            if node.defs_type?
-              autocorrect_def(corrector, node)
-            elsif node.sclass_type?
-              autocorrect_sclass(corrector, node)
-            end
-          end
-        end
-
-        def autocorrect_def(corrector, node)
-          corrector.remove(
-            range_between(node.receiver.source_range.begin_pos, node.loc.name.begin_pos)
-          )
-        end
-
-        def autocorrect_sclass(corrector, node)
-          corrector.remove(
-            range_between(node.loc.keyword.begin_pos, node.identifier.source_range.end_pos)
-          )
-          corrector.remove(node.loc.end)
         end
 
         def class_convertible_to_module?(class_node)
