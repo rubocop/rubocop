@@ -67,7 +67,7 @@ module RuboCop
 
         # @!method class_new_assignment(node)
         def_node_matcher :class_new_assignment, <<~PATTERN
-          (casgn _ _ $(send (const _ :Class) :new _))
+          (casgn _ _ $(send (const {nil? cbase} :Class) :new _))
         PATTERN
 
         def on_casgn(node)
