@@ -61,6 +61,9 @@ module RuboCop
         MSG_CLASS_KEYWORD =
           'Use the `class` keyword instead of `Class.new` to define an empty class.'
         MSG_CLASS_NEW = 'Use `Class.new` instead of the `class` keyword to define an empty class.'
+        STATEMENTS_TYPES = %i[
+          begin kwbegin if case case_match while until for any_def class module sclass
+        ].freeze
 
         # @!method class_new_assignment(node)
         def_node_matcher :class_new_assignment, <<~PATTERN
@@ -83,6 +86,7 @@ module RuboCop
           return unless node.parent_class
           return if (body = node.body) && !body.children.empty?
           return if allowed_parent_class?(node.parent_class.source)
+          return if do_end_block_with_command_call?(node.parent_class)
 
           add_offense(node, message: MSG_CLASS_NEW) do |corrector|
             autocorrect_class_definition(corrector, node)
@@ -97,6 +101,20 @@ module RuboCop
 
         def allowed_parent_classes
           cop_config.fetch('AllowedParentClasses', [])
+        end
+
+        def do_end_block_with_command_call?(node)
+          return false if node.type?(*STATEMENTS_TYPES)
+          return do_end_block_on_command_call?(node) if node.any_block_type?
+
+          node.each_child_node.any? { |child| do_end_block_with_command_call?(child) }
+        end
+
+        def do_end_block_on_command_call?(block)
+          send_node = block.send_node
+          return true if block.keywords? && send_node.arguments? && !send_node.parenthesized?
+
+          do_end_block_with_command_call?(send_node)
         end
 
         def autocorrect_class_new(corrector, node, class_new_node)
