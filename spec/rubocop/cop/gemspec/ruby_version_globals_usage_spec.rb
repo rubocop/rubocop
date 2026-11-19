@@ -43,4 +43,10 @@ RSpec.describe RuboCop::Cop::Gemspec::RubyVersionGlobalsUsage, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when there is no gem specification' do
+    expect_no_offenses(<<~RUBY)
+      RUBY_VERSION
+    RUBY
+  end
 end

@@ -47,7 +47,7 @@ module RuboCop
         private
 
         def gem_spec_with_ruby_version?(node)
-          gem_specification(processed_source.ast) && ruby_version?(node)
+          ruby_version?(node) && gem_specification(processed_source.ast).any?
         end
       end
     end
