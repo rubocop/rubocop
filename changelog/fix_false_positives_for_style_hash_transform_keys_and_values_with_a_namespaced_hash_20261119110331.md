@@ -1,0 +1,1 @@
+* [#16452](https://github.com/rubocop/rubocop/pull/16452): Fix false positives for `Style/HashTransformKeys` and `Style/HashTransformValues` when `[]` is called on a namespaced constant named `Hash`. ([@bbatsov][])
