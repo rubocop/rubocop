@@ -47,6 +47,78 @@ module RuboCop
       #                  .b
       #                  .c
       #
+      # `indented_relative_to_chain` indents each dot one level from the
+      # first line of its own chain. Safe navigation is indented the same
+      # way.
+      #
+      # When the receiver already starts on the next line, that line is the
+      # first line, so the dot goes one level further. When the receiver
+      # stays on an `if`, `unless`, `while`, or `until` line, the dot is
+      # indented one level from that receiver. A chain inside parentheses,
+      # or in a hash value, is its own chain. The hash chain is indented
+      # from the line it starts on, not again from the key.
+      #
+      # @example EnforcedStyle: indented_relative_to_chain
+      #   # bad
+      #   result = VeryLongReceiverName
+      #            .call(input)
+      #
+      #   # good
+      #   result = VeryLongReceiverName
+      #     .call(input)
+      #
+      #   # good
+      #   result =
+      #     VeryLongReceiverName
+      #       .call(input)
+      #
+      #   # bad
+      #   if VeryLongReceiverName
+      #     .call(input)
+      #     record
+      #   end
+      #
+      #   # good
+      #   if VeryLongReceiverName
+      #        .call(input)
+      #     record
+      #   end
+      #
+      #   # good
+      #   unless (record =
+      #             VeryLongReceiverName
+      #               .call(input))
+      #     record
+      #   end
+      #
+      #   # bad
+      #   parent.call(
+      #     left.cover(label)
+      #     .or(right.cover(other_label))
+      #   )
+      #
+      #   # good
+      #   parent.call(
+      #     left.cover(label)
+      #       .or(right.cover(other_label))
+      #   )
+      #
+      #   # bad
+      #   settings = {
+      #     'primary' => {
+      #       kind: 'note'
+      #     }.merge(first)
+      #         .merge(second)
+      #   }
+      #
+      #   # good
+      #   settings = {
+      #     'primary' => {
+      #       kind: 'note'
+      #     }.merge(first)
+      #       .merge(second)
+      #   }
+      #
       class MultilineMethodCallIndentation < Base # rubocop:disable Metrics/ClassLength
         include ConfigurableEnforcedStyle
         include Alignment
@@ -147,6 +219,29 @@ module RuboCop
           end
         end
 
+        # `indented_relative_to_chain` indents from the first line of this
+        # chain. Keep climbing only while this node is the parent call's
+        # receiver, so `where(scope.or(other))` does not treat `where` as
+        # part of the inner chain.
+        def left_hand_side(node)
+          return super unless style == :indented_relative_to_chain
+
+          while node.parent&.call_type? && node.parent.loc.dot &&
+                !node.parent.assignment_method? &&
+                node.equal?(node.parent.receiver)
+            node = node.parent
+          end
+          node
+        end
+
+        # A prefix keyword normally indents its condition an extra level so
+        # the dot does not share a column with the body. This style does not.
+        def correct_indentation(node)
+          return configured_indentation_width if style == :indented_relative_to_chain
+
+          super
+        end
+
         def offending_range(node, lhs, rhs, given_style)
           return false unless begins_its_line?(rhs)
 
@@ -158,12 +253,15 @@ module RuboCop
           if hash_pair_indented?(node, pair_ancestor, given_style)
             return check_hash_pair_indented_style(rhs, pair_ancestor)
           end
-          return false if skip_for_context?(node, pair_ancestor)
+          return false if skip_for_context?(node, pair_ancestor, given_style)
 
           check_regular_indentation(node, lhs, rhs, given_style)
         end
 
-        def skip_for_context?(node, pair_ancestor)
+        def skip_for_context?(node, pair_ancestor, given_style)
+          # A chain inside parentheses is indented from its own first line.
+          return false if given_style == :indented_relative_to_chain
+
           pair_ancestor ? inside_multiline_chain_arg?(node) : not_for_this_cop?(node)
         end
 
@@ -275,6 +373,9 @@ module RuboCop
         end
 
         def extra_indentation(given_style, parent)
+          if given_style == :indented_relative_to_chain && @indent_keyword_receiver
+            return configured_indentation_width
+          end
           return 0 unless given_style == :indented_relative_to_receiver
 
           if parent&.type?(:splat, :kwsplat)
@@ -295,7 +396,7 @@ module RuboCop
         end
 
         def should_indent_relative_to_receiver?
-          @base && style == :indented_relative_to_receiver
+          @base && (style == :indented_relative_to_receiver || @indent_keyword_receiver)
         end
 
         def should_align_with_base?
@@ -330,12 +431,33 @@ module RuboCop
         end
 
         def alignment_base(node, rhs, given_style)
+          @indent_keyword_receiver = false
           case given_style
           when :aligned
             semantic_alignment_base(node, rhs) || syntactic_alignment_base(node, rhs)
           when :indented_relative_to_receiver
             receiver_alignment_base(node)
+          when :indented_relative_to_chain
+            keyword_line_receiver(node)
           end
+        end
+
+        # Receiver on an `if`, `unless`, `while`, or `until` line. The dot
+        # indents one level from that receiver.
+        def keyword_line_receiver(node)
+          keyword_node = kw_node_with_special_indentation(node)
+          return if keyword_node.nil? || postfix_conditional?(keyword_node)
+
+          receiver = first_chain_receiver(left_hand_side(node.receiver))
+          return unless same_line?(receiver, keyword_node)
+
+          @indent_keyword_receiver = true
+          receiver.source_range
+        end
+
+        def first_chain_receiver(node)
+          node = node.receiver while node.receiver
+          node
         end
 
         def syntactic_alignment_base(lhs, rhs)
