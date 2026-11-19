@@ -73,6 +73,8 @@ module RuboCop
 
             add_offense(read_node, message: message) do |corrector|
               range = range_between(node.loc.selector.begin_pos, read_node.source_range.end_pos)
+              next if removes_comment_or_heredoc?(range, filename)
+
               replacement = "#{read_method(mode)}(#{filename.source})"
 
               corrector.replace(range, replacement)
@@ -81,6 +83,16 @@ module RuboCop
         end
 
         private
+
+        def removes_comment_or_heredoc?(range, filename)
+          return false if range.single_line?
+
+          processed_source.tokens_within(range).any? do |token|
+            next false if filename.source_range.contains?(token.pos)
+
+            token.comment? || (token.type == :tSTRING_END && begins_its_line?(token.pos))
+          end
+        end
 
         def evidence(node)
           file_open?(node) do |filename, mode_array, block_pass|
