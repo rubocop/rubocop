@@ -20,6 +20,85 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor, :config do
     RUBY
   end
 
+  it 'removes a redundant writer line with a trailing semicolon' do
+    expect_offense(<<~RUBY)
+      class Foo
+        attr_reader :name
+                    ^^^^^ Combine both accessors into `attr_accessor :name`.
+        attr_writer :name;
+                    ^^^^^ Combine both accessors into `attr_accessor :name`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_accessor :name
+      end
+    RUBY
+  end
+
+  it 'removes a redundant writer line with a comment after the semicolon' do
+    expect_offense(<<~RUBY)
+      class Foo
+        attr_reader :name
+                    ^^^^^ Combine both accessors into `attr_accessor :name`.
+        attr_writer :name; # comment
+                    ^^^^^ Combine both accessors into `attr_accessor :name`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_accessor :name
+      end
+    RUBY
+  end
+
+  it 'preserves a neighbouring reader on the writer line' do
+    expect_offense(<<~RUBY)
+      class Foo
+        attr_reader :name
+                    ^^^^^ Combine both accessors into `attr_accessor :name`.
+        attr_writer :name; attr_reader :price
+                    ^^^^^ Combine both accessors into `attr_accessor :name`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_accessor :name
+        attr_reader :price
+      end
+    RUBY
+  end
+
+  it 'preserves the class header and a comment on the reader line' do
+    expect_offense(<<~RUBY)
+      class Foo; attr_reader(:name) # public API
+                             ^^^^^ Combine both accessors into `attr_accessor :name`.
+        attr_writer :name
+                    ^^^^^ Combine both accessors into `attr_accessor :name`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo; attr_accessor(:name) # public API
+      end
+    RUBY
+  end
+
+  it 'keeps the closing keyword when both macros share a line' do
+    expect_offense(<<~RUBY)
+      class Foo; attr_reader :name; attr_writer :name; end
+                             ^^^^^ Combine both accessors into `attr_accessor :name`.
+                                                ^^^^^ Combine both accessors into `attr_accessor :name`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo; attr_accessor :name; end
+    RUBY
+  end
+
   it 'registers an offense and corrects when attr and attr_writer exists' do
     expect_offense(<<~RUBY)
       class Foo

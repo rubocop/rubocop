@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::RequireRelativeSelfPath, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      ; register_handlers
+      register_handlers
     RUBY
   end
 

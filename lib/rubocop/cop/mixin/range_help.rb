@@ -96,7 +96,10 @@ module RuboCop
       def range_for_statement_removal(range)
         rest_of_line = range.source_buffer.source_line(range.last_line)[range.last_column..]
 
-        if begins_its_line?(range) && rest_of_line.match?(/\A\s*(#|\z)/)
+        separator = rest_of_line[/\A[ \t]*;[ \t]*/]
+        range = range.adjust(end_pos: separator.size) if separator
+
+        if begins_its_line?(range) && rest_of_line.match?(/\A\s*;?\s*(#|\z)/)
           range_by_whole_lines(range, include_final_newline: true)
         else
           range_with_surrounding_space(range, side: :right, newlines: false)
