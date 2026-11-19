@@ -315,4 +315,60 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
       end
     RUBY
   end
+
+  it 'registers an offense and removes a trailing comma in the parentheses' do
+    expect_offense(<<~RUBY)
+      foo.+(
+         ^ Redundant dot detected.
+        bar,
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo + (
+        bar
+      )
+    RUBY
+  end
+
+  it 'removes a trailing comma after a heredoc argument' do
+    expect_offense(<<~RUBY)
+      foo.+(<<~TEXT,
+         ^ Redundant dot detected.
+        text
+      TEXT
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo + (<<~TEXT
+        text
+      TEXT
+      )
+    RUBY
+  end
+
+  it 'removes a trailing comma before a comment' do
+    expect_offense(<<~RUBY)
+      foo.+(bar, # comment
+         ^ Redundant dot detected.
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo + (bar # comment
+      )
+    RUBY
+  end
+
+  it 'registers an offense and removes a trailing comma in the parentheses of a chained call' do
+    expect_offense(<<~RUBY)
+      foo.+(bar, ).baz
+         ^ Redundant dot detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (foo + bar).baz
+    RUBY
+  end
 end

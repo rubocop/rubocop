@@ -2110,6 +2110,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/OperatorMethodCall` with `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo.<<(
+        bar
+      )
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Style/OperatorMethodCall,Style/TrailingCommaInArguments'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo << (
+        bar
+      )
+    RUBY
+  end
+
   it 'corrects `Layout/FirstMethodArgumentLineBreak` with `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/FirstMethodArgumentLineBreak:

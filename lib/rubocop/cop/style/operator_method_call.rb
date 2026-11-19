@@ -29,6 +29,10 @@ module RuboCop
           splat kwsplat forwarded_args forwarded_restarg forwarded_kwrestarg block_pass
         ].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
+
         # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return unless (dot = node.loc.dot)
@@ -39,6 +43,7 @@ module RuboCop
           return if invalid_syntax_argument?(rhs)
 
           add_offense(dot) do |corrector|
+            remove_trailing_comma(corrector, node)
             wrap_in_parentheses_if_chained(corrector, node)
             corrector.replace(dot, ' ')
 
@@ -60,6 +65,15 @@ module RuboCop
           type = argument.hash_type? ? argument.children.first&.type : argument.type
 
           INVALID_SYNTAX_ARG_TYPES.include?(type)
+        end
+
+        def remove_trailing_comma(corrector, node)
+          return unless node.parenthesized?
+
+          comma = processed_source.tokens_within(node).find do |token|
+            token.begin_pos >= node.last_argument.source_range.end_pos && !token.comment?
+          end
+          corrector.remove(comma.pos) if comma&.comma?
         end
 
         def wrap_in_parentheses_if_chained(corrector, node)
