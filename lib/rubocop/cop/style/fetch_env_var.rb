@@ -44,7 +44,7 @@ module RuboCop
 
         # @!method env_with_bracket?(node)
         def_node_matcher :env_with_bracket?, <<~PATTERN
-          (send (const nil? :ENV) :[] $_)
+          (send (const {nil? cbase} :ENV) :[] $_)
         PATTERN
 
         def on_send(node)
@@ -53,7 +53,7 @@ module RuboCop
 
             message = format(offense_message, key: name_node.source)
             add_offense(node, message: message) do |corrector|
-              corrector.replace(node, new_code(name_node))
+              corrector.replace(node, new_code(node.receiver, name_node))
             end
           end
         end
@@ -146,11 +146,11 @@ module RuboCop
           parent.lhs == node || parent.parent&.or_type?
         end
 
-        def new_code(name_node)
+        def new_code(env_node, name_node)
           if default_to_nil?
-            "ENV.fetch(#{name_node.source}, nil)"
+            "#{env_node.source}.fetch(#{name_node.source}, nil)"
           else
-            "ENV.fetch(#{name_node.source})"
+            "#{env_node.source}.fetch(#{name_node.source})"
           end
         end
       end
