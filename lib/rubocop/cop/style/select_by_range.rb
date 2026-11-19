@@ -84,11 +84,6 @@ module RuboCop
           }
         PATTERN
 
-        # @!method env_const?(node)
-        def_node_matcher :env_const?, <<~PATTERN
-          (const {nil? cbase} :ENV)
-        PATTERN
-
         # @!method between_call?(node, name)
         def_node_matcher :between_call?, <<~PATTERN
           (send (lvar %1) :between? _ _)
@@ -117,7 +112,7 @@ module RuboCop
         def receiver_allowed?(node)
           return false unless node
 
-          node.hash_type? || creates_hash?(node) || env_const?(node)
+          node.hash_type? || creates_hash?(node) || node.global_const?(:ENV)
         end
 
         def replacement(range_check_send_node, node)

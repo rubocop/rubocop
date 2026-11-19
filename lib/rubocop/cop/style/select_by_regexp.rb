@@ -77,11 +77,6 @@ module RuboCop
           }
         PATTERN
 
-        # @!method env_const?(node)
-        def_node_matcher :env_const?, <<~PATTERN
-          (const {nil? cbase} :ENV)
-        PATTERN
-
         # @!method calls_lvar?(node, name)
         def_node_matcher :calls_lvar?, <<~PATTERN
           {
@@ -120,7 +115,7 @@ module RuboCop
         def receiver_allowed?(node)
           return false unless node
 
-          node.hash_type? || creates_hash?(node) || env_const?(node)
+          node.hash_type? || creates_hash?(node) || node.global_const?(:ENV)
         end
 
         def replacement(regexp_method_send_node, node)

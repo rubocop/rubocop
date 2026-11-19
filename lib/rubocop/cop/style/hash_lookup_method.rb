@@ -62,9 +62,6 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[[] fetch].freeze
 
-        # @!method env_const?(node)
-        def_node_matcher :env_const?, '(const {nil? cbase} :ENV)'
-
         # @!method array_or_hash_const?(node)
         def_node_matcher :array_or_hash_const?, '(const {nil? cbase} {:Array :Hash})'
 
@@ -115,7 +112,8 @@ module RuboCop
         end
 
         def env_fetch_preferred?(receiver)
-          env_const?(receiver) && processed_source.registry.enabled?(Style::FetchEnvVar, config)
+          receiver.global_const?(:ENV) &&
+            processed_source.registry.enabled?(Style::FetchEnvVar, config)
         end
 
         def offense_for_fetch?(node)
