@@ -2427,6 +2427,38 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense when forwarding anonymous arguments in a singleton method' do
+      expect_offense(<<~RUBY)
+        def self.foo(*, **, &)
+                     ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(*, **, &)
+              ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.foo(...)
+          bar(...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when forwarding anonymous arguments with safe navigation' do
+      expect_offense(<<~RUBY)
+        def foo(*, **, &)
+                ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar&.baz(*, **, &)
+                   ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar&.baz(...)
+        end
+      RUBY
+    end
+
     it 'does not register an offense when another call forwards anonymous arguments without the block' do
       expect_no_offenses(<<~RUBY)
         def foo(*, **, &)

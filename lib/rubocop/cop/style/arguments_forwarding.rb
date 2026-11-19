@@ -425,17 +425,16 @@ module RuboCop
 
           # @!method def_all_anonymous_args?(node)
           def_node_matcher :def_all_anonymous_args?, <<~PATTERN
-            (
-              def _
-              (args ... (restarg) (kwrestarg) (blockarg nil?))
-              _
-            )
+            {
+              (def _ (args ... (restarg) (kwrestarg) (blockarg nil?)) _)
+              (defs _ _ (args ... (restarg) (kwrestarg) (blockarg nil?)) _)
+            }
           PATTERN
 
           # @!method send_all_anonymous_args?(node)
           def_node_matcher :send_all_anonymous_args?, <<~PATTERN
             (
-              send _ _
+              call _ _
               ... (forwarded_restarg) (hash (forwarded_kwrestarg)) (block_pass nil?)
             )
           PATTERN
