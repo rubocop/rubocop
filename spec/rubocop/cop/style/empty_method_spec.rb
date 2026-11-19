@@ -41,6 +41,18 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
         RUBY
       end
 
+      it 'does not autocorrect a method with a heredoc default argument' do
+        expect_offense(<<~RUBY)
+          def render(template = <<~TEXT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
+            Welcome
+          TEXT
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
       it 'registers an offense for method with blank line' do
         expect_offense(<<~RUBY)
           def foo
@@ -272,6 +284,28 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
           end
         RUBY
+      end
+
+      it 'does not move the closing keyword into a heredoc default argument' do
+        expect_offense(<<~RUBY)
+          def render(template = <<~TEXT); end
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+            Welcome
+          TEXT
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not insert a newline after a heredoc opened before the definition' do
+        expect_offense(<<~RUBY)
+          with(<<~TEXT) { def render; end }
+                          ^^^^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+            Welcome
+          TEXT
+        RUBY
+
+        expect_no_corrections
       end
 
       it 'registers an offense for single line method' do
