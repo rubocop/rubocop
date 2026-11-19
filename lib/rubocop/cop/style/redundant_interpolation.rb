@@ -43,7 +43,7 @@ module RuboCop
         MSG = 'Prefer `to_s` over string interpolation.'
 
         def self.autocorrect_incompatible_with
-          [Style::LineEndConcatenation, Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses]
         end
 
         def on_dstr(node)

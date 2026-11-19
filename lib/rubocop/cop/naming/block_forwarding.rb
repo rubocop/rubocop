@@ -63,8 +63,8 @@ module RuboCop
 
         def self.autocorrect_incompatible_with
           [
-            Lint::AmbiguousOperator, Style::ArgumentsForwarding, Style::EndlessMethod,
-            Style::ExplicitBlockArgument, Style::MethodDefParentheses
+            Style::ArgumentsForwarding, Style::EndlessMethod, Style::ExplicitBlockArgument,
+            Style::MethodDefParentheses
           ]
         end
 

@@ -54,7 +54,7 @@ module RuboCop
                       yield __FILE__ __LINE__ __ENCODING__].freeze
 
         def self.autocorrect_incompatible_with
-          [ColonMethodCall, Layout::DotPosition]
+          [Layout::DotPosition]
         end
 
         def initialize(config = nil, options = nil)

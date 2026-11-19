@@ -142,10 +142,6 @@ module RuboCop
         include TrailingComma
         extend AutoCorrector
 
-        def self.autocorrect_incompatible_with
-          [Layout::HeredocArgumentClosingParenthesis]
-        end
-
         def on_send(node)
           return unless node.arguments? && (node.parenthesized? || node.method?(:[]))
 

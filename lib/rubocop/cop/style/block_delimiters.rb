@@ -178,7 +178,6 @@ module RuboCop
 
         def self.autocorrect_incompatible_with
           [
-            Layout::SpaceBeforeBlockBraces,
             Style::MethodCallWithArgsParentheses,
             Style::RedundantBegin,
             Style::RescueStandardError

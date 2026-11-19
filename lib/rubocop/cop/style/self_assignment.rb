@@ -18,10 +18,6 @@ module RuboCop
         MSG = 'Use self-assignment shorthand `%<method>s=`.'
         OPS = %i[+ - * ** / % ^ << >> | &].freeze
 
-        def self.autocorrect_incompatible_with
-          [Layout::SpaceAroundOperators]
-        end
-
         def on_lvasgn(node)
           check(node, :lvar)
         end

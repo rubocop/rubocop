@@ -75,7 +75,6 @@ module RuboCop
 
         def self.autocorrect_incompatible_with
           [
-            Style::BlockDelimiters,
             Style::TrailingCommaInArguments,
             Style::TrailingCommaInArrayLiteral,
             Style::TrailingCommaInHashLiteral
