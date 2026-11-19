@@ -33,7 +33,7 @@ module RuboCop
 
         # @!method require_call?(node)
         def_node_matcher :require_call?, <<~PATTERN
-          (send {nil? (const _ :Kernel)} %REQUIRE_METHODS _)
+          (send {nil? (const {nil? cbase} :Kernel)} %REQUIRE_METHODS _)
         PATTERN
 
         def on_new_investigation

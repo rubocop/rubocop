@@ -154,4 +154,11 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateRequire, :config do
       params.require(:user)
     RUBY
   end
+
+  it 'does not register an offense for `require` of a namespaced constant named `Kernel`' do
+    expect_no_offenses(<<~RUBY)
+      require 'foo'
+      My::Kernel.require 'foo'
+    RUBY
+  end
 end
