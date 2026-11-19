@@ -66,6 +66,61 @@ RSpec.describe RuboCop::Cop::Style::FileRead, :config do
     RUBY
   end
 
+  it 'keeps an indented heredoc terminator inside the block' do
+    expect_offense(<<~RUBY)
+      def load_settings
+        publish(File.open(<<~PATH.chomp) do |file|
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.read`.
+          settings.yml
+        PATH
+          file.read
+        end)
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when the heredoc body would be removed with the block' do
+    expect_offense(<<~RUBY)
+      publish(File.open(<<~PATH.chomp) do |file|
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.read`.
+        settings.yml
+      PATH
+        file.read
+      end)
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when the block contains a comment' do
+    expect_offense(<<~RUBY)
+      File.open(filename) do |file|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.read`.
+        # Keep this note.
+        file.read
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'autocorrects when the heredoc body follows the read call' do
+    expect_offense(<<~RUBY)
+      File.open(<<~PATH.chomp).read
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.read`.
+        settings.yml
+      PATH
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.read(<<~PATH.chomp)
+        settings.yml
+      PATH
+    RUBY
+  end
+
   described_class::READ_FILE_START_TO_FINISH_MODES.each do |mode|
     it "registers an offense for and corrects `File.open(filename, '#{mode}').read`" do
       read_method = mode.end_with?('b') ? :binread : :read
