@@ -341,3 +341,14 @@ Format (single line):
 23. **Rescuing `Errno::EACCES` without `Errno::EPERM`**: sandboxes that only
     allow the project directory, like the ones coding agents run in, fail
     filesystem calls with `EPERM`.
+24. **A pattern that says `send`, `block` or `def`**: aliasing `on_csend`,
+    `on_numblock`/`on_itblock` or `on_defs` only gets the callback called. The
+    pattern has to match those nodes too: write `call`, `any_block` and
+    `any_def` unless you mean exactly one type. A pattern that spells out the
+    block parameters needs a branch each for `numblock` and `itblock`.
+25. **Matching a top-level constant with `(const nil? :Foo)` or `(const _ :Foo)`**:
+    the first misses `::Foo`, the second also matches `Bar::Foo`. Use
+    `(const {nil? cbase} :Foo)`.
+26. **Using a `def_node_search` as a condition**: without a block, a search
+    whose name doesn't end in `?` returns an enumerator, which is always
+    truthy. Name it with `?` or call `any?` on the result.

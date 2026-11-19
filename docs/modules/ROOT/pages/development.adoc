@@ -748,6 +748,36 @@ def_node_matcher :not_empty_call?, <<~PATTERN
 PATTERN
 ----
 
+=== Writing node patterns that match what you mean
+
+A node pattern that is slightly off doesn't fail, it just matches less or more
+than it should. These are the mistakes that come up most often:
+
+* Aliasing `on_csend`, `on_numblock` or `on_defs` only gets the callback
+  called. The pattern has to accept those nodes too, so write `call` (for
+  `send` and `csend`), `any_block` (for `block`, `numblock` and `itblock`) and
+  `any_def` (for `def` and `defs`) unless you really mean one of them.
+  `any_block` only helps when the pattern doesn't spell out the block
+  parameters: a `numblock` has `1` and an `itblock` has `:it` where a `block`
+  has `(args ...)`.
+* Match a top-level constant with `(const {nil? cbase} :Foo)`. With `nil?` alone
+  the pattern misses `::Foo`, and with `_` it also matches `Bar::Foo`.
+* `nil?` matches a child that is missing, like the receiver of `foo(1)`. `nil`
+  matches the `nil` literal.
+* A `def_node_search` whose name doesn't end in `?` returns an enumerator when
+  it is called without a block, and an enumerator is always truthy. Give the
+  search a name that ends in `?`, or call `any?` on what it returns, before
+  using it as a condition.
+* A search runs its pattern on every descendant of the node. Use a matcher
+  when the node you already have is the one to check.
+* A union of literals like `{:first :last}` is compiled to a `Set` lookup
+  whatever its size, so move the names to a constant and use `%NAMES` when that
+  reads better, not to make the pattern faster.
+
+`InternalAffairs/InvalidNodePattern` reports patterns that can never match, for
+example a sequence with the wrong number of children for its node type, and
+`InternalAffairs/NodePatternGroups` suggests the node groups above.
+
 === Declaring autocorrect support
 
 If your cop provides a corrector block inside `add_offense`, you must declare
