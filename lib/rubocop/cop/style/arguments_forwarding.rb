@@ -159,8 +159,10 @@ module RuboCop
         def on_def(node)
           return unless node.body
 
-          restarg, kwrestarg, blockarg = extract_forwardable_args(node.arguments)
-          forwardable_args = redundant_forwardable_named_args(restarg, kwrestarg, blockarg)
+          forwardable_args =
+            redundant_forwardable_named_args(*extract_forwardable_args(node.arguments))
+          return if forwardable_args.none?
+
           send_nodes = node.each_descendant(:call, :super, :yield).to_a
 
           send_classifications = classify_send_nodes(
