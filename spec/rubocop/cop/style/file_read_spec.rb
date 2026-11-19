@@ -121,4 +121,32 @@ RSpec.describe RuboCop::Cop::Style::FileRead, :config do
       RUBY
     end
   end
+
+  it 'registers an offense for and corrects the `File.open` with a numbered parameter read block', :ruby27 do
+    expect_offense(<<~RUBY)
+      File.open(filename) { _1.read }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.read`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.read(filename)
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with an `it` read block', :ruby34 do
+    expect_offense(<<~RUBY)
+      File.open(filename) { it.read }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.read`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.read(filename)
+    RUBY
+  end
+
+  it 'does not register an offense when reading from another numbered parameter', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      File.open(filename) { _2.read }
+    RUBY
+  end
 end
