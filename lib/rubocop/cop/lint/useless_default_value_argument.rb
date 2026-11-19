@@ -60,7 +60,7 @@ module RuboCop
           (any_block
             {
               (call !nil? :fetch $_key $_default_value)
-              (send (const _ :Array) :new $_size $_default_value)
+              (send (const {nil? cbase} :Array) :new $_size $_default_value)
             }
             _args
             _block_body)
