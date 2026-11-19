@@ -262,4 +262,41 @@ RSpec.describe RuboCop::Cop::Style::RedundantException, :config do
 
     expect_no_corrections
   end
+
+  it 'does not autocorrect when the constructor encloses the body of another heredoc' do
+    expect_offense(<<~RUBY)
+      messages.fetch(<<~KEY) { raise RuntimeError.new(
+                               ^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+        greeting
+      KEY
+        'missing message'
+      ) }
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when the exception class and message surround a heredoc body' do
+    expect_offense(<<~RUBY)
+      messages.fetch(<<~KEY) { raise(RuntimeError,
+                               ^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError` argument can be removed.
+        greeting
+      KEY
+        'missing message'
+      ) }
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when a comment would be removed with the constructor' do
+    expect_offense(<<~RUBY)
+      raise RuntimeError.new(
+      ^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+        'missing message' # keep
+      )
+    RUBY
+
+    expect_no_corrections
+  end
 end
