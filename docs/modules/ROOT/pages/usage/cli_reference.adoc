@@ -108,6 +108,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--fail-level`
 | Minimum xref:configuration/cop_settings.adoc#severity[severity] for exit with error code. Full severity name or upper case initial can be given. Normally, autocorrected offenses are ignored. Use `A` or `autocorrect` if you'd like any autocorrectable offense to trigger failure, regardless of severity. Overrides `AllCops: FailLevel` in the configuration.
 
+| `--files-from FILE`
+| Inspect the paths listed in `FILE`, one per line or NUL-delimited, as if they were given on the command line. Use it when the list is too long for the command line. An empty list inspects nothing.
+
 | `--force-exclusion`
 | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
 

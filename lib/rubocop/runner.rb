@@ -115,6 +115,9 @@ module RuboCop
     end
 
     def find_target_files(paths)
+      # An empty list must not fall back to inspecting the whole project.
+      return [].freeze if paths.empty? && @options[:files_from]
+
       target_finder = TargetFinder.new(@config_store, @options)
       mode = if @options[:only_recognized_file_types]
                :only_recognized_file_types
