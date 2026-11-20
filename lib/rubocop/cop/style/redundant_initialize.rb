@@ -110,10 +110,19 @@ module RuboCop
 
         MSG = 'Remove unnecessary `initialize` method.'
         MSG_EMPTY = 'Remove unnecessary empty `initialize` method.'
+        VALUE_DISCARDING_BODY_TYPES = %i[
+          class module sclass block numblock itblock def defs while until for
+        ].freeze
+        VALUE_PASSING_BODY_TYPES = %i[when in_pattern resbody].freeze
 
         # @!method initialize_forwards?(node)
         def_node_matcher :initialize_forwards?, <<~PATTERN
           (def _ (args $arg*) $({super zsuper} ...))
+        PATTERN
+
+        # @!method private_definition?(node)
+        def_node_matcher :private_definition?, <<~PATTERN
+          (send nil? :private def)
         PATTERN
 
         def on_def(node)
@@ -136,12 +145,28 @@ module RuboCop
 
         def register_offense(node, message)
           add_offense(node, message: message) do |corrector|
-            corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
+            corrector.remove(removal_range(node))
           end
         end
 
+        def removal_range(node)
+          statement = statement_of(node)
+          return shared_line_range(statement) unless own_lines?(statement)
+
+          range = statement.source_range
+          return range_with_surrounding_space(range, side: :right) if trailing_comment(statement)
+
+          range_by_whole_lines(range, include_final_newline: true)
+        end
+
+        def statement_of(node)
+          private_definition?(node.parent) ? node.parent : node
+        end
+
         def acceptable?(node)
-          !node.method?(:initialize) || forwards?(node) || allow_comments?(node)
+          return true unless node.method?(:initialize)
+
+          forwards?(node) || allow_comments?(node) || !removable?(node)
         end
 
         def forwards?(node)
@@ -152,6 +177,94 @@ module RuboCop
           return false unless cop_config['AllowComments']
 
           contains_comments?(node) && !comments_contain_disables?(node, name)
+        end
+
+        def removable?(node)
+          statement = statement_of(node)
+          return false unless statement?(statement)
+
+          own_lines?(statement) || !shared_line_range(statement).nil?
+        end
+
+        def own_lines?(node)
+          code_on_lines_of(node) == node.source
+        end
+
+        def shared_line_range(node)
+          return if heredoc_body_after?(node)
+          return unless node.parent&.type?(:begin, :kwbegin)
+
+          range = sibling_separator_range(node)
+          range unless range.nil? || foreign_heredoc_body_in?(range, node)
+        end
+
+        def sibling_separator_range(node)
+          range = node.source_range
+          if (following = node.right_sibling) && following.first_line == node.last_line
+            range.join(following.source_range.begin)
+          elsif (preceding = node.left_sibling) && preceding.last_line == node.first_line
+            preceding.source_range.end.join(range)
+          end
+        end
+
+        def heredoc_body_after?(node)
+          node.each_descendant(:any_str).any? do |str|
+            str.heredoc? && str.loc.heredoc_end.end_pos > node.source_range.end_pos
+          end
+        end
+
+        # The body of a heredoc opened by another statement would be removed with the range.
+        def foreign_heredoc_body_in?(range, node)
+          processed_source.ast.each_node(:any_str).any? do |str|
+            next false if !str.heredoc? || node.source_range.contains?(str.source_range)
+
+            range.overlaps?(str.loc.heredoc_body)
+          end
+        end
+
+        def code_on_lines_of(node)
+          lines = range_by_whole_lines(node.source_range)
+          comment = trailing_comment(node)
+          return lines.source.strip.delete_suffix(';').rstrip unless comment
+
+          lines.begin.join(comment.source_range.begin).source.strip
+        end
+
+        def trailing_comment(node)
+          processed_source.comment_at_line(node.last_line)
+        end
+
+        def statement?(node)
+          parent = node.parent
+          return true if parent.nil? || discards_value_of?(parent, node)
+
+          passes_on_value_of?(parent, node) && statement?(parent)
+        end
+
+        def discards_value_of?(parent, node)
+          case parent.type
+          when :begin, :kwbegin
+            !parent.children.last.equal?(node)
+          when :ensure
+            parent.branch.equal?(node)
+          when *VALUE_DISCARDING_BODY_TYPES
+            parent.body.equal?(node)
+          else
+            false
+          end
+        end
+
+        def passes_on_value_of?(parent, node)
+          case parent.type
+          when :begin, :kwbegin, :rescue, :ensure
+            true
+          when :if, :case, :case_match
+            !parent.condition.equal?(node)
+          when *VALUE_PASSING_BODY_TYPES
+            parent.body.equal?(node)
+          else
+            false
+          end
         end
 
         def same_args?(super_node, args)
