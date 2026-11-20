@@ -57,9 +57,23 @@ module RuboCop
           message = format(template, context: context)
 
           add_offense(node.loc.selector, message: message) do |corrector|
-            replacement = receiver ? receiver.source : 'self'
+            if receiver
+              corrector.remove(removal_range(node, receiver))
+            else
+              corrector.replace(node, 'self')
+            end
+          end
+        end
 
-            corrector.replace(node, replacement)
+        def removal_range(node, receiver)
+          start = heredoc_body_after?(receiver) ? node.loc.dot : receiver.source_range.end
+
+          start.join(node.source_range.end)
+        end
+
+        def heredoc_body_after?(receiver)
+          receiver.each_node(:any_str).any? do |str_node|
+            str_node.heredoc? && str_node.loc.heredoc_end.end_pos > receiver.source_range.end_pos
           end
         end
       end
