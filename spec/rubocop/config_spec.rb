@@ -167,6 +167,8 @@ RSpec.describe RuboCop::Config do
             Include:
               - lib/file.xyz
             Severity: warning
+            AllowedOffenses:
+              lib/file.rb: 0
             inherit_mode:
               merge:
                 - Exclude
@@ -176,6 +178,76 @@ RSpec.describe RuboCop::Config do
 
       it 'does not raise validation error' do
         expect { configuration.validate }.not_to raise_error
+      end
+    end
+
+    context 'when an AllowedOffenses count is negative' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          Metrics/ModuleLength:
+            AllowedOffenses:
+              lib/file.rb: -1
+        YAML
+      end
+
+      it 'raises a validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /AllowedOffenses.*non-negative integers/)
+      end
+    end
+
+    context 'when AllowedOffenses is a scalar' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          Metrics/ModuleLength:
+            AllowedOffenses: 1
+        YAML
+      end
+
+      it 'raises a validation error' do
+        expect { configuration.validate }
+          .to raise_error(
+            RuboCop::ValidationError, /AllowedOffenses.*hash of exact relative file paths/
+          )
+      end
+    end
+
+    context 'when an AllowedOffenses path is absolute or a glob' do
+      it 'raises a validation error for an absolute path' do
+        create_file(configuration_path, <<~YAML)
+          Metrics/ModuleLength:
+            AllowedOffenses:
+              /lib/file.rb: 1
+        YAML
+
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /AllowedOffenses.*exact relative file paths/)
+      end
+
+      it 'raises a validation error for a glob path' do
+        create_file(configuration_path, <<~YAML)
+          Metrics/ModuleLength:
+            AllowedOffenses:
+              "**/*.rb": 1
+        YAML
+
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /AllowedOffenses.*exact relative file paths/)
+      end
+    end
+
+    context 'when AllowedOffenses is configured under AllCops' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          AllCops:
+            AllowedOffenses:
+              file.rb: 1
+        YAML
+      end
+
+      it 'raises a validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /configured per cop/)
       end
     end
 

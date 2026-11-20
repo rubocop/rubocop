@@ -9,7 +9,7 @@ module RuboCop
 
     # @api private
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details
-                       Enabled Reference References Safe SafeAutoCorrect].freeze
+                       Enabled Reference References Safe SafeAutoCorrect AllowedOffenses].freeze
     # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide Preview
                          VersionAdded VersionChanged VersionRemoved
@@ -174,6 +174,46 @@ module RuboCop
       validate_new_cops_parameter
       validate_fail_level_parameter
       validate_preview_parameter
+      validate_allowed_offenses_parameter
+    end
+
+    def validate_allowed_offenses_parameter
+      @config.each do |name, cop_config|
+        next unless cop_config.is_a?(Hash) && cop_config.key?('AllowedOffenses')
+
+        validate_allowed_offenses(name, cop_config['AllowedOffenses'])
+      end
+    end
+
+    def validate_allowed_offenses(name, value)
+      if name == 'AllCops'
+        raise ValidationError, '`AllowedOffenses` must be configured per cop, not under `AllCops`.'
+      end
+      return if valid_allowed_offenses?(value)
+
+      raise ValidationError,
+            param_error_message(
+              name,
+              'AllowedOffenses',
+              value,
+              'a hash of exact relative file paths to non-negative integers'
+            )
+    end
+
+    def valid_allowed_offenses?(value)
+      value.is_a?(Hash) && value.all? do |file_path, count|
+        valid_allowed_offenses_path?(file_path) && valid_allowed_offenses_count?(count)
+      end
+    end
+
+    def valid_allowed_offenses_path?(file_path)
+      file_path.is_a?(String) && !file_path.empty? &&
+        !PathUtil.absolute?(file_path) && !PathUtil.glob?(file_path) &&
+        !file_path.include?('\\') && file_path == PathUtil.normalized_relative_path(file_path)
+    end
+
+    def valid_allowed_offenses_count?(count)
+      count.is_a?(Integer) && count >= 0
     end
 
     def validate_fail_level_parameter
