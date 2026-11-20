@@ -190,6 +190,57 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
     RUBY
   end
 
+  it 'does not register an offense when next replaces the accumulator' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2].reduce([]) do |acc, item|
+        next [] if item == 2
+
+        acc << item
+        acc
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for a bare next with numbered parameters', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      items&.inject([]) do
+        next unless _2
+
+        _1 << _2
+        _1
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when next is in the receiver of a nested block' do
+    expect_no_offenses(<<~RUBY)
+      items.reduce([]) do |acc, item|
+        (item || (next [])).each { |entry| acc << entry }
+        acc
+      end
+    RUBY
+  end
+
+  it 'corrects when only a nested block returns a different value' do
+    expect_offense(<<~RUBY)
+      items.reduce([]) do |acc, item|
+            ^^^^^^ Use `each_with_object` instead of `reduce`.
+        next acc unless item
+
+        item.each { |entry| next [] unless entry }
+        acc
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      items.each_with_object([]) do |item, acc|
+        next acc unless item
+
+        item.each { |entry| next [] unless entry }
+      end
+    RUBY
+  end
+
   context 'when a simple literal is passed as initial value' do
     it 'ignores inject/reduce' do
       expect_no_offenses('array.reduce(0) { |a, e| a }')
