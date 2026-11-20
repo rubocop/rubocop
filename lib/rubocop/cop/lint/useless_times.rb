@@ -96,10 +96,12 @@ module RuboCop
           source = node.body.source
           source.gsub!(/\b#{block_arg}\b/, '0') if block_arg
 
-          corrector.replace(node, fix_indentation(source, node.loc.column...node.body.loc.column))
+          corrector.replace(node, fix_indentation(source, node))
         end
 
         def reducible_to_body?(node, block_arg)
+          return false if node.body.each_node(:any_str).any?(&:heredoc?)
+
           # A block with multiple arguments can't be reduced to its body (the extra arguments
           # would become undefined references), and `next`/`break`/`redo` bound to the block
           # become orphaned (a syntax error) once the block is removed.
@@ -124,16 +126,16 @@ module RuboCop
           regexp.to_regexp.names.include?(name.to_s)
         end
 
-        def fix_indentation(source, range)
-          # Cleanup indentation in a multiline block
-          source_lines = source.split("\n")
+        def fix_indentation(source, node)
+          body = node.body
+          return source if body.single_line?
 
-          source_lines[1..].each do |line|
-            next if line.empty?
+          indent = body.source_range.source_line[/\A[ \t]*/]
+          outer_indent = node.source_range.source_line[/\A[ \t]*/]
+          return source if indent.size <= outer_indent.size
+          return source if body.each_node(:any_str, :any_sym, :regexp).any?(&:multiline?)
 
-            line[range] = ''
-          end
-          source_lines.join("\n")
+          source.gsub("\n#{indent}", "\n#{outer_indent}")
         end
 
         def own_line?(node)

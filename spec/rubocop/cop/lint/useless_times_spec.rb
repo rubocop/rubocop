@@ -164,6 +164,66 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
   end
 
   context 'multiline block' do
+    it 'preserves a call that starts on the block opening line' do
+      expect_offense(<<~RUBY)
+        1.times { log(
+        ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+          value) }; done
+      RUBY
+
+      expect_correction(<<~RUBY)
+        log(
+          value); done
+      RUBY
+    end
+
+    it 'preserves a continuation line with less indentation than the block body' do
+      expect_offense(<<~RUBY)
+        def run
+          1.times do
+          ^^^^^^^^^^ Useless call to `1.times` detected.
+            log(
+          value)
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def run
+          log(
+          value)
+        end
+      RUBY
+    end
+
+    it 'preserves leading whitespace inside a multiline string' do
+      expect_offense(<<~RUBY)
+        1.times do
+        ^^^^^^^^^^ Useless call to `1.times` detected.
+          log("first
+            second")
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        log("first
+            second")
+      RUBY
+    end
+
+    it 'does not drop the heredoc body when extracting the call' do
+      expect_offense(<<~RUBY)
+        1.times do
+        ^^^^^^^^^^ Useless call to `1.times` detected.
+          log(<<~TEXT)
+            value
+          TEXT
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'correctly handles a multiline block with 1.times' do
       expect_offense(<<~RUBY)
         1.times do |i|
