@@ -431,6 +431,279 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned in the first argument of a method call without parentheses' do
+    it 'registers an offense and parenthesizes an `if` value' do
+      expect_offense(<<~RUBY)
+        do_something foo = if bar
+                     ^^^ Useless assignment to variable - `foo`.
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something (if bar
+          baz
+        end)
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes an `until` value' do
+      expect_offense(<<~RUBY)
+        obj.do_something foo = until bar
+                         ^^^ Useless assignment to variable - `foo`.
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj.do_something (until bar
+          baz
+        end)
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes a hash value with braces' do
+      expect_offense(<<~RUBY)
+        do_something foo = { bar: baz }
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something ({ bar: baz })
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes a value starting with a hash with braces' do
+      expect_offense(<<~RUBY)
+        do_something foo = { bar: baz }.merge(qux)
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something ({ bar: baz }.merge(qux))
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes a regexp value with slashes' do
+      expect_offense(<<~RUBY)
+        do_something foo = / bar/
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something (/ bar/)
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes a regexp value starting with `=`' do
+      expect_offense(<<~RUBY)
+        do_something foo = /=bar/
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something (/=bar/)
+      RUBY
+    end
+
+    it 'registers an offense and autocorrects a regexp value with slashes not followed by a space' do
+      expect_offense(<<~RUBY)
+        do_something foo = /bar/
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something /bar/
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes a unary minus value followed by a space' do
+      expect_offense(<<~RUBY)
+        do_something foo = - bar
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something (- bar)
+      RUBY
+    end
+
+    it 'registers an offense and autocorrects a unary minus value without a space' do
+      expect_offense(<<~RUBY)
+        do_something foo = -bar
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something -bar
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes a beginless range value', :ruby27 do
+      expect_offense(<<~RUBY)
+        do_something foo = ..bar
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something (..bar)
+      RUBY
+    end
+
+    it 'registers an offense and autocorrects a hash value with braces of `return`' do
+      expect_offense(<<~RUBY)
+        def some_method
+          return foo = { bar: baz }
+                 ^^^ Useless assignment to variable - `foo`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          return { bar: baz }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes an `if` value of `return`' do
+      expect_offense(<<~RUBY)
+        def some_method
+          return foo = if bar
+                 ^^^ Useless assignment to variable - `foo`.
+            baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          return (if bar
+            baz
+          end)
+        end
+      RUBY
+    end
+
+    it 'registers an offense and autocorrects a value that is not ambiguous' do
+      expect_offense(<<~RUBY)
+        do_something foo = bar
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something bar
+      RUBY
+    end
+
+    it 'registers an offense and autocorrects an `if` value in the second argument' do
+      expect_offense(<<~RUBY)
+        do_something bar, foo = if baz
+                          ^^^ Useless assignment to variable - `foo`.
+          qux
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something bar, if baz
+          qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense and autocorrects an `if` value in parentheses' do
+      expect_offense(<<~RUBY)
+        do_something(foo = if bar
+                     ^^^ Useless assignment to variable - `foo`.
+          baz
+        end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(if bar
+          baz
+        end)
+      RUBY
+    end
+  end
+
+  context 'when a variable is assigned the value of a modifier `rescue`' do
+    it 'registers an offense and parenthesizes the value in the argument of a method call without parentheses' do
+      expect_offense(<<~RUBY)
+        do_something foo = bar rescue baz
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something (bar rescue baz)
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes the value in the argument of a method call with parentheses' do
+      expect_offense(<<~RUBY)
+        do_something(foo = bar rescue baz)
+                     ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something((bar rescue baz))
+      RUBY
+    end
+
+    it 'registers an offense and parenthesizes the value in a condition' do
+      expect_offense(<<~RUBY)
+        if foo = bar rescue baz
+           ^^^ Useless assignment to variable - `foo`.
+          qux
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if (bar rescue baz)
+          qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense and does not parenthesize the value of a statement' do
+      expect_offense(<<~RUBY)
+        foo = bar rescue baz
+        ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar rescue baz
+      RUBY
+    end
+
+    it 'registers an offense and does not parenthesize the value in a branch' do
+      expect_offense(<<~RUBY)
+        if qux
+          foo = bar rescue baz
+          ^^^ Useless assignment to variable - `foo`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if qux
+          bar rescue baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense and does not parenthesize the value of another assignment' do
+      expect_offense(<<~RUBY)
+        qux = foo = bar rescue baz
+              ^^^ Useless assignment to variable - `foo`.
+        do_something(qux)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        qux = bar rescue baz
+        do_something(qux)
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned with operator assignment in top level' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
