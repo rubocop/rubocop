@@ -3359,6 +3359,46 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/RaiseArgs` with a heredoc and `EnforcedStyleForMultiline: comma` of `Style/TrailingCommaInArguments`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArguments:
+        EnforcedStyleForMultiline: comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      raise Foo.new(
+        <<~MSG
+          message
+        MSG
+      )
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/RaiseArgs,Style/TrailingCommaInArguments'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      raise Foo, <<~MSG
+          message
+        MSG
+
+    RUBY
+  end
+
+  it 'corrects `Style/RaiseArgs` with a heredoc followed by a comma and `Style/TrailingCommaInArguments`' do
+    create_file('example.rb', <<~RUBY)
+      raise Foo.new(
+        <<~MSG,
+          message
+        MSG
+      )
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/RaiseArgs,Style/TrailingCommaInArguments'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      raise Foo, <<~MSG
+          message
+        MSG
+
+    RUBY
+  end
+
   it 'corrects `Naming/BlockForwarding` with `Lint/AmbiguousOperator`' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:

@@ -56,6 +56,10 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
+
         def on_send(node)
           return unless node.command?(:raise) || node.command?(:fail)
 
@@ -171,8 +175,19 @@ module RuboCop
 
         def correct_heredoc_compact_to_exploded(corrector, node)
           new_call = node.first_argument
+          remove_trailing_comma(corrector, new_call)
           corrector.replace(range_between(new_call.receiver, new_call.first_argument), ', ')
           corrector.remove(new_call.loc.end) if new_call.loc.end
+        end
+
+        def remove_trailing_comma(corrector, new_call)
+          return unless new_call.loc.end
+
+          argument_end = new_call.first_argument.source_range.end
+          token = processed_source.first_token_of(argument_end)
+          return unless token.comma?
+
+          corrector.remove(argument_end.join(token.pos))
         end
 
         def correct_raise(node)
