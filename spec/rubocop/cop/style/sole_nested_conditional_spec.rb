@@ -20,6 +20,41 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'preserves a statement after the outer end' do
+    expect_offense(<<~RUBY)
+      if ready
+        if allowed
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          publish
+        end
+      end; notify
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ready && allowed
+          publish
+      end; notify
+    RUBY
+  end
+
+  it 'keeps a comment on each closing line when the conditional is an argument' do
+    expect_offense(<<~RUBY)
+      log(if ready
+        if allowed
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          publish
+        end # allowed
+      end, fallback) # keep
+    RUBY
+
+    expect_correction(<<~RUBY)
+      log(if ready && allowed
+          publish
+        # allowed
+      end, fallback) # keep
+    RUBY
+  end
+
   it 'registers an offense and corrects when using nested `unless` within `if`' do
     expect_offense(<<~RUBY)
       if foo
@@ -712,7 +747,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      if foo && bar; end;#{' '}
+      if foo && bar; end
     RUBY
   end
 
