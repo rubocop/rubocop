@@ -38,9 +38,12 @@ module RuboCop
           (block _ (args (arg $_)) ...)
         PATTERN
 
-        # @!method block_reassigns_arg?(node)
-        def_node_search :block_reassigns_arg?, <<~PATTERN
-          {(lvasgn % ...) (match_var %) (match_with_lvasgn #named_capture?(%) _)}
+        # @!method argument_references(node, name)
+        def_node_search :argument_references, '$(lvar %)'
+
+        # @!method writes_argument?(node, name)
+        def_node_search :writes_argument?, <<~PATTERN
+          {(argument % ...) (lvasgn % ...) (match_var %) (match_with_lvasgn #named_capture?(%) _)}
         PATTERN
 
         def on_send(node)
@@ -93,10 +96,28 @@ module RuboCop
           block_arg = block_arg(node)
           return unless reducible_to_body?(node, block_arg)
 
-          source = node.body.source
-          source.gsub!(/\b#{block_arg}\b/, '0') if block_arg
+          source = block_arg ? substituted_body(node.body, block_arg) : node.body.source
+          return unless source
 
           corrector.replace(node, fix_indentation(source, node))
+        end
+
+        def substituted_body(body, name)
+          references = argument_references(body, name).sort_by(&:source_range)
+          return unless references.all? { |variable| replaceable_reference?(variable) }
+
+          source = body.source
+          references.reverse_each do |variable|
+            offset = variable.source_range.begin_pos - body.source_range.begin_pos
+            source[offset, variable.source_length] = '0'
+          end
+          source
+        end
+
+        def replaceable_reference?(variable)
+          return false if variable.parent.pin_type? || variable.each_ancestor(:defined?).any?
+
+          !variable.parent.pair_type? || !variable.parent.value_omission?
         end
 
         def reducible_to_body?(node, block_arg)
@@ -110,7 +131,11 @@ module RuboCop
           # undefined variable.
           return false if node.arguments.one? && block_arg.nil?
 
-          !block_reassigns_arg?(node, block_arg)
+          !block_arg || substitutable_body?(node.body, block_arg)
+        end
+
+        def substitutable_body?(body, name)
+          !writes_argument?(body, name) && body.each_node(:any_str, :xstr).none?(&:heredoc?)
         end
 
         def orphans_loop_control_keyword?(node)

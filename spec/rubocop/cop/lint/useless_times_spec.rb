@@ -59,6 +59,43 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
     RUBY
   end
 
+  it 'replaces references to the block argument without changing other uses of its name' do
+    expect_offense(<<~'RUBY')
+      1.times do |i|
+      ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+        log.i(:i, "i = #{i}")
+        items.each { use(i) }
+      end
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      log.i(:i, "i = #{0}")
+      items.each { use(0) }
+    RUBY
+  end
+
+  it 'does not replace a shadowed block argument' do
+    expect_offense(<<~RUBY)
+      1.times do |i|
+      ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+        items.each { |i| log(i) }
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not replace an omitted hash value with an integer key', :ruby31 do
+    expect_offense(<<~RUBY)
+      1.times do |i|
+      ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+        log(i:)
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'registers an offense but does not correct with 1.times with method chain' do
     expect_offense(<<~RUBY)
       1.times.reverse_each do
