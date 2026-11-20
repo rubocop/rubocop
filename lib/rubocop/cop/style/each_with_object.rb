@@ -28,7 +28,7 @@ module RuboCop
             _, method_name, method_arg = *method
             return if simple_method_arg?(method_arg)
 
-            return_value = return_value(body)
+            return_value = returned_accumulator(body)
             return unless return_value
             return unless first_argument_returned?(args, return_value)
             return if accumulator_param_assigned_to?(body, args)
@@ -47,7 +47,7 @@ module RuboCop
             _, method_name, method_arg = *method
             return if simple_method_arg?(method_arg)
 
-            return unless return_value(body)&.source == '_1'
+            return unless returned_accumulator(body)&.source == '_1'
 
             message = format(MSG, method: method_name)
             add_offense(method.loc.selector, message: message) do |corrector|
@@ -112,11 +112,27 @@ module RuboCop
           end
         end
 
-        def return_value(body)
+        def returned_accumulator(body)
           return unless body
 
-          return_value = body.begin_type? ? body.children.last : body
-          return_value if return_value&.lvar_type?
+          value = body.begin_type? ? body.children.last : body
+          value if value&.lvar_type? && !next_changes_accumulator?(body, value)
+        end
+
+        def next_changes_accumulator?(body, value)
+          body.each_descendant(:next).any? do |jump|
+            jump.child_nodes != [value] && next_target(jump).equal?(body.parent)
+          end
+        end
+
+        def next_target(node)
+          while (parent = node.parent)
+            if (parent.any_block_type? || parent.loop_keyword?) && parent.body.equal?(node)
+              return parent
+            end
+
+            node = parent
+          end
         end
 
         def first_argument_returned?(args, return_value)
