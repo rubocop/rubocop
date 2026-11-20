@@ -210,7 +210,10 @@ module RuboCop
                     node.pairs.empty? || node.single_line?
 
           proc = ->(a) { a.checkable_layout?(node) }
-          return unless alignment_for_hash_rockets.any?(proc) && alignment_for_colons.any?(proc)
+          unless alignment_for_hash_rockets.any?(proc) && alignment_for_colons.any?(proc)
+            check_continued_line_key_alignment(node)
+            return
+          end
 
           check_pairs(node)
         end
@@ -262,6 +265,32 @@ module RuboCop
           add_offenses
         end
 
+        def check_continued_line_key_alignment(node)
+          return unless node.pairs_on_same_line?
+
+          first_pair = node.pairs.first
+          reset!
+
+          node.pairs.drop(1).each do |current_pair|
+            check_continued_line_key(first_pair, current_pair)
+          end
+
+          add_offenses
+        end
+
+        def check_continued_line_key(first_pair, current_pair)
+          return unless Util.begins_its_line?(current_pair.source_range)
+
+          configured_style = alignment_for(current_pair).first.class
+          return if configured_style.equal?(SeparatorAlignment)
+
+          key_delta = first_pair.key_delta(current_pair)
+          return if key_delta.zero? || key_out_of_line?(key_delta, current_pair)
+
+          column_deltas[configured_style][current_pair] = { key: key_delta }
+          (offenses_by[KeyAlignment] ||= []) << current_pair
+        end
+
         def add_offenses
           kwsplat_offenses = offenses_by.delete(KeywordSplatAlignment)
           register_offenses_with_format(kwsplat_offenses, KeywordSplatAlignment)
@@ -296,7 +325,8 @@ module RuboCop
         end
 
         def key_out_of_line?(delta, node)
-          (delta[:key] || 0) < -node.source_range.column
+          key_delta = delta.is_a?(Hash) ? (delta[:key] || 0) : delta
+          key_delta < -node.source_range.column
         end
 
         def ignore_hash_argument?(node)
