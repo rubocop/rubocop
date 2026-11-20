@@ -235,9 +235,9 @@ module RuboCop
     end
 
     def directive_count
-      return signed_args.values.sum(&:count) if push? || next?
+      return signed_args.values.sum { |names| names.uniq.count } if push? || next?
 
-      raw_cop_names.count
+      raw_cop_names.uniq.count
     end
 
     # Returns line number for directive
