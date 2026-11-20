@@ -251,4 +251,268 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
       end
     RUBY
   end
+
+  it 'registers an offense when extending instance of Struct and class body is empty and `end` is followed by code' do
+    expect_offense(<<~RUBY)
+      foo(class Person < Struct.new(:first_name, :last_name)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end, bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(Person = Struct.new(:first_name, :last_name), bar)
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty and `end` is followed by code' do
+    expect_offense(<<~RUBY)
+      foo(class Person < Struct.new :first_name, :last_name
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end, bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(Person = Struct.new(:first_name, :last_name), bar)
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct and class body is empty with a comment' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name) # comment
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) # comment
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct and class body is empty with a comment and `end` is followed by code' do
+    expect_offense(<<~RUBY)
+      foo(class Person < Struct.new(:first_name, :last_name) # comment
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end, bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(Person = Struct.new(:first_name, :last_name) do # comment
+      end, bar)
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct with a heredoc argument and class body is empty and `end` is followed by code' do
+    expect_offense(<<~RUBY)
+      foo(class Person < Struct.new(<<~NAME)
+                         ^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        first_name
+      NAME
+      end, bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(Person = Struct.new(<<~NAME) do
+        first_name
+      NAME
+      end, bar)
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new :first_name, :last_name
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new :first_name, :last_name
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and with a comment between arguments and `end` is followed by code' do
+    expect_offense(<<~RUBY)
+      foo(class Person < Struct.new :first_name, # comment
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+            :last_name
+      end, bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(Person = Struct.new(:first_name, # comment
+            :last_name), bar)
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty and the class is an argument' do
+    expect_offense(<<~RUBY)
+      foo(
+        class Person < Struct.new :first_name, :last_name
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        end
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(
+        Person = Struct.new(:first_name, :last_name)
+      )
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty and the class is a hash value' do
+    expect_offense(<<~RUBY)
+      { key: class Person < Struct.new :first_name, :last_name
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+      }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      { key: Person = Struct.new(:first_name, :last_name)
+      }
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty in a block body' do
+    expect_offense(<<~RUBY)
+      foo do
+        class Person < Struct.new :first_name, :last_name
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do
+        Person = Struct.new :first_name, :last_name
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty in a module body' do
+    expect_offense(<<~RUBY)
+      module Foo
+        class Person < Struct.new :first_name, :last_name
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module Foo
+        Person = Struct.new :first_name, :last_name
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty in a `when` body' do
+    expect_offense(<<~RUBY)
+      case foo
+      when bar
+        class Person < Struct.new :first_name, :last_name
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case foo
+      when bar
+        Person = Struct.new :first_name, :last_name
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty in a `rescue` body' do
+    expect_offense(<<~RUBY)
+      begin
+        foo
+      rescue
+        class Person < Struct.new :first_name, :last_name
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      rescue
+        Person = Struct.new :first_name, :last_name
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty in the body of a `while` modifier' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new :first_name, :last_name
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end while foo
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new :first_name, :last_name while foo
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct without parentheses and class body is empty in the condition of `if`' do
+    expect_offense(<<~RUBY)
+      if class Person < Struct.new :first_name, :last_name
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+        foo
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if Person = Struct.new(:first_name, :last_name)
+        foo
+      end
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct and class body is empty and the class is the left operand of `&&`' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name)
+                     ^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end && foo
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (Person = Struct.new(:first_name)) && foo
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct and the class is the receiver of a method call' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name)
+                     ^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        def age
+        end
+      end.do_something
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (Person = Struct.new(:first_name) do
+        def age
+        end
+      end).do_something
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of Struct and class body is empty with a comment and the class is the receiver of a method call with a leading dot' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name) # comment
+                     ^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+        .do_something
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (Person = Struct.new(:first_name) do # comment
+      end)
+        .do_something
+    RUBY
+  end
 end

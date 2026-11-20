@@ -40,6 +40,9 @@ module RuboCop
 
         MSG = "Don't extend an instance initialized by `Struct.new`. " \
               'Use a block to customize the struct.'
+        LEFT_OPERAND_TYPES = %i[and or irange erange match_pattern match_pattern_p].freeze
+        ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn casgn op_asgn or_asgn and_asgn].freeze
+        BODY_TYPES = %i[module class sclass any_def any_block when in_pattern resbody for].freeze
 
         # When the closing parenthesis of `Struct.new` is on its own line, omitting the
         # parentheses in the same pass leaves a line break before the appended `do`.
@@ -52,12 +55,13 @@ module RuboCop
           return if defines_constants?(node.body)
 
           add_offense(node.parent_class) do |corrector|
-            corrector.remove(
+            keyword_range =
               range_with_surrounding_space(node.loc.keyword, side: :right, newlines: false)
-            )
+            corrector.remove(keyword_range)
             corrector.replace(node.loc.operator, '=')
 
             correct_parent(node.parent_class, corrector)
+            parenthesize_left_operand(corrector, node, keyword_range)
           end
         end
 
@@ -82,11 +86,11 @@ module RuboCop
           if parent.block_type?
             replace_opening_brace_with_do(corrector, parent) if parent.braces?
             corrector.remove(range_with_surrounding_space(parent.loc.end, newlines: false))
-          elsif (class_node = parent.parent).body.nil?
-            corrector.remove(range_for_empty_class_body(class_node, parent))
-          elsif unparenthesized_struct_new?(parent)
-            wrap_unparenthesized_call_with_do(corrector, parent)
+          elsif (range = range_for_empty_class_body(parent))
+            corrector.remove(range)
+            parenthesize_arguments(corrector, parent) unless statement?(parent.parent)
           else
+            parenthesize_arguments(corrector, parent)
             corrector.insert_after(parent, ' do')
           end
         end
@@ -104,23 +108,71 @@ module RuboCop
           opening_range.last_column < opening_range.source_line.length
         end
 
-        def range_for_empty_class_body(class_node, struct_new)
-          if class_node.single_line?
-            range_between(struct_new.source_range.end_pos, class_node.source_range.end_pos)
-          else
-            range_by_whole_lines(class_node.loc.end, include_final_newline: true)
-          end
+        def range_for_empty_class_body(struct_new)
+          class_node = struct_new.parent
+          return if class_node.body
+
+          range = range_between(struct_new.source_range.end_pos, class_node.source_range.end_pos)
+          return range if /\A[\s;]*end\z/.match?(range.source)
+          return if end_line_kept?(class_node)
+
+          range_by_whole_lines(class_node.loc.end, include_final_newline: true)
+        end
+
+        def end_line_kept?(class_node)
+          return true if left_operand?(class_node)
+
+          class_node.loc.end.source_line.strip != 'end'
+        end
+
+        def left_operand?(class_node)
+          parent = class_node.parent
+          return false if parent.nil?
+          return parent.receiver.equal?(class_node) if parent.call_type?
+          return parent.condition.equal?(class_node) if parent.if_type? && parent.ternary?
+
+          LEFT_OPERAND_TYPES.include?(parent.type) && parent.children.first.equal?(class_node)
+        end
+
+        def statement?(class_node)
+          parent = class_node.parent
+          return true if parent.nil? || parent.type?(:begin, :kwbegin, :rescue, :ensure)
+          return !parent.condition.equal?(class_node) if conditional_statement?(parent)
+
+          statement_child(parent).equal?(class_node)
+        end
+
+        def conditional_statement?(node)
+          return true if node.type?(:while, :until)
+
+          node.if_type? && !node.ternary?
+        end
+
+        def statement_child(node)
+          return node.expression if node.type?(*ASSIGNMENT_TYPES)
+          return node.else_branch if node.type?(:case, :case_match)
+          return if node.any_def_type? && node.endless?
+
+          node.body if node.type?(*BODY_TYPES)
+        end
+
+        def parenthesize_arguments(corrector, struct_new)
+          return unless unparenthesized_struct_new?(struct_new)
+
+          arguments_begin = struct_new.first_argument.source_range.begin
+          corrector.replace(struct_new.loc.selector.end.join(arguments_begin), '(')
+          corrector.insert_after(struct_new.last_argument, ')')
         end
 
         def unparenthesized_struct_new?(parent)
           parent.send_type? && parent.arguments.any? && !parent.parenthesized?
         end
 
-        def wrap_unparenthesized_call_with_do(corrector, parent)
-          args_source = parent.arguments.map(&:source).join(', ')
-          range = parent.loc.selector.end.join(parent.source_range.end)
+        def parenthesize_left_operand(corrector, class_node, keyword_range)
+          return unless left_operand?(class_node)
 
-          corrector.replace(range, "(#{args_source}) do")
+          corrector.insert_before(keyword_range, '(')
+          corrector.insert_after(class_node.source_range.end, ')')
         end
       end
     end
