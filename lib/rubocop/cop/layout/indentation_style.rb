@@ -61,9 +61,26 @@ module RuboCop
         def autocorrect(corrector, range)
           if range.source.include?("\t")
             autocorrect_lambda_for_tabs(corrector, range)
-          else
+          elsif !indentation_removed?(range)
             autocorrect_lambda_for_spaces(corrector, range)
           end
+        end
+
+        def indentation_removed?(range)
+          return false unless range.size < configured_indentation_width
+
+          processed_source.ast&.each_node(:pair)&.any? do |pair|
+            next false unless pair.source_range.begin_pos == range.end_pos
+
+            aligned_with_tab_indented_pair?(pair, range.size)
+          end
+        end
+
+        def aligned_with_tab_indented_pair?(pair, column)
+          first_pair = pair.parent.pairs.first
+          return false if pair == first_pair || first_pair.loc.column != column
+
+          first_pair.source_range.source_line[0...column].include?("\t")
         end
 
         def find_offense(line, lineno)
