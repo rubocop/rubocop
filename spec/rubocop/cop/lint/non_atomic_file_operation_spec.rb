@@ -169,6 +169,40 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
   end
 
+  it 'registers an offense when use `FileTest.exist?` with `then` on a single line before creating file' do
+    expect_offense(<<~RUBY)
+      unless FileTest.exist?(path) then FileUtils.makedirs(path) end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+    RUBY
+
+    expect_correction(" FileUtils.makedirs(path)\n")
+  end
+
+  it 'registers an offense when use `FileTest.exist?` with `then` at the end of the line before creating file' do
+    expect_offense(<<~RUBY)
+      unless FileTest.exist?(path) then
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.makedirs(path)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path)
+    RUBY
+  end
+
+  it 'registers an offense when use `FileTest.exist?` with `then` on a single line in a method argument' do
+    expect_offense(<<~RUBY)
+      do_something(unless FileTest.exist?(path) then FileUtils.makedirs(path) end, arg)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something( FileUtils.makedirs(path), arg)
+    RUBY
+  end
+
   it 'registers an offense when use file existence checks `unless` by postfix before creating file' do
     expect_offense(<<~RUBY)
       FileUtils.mkdir(path) unless FileTest.exist?(path)
