@@ -59,7 +59,37 @@ module RuboCop
         private
 
         def offense?(node)
-          node.ternary? && node.multiline? && node.source != replacement(node)
+          return false unless node.ternary? && node.multiline?
+          return false if heredoc_body_outside_branch?(node) || outer_heredoc_body_inside?(node)
+
+          node.source != replacement(node)
+        end
+
+        def heredoc_body_outside_branch?(node)
+          single_line = enforce_single_line_ternary_operator?(node)
+
+          [node.condition, node.if_branch, node.else_branch].any? do |branch|
+            branch.each_node(:any_str).any? do |str|
+              next false unless str.heredoc?
+              next false if single_line && heredoc_ends_after?(str, node)
+
+              heredoc_ends_after?(str, branch)
+            end
+          end
+        end
+
+        def outer_heredoc_body_inside?(node)
+          ternary_range = node.source_range
+
+          processed_source.ast.each_node(:any_str).any? do |str|
+            next false if !str.heredoc? || ternary_range.contains?(str.source_range)
+
+            ternary_range.overlaps?(str.loc.heredoc_body)
+          end
+        end
+
+        def heredoc_ends_after?(heredoc, node)
+          heredoc.loc.heredoc_end.end_pos > node.source_range.end_pos
         end
 
         def autocorrect(corrector, node)
