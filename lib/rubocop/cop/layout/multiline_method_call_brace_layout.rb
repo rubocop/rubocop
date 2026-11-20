@@ -109,7 +109,7 @@ module RuboCop
         # Moving the closing parenthesis and removing it under `omit_parentheses` in the same pass
         # leaves the moved parenthesis behind.
         def self.autocorrect_incompatible_with
-          [Style::MethodCallWithArgsParentheses]
+          [Style::MethodCallWithArgsParentheses, Style::YodaCondition, Style::DoubleNegation]
         end
 
         def on_send(node)

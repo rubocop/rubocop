@@ -81,12 +81,16 @@ module RuboCop
           corrector.wrap(operation, '[', ']') if operation.array_type? && !operation.bracketed?
           corrector.remove(range_between(operation.source_range.end_pos, node.source_range.end_pos))
           corrector.insert_before(operation, "begin\n#{node_indentation}")
-          corrector.insert_after(heredoc_end(operation) || operation, <<~RESCUE_CLAUSE.chop)
+          corrector.insert_after(operation_end(operation), <<~RESCUE_CLAUSE.chop)
 
             #{node_offset}rescue
             #{node_indentation}#{node.resbody_branches.first.body.source}
             #{node_offset}end
           RESCUE_CLAUSE
+        end
+
+        def operation_end(operation)
+          [heredoc_end(operation), operation.source_range].compact.max_by(&:end_pos)
         end
 
         def indentation_and_offset(node, parenthesized)

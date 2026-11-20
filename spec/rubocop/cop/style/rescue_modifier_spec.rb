@@ -37,6 +37,27 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
     RUBY
   end
 
+  it 'registers an offense when using modifier rescue for method call with heredoc argument and the closing parenthesis after the heredoc' do
+    expect_offense(<<~RUBY)
+      method(<<~EOS, arg
+      ^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        str
+      EOS
+      ).foo rescue handle
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        method(<<~EOS, arg
+        str
+      EOS
+      ).foo
+      rescue
+        handle
+      end
+    RUBY
+  end
+
   it 'registers an offense when using modifier rescue for safe navigation method call with heredoc argument' do
     expect_offense(<<~RUBY)
       obj&.method(<<~EOS) rescue handle

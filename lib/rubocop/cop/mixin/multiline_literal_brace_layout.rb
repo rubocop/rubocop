@@ -10,15 +10,17 @@ module RuboCop
       private
 
       def check_brace_layout(node)
-        return if ignored_literal?(node)
+        check(node) if brace_layout_checked?(node)
+      end
+
+      def brace_layout_checked?(node)
+        return false if ignored_literal?(node)
 
         # If the last node is or contains a conflicting HEREDOC, we don't want
         # to adjust the brace layout because this will result in invalid code.
-        return if last_line_heredoc?(node.children.last)
-        return if heredoc_opened_on_closing_brace_line?(node)
-        return if heredoc_method_call_to_be_repositioned?(node.children.last)
-
-        check(node)
+        !last_line_heredoc?(node.children.last) &&
+          !heredoc_opened_on_closing_brace_line?(node) &&
+          !heredoc_method_call_to_be_repositioned?(node.children.last)
       end
 
       # Returns true for the case
@@ -53,6 +55,8 @@ module RuboCop
         return if closing_brace_on_same_line?(node)
 
         add_offense(node.loc.end, message: self.class::ALWAYS_SAME_LINE_MESSAGE) do |corrector|
+          next if nested_brace_moved_above_heredoc?(node)
+
           MultilineLiteralBraceCorrector.correct(corrector, node, processed_source)
         end
       end
@@ -62,6 +66,8 @@ module RuboCop
           return if closing_brace_on_same_line?(node)
 
           add_offense(node.loc.end, message: self.class::SAME_LINE_MESSAGE) do |corrector|
+            next if nested_brace_moved_above_heredoc?(node)
+
             MultilineLiteralBraceCorrector.correct(corrector, node, processed_source)
           end
         else
@@ -70,6 +76,38 @@ module RuboCop
           add_offense(node.loc.end, message: self.class::NEW_LINE_MESSAGE) do |corrector|
             MultilineLiteralBraceCorrector.correct(corrector, node, processed_source)
           end
+        end
+      end
+
+      def nested_brace_moved_above_heredoc?(node)
+        last_line = children(node).last.last_line
+
+        node.each_descendant(node.call_type? ? :call : node.type).any? do |nested|
+          next false unless correctable_nested_brace?(nested)
+
+          nested.loc.end.line == last_line &&
+            closing_brace_moved_up?(nested) && heredoc_before_closing_brace?(nested)
+        end
+      end
+
+      def correctable_nested_brace?(node)
+        return false if node.args_type? && !node.parent.any_def_type?
+
+        brace_layout_checked?(node) && enabled_lines?(node.loc.end)
+      end
+
+      def closing_brace_moved_up?(node)
+        return false if closing_brace_on_same_line?(node)
+
+        style == :same_line || (style == :symmetrical && opening_brace_on_same_line?(node))
+      end
+
+      def heredoc_before_closing_brace?(node)
+        last_element_end = children(node).last.source_range.end_pos
+
+        node.each_descendant(:any_str).any? do |str|
+          str.heredoc? &&
+            str.loc.heredoc_end.end_pos.between?(last_element_end, node.loc.end.begin_pos)
         end
       end
 

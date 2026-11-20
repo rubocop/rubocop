@@ -1,0 +1,1 @@
+* [#16275](https://github.com/rubocop/rubocop/pull/16275): Fix an error for `Layout/MultilineMethodCallBraceLayout` with code after the closing parenthesis of a call with a heredoc argument. ([@Starlexxx][])
