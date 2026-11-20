@@ -48,6 +48,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
+        STRING_BEGIN_TYPES = %i[tSTRING_BEG tXSTRING_BEG].freeze
+
         MSG_COMPACT = 'Put empty method definitions on a single line.'
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the next line.'
 
@@ -56,6 +58,8 @@ module RuboCop
           return if correct_style?(node) || compact_style_disallowed?
 
           add_offense(node) do |corrector|
+            next if heredoc_before_end?(node)
+
             correction = corrected(node)
             next if correction_exceeds_line_length?(correction)
 
@@ -78,6 +82,13 @@ module RuboCop
           return false unless compact_style?
 
           config.for_enabled_cop('Style/SingleLineMethods')['AllowIfMethodIsEmpty'] == false
+        end
+
+        def heredoc_before_end?(node)
+          range = node.source_range.adjust(begin_pos: -node.source_range.column)
+          processed_source.tokens_within(range).any? do |token|
+            STRING_BEGIN_TYPES.include?(token.type) && token.text.start_with?('<<')
+          end
         end
 
         def corrected(node)
