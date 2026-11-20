@@ -62,7 +62,7 @@ module RuboCop
       #       baz
       #     end
       #   end
-      class RedundantBegin < Base # rubocop:disable Metrics/ClassLength
+      class RedundantBegin < Base
         include RangeHelp
         extend AutoCorrector
 
@@ -162,20 +162,21 @@ module RuboCop
         end
 
         def end_cannot_join_statement_line?(node)
-          return false if use_modifier_form_after_multiline_begin_block?(node)
-          return false unless code_after_end_on_its_own_line?(node)
+          return false unless end_must_join_statement?(node)
 
           range_with_end_line_break(node).begin_pos != statement_end_pos(node)
         end
 
-        def use_modifier_form_after_multiline_begin_block?(node)
+        def multiline_modifier_body?(node)
           return false unless (parent = node.parent)
           return false unless node.multiline? && parent.if_type? && parent.modifier_form?
 
           !parent.condition.equal?(node)
         end
 
-        def code_after_end_on_its_own_line?(node)
+        def end_must_join_statement?(node)
+          return true if multiline_modifier_body?(node)
+
           end_range = node.loc.end
           return false unless begins_its_line?(end_range)
 
@@ -256,24 +257,11 @@ module RuboCop
         end
 
         def correct_end(corrector, node)
-          if use_modifier_form_after_multiline_begin_block?(node)
-            correct_modifier_form_after_multiline_begin_block(corrector, node)
-          elsif code_after_end_on_its_own_line?(node)
+          if end_must_join_statement?(node)
             corrector.remove(range_with_end_line_break(node))
           else
             corrector.remove(node.loc.end)
           end
-        end
-
-        def correct_modifier_form_after_multiline_begin_block(corrector, node)
-          condition_range = condition_range(node.parent)
-
-          corrector.insert_after(node.children.first, " #{condition_range.source}")
-          corrector.remove(range_by_whole_lines(condition_range, include_final_newline: true))
-        end
-
-        def condition_range(node)
-          range_between(node.loc.keyword.begin_pos, node.condition.source_range.end_pos)
         end
 
         def empty_begin?(node)

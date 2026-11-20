@@ -1188,6 +1188,42 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     expect_correction("\n  foo unless condition\n")
   end
 
+  it 'preserves the statement after a modifier condition' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        publish
+      end if ready; notify
+    RUBY
+
+    expect_correction("\n  publish if ready; notify\n")
+  end
+
+  it 'preserves the remaining arguments when the modified block is a call argument' do
+    expect_offense(<<~RUBY)
+      log((begin
+           ^^^^^ Redundant `begin` block detected.
+        publish
+      end if ready), fallback)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      log((
+        publish if ready), fallback)
+    RUBY
+  end
+
+  it 'preserves the comment after a modifier condition' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        publish
+      end unless cancelled # keep
+    RUBY
+
+    expect_correction("\n  publish unless cancelled # keep\n")
+  end
+
   it 'reports an offense when multi-line `begin` block is the condition of a modifier `if`' do
     expect_offense(<<~RUBY)
       foo if begin begin
