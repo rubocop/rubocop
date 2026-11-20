@@ -175,8 +175,37 @@ module RuboCop
           return false if autocorrect_forbidden?(node.type.to_s)
           return false if comment_in_else?(node)
 
-          end_pos = base_node(node).loc.end.begin_pos
-          corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
+          range = else_clause_range(node)
+          if processed_source.tokens_within(range).any? { |token| token.type == :tSTRING_END }
+            remove_else_around_heredoc(corrector, node)
+          else
+            corrector.remove(range)
+          end
+        end
+
+        def else_clause_range(node)
+          base = node
+          base = base.parent while base.if_type? && base.elsif?
+          node.loc.else.join(base.loc.end.begin)
+        end
+
+        def remove_else_around_heredoc(corrector, node)
+          keyword = node.loc.else
+          value = node.else_branch&.source_range
+          if value && same_line?(keyword, value)
+            remove_clause_part(corrector, keyword.join(value))
+          else
+            remove_clause_part(corrector, keyword)
+            remove_clause_part(corrector, value) if value
+          end
+        end
+
+        def remove_clause_part(corrector, range)
+          removal = range_for_statement_removal(range)
+          if removal.end_pos == range_by_whole_lines(range).end_pos
+            removal = range_with_surrounding_space(removal, side: :left, newlines: false)
+          end
+          corrector.remove(removal)
         end
 
         def comment_in_else?(node)
@@ -184,13 +213,6 @@ module RuboCop
           return false unless node.else?
 
           processed_source.contains_comment?(node.loc.else.join(node.source_range.end))
-        end
-
-        def base_node(node)
-          return node if node.case_type?
-          return node unless node.elsif?
-
-          node.each_ancestor(:if, :case, :when).find(-> { node }) { |parent| parent.loc.end }
         end
 
         def autocorrect_forbidden?(type)
