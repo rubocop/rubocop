@@ -10,6 +10,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RuboCop::ConfigLoader.default_configuration.for_all_cops['SuggestExtensions'] = false
   end
 
+  it 'preserves a hash literal when moving the bracket method dot' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Style/HashConversion:
+        Enabled: true
+      Layout/DotPosition:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      x = Hash.
+        [](:a, 1)
+    RUBY
+
+    expect(cli.run(['-A', 'example.rb'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      x = {
+        :a => 1}
+    RUBY
+  end
+
   it 'preserves empty lines around a block body ending with an access modifier' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
