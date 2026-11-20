@@ -45,6 +45,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect($stdout.string).to include('no offenses detected')
   end
 
+  it 'does not introduce destructuring when For is corrected with HashEachMethods' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Style/For:
+        Enabled: true
+      Style/HashEachMethods:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      for key, value, in hash
+        puts key
+      end
+    RUBY
+
+    expect(cli.run(['-A'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      hash.each_key do |key|
+        puts key
+      end
+    RUBY
+  end
+
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/HashAlignment:

@@ -196,6 +196,74 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
         RUBY
       end
 
+      it 'corrects destructuring with a trailing comma in parentheses' do
+        expect_offense(<<~RUBY)
+          for (a,) in items do
+          ^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts a
+          end
+          for b, (c, d,) in items do
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts b
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each do |(a)|
+            puts a
+          end
+          items.each do |b, (c, d)|
+            puts b
+          end
+        RUBY
+      end
+
+      it 'keeps a single-variable trailing comma without copying the comment' do
+        expect_offense(<<~RUBY)
+          for a, # note
+          ^^^^^^^^^^^^^ Prefer `each` over `for`.
+           in items
+            puts a
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each do |a,|
+            puts a
+          end
+        RUBY
+      end
+
+      it 'drops a trailing comma after multiple variables' do
+        expect_offense(<<~RUBY)
+          for a, b, in items
+          ^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts a
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each do |a, b|
+            puts a
+          end
+        RUBY
+      end
+
+      it 'keeps a trailing comma after the loop variable' do
+        expect_offense(<<~RUBY)
+          for a, in items do
+          ^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+            puts a
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each do |a,|
+            puts a
+          end
+        RUBY
+      end
+
       context 'with range' do
         let(:expected_each_with_range) do
           <<~RUBY
