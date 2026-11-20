@@ -160,16 +160,39 @@ module RuboCop
 
         def correct_multi_argument(node)
           add_offense(node, message: MSG_LITERAL_MULTI_ARG) do |corrector|
-            corrector.replace(node, args_to_hash(node.arguments))
+            node.arguments.each_slice(2) do |key, value|
+              separator = key.source_range.end.join(value.source_range.begin)
+              comma = processed_source.tokens_within(separator).find(&:comma?)
+              replace_comma(corrector, comma)
+            end
+
+            replace_hash_call(corrector, node)
             add_parentheses_to_parent_call(node, corrector)
           end
         end
 
-        def args_to_hash(args)
-          content = args.each_slice(2)
-                        .map { |arg1, arg2| "#{arg1.source} => #{arg2.source}" }
-                        .join(', ')
-          "{#{content}}"
+        def replace_comma(corrector, comma)
+          rocket = +''
+          rocket << ' ' unless comma.space_before?
+          rocket << '=>'
+          rocket << ' ' unless comma.space_after?
+          corrector.replace(comma.pos, rocket)
+        end
+
+        def replace_hash_call(corrector, node)
+          corrector.replace(node.receiver, '{')
+          if node.loc?(:dot)
+            replace_explicit_call(corrector, node)
+          else
+            corrector.remove(node.loc.selector.begin.resize(1))
+            corrector.replace(node.source_range.end.adjust(begin_pos: -1), '}')
+          end
+        end
+
+        def replace_explicit_call(corrector, node)
+          loc = node.loc
+          [loc.dot, loc.selector, loc.begin].compact.each { |range| corrector.remove(range) }
+          corrector.replace(loc.end || node.source_range.end, '}')
         end
 
         def allowed_splat_argument?
