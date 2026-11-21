@@ -157,6 +157,32 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
     end
 
     context 'with Array#intersection' do
+      it 'corrects the intersection when the heredoc body follows the predicate' do
+        expect_offense(<<~RUBY)
+          lookup(<<~TEXT).intersection(allowed).any?
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `lookup(<<~TEXT).intersect?(allowed)` instead of `lookup(<<~TEXT).intersection(allowed).any?`.
+            key
+          TEXT
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lookup(<<~TEXT).intersect?(allowed)
+            key
+          TEXT
+        RUBY
+      end
+
+      it 'preserves a heredoc between the receiver and the intersection call' do
+        source = <<~RUBY
+          use(lookup(<<~TEXT)
+            key
+          TEXT
+          .intersection(allowed).any?, fallback)
+        RUBY
+
+        expect(autocorrect_source(source)).to eq(source)
+      end
+
       it 'registers an offense for `a.intersection(b).any?`' do
         expect_offense(<<~RUBY)
           a.intersection(b).any?
@@ -327,6 +353,18 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
     end
 
     context 'with Array#any?' do
+      it 'preserves a heredoc in the receiver of member? inside a block' do
+        source = <<~RUBY
+          allowed.any? do |entry|
+            lookup(<<~TEXT).member?(entry)
+              key
+            TEXT
+          end
+        RUBY
+
+        expect(autocorrect_source(source)).to eq(source)
+      end
+
       it 'registers an offense when using `array1.any? { |e| array2.member?(e) }`' do
         expect_offense(<<~RUBY)
           array1.any? { |e| array2.member?(e) }
