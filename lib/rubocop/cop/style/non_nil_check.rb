@@ -91,6 +91,9 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
+          receiver = node.method?(:!) ? node.receiver.receiver : node.receiver
+          return if receiver && correction_removes_heredoc?(node, receiver)
+
           case node.method_name
           when :!=
             autocorrect_comparison(corrector, node)
@@ -98,6 +101,15 @@ module RuboCop
             autocorrect_non_nil(corrector, node, node.receiver)
           when :nil?
             autocorrect_unless_nil(corrector, node, node.receiver)
+          end
+        end
+
+        def correction_removes_heredoc?(node, receiver)
+          return false if receiver.last_line == node.last_line
+
+          removed_lines = (receiver.last_line + 1)..node.last_line
+          receiver.each_node(:any_str).any? do |str|
+            str.heredoc? && removed_lines.cover?(str.loc.heredoc_end.line)
           end
         end
 
