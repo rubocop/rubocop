@@ -14,10 +14,13 @@ module ProjectIndexSpecHelpers
   }.freeze
 
   # Builds a resolved in-memory index from a `uri => source` hash, for specs
-  # that exercise index-aware cop logic directly.
+  # that exercise index-aware cop logic directly. A `.rbs` URI is indexed as an
+  # RBS signature, the way Ruby's core and standard library reach the index.
   def build_index(sources)
     graph = Rubydex::Graph.new
-    sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+    sources.each do |uri, source|
+      graph.index_source(uri, source, uri.end_with?('.rbs') ? 'rbs' : 'ruby')
+    end
     graph.resolve
     graph
   end

@@ -61,6 +61,30 @@ RSpec.describe RuboCop::Cop::Lint::ArgumentMismatch, :config do
       end
     end
 
+    context 'for a private singleton method' do
+      # An explicit receiver cannot reach a private method, so the call does not
+      # resolve to it. This is what keeps `Kernel`'s methods out of the picture:
+      # they are private instance methods of `Object`, and therefore sit in the
+      # singleton ancestry of every constant once the core signatures are indexed.
+      let(:callee) do
+        { 'file:///report.rb' => <<~RUBY }
+          class Report
+            class << self
+              private
+
+              def generate(source, format); end
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense' do
+        index_with_call('Report.generate(source)', callee)
+
+        expect_no_offenses('Report.generate(source)', '/call.rb')
+      end
+    end
+
     context 'for optional and rest parameters' do
       let(:callee) do
         { 'file:///calc.rb' => <<~RUBY }
