@@ -157,12 +157,18 @@ module RuboCop
 
           corrector.replace(if_branch.condition, chainable_condition(if_branch))
 
-          end_range = if same_line?(node.loc.end, node.if_branch.loc.end)
-                        node.loc.end
-                      else
-                        range_by_whole_lines(node.loc.end, include_final_newline: true)
-                      end
-          corrector.remove(end_range)
+          corrector.remove(redundant_end_range(node.loc.end, if_branch.loc.end))
+        end
+
+        def redundant_end_range(outer_end, inner_end)
+          return inner_end.begin.join(outer_end.begin) if same_line?(outer_end, inner_end)
+
+          [outer_end, inner_end].each do |keyword|
+            line = range_by_whole_lines(keyword, include_final_newline: true)
+            return line if line.source.strip == 'end'
+          end
+
+          range_with_surrounding_space(inner_end, side: :right, newlines: false)
         end
 
         def autocorrect_outer_condition_modify_form(corrector, node, if_branch)
