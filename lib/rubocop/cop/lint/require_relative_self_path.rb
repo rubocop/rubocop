@@ -31,11 +31,21 @@ module RuboCop
           return unless same_file?(processed_source.file_path, required_feature.value)
 
           add_offense(node) do |corrector|
-            corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
+            range = removal_range(node)
+            corrector.remove(range) if range
           end
         end
 
         private
+
+        def removal_range(node)
+          source = node.source_range
+          range = range_for_statement_removal(source)
+          return range if range == range_by_whole_lines(source, include_final_newline: true)
+          return range if !node.parent || (node.parent.type?(:begin, :kwbegin) && !node.value_used?)
+
+          nil
+        end
 
         def same_file?(file_path, required_feature)
           return false unless File.extname(file_path) == '.rb'
