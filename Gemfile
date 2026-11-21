@@ -34,7 +34,7 @@ if ENV['PARSER_ENGINE'] == 'prism'
   gem 'prism', '>= 2.0'
 elsif RUBY_VERSION >= '3.0'
   # Ruby LSP supports Ruby 3.0+.
-  gem 'ruby-lsp', '~> 0.24', platform: :mri
+  gem 'ruby-lsp', '>= 0.26.9', '< 1.0', platform: :mri
 end
 # Optional project-wide static-analysis index used by `AllCops/UseProjectIndex`.
 # Not a runtime dependency of the rubocop gem itself; only listed here so that
