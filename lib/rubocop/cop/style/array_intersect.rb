@@ -154,9 +154,7 @@ module RuboCop
           # rewrite `!a&.intersect?(b)` returns `true` there, flipping the result.
           return if bang == '!' && dot == '&.'
 
-          replacement = "#{bang}#{receiver.source}#{dot}intersect?(#{argument.source})"
-
-          register_offense(node, replacement)
+          register_offense(node, receiver, argument, dot, bang)
         end
         alias on_csend on_send
 
@@ -168,9 +166,7 @@ module RuboCop
 
           dot = node.send_node.loc.dot.source
           bang = method_name == :any? ? '' : '!'
-          replacement = "#{bang}#{receiver.source}#{dot}intersect?(#{argument.source})"
-
-          register_offense(node, replacement)
+          register_offense(node, receiver, argument, dot, bang)
         end
         alias on_numblock on_block
         alias on_itblock on_block
@@ -205,11 +201,23 @@ module RuboCop
           block_method == :include? && !argument.array_type?
         end
 
-        def register_offense(node, replacement)
+        def register_offense(node, receiver, argument, dot, bang)
+          replacement = "#{bang}#{receiver.source}#{dot}intersect?(#{argument.source})"
           message = format(MSG, replacement: replacement, existing: node.source)
 
           add_offense(node, message: message) do |corrector|
+            next if drops_heredoc?(receiver, node) || drops_heredoc?(argument, node)
+
             corrector.replace(node, replacement)
+          end
+        end
+
+        def drops_heredoc?(operand, node)
+          return false if operand.last_line == node.last_line
+
+          removed_lines = (operand.last_line + 1)..node.last_line
+          operand.each_node(:any_str).any? do |str|
+            str.heredoc? && removed_lines.cover?(str.loc.heredoc_end.line)
           end
         end
       end
