@@ -43,6 +43,32 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       RUBY
     end
 
+    it 'preserves a heredoc between the receiver and the comparison' do
+      source = <<~RUBY
+        use(lookup(<<~TEXT)
+          key
+        TEXT
+        .!=(nil), fallback)
+      RUBY
+
+      expect(autocorrect_source(source)).to eq(source)
+    end
+
+    it 'corrects the comparison when the heredoc body follows it' do
+      expect_offense(<<~RUBY)
+        lookup(<<~TEXT) != nil
+        ^^^^^^^^^^^^^^^^^^^^^^ Prefer `!lookup(<<~TEXT).nil?` over `lookup(<<~TEXT) != nil`.
+          key
+        TEXT
+      RUBY
+
+      expect_correction(<<~RUBY)
+        !lookup(<<~TEXT).nil?
+          key
+        TEXT
+      RUBY
+    end
+
     it 'does not register an offense for != 0' do
       expect_no_offenses('x != 0')
     end
@@ -117,6 +143,20 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       expect_correction(<<~RUBY)
         x
       RUBY
+    end
+
+    it 'does not change the condition when the nil check follows a heredoc terminator' do
+      expect_offense(<<~RUBY)
+        unless lookup(<<~TEXT)
+               ^^^^^^^^^^^^^^^ Explicit non-nil checks are usually redundant.
+          key
+        TEXT
+        .nil?
+          publish
+        end
+      RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense for unless x.nil?' do
