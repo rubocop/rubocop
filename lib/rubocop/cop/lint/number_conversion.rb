@@ -126,11 +126,21 @@ module RuboCop
             )
             add_offense(node, message: message) do |corrector|
               next if safe_navigation?(node) || part_of_ignored_node?(node)
+              next if conversion_removes_content?(node, receiver)
 
               corrector.replace(node, correct_method(node, node.receiver))
 
               ignore_node(node)
             end
+          end
+        end
+
+        def conversion_removes_content?(node, receiver)
+          return false if receiver.last_line == node.last_line
+
+          range = receiver.source_range.end.join(node.source_range.end)
+          processed_source.tokens_within(range).any? do |token|
+            token.comment? || token.type == :tSTRING_END
           end
         end
 
