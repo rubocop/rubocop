@@ -43,7 +43,10 @@ module RuboCop
             next if message.nil_type?
 
             add_offense(node, message: MSG_1) do |corrector|
-              corrector.remove(exception.source_range.join(message.source_range.begin))
+              prefix = exception.source_range.join(message.source_range.begin)
+              next if comment_or_heredoc_in?(prefix)
+
+              corrector.remove(prefix)
               corrector.replace(message, message_source(message))
             end
           end
@@ -58,17 +61,24 @@ module RuboCop
             next if message.nil_type?
 
             add_offense(node, message: MSG_2) do |corrector|
-              # Replacing the call would drop a heredoc body that sits inside its parentheses.
-              next if heredoc_body_inside?(new_call, message)
+              next if unsafe_to_unwrap?(new_call, message)
 
               corrector.replace(new_call, message_source(message))
             end
           end
         end
 
-        def heredoc_body_inside?(new_call, message)
-          message.each_node(:any_str).any? do |str|
-            str.heredoc? && str.loc.heredoc_end.end_pos < new_call.source_range.end_pos
+        def unsafe_to_unwrap?(new_call, message)
+          prefix = new_call.source_range.begin.join(message.source_range.begin)
+          suffix = message.source_range.end.join(new_call.source_range.end)
+          comment_or_heredoc_in?(prefix) || comment_or_heredoc_in?(suffix)
+        end
+
+        def comment_or_heredoc_in?(range)
+          return false if range.single_line?
+
+          processed_source.tokens_within(range).any? do |token|
+            (token.comment? || token.type == :tSTRING_END) && range.contains?(token.pos)
           end
         end
 
