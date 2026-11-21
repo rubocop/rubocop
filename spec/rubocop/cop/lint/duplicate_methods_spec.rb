@@ -419,6 +419,93 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
       RUBY
     end
 
+    it "does not register an offense for a method redefined after `undef` in #{type}" do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          undef some_method
+          def some_method
+            implement 2
+          end
+        end
+      RUBY
+    end
+
+    it "does not register an offense for a method redefined after `remove_method` in #{type}" do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          remove_method :some_method
+          def some_method
+            implement 2
+          end
+        end
+      RUBY
+    end
+
+    it "does not register an offense for a method redefined after `undef_method` in #{type}" do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          undef_method :some_method
+          def some_method
+            implement 2
+          end
+        end
+      RUBY
+    end
+
+    it "does not register an offense for an attr_accessor writer redefined after `undef` in #{type}" do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          attr_accessor :something
+          undef something=
+          def something=(value)
+            @something = value.to_sym
+          end
+        end
+      RUBY
+    end
+
+    it "registers an offense for a method defined twice after `remove_method` in #{type}" do
+      expect_offense(<<~RUBY, 'example.rb')
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          remove_method :some_method
+          def some_method
+            implement 2
+          end
+          def some_method
+          ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:6 and example.rb:9.
+            implement 3
+          end
+        end
+      RUBY
+    end
+
+    it "registers an offense for a method redefined after removing another method in #{type}" do
+      expect_offense(<<~RUBY, 'example.rb')
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          remove_method :any_method
+          def some_method
+          ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:6.
+            implement 2
+          end
+        end
+      RUBY
+    end
+
     it "registers an offense for duplicate nested method in #{type}" do
       expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
@@ -1227,6 +1314,66 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
       def some_method
       ^^^^^^^^^^^^^^^ Method `Object#some_method` is defined at both toplevel.rb:1 and toplevel.rb:4.
         implement 2
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for singleton attributes redefined after `undef` in `class << self`' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        class << self
+          attr_accessor :something
+          undef something, something=
+          def something
+            @something ||= 1
+          end
+          def something=(value)
+            @something = value
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for a method redefined after `remove_method` with string arguments' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        def some_method
+        end
+        def any_method
+        end
+        remove_method 'some_method', 'any_method'
+        def some_method
+        end
+        def any_method
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for a method redefined after a conditional `remove_method`' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        def some_method
+        end
+        remove_method :some_method if method_defined?(:some_method)
+        def some_method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a method redefined after `remove_method` in the body of another method' do
+    expect_offense(<<~RUBY, 'test.rb')
+      class A
+        def some_method
+        end
+        def self.reset
+          remove_method :some_method
+        end
+        def some_method
+        ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both test.rb:2 and test.rb:7.
+        end
       end
     RUBY
   end

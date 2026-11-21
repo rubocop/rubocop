@@ -82,6 +82,13 @@ module RuboCop
       #     1
       #   end
       #
+      #   # good - `undef`, `undef_method`, and `remove_method` remove the earlier definition
+      #   attr_reader :foo
+      #   undef foo
+      #   def foo
+      #     1
+      #   end
+      #
       #   # bad
       #   class MyClass
       #     extend Forwardable
@@ -241,9 +248,21 @@ module RuboCop
           found_instance_method(node, name)
         end
 
+        def on_undef(node)
+          node.children.each do |name_node|
+            name = sym_name(name_node)
+            removed_instance_method(node, name) if name
+          end
+        end
+
         # @!method alias_method?(node)
         def_node_matcher :alias_method?, <<~PATTERN
           (send nil? :alias_method (sym $_name) (sym $_original_name))
+        PATTERN
+
+        # @!method removed_method_names(node)
+        def_node_matcher :removed_method_names, <<~PATTERN
+          (send nil? {:remove_method :undef_method} ({sym str} $_)+)
         PATTERN
 
         # Matches the argument shape of an Active Support `delegate` call
@@ -329,6 +348,8 @@ module RuboCop
             return if inside_condition?(node)
 
             names.each { |name| found_instance_method(node, name) }
+          elsif (names = removed_method_names(node))
+            names.each { |name| removed_instance_method(node, name) }
           elsif (name = active_support_redefinition_marker(node))
             # `redefine_method` takes a block; scope resolution must start from the
             # block node, since `parent_module_name` cannot see through a block
@@ -406,16 +427,26 @@ module RuboCop
         end
 
         def found_instance_method(node, name)
+          method_name, scope_id = instance_method_name(node, name)
+          found_method(node, method_name, scope_id: scope_id) if method_name
+        end
+
+        # `undef`, `undef_method`, and `remove_method` remove the method defined so far,
+        # so a method defined after them with the same name is not a duplicate.
+        def removed_instance_method(node, name)
+          method_name, scope_id = instance_method_name(node, name)
+          @definitions.delete(definition_key(node, method_name, scope_id)) if method_name
+        end
+
+        def instance_method_name(node, name)
           if (scope = node.parent_module_name)
-            found_method(node, "#{humanize_scope(scope)}#{name}")
+            ["#{humanize_scope(scope)}#{name}"]
           elsif (anon_block = anonymous_class_block(node))
             base = qualified_name(anon_block.parent_module_name, nil, 'Object')
             scope = node.each_ancestor(:sclass).any? ? "#<Class:#{base}>" : base
-            found_method(
-              node, "#{humanize_scope(scope)}#{name}", scope_id: anon_block_scope_id(anon_block)
-            )
+            ["#{humanize_scope(scope)}#{name}", anon_block_scope_id(anon_block)]
           else
-            found_sclass_method(node, name)
+            sclass_method_name(node, name)
           end
         end
 
@@ -466,19 +497,18 @@ module RuboCop
           receiver unless class_or_module_new_block?(receiver)
         end
 
-        def found_sclass_method(node, name)
+        def sclass_method_name(node, name)
           singleton_ancestor = node.each_ancestor.find(&:sclass_type?)
           return unless singleton_ancestor
 
           singleton_receiver_node = singleton_ancestor.children[0]
           return unless singleton_receiver_node.send_type?
 
-          found_method(node, "#{singleton_receiver_node.method_name}.#{name}")
+          ["#{singleton_receiver_node.method_name}.#{name}"]
         end
 
         def found_method(node, method_name, scope_id: nil)
-          key = method_key(node, method_name)
-          key = "#{key}@#{scope_id}" if scope_id
+          key = definition_key(node, method_name, scope_id)
           scope = node.each_ancestor(:rescue, :ensure).first&.type
 
           if @definitions.key?(key)
@@ -526,6 +556,11 @@ module RuboCop
           return unless scope
 
           @intentionally_redefined << "#{humanize_scope(scope)}#{name}"
+        end
+
+        def definition_key(node, method_name, scope_id)
+          key = method_key(node, method_name)
+          scope_id ? "#{key}@#{scope_id}" : key
         end
 
         def method_key(node, method_name)
