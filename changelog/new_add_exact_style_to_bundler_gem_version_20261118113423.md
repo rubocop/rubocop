@@ -1,0 +1,1 @@
+* [#16438](https://github.com/rubocop/rubocop/pull/16438): Add `exact` style to `Bundler/GemVersion`, which requires a single exact version that matches the lockfile and autocorrects to the locked version. ([@fabiosammy][])
