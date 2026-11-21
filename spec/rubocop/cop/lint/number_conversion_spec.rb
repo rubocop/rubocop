@@ -105,6 +105,43 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'does not remove a heredoc between the receiver and the conversion' do
+      expect_offense(<<~RUBY)
+        lookup(<<~TEXT)
+        ^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `lookup(<<~TEXT).to_i`, use stricter `Integer(lookup(<<~TEXT), 10)`.
+          key
+        TEXT
+          .to_i
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'preserves a comment inside the conversion call' do
+      expect_offense(<<~RUBY)
+        value.to_i( # keep
+        ^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `value.to_i`, use stricter `Integer(value, 10)`.
+        )
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects a conversion before the heredoc body' do
+      expect_offense(<<~RUBY)
+        lookup(<<~TEXT).to_i
+        ^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `lookup(<<~TEXT).to_i`, use stricter `Integer(lookup(<<~TEXT), 10)`.
+          key
+        TEXT
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Integer(lookup(<<~TEXT), 10)
+          key
+        TEXT
+      RUBY
+    end
+
     it 'when `#to_i` called on a hash value' do
       expect_offense(<<~RUBY)
         params = { id: 10 }
