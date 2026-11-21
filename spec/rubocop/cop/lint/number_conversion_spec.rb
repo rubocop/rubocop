@@ -301,6 +301,30 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'does not register an offense for a symbol passed to a method without a receiver' do
+      expect_no_offenses(<<~RUBY)
+        respond_to?(:to_i)
+        method(:to_f)
+      RUBY
+    end
+
+    it 'does not register an offense for a symbol passed to a method called with a block' do
+      expect_no_offenses(<<~RUBY)
+        klass.define_method(:to_i) { 42 }
+      RUBY
+    end
+
+    it 'registers an offense only for the body of a conversion method definition' do
+      expect_offense(<<~RUBY)
+        define_method(:to_i) { @value.to_i }
+                               ^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `@value.to_i`, use stricter `Integer(@value, 10)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        define_method(:to_i) { Integer(@value, 10) }
+      RUBY
+    end
+
     it 'registers an offense with send' do
       expect_offense(<<~RUBY)
         "foo".send(:to_c)
