@@ -29,6 +29,10 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[new [] Array].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
+
         # @!method redundant_array_constructor(node)
         def_node_matcher :redundant_array_constructor, <<~PATTERN
           {
