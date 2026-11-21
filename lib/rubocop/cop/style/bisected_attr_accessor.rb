@@ -55,13 +55,12 @@ module RuboCop
         def after_class(class_node)
           @macros_to_rewrite[class_node].each do |macro|
             node = macro.node
-            range = range_by_whole_lines(node.source_range, include_final_newline: true)
 
-            correct(range) do |corrector|
+            correct(node.source_range) do |corrector|
               if macro.writer?
-                correct_writer(corrector, macro, node, range)
+                correct_writer(corrector, macro, node)
               else
-                correct_reader(corrector, macro, node, range)
+                correct_reader(corrector, macro, node)
               end
             end
           end
@@ -99,25 +98,32 @@ module RuboCop
           add_offense(attr, message: format(MSG, name: attr.source))
         end
 
-        def correct_reader(corrector, macro, node, range)
-          attr_accessor = "attr_accessor #{macro.bisected_names.join(', ')}\n"
-
+        def correct_reader(corrector, macro, node)
           if macro.all_bisected?
-            corrector.replace(range, "#{indent(node)}#{attr_accessor}")
+            corrector.replace(node.loc.selector, 'attr_accessor')
           else
             correction = "#{indent(node)}attr_reader #{macro.rest.join(', ')}"
-            corrector.insert_before(node, attr_accessor)
+            corrector.insert_before(node, "attr_accessor #{macro.bisected_names.join(', ')}\n")
             corrector.replace(node, correction)
           end
         end
 
-        def correct_writer(corrector, macro, node, range)
+        def correct_writer(corrector, macro, node)
           if macro.all_bisected?
-            corrector.remove(range)
+            corrector.remove(writer_removal_range(node))
           else
             correction = "attr_writer #{macro.rest.join(', ')}"
             corrector.replace(node, correction)
           end
+        end
+
+        def writer_removal_range(node)
+          range = node.source_range
+          rest = range.source_buffer.source_line(range.last_line)[range.last_column..]
+          separator = rest[/\A[ \t]*;[ \t]*/]
+          return range.adjust(end_pos: separator.size) if separator
+
+          range_for_statement_removal(range)
         end
       end
     end
