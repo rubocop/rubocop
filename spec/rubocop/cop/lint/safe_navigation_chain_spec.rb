@@ -540,6 +540,19 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'parenthesizes an operator used as the sole argument of a multiline command call' do
+      expect_offense(<<~RUBY)
+        do_something a&.baz + foo {
+                           ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+        }.bar
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something (a&.baz&. + foo {
+        }.bar)
+      RUBY
+    end
+
     it 'registers an offense for safe navigation on the left-hand side of an operator when it is followed by a block argument' do
       expect_offense(<<~RUBY)
         do_something(a&.baz - 1, &block)
