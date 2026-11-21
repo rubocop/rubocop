@@ -24,9 +24,9 @@ module RuboCop
 
     def relative_path(path, base_dir = PathUtil.pwd)
       PathUtil.relative_paths_cache[base_dir][path] ||=
-        # Optimization for the common case where path begins with the base
-        # dir. Just cut off the first part.
-        if path.start_with?(base_dir)
+        # Optimization for the common case where path is a descendant of the
+        # base dir. Just cut off the first part.
+        if descendant_of?(path, base_dir)
           base_dir_length = base_dir.length
           result_length = path.length - base_dir_length - 1
           path[base_dir_length + 1, result_length]
@@ -38,6 +38,17 @@ module RuboCop
             path
           end
         end
+    end
+
+    # Whether `path` is strictly below `base_dir`. A plain string prefix is not
+    # enough: `/a/bc` starts with `/a/b` but is a sibling, not a descendant, and
+    # cutting the base dir off it would yield a truncated path instead of the
+    # `../bc` that `Pathname#relative_path_from` computes. `path` being
+    # `base_dir` itself is excluded too, so that the `Pathname` branch is the one
+    # that answers `.` for it.
+    def descendant_of?(path, base_dir)
+      path.start_with?(base_dir) && path.length > base_dir.length &&
+        path[base_dir.length] == File::SEPARATOR
     end
 
     def remote_file?(uri)
