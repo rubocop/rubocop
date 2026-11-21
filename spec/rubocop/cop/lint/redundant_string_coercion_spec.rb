@@ -52,6 +52,23 @@ RSpec.describe RuboCop::Cop::Lint::RedundantStringCoercion, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects `to_s` called after the body of a heredoc in the receiver' do
+    expect_offense(<<~'RUBY')
+      "#{do_something(<<~EOS)
+        text
+      EOS
+      .to_s}"
+       ^^^^ Redundant use of `Object#to_s` in interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "#{do_something(<<~EOS)
+        text
+      EOS
+      }"
+    RUBY
+  end
+
   it 'accepts #to_s with arguments in an interpolation' do
     expect_no_offenses('"this is a #{result.to_s(8)}"')
   end
