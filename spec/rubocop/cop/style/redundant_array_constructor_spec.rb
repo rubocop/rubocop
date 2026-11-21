@@ -125,6 +125,48 @@ RSpec.describe RuboCop::Cop::Style::RedundantArrayConstructor, :config do
     RUBY
   end
 
+  it 'does not autocorrect when the heredoc ends between the array and the closing parenthesis' do
+    expect_offense(<<~RUBY)
+      register(Array.new([<<~MSG]
+               ^^^^^^^^^ Remove the redundant `Array` constructor.
+        keep this text
+      MSG
+      ))
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when there is a comment outside the array literal' do
+    expect_offense(<<~RUBY)
+      Array(
+      ^^^^^ Remove the redundant `Array` constructor.
+        [name] # keep
+      )
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'keeps a heredoc and a comment inside the array literal' do
+    expect_offense(<<~RUBY)
+      Array.new([
+      ^^^^^^^^^ Remove the redundant `Array` constructor.
+        <<~MSG, # keep
+          text
+        MSG
+      ])
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [
+        <<~MSG, # keep
+          text
+        MSG
+      ]
+    RUBY
+  end
+
   it 'does not register an offense when using an array literal' do
     expect_no_offenses(<<~RUBY)
       []
