@@ -48,6 +48,8 @@ module RuboCop
 
           style_check?(node) do
             add_offense(node.loc.selector) do |corrector|
+              next if heredoc_after_receiver?(node)
+
               if prefer_comparison?
                 autocorrect_to_comparison(corrector, node)
               else
@@ -63,6 +65,14 @@ module RuboCop
           return false unless node.loc.dot
 
           processed_source.contains_comment?(node.receiver.source_range.end.join(node.loc.dot))
+        end
+
+        def heredoc_after_receiver?(node)
+          receiver = node.receiver
+          return false if receiver.last_line == node.last_line
+
+          range = receiver.source_range.end.join(node.source_range.end)
+          processed_source.tokens_within(range).any? { |token| token.type == :tSTRING_END }
         end
 
         def autocorrect_to_comparison(corrector, node)

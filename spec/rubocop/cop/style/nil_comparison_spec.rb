@@ -59,6 +59,18 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
       RUBY
     end
 
+    it 'does not discard a heredoc between the comparison operator and nil' do
+      expect_offense(<<~RUBY)
+        lookup(<<~TEXT) ==
+                        ^^ Prefer the use of the `nil?` predicate.
+          key
+        TEXT
+          nil
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'parenthesizes an operator-expression receiver' do
       expect_offense(<<~RUBY)
         !x == nil
@@ -94,6 +106,33 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
 
       expect_correction(<<~RUBY)
         x == nil
+      RUBY
+    end
+
+    it 'does not discard a heredoc before a leading dot' do
+      expect_offense(<<~RUBY)
+        lookup(<<~TEXT)
+          key
+        TEXT
+          .nil?
+           ^^^^ Prefer the use of the `==` comparison.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects nil? before the heredoc body' do
+      expect_offense(<<~RUBY)
+        lookup(<<~TEXT).nil?
+                        ^^^^ Prefer the use of the `==` comparison.
+          key
+        TEXT
+      RUBY
+
+      expect_correction(<<~RUBY)
+        lookup(<<~TEXT) == nil
+          key
+        TEXT
       RUBY
     end
 
