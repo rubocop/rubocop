@@ -107,10 +107,18 @@ module RuboCop
 
         def swap_branches(corrector, node)
           if node.if_branch.nil?
-            corrector.remove(range_by_whole_lines(node.loc.else, include_final_newline: true))
+            corrector.remove(else_removal_range(node.loc.else))
           else
             corrector.swap(if_range(node), else_range(node))
           end
+        end
+
+        def else_removal_range(keyword)
+          line = keyword.source_line
+          return range_by_whole_lines(keyword, include_final_newline: true) if line.strip == 'else'
+
+          side = keyword.last_column == line.rstrip.length ? :both : :right
+          range_with_surrounding_space(keyword, side: side, newlines: false)
         end
 
         # Collect the entire if branch, including whitespace and comments

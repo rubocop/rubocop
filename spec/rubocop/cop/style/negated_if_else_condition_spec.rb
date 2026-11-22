@@ -253,6 +253,49 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
     RUBY
   end
 
+  it 'preserves the body and closing tokens on the same line as `else`' do
+    expect_offense(<<~RUBY)
+      emit(if !ready then else publish end, fallback)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      emit(if ready then publish end, fallback)
+    RUBY
+  end
+
+  it 'preserves the condition on the same line as `else`' do
+    expect_offense(<<~RUBY)
+      if !ready then else
+      ^^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        publish
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ready then
+        publish
+      end
+    RUBY
+  end
+
+  it 'preserves a comment on the `else` line of an empty `if` branch' do
+    expect_offense(<<~RUBY)
+      if !ready
+      ^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+      else # deliver once
+        publish
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ready
+      # deliver once
+        publish
+      end
+    RUBY
+  end
+
   it 'does not register an offense when the `else` branch is empty' do
     expect_no_offenses(<<~RUBY)
       if !condition.nil?
