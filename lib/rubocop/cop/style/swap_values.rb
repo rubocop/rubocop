@@ -19,7 +19,6 @@ module RuboCop
       #   x, y = y, x
       #
       class SwapValues < Base
-        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Replace this and assignments at lines %<x_line>d ' \
@@ -28,14 +27,16 @@ module RuboCop
         SIMPLE_ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn casgn].to_set.freeze
 
         def on_asgn(node)
-          return if allowed_assignment?(node)
+          return unless node.parent&.type?(:begin, :kwbegin)
 
           tmp_assign = node
           x_assign, y_assign = *node.right_siblings.take(2)
           return unless x_assign && y_assign && swapping_values?(tmp_assign, x_assign, y_assign)
 
           add_offense(node, message: message(x_assign, y_assign)) do |corrector|
-            range = correction_range(tmp_assign, y_assign)
+            range = tmp_assign.source_range.join(y_assign.source_range)
+            next if contains_comment_or_heredoc?(range)
+
             corrector.replace(range, replacement(x_assign))
           end
         end
@@ -44,10 +45,6 @@ module RuboCop
 
         private
 
-        def allowed_assignment?(node)
-          node.parent&.mlhs_type? || node.parent&.shorthand_asgn?
-        end
-
         def swapping_values?(tmp_assign, x_assign, y_assign)
           simple_assignment?(tmp_assign) &&
             simple_assignment?(x_assign) &&
@@ -55,6 +52,12 @@ module RuboCop
             lhs(x_assign) == rhs(tmp_assign) &&
             lhs(y_assign) == rhs(x_assign) &&
             rhs(y_assign) == lhs(tmp_assign)
+        end
+
+        def contains_comment_or_heredoc?(range)
+          processed_source.tokens_within(range).any? do |token|
+            token.comment? || token.type == :tSTRING_END
+          end
         end
 
         def simple_assignment?(node)
@@ -88,12 +91,6 @@ module RuboCop
 
         def rhs(node)
           node.expression.source
-        end
-
-        def correction_range(tmp_assign, y_assign)
-          range_by_whole_lines(
-            range_between(tmp_assign.source_range.begin_pos, y_assign.source_range.end_pos)
-          )
         end
       end
     end
