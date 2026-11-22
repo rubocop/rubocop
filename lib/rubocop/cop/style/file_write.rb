@@ -75,10 +75,16 @@ module RuboCop
             message = format(MSG, write_method: write_method(mode))
 
             add_offense(write_node, message: message) do |corrector|
-              range = range_between(node.loc.selector.begin_pos, write_node.source_range.end_pos)
-              replacement = replacement(mode, filename, content, write_node)
+              range = replaced_range(node, write_node)
+              heredocs = removed_heredocs(filename, content, write_node)
+              next if foreign_heredoc_body?(range, heredocs)
 
-              corrector.replace(range, replacement)
+              heredocs = restored_heredocs(heredocs, [filename, content])
+              next unless restorable?(range, heredocs, write_node)
+
+              replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
+
+              replace_and_restore_heredocs(corrector, range, replacement, heredocs)
             end
           end
         end
@@ -104,25 +110,14 @@ module RuboCop
           mode.end_with?('b') ? :binwrite : :write
         end
 
-        def replacement(mode, filename, content, write_node)
-          replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
-          heredocs = removed_heredocs(filename, content, write_node)
-          return replacement if heredocs.empty?
-
-          [replacement, *heredocs.map { |heredoc| heredoc_range(heredoc).source }].join("\n")
+        def replaced_range(node, write_node)
+          range_between(node.loc.selector.begin_pos, write_node.source_range.end_pos)
         end
 
-        # Heredocs opened in the arguments keep working in the replacement, but their
-        # bodies are lost when they lie within the replaced range, so they need to be
-        # restored after the replacement.
         def removed_heredocs(filename, content, write_node)
           [filename, content].flat_map { |argument| find_heredocs(argument) }
                              .select { |heredoc| removed?(heredoc, write_node) }
                              .sort_by { |heredoc| heredoc.loc.heredoc_body.begin_pos }
-        end
-
-        def heredoc_range(heredoc)
-          range_between(heredoc.loc.heredoc_body.begin_pos, heredoc.loc.heredoc_end.end_pos)
         end
 
         def find_heredocs(node)
@@ -133,6 +128,78 @@ module RuboCop
 
         def removed?(heredoc, write_node)
           heredoc.loc.heredoc_end.end_pos <= write_node.source_range.end_pos
+        end
+
+        def foreign_heredoc_body?(range, heredocs)
+          find_heredocs(processed_source.ast).any? do |heredoc|
+            next false if heredocs.any? { |removed| removed.equal?(heredoc) }
+
+            range.contains?(heredoc_range(heredoc))
+          end
+        end
+
+        def heredoc_range(heredoc)
+          range_between(heredoc.loc.heredoc_body.begin_pos, heredoc.loc.heredoc_end.end_pos)
+        end
+
+        def restored_heredocs(heredocs, arguments)
+          containers = arguments.map(&:source_range) + heredocs.map { |h| heredoc_range(h) }
+
+          heredocs.reject do |heredoc|
+            body = heredoc_range(heredoc)
+
+            containers.any? { |container| container != body && container.contains?(body) }
+          end
+        end
+
+        def restorable?(range, heredocs, write_node)
+          return !overlaps_later_replacement?(range, write_node) if heredocs.empty?
+
+          rest = rest_of_line(range)
+          return false if line_ends_inside_literal?(rest)
+
+          !overlaps_later_replacement?(range.join(rest), write_node)
+        end
+
+        def rest_of_line(range)
+          range.end.join(processed_source.buffer.line_range(range.last_line).end)
+        end
+
+        def line_ends_inside_literal?(rest)
+          line_end = rest.end_pos
+          innermost = nil
+          processed_source.ast.each_node do |node|
+            range = node.source_range
+            innermost = node if range && range.begin_pos < line_end && line_end < range.end_pos
+          end
+
+          !innermost.nil? && literal?(innermost)
+        end
+
+        def literal?(node)
+          return node.percent_literal? if node.array_type?
+
+          node.type?(:any_str, :regexp, :any_sym)
+        end
+
+        def overlaps_later_replacement?(corrected, write_node)
+          processed_source.ast.each_node(:send).any? do |node|
+            other_write_node = evidence(node) { |*, other| other }
+            next false unless other_write_node
+            next false if other_write_node.equal?(write_node)
+
+            range = replaced_range(node, other_write_node)
+            corrected.begin_pos < range.begin_pos && range.begin_pos < corrected.end_pos
+          end
+        end
+
+        def replace_and_restore_heredocs(corrector, range, replacement, heredocs)
+          return corrector.replace(range, replacement) if heredocs.empty?
+
+          rest = rest_of_line(range)
+          bodies = heredocs.map { |heredoc| "\n#{heredoc_range(heredoc).source}" }
+
+          corrector.replace(range.join(rest), "#{replacement}#{rest.source}#{bodies.join}")
         end
       end
     end

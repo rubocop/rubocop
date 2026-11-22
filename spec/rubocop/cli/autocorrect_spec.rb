@@ -7598,6 +7598,63 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/FileWrite` with a heredoc argument followed by code and line break cops' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/MultilineArrayLineBreaks:
+        Enabled: true
+      Layout/MultilineMethodArgumentLineBreaks:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo(File.open(filename, 'w') do |f|
+        f.write(<<~EOS)
+          content
+        EOS
+      end, bar)
+      [File.open(filename, 'w') do |f|
+        f.write(<<~EOS)
+          content
+        EOS
+      end, bar]
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '-A', '--only',
+          'Layout/MultilineArrayLineBreaks,Layout/MultilineMethodArgumentLineBreaks,Style/FileWrite'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(File.write(filename, <<~EOS),#{trailing_whitespace}
+          content
+        EOS
+      bar)
+      [File.write(filename, <<~EOS),#{trailing_whitespace}
+          content
+        EOS
+      bar]
+    RUBY
+  end
+
+  it 'corrects `Style/FileWrite` with a heredoc argument followed by a semicolon and `Style/Semicolon`' do
+    create_file('example.rb', <<~RUBY)
+      x = File.open(filename, 'w') do |f|
+        f.write(<<~EOS)
+          content
+        EOS
+      end; foo(x)
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/FileWrite,Style/Semicolon'])).to eq(1)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      x = File.write(filename, <<~EOS); foo(x)
+          content
+        EOS
+    RUBY
+  end
+
   it 'avoids adding extra spaces when both `Style/Semicolon` and `Style/SingleLineMethods`' \
      'both apply' do
     source_file = Pathname('example.rb')
