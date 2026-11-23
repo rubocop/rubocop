@@ -129,6 +129,54 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
     end
   end
 
+  it 'keeps the heredoc key when correcting a parenthesized call' do
+    expect_offense(<<~RUBY)
+      data.dig(
+      ^^^^^^^^^ Use `data[<<~KEY]` instead of [...]
+        <<~KEY
+          name
+        KEY
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      data[
+        <<~KEY
+          name
+        KEY
+      ]
+    RUBY
+  end
+
+  it 'does not autocorrect when a heredoc ends between the receiver and the dot' do
+    expect_offense(<<~RUBY)
+      lookup(<<~TEXT)
+      ^^^^^^^^^^^^^^^ Use [...]
+        record
+      TEXT
+        .dig(:name)
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'keeps a comment before the key' do
+    expect_offense(<<~RUBY)
+      data.dig(
+      ^^^^^^^^^ Use `data[key]` instead of [...]
+        # Select the public key.
+        key
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      data[
+        # Select the public key.
+        key
+      ]
+    RUBY
+  end
+
   context 'when without a receiver' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
