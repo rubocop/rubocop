@@ -12,6 +12,40 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
     RUBY
   end
 
+  it 'does not remove a heredoc body between the calls' do
+    expect_offense(<<~RUBY)
+      lines(<<~TEXT).each
+                     ^^^^ Remove redundant `each`.
+        hello
+      TEXT
+        .each { |line| puts line }
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not remove a comment between the calls' do
+    expect_offense(<<~RUBY)
+      array.each # keep
+            ^^^^^^^^^^^ Remove redundant `each`.
+           .each_with_index { |value, index| foo(value, index) }
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'corrects an empty argument list between the selectors' do
+    expect_offense(<<~RUBY)
+      array.each()
+            ^^^^^^ Remove redundant `each`.
+           .each { |value| foo(value) }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.each { |value| foo(value) }
+    RUBY
+  end
+
   it 'registers an offense when using `each&.each`' do
     expect_offense(<<~RUBY)
       array.each&.each { |v| do_something(v) }
