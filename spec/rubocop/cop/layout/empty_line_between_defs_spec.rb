@@ -835,8 +835,29 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         foo 'first foo' do
           #foo body
         end
+      RUBY
+    end
+
+    it 'registers an offense for a method call sandwiched between macro definitions' do
+      expect_offense(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
 
         sig {void}
+        foo 'second foo' do
+        ^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+          #foo body
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+
+        sig {void}
+
         foo 'second foo' do
           #foo body
         end
@@ -864,6 +885,238 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           foo :first_attribute
 
           foo :second_attribute
+        RUBY
+      end
+    end
+  end
+
+  context 'when a method call is sandwiched between definitions' do
+    it 'registers offenses and corrects' do
+      expect_offense(<<~RUBY)
+        def foo
+        end
+        call_something("here")
+        ^^^^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        def bar
+        ^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+        end
+
+        call_something("here")
+
+        def bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense when only the line before the second definition is missing' do
+      expect_offense(<<~RUBY)
+        def foo
+        end
+
+        call_something("here")
+        def bar
+        ^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+        end
+
+        call_something("here")
+
+        def bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense when only the line after the first definition is missing' do
+      expect_offense(<<~RUBY)
+        def foo
+        end
+        call_something("here")
+        ^^^^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+
+        def bar
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+        end
+
+        call_something("here")
+
+        def bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when there are empty lines around the method call' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+        end
+
+        call_something("here")
+
+        def bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the method call is not between two definitions' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+        end
+        call_something("here")
+      RUBY
+    end
+
+    it 'does not register an offense for alias between definitions' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+        end
+        alias bar foo
+        def baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method between definitions' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+        end
+        alias_method(:bar, :foo)
+        def baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a visibility modifier between definitions' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+        end
+        private
+        def bar
+        end
+      RUBY
+    end
+
+    it 'registers offenses when the method call is sandwiched between a class and a method definition' do
+      expect_offense(<<~RUBY)
+        class Foo
+        end
+        call_something("here")
+        ^^^^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        def bar
+        ^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+        end
+
+        call_something("here")
+
+        def bar
+        end
+      RUBY
+    end
+
+    it 'registers offenses when a safe navigation call is sandwiched between definitions' do
+      expect_offense(<<~RUBY)
+        def foo
+        end
+        bar&.baz
+        ^^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        def qux
+        ^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+        end
+
+        bar&.baz
+
+        def qux
+        end
+      RUBY
+    end
+
+    it 'registers offenses when a method call with a block is sandwiched between definitions' do
+      expect_offense(<<~RUBY)
+        def foo
+        end
+        arr.map { |x| x + 1 }
+        ^^^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        def bar
+        ^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+        end
+
+        arr.map { |x| x + 1 }
+
+        def bar
+        end
+      RUBY
+    end
+
+    it 'registers offenses when a method call with a do block is sandwiched between definitions' do
+      expect_offense(<<~RUBY)
+        def foo
+        end
+        arr.map do |x|
+        ^^^^^^^^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+          x + 1
+        end
+        def bar
+        ^^^^^^^ Expected 1 empty line between the definition and the method call; found 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+        end
+
+        arr.map do |x|
+          x + 1
+        end
+
+        def bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a statement that is not a method call' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+        end
+        x = 1
+        def bar
+        end
+      RUBY
+    end
+
+    context 'with AllowAdjacentOneLineDefs: true' do
+      let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
+
+      it 'does not register an offense for single line definitions' do
+        expect_no_offenses(<<~RUBY)
+          def foo; end
+          call_something("here")
+          def bar; end
         RUBY
       end
     end
