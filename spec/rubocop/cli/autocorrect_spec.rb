@@ -611,6 +611,19 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'keeps an escaped quote when correcting `Style/RedundantPercentQ` with `Style/RedundantStringEscape`' do
+    create_file('example.rb', <<~'RUBY')
+      %Q(a\"b)
+    RUBY
+
+    expect(
+      cli.run(['-A', '--only', 'Style/RedundantPercentQ,Style/RedundantStringEscape'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~'RUBY')
+      "a\"b"
+    RUBY
+  end
+
   it 'corrects `Lint/LiteralInInterpolation` with `Style/PercentLiteralDelimiters`' do
     create_file('example.rb', <<~'RUBY')
       %r[foo#{"}"}bar]

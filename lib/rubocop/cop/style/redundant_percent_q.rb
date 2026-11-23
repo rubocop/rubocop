@@ -33,6 +33,10 @@ module RuboCop
         ESCAPED_QUOTE = /(?<!\\)(?:\\\\)*\\"/.freeze
         UNESCAPED_QUOTE = /(?<!\\)(?:\\\\)*"/.freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::RedundantStringEscape]
+        end
+
         def on_dstr(node)
           return unless string_literal?(node)
 
