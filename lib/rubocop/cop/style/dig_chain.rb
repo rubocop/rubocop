@@ -72,10 +72,11 @@ module RuboCop
         end
 
         def register_offense(node, range, arguments)
-          arguments = arguments.map(&:source).join(', ')
-          replacement = "dig(#{arguments})"
+          replacement = "dig(#{arguments.map(&:source).join(', ')})"
 
           add_offense(range, message: format(MSG, replacement: replacement)) do |corrector|
+            next if loses_heredoc?(range, arguments)
+
             corrector.replace(range, replacement)
 
             comments_in_range(node).reverse_each do |comment|
@@ -86,6 +87,16 @@ module RuboCop
 
               corrector.insert_before(node, "#{comment.source}\n")
             end
+          end
+        end
+
+        def loses_heredoc?(range, arguments)
+          return false if range.single_line?
+
+          processed_source.tokens_within(range).any? do |token|
+            next unless token.type == :tSTRING_END
+
+            arguments.none? { |arg| arg.source_range.contains?(token.pos) }
           end
         end
       end
