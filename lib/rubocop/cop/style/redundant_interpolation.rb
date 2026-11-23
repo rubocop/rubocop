@@ -101,6 +101,7 @@ module RuboCop
           return false unless node.children.one?
 
           first_child = node.children.first
+          return false unless first_child.last_line == node.last_line
 
           variable_interpolation?(first_child) ||
             (first_child.send_type? && !first_child.operator_method?)
