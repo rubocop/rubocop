@@ -67,6 +67,43 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpConstructor, :config do
     RUBY
   end
 
+  it 'does not autocorrect when the call contains the heredoc body of a preceding argument' do
+    expect_offense(<<~RUBY)
+      emit(<<~TEXT, Regexp.new(
+                    ^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+        note
+      TEXT
+        /id/))
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when a comment would be removed' do
+    expect_offense(<<~RUBY)
+      Regexp.compile(
+      ^^^^^^^^^^^^^^^ Remove the redundant `Regexp.compile`.
+        # Match the identifier.
+        /id/
+      )
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'corrects a multiline constructor without removing the trailing comment' do
+    expect_offense(<<~RUBY)
+      Regexp.new(
+      ^^^^^^^^^^^ Remove the redundant `Regexp.new`.
+        /id/
+      ) # identifier
+    RUBY
+
+    expect_correction(<<~RUBY)
+      /id/ # identifier
+    RUBY
+  end
+
   it 'does not autocorrect when a regexp starting with a space would become the first argument of a command' do
     expect_offense(<<~RUBY)
       p Regexp.new(/ a/)

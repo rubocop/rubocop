@@ -34,7 +34,7 @@ module RuboCop
           return unless (regexp = redundant_regexp_constructor(node))
 
           add_offense(node, message: format(MSG, method: node.method_name)) do |corrector|
-            next if ambiguous_slash_regexp?(node, regexp)
+            next if ambiguous_slash_regexp?(node, regexp) || drops_heredoc_or_comment?(node, regexp)
 
             # Reuse the inner literal's own source so its delimiters are preserved.
             # Forcing `/.../` would break patterns like `%r{foo/bar}` that contain
@@ -54,6 +54,16 @@ module RuboCop
 
           node.each_ancestor(:call).any? do |call|
             command?(call) && call.first_argument.source_range.begin_pos == begin_pos
+          end
+        end
+
+        def drops_heredoc_or_comment?(node, regexp)
+          return false if node.single_line?
+
+          processed_source.tokens_within(node).any? do |token|
+            next false if regexp.source_range.contains?(token.pos)
+
+            token.comment? || token.type == :tSTRING_END
           end
         end
 
