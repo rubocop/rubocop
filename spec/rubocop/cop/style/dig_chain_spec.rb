@@ -153,6 +153,33 @@ RSpec.describe RuboCop::Cop::Style::DigChain, :config do
       RUBY
     end
 
+    it 'does not drop a heredoc body between the calls' do
+      expect_offense(<<~RUBY)
+        x.dig(<<~KEY)
+          ^^^^^^^^^^^ Use `dig(<<~KEY, :id)` instead of chaining.
+          name
+        KEY
+          .dig(:id)
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'combines the calls when the heredoc body follows the chain' do
+      expect_offense(<<~RUBY)
+        x.dig(<<~KEY).dig(:id)
+          ^^^^^^^^^^^^^^^^^^^^ Use `dig(<<~KEY, :id)` instead of chaining.
+          name
+        KEY
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.dig(<<~KEY, :id)
+          name
+        KEY
+      RUBY
+    end
+
     it 'registers an offense and corrects when split over multiple lines with comments' do
       expect_offense(<<~RUBY)
         x.dig(:foo) # comment 1
