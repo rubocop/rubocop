@@ -22,7 +22,8 @@ module StrictWarnings
     /`forces` is deprecated./, # RuboCop's deprecated API in spec
     /`support_autocorrect\?` is deprecated\./, # RuboCop's deprecated API in spec
     /`Cop\.registry` is deprecated\./, # RuboCop's deprecated API in spec
-    /Specify `rubocop-internal_affairs` instead/ # RuboCop's obsolete internal plugin name
+    /Specify `rubocop-internal_affairs` instead/, # RuboCop's obsolete internal plugin name
+    /Addressable no longer supports Ruby/ # addressable 2.10.0+ on Ruby < 3.3, loaded by webmock
   )
 
   def warn(message, ...)
