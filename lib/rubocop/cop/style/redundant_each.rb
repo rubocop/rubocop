@@ -104,6 +104,8 @@ module RuboCop
         end
 
         def remove_redundant_each(corrector, range, redundant_node)
+          return unless removable_each?(range)
+
           corrector.remove(range)
 
           if redundant_node.method?(:each_with_index)
@@ -111,6 +113,11 @@ module RuboCop
           elsif redundant_node.method?(:each_with_object)
             corrector.replace(redundant_node.loc.selector, 'each.with_object')
           end
+        end
+
+        def removable_each?(range)
+          between = processed_source.tokens_within(range)[1...-1]
+          between.empty? || between.map(&:type) == %i[tLPAREN2 tRPAREN]
         end
 
         def receiver_of_dot_call?(node)
