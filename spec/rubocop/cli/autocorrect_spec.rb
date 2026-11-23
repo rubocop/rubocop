@@ -10,6 +10,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RuboCop::ConfigLoader.default_configuration.for_all_cops['SuggestExtensions'] = false
   end
 
+  it 'parenthesizes a nested raise with a heredoc only once' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Style/RaiseArgs:
+        Enabled: true
+      Style/NestedParenthesizedCalls:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo(raise Error.new(<<~MSG))
+        text
+      MSG
+    RUBY
+
+    expect(cli.run(['-A', 'example.rb'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo(raise(Error, <<~MSG))
+        text
+      MSG
+    RUBY
+  end
+
   it 'preserves empty lines around a block body ending with an access modifier' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:

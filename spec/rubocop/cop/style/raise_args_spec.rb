@@ -311,6 +311,42 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           RUBY
         end
 
+        it 'keeps the heredoc and its leading comment in an endless method', :ruby31 do
+          expect_offense(<<~RUBY)
+            def message = raise Error.new(
+                          ^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+              # message
+              <<~MSG
+                text
+              MSG
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def message = raise(Error,
+              # message
+              <<~MSG
+                text
+              MSG
+            )
+          RUBY
+        end
+
+        it 'parenthesizes the arguments when the constructor has no parentheses', :ruby31 do
+          expect_offense(<<~RUBY)
+            def message = fail Error.new <<~MSG
+                          ^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `fail`.
+              text
+            MSG
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def message = fail(Error, <<~MSG)
+              text
+            MSG
+          RUBY
+        end
+
         it 'reports an offense and removes the trailing comma after the heredoc' do
           expect_offense(<<~RUBY)
             raise ArgumentError.new(
