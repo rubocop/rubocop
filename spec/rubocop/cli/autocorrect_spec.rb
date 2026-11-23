@@ -4520,6 +4520,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects a disabled cop that becomes redundant once other redundant cops are removed from the directive' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Layout/LineLength:
+        Enabled: true
+        Max: 60
+        AllowCopDirectives: false
+      Lint/RedundantCopDisableDirective:
+        Enabled: true
+      Lint/RedundantCopEnableDirective:
+        Enabled: true
+      Metrics/AbcSize:
+        Enabled: true
+      Style/GlobalVars:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      # rubocop:disable Layout/LineLength, Style/GlobalVars, Metrics/AbcSize
+      $foo = 1
+      # rubocop:enable Layout/LineLength, Style/GlobalVars, Metrics/AbcSize
+    RUBY
+
+    expect(cli.run(['--autocorrect-all'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      # rubocop:disable Style/GlobalVars
+      $foo = 1
+      # rubocop:enable Style/GlobalVars
+    RUBY
+  end
+
   it 'corrects RedundantCopDisableDirective offenses' do
     source = <<~RUBY
       class A

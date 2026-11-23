@@ -347,20 +347,29 @@ module RuboCop
     end
 
     def add_redundant_disables(file, offenses, source)
-      team_for_redundant_disables(file, offenses, source) do |team|
-        new_offenses, redundant_updated = inspect_file(source, team)
-        offenses += new_offenses
-        if redundant_updated
+      seen_sources = Set[source.raw_source]
+
+      loop do
+        redundant_updated = false
+
+        team_for_redundant_disables(file, offenses, source) do |team|
+          new_offenses, redundant_updated = inspect_file(source, team)
+          offenses += new_offenses
+          next unless redundant_updated
+
           # Do one extra inspection loop if any redundant disables were
           # removed. This is done in order to find rubocop:enable directives that
           # have now become useless. It finds the offenses that are left again,
           # located in the corrected source, so only the corrected ones are kept
           # from before, as `inspect_and_correct` does.
-          _source, new_offenses = do_inspection_loop(file, team.updated_source)
+          source, new_offenses = do_inspection_loop(file, team.updated_source)
           offenses = offenses.select(&:corrected?) | new_offenses
+
+          redundant_updated = seen_sources.add?(source.raw_source)
         end
+
+        return offenses unless redundant_updated
       end
-      offenses
     end
 
     def team_for_redundant_disables(file, offenses, source)
