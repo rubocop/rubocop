@@ -54,8 +54,7 @@ module RuboCop
           add_offense(node, message: message) do |corrector|
             next if part_of_ignored_node?(node)
 
-            correct_access = "#{receiver}[#{argument}]"
-            corrector.replace(node, correct_access)
+            correct_access(corrector, node, expression)
           end
 
           ignore_node(node)
@@ -66,6 +65,27 @@ module RuboCop
         def ignore_dig_chain?(node)
           dig_chain_enabled? &&
             (dig?(node.receiver) || dig?(node.parent))
+        end
+
+        def correct_access(corrector, node, argument)
+          key_start = node.loc.begin || argument.source_range.begin
+          opening = node.receiver.source_range.end.join(key_start)
+          return if unsafe_opening?(opening)
+
+          corrector.replace(opening, '[')
+          if node.parenthesized?
+            corrector.replace(node.loc.end, ']')
+          else
+            corrector.insert_after(argument, ']')
+          end
+        end
+
+        def unsafe_opening?(range)
+          return false if range.single_line?
+
+          processed_source.tokens_within(range).any? do |token|
+            token.comment? || token.type == :tSTRING_END
+          end
         end
       end
     end
