@@ -223,6 +223,38 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
     RUBY
   end
 
+  it 'preserves a heredoc body between the method call and the closing brace' do
+    expect_offense(<<~'RUBY')
+      "#{lookup(<<~TEXT)
+      ^^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+        key
+      TEXT
+      }"
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (lookup(<<~TEXT)
+        key
+      TEXT
+      ).to_s
+    RUBY
+  end
+
+  it 'corrects a method call before its heredoc body' do
+    expect_offense(<<~'RUBY')
+      "#{lookup(<<~TEXT)}"
+      ^^^^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+        key
+      TEXT
+    RUBY
+
+    expect_correction(<<~RUBY)
+      lookup(<<~TEXT).to_s
+        key
+      TEXT
+    RUBY
+  end
+
   it 'registers an offense and keeps the arguments of a multiline method call without parentheses' do
     expect_offense(<<~'RUBY')
       "#{do_something foo, # comment
