@@ -24,6 +24,30 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
       RUBY
     end
 
+    it 'does not remove a heredoc body before the right-hand side' do
+      expect_offense(<<~RUBY)
+        emit(<<~TEXT, @items =
+                             ^ Redundant self assignment detected. Method `clear` modifies its receiver in place.
+          hello
+        TEXT
+          @items.clear)
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects a multiline assignment with no intervening code' do
+      expect_offense(<<~RUBY)
+        @items =
+               ^ Redundant self assignment detected. Method `clear` modifies its receiver in place.
+          @items.clear
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @items.clear
+      RUBY
+    end
+
     it 'registers an offense and corrects when assigning to class variable' do
       expect_offense(<<~RUBY)
         @@foo = @@foo.concat(ary)
@@ -102,6 +126,29 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
     expect_correction(<<~RUBY)
       other.foo.concat(ary)
     RUBY
+  end
+
+  it 'does not remove a heredoc opener from an attribute receiver' do
+    expect_offense(<<~RUBY)
+      box(<<~A).items = box(<<~B).items.clear
+                      ^ Redundant self assignment detected. Method `clear` modifies its receiver in place.
+        key
+      A
+        key
+      B
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not remove a comment after an attribute assignment operator' do
+    expect_offense(<<~RUBY)
+      other.items = # keep
+                  ^ Redundant self assignment detected. Method `clear` modifies its receiver in place.
+        other.items.clear
+    RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense and corrects when assigning to attribute of non `self` with safe assignment' do

@@ -25,7 +25,6 @@ module RuboCop
       #   foo.concat(ary)
       #
       class RedundantSelfAssignment < Base
-        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Redundant self assignment detected. ' \
@@ -55,7 +54,6 @@ module RuboCop
               ...))
         PATTERN
 
-        # rubocop:disable-next Metrics/AbcSize
         def on_lvasgn(node)
           return unless (rhs = node.rhs)
           return unless rhs.type?(:any_block, :call) && method_returning_self?(rhs.method_name)
@@ -64,10 +62,7 @@ module RuboCop
           receiver_type = ASSIGNMENT_TYPE_TO_RECEIVER_TYPE[node.type]
           return unless receiver.type == receiver_type && receiver.children.first == node.lhs
 
-          message = format(MSG, method_name: rhs.method_name)
-          add_offense(node.loc.operator, message: message) do |corrector|
-            corrector.replace(node, rhs.source)
-          end
+          register_offense(node, rhs)
         end
         alias on_ivasgn on_lvasgn
         alias on_cvasgn on_lvasgn
@@ -77,10 +72,7 @@ module RuboCop
           return unless node.assignment_method?
           return unless redundant_assignment?(node)
 
-          message = format(MSG, method_name: node.first_argument.method_name)
-          add_offense(node.loc.operator, message: message) do |corrector|
-            corrector.remove(correction_range(node))
-          end
+          register_offense(node, node.first_argument)
         end
         alias on_csend on_send
 
@@ -96,8 +88,24 @@ module RuboCop
           redundant_self_assignment?(node, node.receiver, receiver_name)
         end
 
-        def correction_range(node)
-          range_between(node.source_range.begin_pos, node.first_argument.source_range.begin_pos)
+        def register_offense(node, rhs)
+          message = format(MSG, method_name: rhs.method_name)
+          add_offense(node.loc.operator, message: message) do |corrector|
+            prefix = node.source_range.begin.join(rhs.source_range.begin)
+            corrector.remove(prefix) unless unsafe_prefix?(prefix)
+          end
+        end
+
+        def unsafe_prefix?(range)
+          return false if range.single_line? && !range.source.include?('<<')
+
+          processed_source.tokens_within(range).any? do |token|
+            case token.type
+            when :tSTRING_BEG, :tXSTRING_BEG then token.text.start_with?('<<')
+            when :tSTRING_END then true
+            else token.comment?
+            end
+          end
         end
       end
     end
