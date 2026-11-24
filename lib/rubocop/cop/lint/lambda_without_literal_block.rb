@@ -37,12 +37,25 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          if node.parent&.block_type? || !node.first_argument || lambda_with_symbol_proc?(node)
-            return
-          end
+          argument = node.first_argument
+          return if node.parent&.block_type? || !argument || lambda_with_symbol_proc?(node)
 
           add_offense(node) do |corrector|
-            corrector.replace(node, node.first_argument.source.delete_prefix('&'))
+            next if unsafe_to_unwrap?(node, argument)
+
+            corrector.replace(node, argument.source.delete_prefix('&'))
+          end
+        end
+
+        private
+
+        def unsafe_to_unwrap?(node, argument)
+          return false if node.single_line?
+
+          processed_source.tokens_within(node).any? do |token|
+            next if argument.source_range.contains?(token.pos)
+
+            token.comment? || token.type == :tSTRING_END
           end
         end
       end
