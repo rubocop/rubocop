@@ -49,9 +49,7 @@ module RuboCop
           return unless (receiver, operation, number = useless_operation?(node))
           return unless useless?(operation, number)
 
-          add_offense(node) do |corrector|
-            corrector.replace(node, receiver.source)
-          end
+          register_offense(node, receiver.source)
         end
         alias on_csend on_send
 
@@ -59,9 +57,7 @@ module RuboCop
           return unless (variable, operation, number = useless_abbreviated_assignment?(node))
           return unless useless?(operation, number)
 
-          add_offense(node) do |corrector|
-            corrector.replace(node, "#{variable.source} = #{variable.source}")
-          end
+          register_offense(node, "#{variable.source} = #{variable.source}")
         end
 
         private
@@ -71,6 +67,22 @@ module RuboCop
             true if %i[+ -].include?(operation)
           elsif number == 1
             true if %i[* / **].include?(operation)
+          end
+        end
+
+        def register_offense(node, replacement)
+          add_offense(node) do |corrector|
+            next if unsafe_replacement?(node)
+
+            corrector.replace(node, replacement)
+          end
+        end
+
+        def unsafe_replacement?(node)
+          return false if node.single_line?
+
+          processed_source.tokens_within(node).any? do |token|
+            token.comment? || token.type == :tSTRING_END
           end
         end
       end
