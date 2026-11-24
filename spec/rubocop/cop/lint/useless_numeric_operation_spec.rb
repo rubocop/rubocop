@@ -12,6 +12,40 @@ RSpec.describe RuboCop::Cop::Lint::UselessNumericOperation, :config do
     RUBY
   end
 
+  it 'does not remove the heredoc body of a preceding argument' do
+    expect_offense(<<~RUBY)
+      emit(<<~TEXT, count +
+                    ^^^^^^^ Do not apply inconsequential numeric operations to variables.
+        hello
+      TEXT
+        0)
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not remove a comment in an abbreviated assignment' do
+    expect_offense(<<~RUBY)
+      count += # keep
+      ^^^^^^^^^^^^^^^ Do not apply inconsequential numeric operations to variables.
+        0
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'corrects a numeric operation split across lines' do
+    expect_offense(<<~RUBY)
+      count +
+      ^^^^^^^ Do not apply inconsequential numeric operations to variables.
+        0
+    RUBY
+
+    expect_correction(<<~RUBY)
+      count
+    RUBY
+  end
+
   it 'registers an offense when 0 is subtracted from a variable' do
     expect_offense(<<~RUBY)
       x - 0
