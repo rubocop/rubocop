@@ -130,12 +130,15 @@ module RuboCop
           # substituted either, so reducing to the body would leave it referencing an
           # undefined variable.
           return false if node.arguments.one? && block_arg.nil?
+          return false if needs_enclosing_block?(node.body)
 
-          !block_arg || substitutable_body?(node.body, block_arg)
+          !block_arg || !writes_argument?(node.body, block_arg)
         end
 
-        def substitutable_body?(body, name)
-          !writes_argument?(body, name) && body.each_node(:any_str, :xstr).none?(&:heredoc?)
+        # A `rescue` or `ensure` clause is only valid inside the block, and the source of
+        # the body doesn't cover the body of a heredoc that ends it.
+        def needs_enclosing_block?(body)
+          body.type?(:rescue, :ensure) || body.each_node(:any_str, :xstr).any?(&:heredoc?)
         end
 
         def orphans_loop_control_keyword?(node)

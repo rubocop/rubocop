@@ -555,6 +555,71 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
         expect_no_corrections
       end
 
+      it 'does not correct a block without arguments whose body has a heredoc' do
+        expect_offense(<<~RUBY)
+          1.times do
+          ^^^^^^^^^^ Useless call to `1.times` detected.
+            do_something(<<~EOS)
+              text
+            EOS
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not correct a block with an argument whose body has a heredoc' do
+        expect_offense(<<~RUBY)
+          1.times do |i|
+          ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+            do_something(i, <<~EOS)
+              text
+            EOS
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not correct a block with a `rescue` clause' do
+        expect_offense(<<~RUBY)
+          1.times do
+          ^^^^^^^^^^ Useless call to `1.times` detected.
+            do_something
+          rescue StandardError
+            do_something_else
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not correct a block with an `ensure` clause' do
+        expect_offense(<<~RUBY)
+          1.times do
+          ^^^^^^^^^^ Useless call to `1.times` detected.
+            do_something
+          ensure
+            do_something_else
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not correct a block with an argument and an `ensure` clause' do
+        expect_offense(<<~RUBY)
+          1.times do |i|
+          ^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+            do_something(i)
+          ensure
+            do_something_else
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
       it 'still corrects a block whose `next` is nested in an inner block' do
         expect_offense(<<~RUBY)
           1.times { [1, 2].each { next } }
