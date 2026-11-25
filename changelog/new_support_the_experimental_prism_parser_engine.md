@@ -1,1 +1,0 @@
-* [#16346](https://github.com/rubocop/rubocop/issues/16346): Support the experimental `prism` value of `AllCops: ParserEngine`, which builds the AST from Prism without its parser translation layer. ([@bbatsov][])

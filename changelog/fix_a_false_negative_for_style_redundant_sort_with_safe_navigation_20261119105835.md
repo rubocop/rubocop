@@ -1,1 +1,0 @@
-* [#16449](https://github.com/rubocop/rubocop/pull/16449): Fix a false negative for `Style/RedundantSort` when `sort_by` with a block argument and an index method are called with safe navigation. ([@bbatsov][])
