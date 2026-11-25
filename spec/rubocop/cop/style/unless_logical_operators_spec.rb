@@ -71,6 +71,24 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
       RUBY
     end
 
+    it 'registers an offense when the whole condition is wrapped in parentheses' do
+      expect_offense(<<~RUBY)
+        return unless (a && b || c)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+
+      expect_offense(<<~RUBY)
+        return unless ((a || b && c))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+    end
+
+    it 'does not register an offense when using only `&&`s in parentheses' do
+      expect_no_offenses(<<~RUBY)
+        return unless (a && b && c)
+      RUBY
+    end
+
     it 'does not register an offense when using only `&&`s' do
       expect_no_offenses(<<~RUBY)
         return unless a && b && c
@@ -171,6 +189,24 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
       expect_offense(<<~RUBY)
         return unless a && b || c
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
+      RUBY
+    end
+
+    it 'registers an offense when the condition is wrapped in parentheses' do
+      expect_offense(<<~RUBY)
+        return unless (a && b)
+        ^^^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
+      RUBY
+
+      expect_offense(<<~RUBY)
+        return unless ((a or b))
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
+      RUBY
+    end
+
+    it 'does not register an offense when a condition in parentheses has no logical operator' do
+      expect_no_offenses(<<~RUBY)
+        return unless (a?)
       RUBY
     end
 

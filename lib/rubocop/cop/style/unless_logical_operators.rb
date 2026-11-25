@@ -55,48 +55,53 @@ module RuboCop
 
         # @!method or_with_and?(node)
         def_node_matcher :or_with_and?, <<~PATTERN
-          (if (or <`and ...> ) ...)
+          (or <`and ...> )
         PATTERN
 
         # @!method and_with_or?(node)
         def_node_matcher :and_with_or?, <<~PATTERN
-          (if (and <`or ...> ) ...)
-        PATTERN
-
-        # @!method logical_operator?(node)
-        def_node_matcher :logical_operator?, <<~PATTERN
-          (if ({and or} ... ) ...)
+          (and <`or ...> )
         PATTERN
 
         def on_if(node)
           return unless node.unless?
 
-          if style == :forbid_mixed_logical_operators && mixed_logical_operator?(node)
+          condition = unparenthesized_condition(node)
+
+          if style == :forbid_mixed_logical_operators && mixed_logical_operator?(condition)
             add_offense(node, message: FORBID_MIXED_LOGICAL_OPERATORS)
-          elsif style == :forbid_logical_operators && logical_operator?(node)
+          elsif style == :forbid_logical_operators && condition.operator_keyword?
             add_offense(node, message: FORBID_LOGICAL_OPERATORS)
           end
         end
 
         private
 
-        def mixed_logical_operator?(node)
-          or_with_and?(node) ||
-            and_with_or?(node) ||
-            mixed_precedence_and?(node) ||
-            mixed_precedence_or?(node)
+        def unparenthesized_condition(node)
+          condition = node.condition
+          while condition.begin_type? && condition.children.one?
+            condition = condition.children.first
+          end
+          condition
         end
 
-        def mixed_precedence_and?(node)
-          and_sources = node.condition.each_descendant(:and).map(&:operator)
-          and_sources << node.condition.operator if node.condition.and_type?
+        def mixed_logical_operator?(condition)
+          or_with_and?(condition) ||
+            and_with_or?(condition) ||
+            mixed_precedence_and?(condition) ||
+            mixed_precedence_or?(condition)
+        end
+
+        def mixed_precedence_and?(condition)
+          and_sources = condition.each_descendant(:and).map(&:operator)
+          and_sources << condition.operator if condition.and_type?
 
           !(and_sources.all?('&&') || and_sources.all?('and'))
         end
 
-        def mixed_precedence_or?(node)
-          or_sources = node.condition.each_descendant(:or).map(&:operator)
-          or_sources << node.condition.operator if node.condition.or_type?
+        def mixed_precedence_or?(condition)
+          or_sources = condition.each_descendant(:or).map(&:operator)
+          or_sources << condition.operator if condition.or_type?
 
           !(or_sources.all?('||') || or_sources.all?('or'))
         end
