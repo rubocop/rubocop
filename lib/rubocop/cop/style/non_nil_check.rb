@@ -105,11 +105,12 @@ module RuboCop
         end
 
         def correction_removes_heredoc?(node, receiver)
-          return false if receiver.last_line == node.last_line
+          return false if node.single_line?
 
-          removed_lines = (receiver.last_line + 1)..node.last_line
-          receiver.each_node(:any_str).any? do |str|
-            str.heredoc? && removed_lines.cover?(str.loc.heredoc_end.line)
+          # Only the receiver is kept, so a heredoc terminator anywhere else in the
+          # node is lost, whether the heredoc was opened in the receiver or before it.
+          processed_source.tokens_within(node).any? do |token|
+            token.type == :tSTRING_END && !receiver.source_range.contains?(token.pos)
           end
         end
 

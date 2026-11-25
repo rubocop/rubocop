@@ -54,6 +54,32 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       expect(autocorrect_source(source)).to eq(source)
     end
 
+    it 'preserves a heredoc opened by a sibling argument on the receiver line' do
+      source = <<~RUBY
+        use(<<~TEXT, lookup
+          key
+        TEXT
+        .!=(nil))
+      RUBY
+
+      expect(autocorrect_source(source)).to eq(source)
+    end
+
+    it 'corrects the comparison when the body of a sibling heredoc follows it' do
+      expect_offense(<<~RUBY)
+        use(<<~TEXT, lookup != nil)
+                     ^^^^^^^^^^^^^ Prefer `!lookup.nil?` over `lookup != nil`.
+          key
+        TEXT
+      RUBY
+
+      expect_correction(<<~RUBY)
+        use(<<~TEXT, !lookup.nil?)
+          key
+        TEXT
+      RUBY
+    end
+
     it 'corrects the comparison when the heredoc body follows it' do
       expect_offense(<<~RUBY)
         lookup(<<~TEXT) != nil
@@ -157,6 +183,45 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       RUBY
 
       expect_no_corrections
+    end
+
+    it 'does not correct `!x.nil?` when a sibling heredoc terminator precedes the nil check' do
+      expect_offense(<<~RUBY)
+        use(<<~TEXT, !lookup
+                     ^^^^^^^ Explicit non-nil checks are usually redundant.
+          key
+        TEXT
+        .nil?)
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct `unless x.nil?` when a heredoc terminator precedes the nil check' do
+      expect_offense(<<~RUBY)
+        puts(<<~TEXT) unless lookup
+                             ^^^^^^ Explicit non-nil checks are usually redundant.
+          key
+        TEXT
+        .nil?
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects `!x.nil?` when the body of a sibling heredoc follows it' do
+      expect_offense(<<~RUBY)
+        use(<<~TEXT, !lookup.nil?)
+                     ^^^^^^^^^^^^ Explicit non-nil checks are usually redundant.
+          key
+        TEXT
+      RUBY
+
+      expect_correction(<<~RUBY)
+        use(<<~TEXT, lookup)
+          key
+        TEXT
+      RUBY
     end
 
     it 'registers an offense for unless x.nil?' do
