@@ -16,6 +16,11 @@ module RuboCop
 
         LEADING_DOT_TYPES = %i[tDOT tANDDOT].to_set.freeze
 
+        def on_new_investigation
+          super
+          @heredocs_by_line = nil
+        end
+
         private
 
         # @!method constant_definition?(node)
@@ -36,10 +41,19 @@ module RuboCop
           return if valid_body_style?(body)
           return if node.single_line?
 
-          first_line = adjusted_first_line || node.source_range.first_line
+          first_line = adjusted_first_line || node.first_line
+          if (end_line = heredoc_end_line(first_line))
+            first_line = end_line
+            body = node.children.first if node.kwbegin_type?
+          end
+
           last_line = node.source_range.last_line
           return if first_line >= last_line
 
+          check_body_lines(body, first_line, last_line)
+        end
+
+        def check_body_lines(body, first_line, last_line)
           case style
           when :empty_lines_except_namespace
             check_empty_lines_except_namespace(body, first_line, last_line)
@@ -48,6 +62,18 @@ module RuboCop
           else
             check_both(style, body, first_line, last_line)
           end
+        end
+
+        def heredoc_end_line(line)
+          return unless processed_source[line - 1].include?('<<')
+
+          heredocs = heredocs_by_line[line]
+          heredocs&.map { |str| str.loc.heredoc_end.line }&.max
+        end
+
+        def heredocs_by_line
+          @heredocs_by_line ||= processed_source.ast.each_node(:any_str)
+                                                .select(&:heredoc?).group_by(&:first_line)
         end
 
         def check_empty_lines_except_namespace(body, first_line, last_line)
@@ -89,8 +115,11 @@ module RuboCop
         end
 
         def check_beginning(style, body, first_line)
-          return if style == :no_empty_lines && body && body.last_line <= first_line
-          return if style == :empty_lines && body&.first_line == first_line
+          if body
+            return if body.first_line < first_line
+            return if style == :no_empty_lines && body.last_line <= first_line
+            return if style == :empty_lines && body.first_line == first_line
+          end
 
           check_source(style, first_line, 'beginning')
         end

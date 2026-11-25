@@ -23,6 +23,17 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody, :config do
     RUBY
   end
 
+  it 'accepts a blank line between a heredoc on the opening line and the next statement' do
+    expect_no_offenses(<<~RUBY)
+      begin emit(<<~TEXT)
+        hello
+      TEXT
+
+        keep
+      end
+    RUBY
+  end
+
   it 'registers an offense for ensure body ending' do
     expect_offense(<<~RUBY)
       begin

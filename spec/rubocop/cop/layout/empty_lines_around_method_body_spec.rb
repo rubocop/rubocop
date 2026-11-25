@@ -124,6 +124,28 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody, :config do
     RUBY
   end
 
+  it 'removes a blank line after a heredoc default argument but not inside it' do
+    expect_offense(<<~RUBY)
+      def note(value = <<~TEXT)
+
+        hello
+      TEXT
+
+      #{beginning_offense_annotation}
+        value
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def note(value = <<~TEXT)
+
+        hello
+      TEXT
+        value
+      end
+    RUBY
+  end
+
   it 'does not register an offense when the arguments span multiple lines and `end` is on the last argument line' do
     expect_no_offenses(<<~RUBY)
       def some_method(bar,
