@@ -105,6 +105,7 @@ module RuboCop
 
         def remove_redundant_each(corrector, range, redundant_node)
           return unless removable_each?(range)
+          return unless (range = with_preceding_line_break(range, redundant_node))
 
           corrector.remove(range)
 
@@ -118,6 +119,16 @@ module RuboCop
         def removable_each?(range)
           between = processed_source.tokens_within(range)[1...-1]
           between.empty? || between.map(&:type) == %i[tLPAREN2 tRPAREN]
+        end
+
+        # The block of an `each` that starts its line would be left without a call, so the
+        # line break goes too, unless there's a comment before it.
+        def with_preceding_line_break(range, redundant_node)
+          receiver_end = redundant_node.source_range.end
+          return range if receiver_end.end_pos >= range.begin_pos
+
+          gap = receiver_end.join(range.begin)
+          range.join(gap) if gap.source.strip.empty?
         end
 
         def receiver_of_dot_call?(node)
