@@ -24,6 +24,110 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     RUBY
   end
 
+  it 'does not move the branch into a heredoc opened by the condition' do
+    expect_offense(<<~RUBY)
+      if ready
+        first
+      else
+        if matches?(<<~TEXT)
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          key
+        TEXT
+          dispatch
+        end
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not move a modifier condition away from its heredoc body' do
+    expect_offense(<<~RUBY)
+      if ready
+        first
+      else
+        dispatch if matches?(<<~TEXT)
+                 ^^ Convert `if` nested inside `else` to `elsif`.
+          key
+        TEXT
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'corrects when the condition includes the entire heredoc' do
+    expect_offense(<<~RUBY)
+      if ready
+        first
+      else
+        if matches?(
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          <<~TEXT
+            key
+          TEXT
+        )
+          dispatch
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ready
+        first
+      elsif matches?(
+          <<~TEXT
+            key
+          TEXT
+        )
+        dispatch
+      end
+    RUBY
+  end
+
+  it 'does not move a blank line into a heredoc in the branch' do
+    expect_offense(<<~RUBY)
+      if ready
+        first
+      else
+        if ready_for_dispatch?
+        ^^ Convert `if` nested inside `else` to `elsif`.
+
+          dispatch(<<~TEXT)
+            key
+          TEXT
+        end
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'corrects when a heredoc in the branch immediately follows the condition' do
+    expect_offense(<<~RUBY)
+      if ready
+        first
+      else
+        if ready_for_dispatch?
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          dispatch(<<~TEXT)
+            key
+          TEXT
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ready
+        first
+      elsif ready_for_dispatch?
+        dispatch(<<~TEXT)
+            key
+          TEXT
+      end
+    RUBY
+  end
+
   it 'catches an if..else nested inside an else' do
     expect_offense(<<~RUBY)
       if a
