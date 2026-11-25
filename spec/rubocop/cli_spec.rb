@@ -2280,6 +2280,76 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe 'configuration of the parser engine' do
+    %w[parser_prism prism].each do |parser_engine|
+      context "when `#{parser_engine}` is configured with a target Ruby version below 3.3" do
+        it 'fails with an error message' do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              ParserEngine: #{parser_engine}
+              TargetRubyVersion: 3.2
+          YAML
+          create_file('example.rb', 'x = 1')
+
+          expect(cli.run([])).to eq(2)
+          expect($stderr.string.strip).to eq(
+            "Error: The `#{parser_engine}` parser engine supports target Ruby versions 3.3 " \
+            'and above, but RuboCop found Ruby version 3.2 in `TargetRubyVersion` parameter ' \
+            '(in .rubocop.yml).'
+          )
+        end
+
+        it 'does not fail when no file is inspected' do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              ParserEngine: #{parser_engine}
+              TargetRubyVersion: 3.2
+          YAML
+
+          expect(cli.run([])).to eq(0)
+          expect($stderr.string).to eq('')
+        end
+      end
+    end
+
+    context 'when the `parser` gem is not installed' do
+      before do
+        allow(RuboCop::AST::ParserSource).to receive(:vendored?).and_return(true)
+        create_file('example.rb', 'x = 1')
+      end
+
+      it 'fails with an error message for a target Ruby version below 3.3' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            TargetRubyVersion: 3.2
+        YAML
+
+        expect(cli.run([])).to eq(2)
+        expect($stderr.string.strip).to eq(
+          'Error: RuboCop found Ruby version 3.2 in `TargetRubyVersion` parameter ' \
+          '(in .rubocop.yml), and analyzing code for Ruby versions below 3.3 needs the ' \
+          '`parser` gem. Add it to your Gemfile.'
+        )
+      end
+
+      %w[parser_whitequark parser_prism].each do |parser_engine|
+        it "fails with an error message for `#{parser_engine}`" do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              ParserEngine: #{parser_engine}
+              TargetRubyVersion: 3.4
+          YAML
+
+          expect(cli.run([])).to eq(2)
+          expect($stderr.string.strip).to eq(
+            "Error: The `#{parser_engine}` parser engine needs the `parser` gem. Add it to " \
+            'your Gemfile, or remove `ParserEngine` from your configuration.'
+          )
+        end
+      end
+    end
+  end
+
   describe 'configuration of target Ruby versions' do
     context 'when configured with an unknown version' do
       it 'fails with an error message for a configuration file given with `--config`' do

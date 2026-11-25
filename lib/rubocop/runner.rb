@@ -738,7 +738,7 @@ module RuboCop
 
     # rubocop:disable-next Metrics/MethodLength
     def get_processed_source(file, prism_result, source: nil)
-      config = @config_store.for_file(file)
+      config = @config_store.for_file(file).validate_parser_engine
       ruby_version = config.target_ruby_version
       parser_engine = config.parser_engine
 
