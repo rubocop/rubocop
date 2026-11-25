@@ -32,6 +32,7 @@ module RuboCop
 
     def options_config=(options_config)
       loaded_config = ConfigLoader.load_file(options_config)
+      loaded_config.validate_after_resolution
       @options_config = ConfigLoader.merge_with_default(loaded_config, options_config)
     end
 

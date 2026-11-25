@@ -2282,6 +2282,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   describe 'configuration of target Ruby versions' do
     context 'when configured with an unknown version' do
+      it 'fails with an error message for a configuration file given with `--config`' do
+        create_file('custom.yml', <<~YAML)
+          AllCops:
+            TargetRubyVersion: 5.0
+        YAML
+        expect(cli.run(['--config', 'custom.yml'])).to eq(2)
+        expect($stderr.string.strip).to start_with(
+          'Error: RuboCop found unknown Ruby version 5.0 in `TargetRubyVersion`'
+        )
+      end
+
       it 'fails with an error message' do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
