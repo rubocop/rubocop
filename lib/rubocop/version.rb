@@ -62,7 +62,7 @@ module RuboCop
       end
       # Without the `parser` gem its version is that of the copy of its source
       # layer in RuboCop AST, which is not what parses the code.
-      parser = "Parser #{Parser::VERSION}" unless AST::ParserSource.vendored?
+      parser = "Parser #{Parser::VERSION}" if ProcessedSource.parser_gem_available?
       prism = "Prism #{Prism::VERSION}"
       return parser || prism if target_ruby_version < MINIMUM_PARSABLE_PRISM_VERSION
 
@@ -77,7 +77,7 @@ module RuboCop
     def self.parser_engine(configured, target_ruby_version)
       return configured unless configured.nil? || configured.to_s == 'default'
 
-      ProcessedSource.new('', target_ruby_version, parser_engine: :default).parser_engine
+      ProcessedSource.default_parser_engine(target_ruby_version)
     end
 
     # @api private

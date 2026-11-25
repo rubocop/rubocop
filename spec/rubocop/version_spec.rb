@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Version do
     context 'when the `parser` gem is not installed' do
       let(:target_ruby_version) { 3.4 }
 
-      before { allow(RuboCop::AST::ParserSource).to receive(:vendored?).and_return(true) }
+      before { allow(RuboCop::ProcessedSource).to receive(:parser_gem_available?).and_return(false) }
 
       it 'does not have a version of Parser' do
         create_file('.rubocop.yml', <<~YAML)
