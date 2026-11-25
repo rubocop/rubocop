@@ -12610,10 +12610,8 @@ end
 Checks for lambdas and procs that always return nil,
 which can be replaced with an empty lambda or proc instead.
 
-NOTE: A `proc` that returns nil via an explicit `return` is allowed,
-because in a `proc` `return` exits the enclosing method, so removing it
-would change behavior. A lambda is still reported, since there `return`
-only exits the lambda itself.
+In a non-lambda proc, `return` and `break` are non-local exits.
+They cannot be removed even when their argument is `nil`.
 
 [#examples-stylenillambda]
 === Examples
@@ -12629,10 +12627,6 @@ end
 
 proc { nil }
 
-Proc.new do
-  break nil
-end
-
 # good
 -> {}
 
@@ -12644,6 +12638,7 @@ end
 proc {}
 
 Proc.new { nil if x }
+proc { break nil }
 ----
 
 [#stylenonnilcheck]

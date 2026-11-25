@@ -2065,6 +2065,13 @@ def foo
   1
 end
 
+# good - `undef`, `undef_method`, and `remove_method` remove the earlier definition
+attr_reader :foo
+undef foo
+def foo
+  1
+end
+
 # bad
 class MyClass
   extend Forwardable
