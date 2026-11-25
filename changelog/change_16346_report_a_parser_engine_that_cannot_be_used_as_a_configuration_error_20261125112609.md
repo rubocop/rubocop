@@ -1,0 +1,1 @@
+* [#16346](https://github.com/rubocop/rubocop/issues/16346): Report a `ParserEngine` that cannot parse the target Ruby version, or that needs the `parser` gem when it is not installed, as a configuration error instead of a backtrace. ([@bbatsov][])

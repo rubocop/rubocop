@@ -23,7 +23,10 @@ module RuboCop
     CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect References].to_set.freeze
     CONFIG_CHECK_DEPARTMENTS = %w[pending preview override_department].freeze
     CONFIG_CHECK_AUTOCORRECTS = %w[always contextual disabled].freeze
-    private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
+    PRISM_PARSER_ENGINES = %i[parser_prism prism].freeze
+    PARSER_GEM_ENGINES = %i[parser_whitequark parser_prism].freeze
+    private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS, :PRISM_PARSER_ENGINES,
+                     :PARSER_GEM_ENGINES
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops
 
@@ -64,6 +67,16 @@ module RuboCop
       check_target_ruby
     end
 
+    # Checks that the parser engine can parse the target Ruby version. This is
+    # for the runner to call before it parses a file, because a configuration
+    # that no file is inspected with is free to name any engine.
+    def validate_parser_engine
+      return if @parser_engine_validated
+
+      check_parser_engine
+      @parser_engine_validated = true
+    end
+
     def target_ruby_version
       target_ruby.version
     end
@@ -97,6 +110,37 @@ module RuboCop
       msg += "\nSupported versions: #{TargetRuby.supported_versions.join(', ')}"
 
       raise ValidationError, msg
+    end
+
+    def check_parser_engine
+      parser_engine = @config.parser_engine
+      prism = PRISM_PARSER_ENGINES.include?(parser_engine)
+      old_ruby = target_ruby_version < Version::MINIMUM_PARSABLE_PRISM_VERSION
+
+      if prism && old_ruby
+        raise ValidationError,
+              "The `#{parser_engine}` parser engine supports target Ruby versions " \
+              "#{Version::MINIMUM_PARSABLE_PRISM_VERSION} and above, but RuboCop found Ruby " \
+              "version #{target_ruby_version} in #{target_ruby.source}."
+      end
+      return unless AST::ParserSource.vendored?
+
+      check_parser_gem(parser_engine, old_ruby)
+    end
+
+    def check_parser_gem(parser_engine, old_ruby)
+      if old_ruby
+        raise ValidationError,
+              "RuboCop found Ruby version #{target_ruby_version} in #{target_ruby.source}, and " \
+              'analyzing code for Ruby versions below ' \
+              "#{Version::MINIMUM_PARSABLE_PRISM_VERSION} needs the `parser` gem. " \
+              'Add it to your Gemfile.'
+      end
+      return unless PARSER_GEM_ENGINES.include?(parser_engine)
+
+      raise ValidationError, "The `#{parser_engine}` parser engine needs the `parser` gem. " \
+                             'Add it to your Gemfile, or remove `ParserEngine` from your ' \
+                             'configuration.'
     end
 
     def alert_about_unrecognized_cops(invalid_cop_names)

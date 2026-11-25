@@ -89,6 +89,12 @@ module RuboCop
       self
     end
 
+    # @api private
+    def validate_parser_engine
+      @validator.validate_parser_engine
+      self
+    end
+
     def_delegators :@hash, :[], :[]=, :delete, :dig, :each, :key?, :keys, :each_key,
                    :fetch, :map, :merge, :replace, :to_h, :to_hash, :transform_values
     def_delegators :@validator, :validate, :target_ruby_version
