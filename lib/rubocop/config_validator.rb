@@ -123,7 +123,7 @@ module RuboCop
               "#{Version::MINIMUM_PARSABLE_PRISM_VERSION} and above, but RuboCop found Ruby " \
               "version #{target_ruby_version} in #{target_ruby.source}."
       end
-      return unless AST::ParserSource.vendored?
+      return if ProcessedSource.parser_gem_available?
 
       check_parser_gem(parser_engine, old_ruby)
     end

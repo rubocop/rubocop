@@ -2314,7 +2314,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     context 'when the `parser` gem is not installed' do
       before do
-        allow(RuboCop::AST::ParserSource).to receive(:vendored?).and_return(true)
+        allow(RuboCop::ProcessedSource).to receive(:parser_gem_available?).and_return(false)
         create_file('example.rb', 'x = 1')
       end
 
