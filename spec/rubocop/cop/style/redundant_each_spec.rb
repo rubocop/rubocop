@@ -193,6 +193,52 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
     RUBY
   end
 
+  it 'registers an offense when using `reverse_each.each` with `.each` on the next line' do
+    expect_offense(<<~RUBY)
+      context.reverse_each
+        .each { |i| do_something(i) }
+        ^^^^^ Remove redundant `each`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      context.reverse_each { |i| do_something(i) }
+    RUBY
+  end
+
+  it 'registers an offense when using `reverse_each.each` with `&.each` on the next line' do
+    expect_offense(<<~RUBY)
+      context.reverse_each
+        &.each { |i| do_something(i) }
+        ^^^^^^ Remove redundant `each`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      context.reverse_each { |i| do_something(i) }
+    RUBY
+  end
+
+  it 'registers an offense when using `reverse_each.each` with a trailing dot' do
+    expect_offense(<<~RUBY)
+      context.reverse_each.
+                          ^ Remove redundant `each`.
+        each { |i| do_something(i) }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      context.reverse_each { |i| do_something(i) }
+    RUBY
+  end
+
+  it 'does not correct `reverse_each.each` with a comment before `.each` on the next line' do
+    expect_offense(<<~RUBY)
+      context.reverse_each # comment
+        .each { |i| do_something(i) }
+        ^^^^^ Remove redundant `each`.
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'registers an offense when using `&.reverse_each.each`' do
     expect_offense(<<~RUBY)
       context&.reverse_each.each { |i| do_something(i) }
