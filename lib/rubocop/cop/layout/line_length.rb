@@ -172,9 +172,15 @@ module RuboCop
           end
         end
 
+        # The correction puts the body and `end` on lines of their own, which
+        # separates an opener before the body, or on the last line, from its
+        # heredoc body.
         def heredoc_body_after_method?(node)
+          body_begin = node.body.source_range.begin_pos
+
           heredoc_openers.any? do |opener|
-            opener.line == node.last_line && opener.begin_pos < node.source_range.end_pos
+            (opener.line == node.first_line && opener.begin_pos < body_begin) ||
+              (opener.line == node.last_line && opener.begin_pos < node.source_range.end_pos)
           end
         end
 

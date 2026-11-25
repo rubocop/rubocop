@@ -1833,6 +1833,59 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             expect_no_corrections
           end
         end
+
+        context 'with a heredoc in a default argument and a multiline body' do
+          it 'adds an offense but does not autocorrect' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name(arg = <<~TEXT) = some_long_method_name_that_exceeds(arg).then do |x|
+                                                                                              ^^^^^^^^^^^^^^ Line is too long. [94/80]
+                text
+              TEXT
+                x.upcase
+              end
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'with a heredoc opened before a method with a multiline body' do
+          it 'does not separate the heredoc opener from its body' do
+            expect_offense(<<~RUBY)
+              foo(<<~TEXT); def very_long_method_name = some_long_expression_that_exceeds_maximum.then do |x|
+                                                                                              ^^^^^^^^^^^^^^^ Line is too long. [95/80]
+                text
+              TEXT
+                x.upcase
+              end
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'with a heredoc in the first line of a multiline body' do
+          it 'still converts the endless method to a multiline definition' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name = some_long_method_name_that_exceeds_the_maximum(<<~TEXT).then do |x|
+                                                                                              ^^^^^^^^^^^^^^^ Line is too long. [95/80]
+                text
+              TEXT
+                x.upcase
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def very_long_method_name
+                some_long_method_name_that_exceeds_the_maximum(<<~TEXT).then do |x|
+                text
+              TEXT
+                x.upcase
+              end
+              end
+            RUBY
+          end
+        end
       end
 
       context 'when Style/EndlessMethod requires endless methods' do
