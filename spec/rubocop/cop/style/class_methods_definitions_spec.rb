@@ -137,6 +137,65 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
       RUBY
     end
 
+    it 'does not expand multiple methods into a single argument' do
+      expect_offense(<<~RUBY)
+        register(class << self
+                 ^^^^^^^^^^^^^ Do not define public methods within class << self.
+          def first; end
+          def second; end
+        end)
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not change the return value of a singleton class with other statements' do
+      expect_offense(<<~RUBY)
+        def setup
+          class << self
+          ^^^^^^^^^^^^^ Do not define public methods within class << self.
+            def first; end
+            marker
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects multiple definitions when the last one is still the return value' do
+      expect_offense(<<~RUBY)
+        def setup
+          class << self
+          ^^^^^^^^^^^^^ Do not define public methods within class << self.
+            def first; end
+            def second; end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def setup
+          def self.first; end
+
+          def self.second; end
+        end
+      RUBY
+    end
+
+    it 'corrects a single method in a singleton class passed as an argument' do
+      expect_offense(<<~RUBY)
+        register(class << self
+                 ^^^^^^^^^^^^^ Do not define public methods within class << self.
+          def first; end
+        end)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        register(def self.first; end)
+      RUBY
+    end
+
     it 'removes empty class << self when correcting' do
       expect_offense(<<~RUBY)
         class A
