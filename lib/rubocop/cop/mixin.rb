@@ -61,6 +61,7 @@ module RuboCop
     autoload :MultilineLiteralBraceLayout, "#{__dir__}/mixin/multiline_literal_brace_layout"
     autoload :NegativeConditional, "#{__dir__}/mixin/negative_conditional"
     autoload :Heredoc, "#{__dir__}/mixin/heredoc"
+    autoload :HeredocLines, "#{__dir__}/mixin/heredoc_lines"
     autoload :NilMethods, "#{__dir__}/mixin/nil_methods"
     autoload :OnNormalIfUnless, "#{__dir__}/mixin/on_normal_if_unless"
     autoload :OrderedGemNode, "#{__dir__}/mixin/ordered_gem_node"

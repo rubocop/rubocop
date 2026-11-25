@@ -630,6 +630,62 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
     end
 
+    it 'separates the methods after heredocs opened by a preceding call' do
+      expect_offense(<<~RUBY)
+        emit(<<~TITLE, <<~BODY); def first = 1
+          Title
+        TITLE
+
+          Body
+        BODY
+        def second
+        ^^^^^^^^^^ Expected 1 empty line between method definitions; found 0.
+          work
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        emit(<<~TITLE, <<~BODY); def first = 1
+          Title
+        TITLE
+
+          Body
+        BODY
+
+        def second
+          work
+        end
+      RUBY
+    end
+
+    it 'does not split definitions on a heredoc opening line' do
+      expect_offense(<<~RUBY)
+        emit(<<~TEXT); def first = 1; def second = 2
+                                      ^^^^^^^^^^ Expected 1 empty line between method definitions; found 0.
+          text
+        TEXT
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'can split the line before a definition that opens a heredoc' do
+      expect_offense(<<~RUBY)
+        def first = 1; def second = <<~TEXT
+                       ^^^^^^^^^^ Expected 1 empty line between method definitions; found 0.
+          text
+        TEXT
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def first = 1;#{trailing_whitespace}
+
+        def second = <<~TEXT
+          text
+        TEXT
+      RUBY
+    end
+
     context 'between regular and endless methods' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)

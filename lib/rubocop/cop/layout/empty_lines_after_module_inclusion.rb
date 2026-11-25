@@ -28,6 +28,7 @@ module RuboCop
       #   end
       #
       class EmptyLinesAfterModuleInclusion < Base
+        include HeredocLines
         extend AutoCorrector
 
         MSG = 'Add an empty line after module inclusion.'
@@ -35,10 +36,6 @@ module RuboCop
         MODULE_INCLUSION_METHODS = %i[include extend prepend].freeze
 
         RESTRICT_ON_SEND = MODULE_INCLUSION_METHODS
-
-        def on_new_investigation
-          @heredoc_end_lines = nil
-        end
 
         def on_send(node)
           return if node.receiver || node.arguments.empty?
@@ -54,22 +51,6 @@ module RuboCop
         end
 
         private
-
-        def last_line_with_heredocs(node)
-          [node.last_line, heredoc_end_lines[node.last_line]].compact.max
-        end
-
-        # @return [Hash{Integer => Integer}] the last line of the heredocs
-        #   that begin on a line
-        def heredoc_end_lines
-          @heredoc_end_lines ||=
-            processed_source.ast.each_node(:any_str).with_object({}) do |str, lines|
-              next unless str.heredoc?
-
-              end_line = str.loc.heredoc_end.line
-              lines[str.first_line] = [lines[str.first_line], end_line].compact.max
-            end
-        end
 
         def autocorrect(corrector, last_line)
           node_range = processed_source.buffer.line_range(last_line)
