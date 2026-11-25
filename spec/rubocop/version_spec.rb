@@ -63,6 +63,21 @@ RSpec.describe RuboCop::Version do
         expect(parser_version).to end_with(', parser_whitequark')
       end
     end
+
+    context 'when the `parser` gem is not installed' do
+      let(:target_ruby_version) { 3.4 }
+
+      before { allow(RuboCop::AST::ParserSource).to receive(:vendored?).and_return(true) }
+
+      it 'does not have a version of Parser' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            ParserEngine: prism
+        YAML
+
+        expect(parser_version).to eq("Prism #{Prism::VERSION}, prism")
+      end
+    end
   end
 
   describe '.extension_versions', :isolated_environment, :restore_configuration, :restore_registry do

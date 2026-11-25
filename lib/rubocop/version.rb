@@ -60,11 +60,15 @@ module RuboCop
       yaml = Util.silence_warnings do
         ConfigLoader.load_yaml_configuration(config_path)
       end
-      return "Parser #{Parser::VERSION}" if target_ruby_version < MINIMUM_PARSABLE_PRISM_VERSION
+      # Without the `parser` gem its version is that of the copy of its source
+      # layer in RuboCop AST, which is not what parses the code.
+      parser = "Parser #{Parser::VERSION}" unless AST::ParserSource.vendored?
+      prism = "Prism #{Prism::VERSION}"
+      return parser || prism if target_ruby_version < MINIMUM_PARSABLE_PRISM_VERSION
 
       parser_engine = parser_engine(yaml.dig('AllCops', 'ParserEngine'), target_ruby_version)
 
-      "Parser #{Parser::VERSION}, Prism #{Prism::VERSION}, #{parser_engine}"
+      [parser, prism, parser_engine].compact.join(', ')
     end
 
     # The default parser engine depends on the target Ruby version and on the
