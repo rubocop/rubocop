@@ -166,10 +166,12 @@ AllCops:
   # - `default`
   # - `parser_whitequark` ... https://github.com/whitequark/parser
   # - `parser_prism` ... https://github.com/ruby/prism (`Prism::Translation::Parser`)
-  # - `prism` ... https://github.com/ruby/prism (experimental, without the translation layer)
+  # - `prism` ... https://github.com/ruby/prism (without the translation layer)
   # Not every parser engine can handle every `TargetRubyVersion`. `parser_whitequark`
   # only works with versions 3.4 and below, `parser_prism` and `prism` with versions 3.3
-  # and above. `prism` needs Prism 2.0 or later.
+  # and above. `prism` needs Prism 2.0 or later. `default` is `parser_whitequark` for
+  # versions below 3.3; for the others it is `prism` when Prism 2.0 or later is installed,
+  # and `parser_prism` otherwise.
   ParserEngine: default
   # Determines if a notification for extension libraries should be shown when
   # rubocop is run. Keys are the name of the extension, and values are an array
