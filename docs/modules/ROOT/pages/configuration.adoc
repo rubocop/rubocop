@@ -172,7 +172,7 @@ Here are the parsers used as backends for each value:
 - `ParserEngine: default`
 - `ParserEngine: parser_whitequark` ... https://github.com/whitequark/parser
 - `ParserEngine: parser_prism` ... https://github.com/ruby/prism (`Prism::Translation::Parser`)
-- `ParserEngine: prism` ... https://github.com/ruby/prism (experimental, without the translation layer)
+- `ParserEngine: prism` ... https://github.com/ruby/prism (without the translation layer)
 
 `parser_whitequark` can analyze source code from Ruby 2.0 until Ruby 3.4:
 
@@ -193,9 +193,9 @@ AllCops:
 
 TIP: `parser_prism` tends to perform analysis faster than `parser_whitequark`.
 
-`prism` is an experimental engine that builds the AST from Prism directly, without
-`Prism::Translation::Parser`. Like `parser_prism` it can analyze source code from Ruby 3.3
-and above, and it needs Prism 2.0 or later:
+`prism` builds the AST from Prism directly, without `Prism::Translation::Parser` and the
+Parser gem's builder. Like `parser_prism` it can analyze source code from Ruby 3.3 and above,
+and it needs Prism 2.0 or later:
 
 [source,yaml]
 ----
@@ -203,6 +203,10 @@ AllCops:
   ParserEngine: prism
   TargetRubyVersion: 3.3
 ----
+
+`default` picks `parser_whitequark` for a `TargetRubyVersion` below 3.3. For 3.3 and above it
+picks `prism` when Prism 2.0 or later is installed, and `parser_prism` otherwise. `rubocop -V`
+shows which one is in use.
 
 == Setting the style guide URL
 
