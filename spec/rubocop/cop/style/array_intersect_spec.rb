@@ -173,14 +173,15 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
       end
 
       it 'preserves a heredoc between the receiver and the intersection call' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           use(lookup(<<~TEXT)
+              ^^^^^^^^^^^^^^^ Use `lookup(<<~TEXT).intersect?(allowed)` instead of [...]
             key
           TEXT
           .intersection(allowed).any?, fallback)
         RUBY
 
-        expect(autocorrect_source(source)).to eq(source)
+        expect_no_corrections
       end
 
       it 'registers an offense for `a.intersection(b).any?`' do
@@ -354,15 +355,16 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
 
     context 'with Array#any?' do
       it 'preserves a heredoc in the receiver of member? inside a block' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           allowed.any? do |entry|
+          ^^^^^^^^^^^^^^^^^^^^^^^ Use `allowed.intersect?(lookup(<<~TEXT))` instead of [...]
             lookup(<<~TEXT).member?(entry)
               key
             TEXT
           end
         RUBY
 
-        expect(autocorrect_source(source)).to eq(source)
+        expect_no_corrections
       end
 
       it 'registers an offense when using `array1.any? { |e| array2.member?(e) }`' do
