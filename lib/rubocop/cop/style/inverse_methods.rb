@@ -76,6 +76,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless node.unary_operation?
+
           inverse_candidate?(node) do |method_call, lhs, method, rhs|
             return unless inverse_methods.key?(method)
             return if negated?(node) || safe_navigation_incompatible?(method_call)
