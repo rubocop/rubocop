@@ -23,6 +23,52 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     RUBY
   end
 
+  it 'does not remove a heredoc body inside the block' do
+    expect_offense(<<~RUBY)
+      read(<<~TEXT).then do |value|
+                         ^^^^^^^^^^ Pass `&:upcase` as an argument to `then` instead of a block.
+        text
+      TEXT
+        value.upcase
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not remove a heredoc between empty parentheses before the block' do
+    expect_offense(<<~RUBY)
+      publish(<<~TEXT, rows.map(
+        label
+      TEXT
+      ) { |row| row.id })
+        ^^^^^^^^^^^^^^^^ Pass `&:id` as an argument to `map` instead of a block.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'corrects when the heredoc ends before the block' do
+    expect_offense(<<~RUBY)
+      read(
+        <<~TEXT
+          text
+        TEXT
+      ).then do |value|
+             ^^^^^^^^^^ Pass `&:upcase` as an argument to `then` instead of a block.
+        value.upcase
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      read(
+        <<~TEXT
+          text
+        TEXT
+      ).then(&:upcase)
+    RUBY
+  end
+
   it 'registers an offense for safe navigation operator' do
     expect_offense(<<~RUBY)
       coll&.map { |e| e.upcase }
