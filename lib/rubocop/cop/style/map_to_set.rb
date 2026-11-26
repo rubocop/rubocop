@@ -25,7 +25,7 @@ module RuboCop
       #
       class MapToSet < Base
         extend AutoCorrector
-        include RangeHelp
+        include ChainedCallRemoval
 
         MSG = 'Pass a block to `to_set` instead of calling `%<method>s.to_set`.'
         RESTRICT_ON_SEND = %i[to_set].freeze
@@ -41,22 +41,15 @@ module RuboCop
         def on_send(node)
           return unless (to_set_node, map_node = map_to_set?(node))
           return if to_set_node.block_literal?
+          return unless (removal_range = range_for_chained_call_removal(to_set_node))
 
           message = format(MSG, method: map_node.loc.selector.source)
           add_offense(map_node.loc.selector, message: message) do |corrector|
-            autocorrect(corrector, to_set_node, map_node)
+            corrector.remove(removal_range)
+            corrector.replace(map_node.loc.selector, 'to_set')
           end
         end
         alias on_csend on_send
-
-        private
-
-        def autocorrect(corrector, to_set, map)
-          removal_range = range_between(to_set.loc.dot.begin_pos, to_set.loc.selector.end_pos)
-
-          corrector.remove(range_with_surrounding_space(removal_range, side: :left))
-          corrector.replace(map.loc.selector, 'to_set')
-        end
       end
     end
   end

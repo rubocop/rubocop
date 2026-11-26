@@ -1,6 +1,37 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MapToSet, :config do
+  it 'does not correct when the statement after `to_set` would be commented out' do
+    expect_no_offenses(<<~RUBY)
+      rows.map(&:name) # keep
+        .to_set; audit
+    RUBY
+  end
+
+  it 'keeps a chained call after a heredoc terminator' do
+    expect_offense(<<~RUBY)
+      rows.map { |row| [row, <<~TEXT] }
+           ^^^ Pass a block to `to_set` instead of calling `map.to_set`.
+        label
+      TEXT
+        .to_set&.freeze
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rows.to_set { |row| [row, <<~TEXT] }
+        label
+      TEXT
+        &.freeze
+    RUBY
+  end
+
+  it 'does not turn a range into a beginless range after a comment' do
+    expect_no_offenses(<<~RUBY)
+      rows.map(&:name) # keep
+        .to_set..limit
+    RUBY
+  end
+
   %i[map collect].each do |method|
     context "for `#{method}.to_set` with block arity 1" do
       it 'registers an offense and corrects' do

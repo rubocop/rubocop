@@ -30,7 +30,7 @@ module RuboCop
       class MapToHash < Base
         extend AutoCorrector
         extend TargetRubyVersion
-        include RangeHelp
+        include ChainedCallRemoval
 
         minimum_target_ruby_version 2.6
 
@@ -53,9 +53,11 @@ module RuboCop
         def on_send(node)
           return unless (to_h_node, map_node = map_to_h(node))
           return if to_h_node.block_literal?
+          return unless (removal_range = range_for_chained_call_removal(to_h_node))
 
           message = format(MSG, method: map_node.loc.selector.source, dot: to_h_node.loc.dot.source)
           add_offense(map_node.loc.selector, message: message) do |corrector|
+            corrector.remove(removal_range)
             autocorrect(corrector, to_h_node, map_node)
           end
         end
@@ -65,9 +67,6 @@ module RuboCop
 
         # rubocop:disable-next Metrics/AbcSize
         def autocorrect(corrector, to_h, map)
-          removal_range = range_between(to_h.loc.dot.begin_pos, to_h.loc.selector.end_pos)
-
-          corrector.remove(range_with_surrounding_space(removal_range, side: :left))
           if (map_dot = map.loc.dot)
             corrector.replace(map_dot, to_h.loc.dot.source)
           end
