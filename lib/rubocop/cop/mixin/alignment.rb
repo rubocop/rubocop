@@ -6,6 +6,8 @@ module RuboCop
     # This amount is determined by the instance variable @column_delta.
     module Alignment
       SPACE = ' '
+      PRINTABLE_ASCII = /\A[ -~]*\z/.freeze
+      private_constant :PRINTABLE_ASCII
 
       private
 
@@ -61,7 +63,12 @@ module RuboCop
       # @api public
       def display_column(range)
         line = processed_source.lines[range.line - 1]
-        Unicode::DisplayWidth.of(line[0, range.column])
+        prefix = line[0, range.column]
+        # A printable ASCII character is one column wide, which is all there is
+        # before nearly every range and spares looking the widths up.
+        return prefix.length if prefix.ascii_only? && prefix.match?(PRINTABLE_ASCII)
+
+        Unicode::DisplayWidth.of(prefix)
       end
 
       # @api public
