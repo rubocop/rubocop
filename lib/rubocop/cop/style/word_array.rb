@@ -133,7 +133,7 @@ module RuboCop
         end
 
         def word_regex
-          Regexp.new(cop_config['WordRegex'])
+          @word_regex ||= Regexp.new(cop_config['WordRegex'])
         end
 
         def build_bracketed_array(node)
