@@ -74,6 +74,7 @@ module RuboCop
         def on_new_investigation
           processed_source.comments.each do |comment|
             directive = DirectiveComment.new(comment)
+            next unless directive.mode
             next unless comment_config.comment_only_line?(directive.line_number)
 
             if plain_disable?(directive)
