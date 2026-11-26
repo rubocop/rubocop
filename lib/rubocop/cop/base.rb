@@ -318,6 +318,18 @@ module RuboCop
         !relevant_file?(file)
       end
 
+      # Whether `relevant_file?` has the same answer for every file: `true` or
+      # `false` when it does, and `nil` when the answer depends on the file.
+      # A team asks once per cop class instead of once per file.
+      #
+      # @api private
+      def file_independent_relevance
+        return unless method(:relevant_file?).owner == Base && method(:excluded_file?).owner == Base
+        return false unless target_satisfies_all_gem_version_requirements?
+
+        true unless @config.clusivity_config_for_badge?(self.class.badge)
+      end
+
       # There should be very limited reasons for a Cop to do it's own parsing
       # The source is parsed the way the file under investigation was.
       def parse(source, path = nil)
