@@ -58,6 +58,21 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
       expect_no_offenses('foo(!!not(test.something))')
     end
 
+    it 'does not register an offense for `!!` applied to a parenthesized `!`' do
+      expect_no_offenses('foo(!!(!test.something))')
+    end
+
+    it 'registers an offense and corrects for `!!` applied to parentheses holding several statements' do
+      expect_offense(<<~RUBY)
+        foo(!!(bar; !test.something))
+            ^ Avoid the use of double negation (`!!`).
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(!(bar; !test.something).nil?)
+      RUBY
+    end
+
     it 'registers an offense and corrects for `!!` passed as an argument of `!`' do
       expect_offense(<<~RUBY)
         foo.!(!!test.something)
