@@ -286,19 +286,27 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
-    context "when a cop's joining forces callback raises an error" do
+    context "when a cop's joining forces callback raises an error", :restore_registry do
       include_context 'mock console output'
       before do
-        allow_any_instance_of(RuboCop::Cop::Lint::ShadowedArgument)
-          .to receive(:after_leaving_scope).and_raise(exception_message)
+        stub_const('RuboCop::Cop::Test::JoiningCop', Class.new(RuboCop::Cop::Base) do
+          def self.joining_forces
+            RuboCop::Cop::VariableForce
+          end
+
+          def after_leaving_scope(_scope, _variable_table)
+            raise 'my message'
+          end
+        end)
 
         create_file(file_path, 'foo { |bar| bar = 42 }')
       end
 
+      let(:cop_classes) { RuboCop::Cop::Registry.new([RuboCop::Cop::Test::JoiningCop]) }
       let(:options) { { debug: true } }
       let(:exception_message) { 'my message' }
       let(:error_message) do
-        'An error occurred while Lint/ShadowedArgument cop was inspecting example.rb.'
+        'An error occurred while Test/JoiningCop cop was inspecting example.rb.'
       end
 
       it 'records Team#errors' do
@@ -434,19 +442,24 @@ RSpec.describe RuboCop::Cop::Team do
     end
   end
 
-  describe '#forces' do
+  describe '#forces', :restore_registry do
     subject(:forces) { team.forces }
 
-    let(:cop_classes) { RuboCop::Cop::Registry.global }
+    let(:joining_cop_class) do
+      Class.new(RuboCop::Cop::Base) do
+        def self.joining_forces
+          RuboCop::Cop::VariableForce
+        end
+      end
+    end
 
-    it 'returns force instances' do
-      expect(forces).not_to be_empty
-
-      expect(forces).to all(be_a(RuboCop::Cop::Force))
+    before do
+      stub_const('RuboCop::Cop::Test::JoiningCop', joining_cop_class)
+      stub_const('RuboCop::Cop::Test::OtherJoiningCop', Class.new(joining_cop_class))
     end
 
     context 'when a cop joined a force' do
-      let(:cop_classes) { RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment]) }
+      let(:cop_classes) { RuboCop::Cop::Registry.new([RuboCop::Cop::Test::JoiningCop]) }
 
       it 'returns the force' do
         expect(forces.size).to eq(1)
@@ -457,10 +470,7 @@ RSpec.describe RuboCop::Cop::Team do
     context 'when multiple cops joined a same force' do
       let(:cop_classes) do
         RuboCop::Cop::Registry.new(
-          [
-            RuboCop::Cop::Lint::UselessAssignment,
-            RuboCop::Cop::Lint::ShadowingOuterLocalVariable
-          ]
+          [RuboCop::Cop::Test::JoiningCop, RuboCop::Cop::Test::OtherJoiningCop]
         )
       end
 

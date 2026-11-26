@@ -106,14 +106,6 @@ module RuboCop
         # @!method lvar_ref?(node, name)
         def_node_matcher :lvar_ref?, '(lvar %1)'
 
-        def self.joining_forces
-          VariableForce
-        end
-
-        def after_leaving_scope(scope, _variable_table)
-          (@scopes ||= []) << scope
-        end
-
         def on_block(node)
           return unless each_block_with_push?(node)
           return unless (dest_var = find_dest_var(node))
@@ -138,8 +130,12 @@ module RuboCop
           node = block.body.receiver
           name = node.children.first
 
-          candidates = @scopes.lazy.filter_map { |s| s.variables[name] }
+          candidates = scopes.lazy.filter_map { |scope| scope.variables[name] }
           candidates.find { |v| v.references.any? { |n| n.node.equal?(node) } }
+        end
+
+        def scopes
+          processed_source.variable_analysis.scopes
         end
 
         def offending_empty_array_tap?(node, dest_var)

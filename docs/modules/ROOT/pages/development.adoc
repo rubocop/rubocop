@@ -784,6 +784,27 @@ If your cop provides a corrector block inside `add_offense`, you must declare
 `extend AutoCorrector` at the top of the class. Without it, RuboCop won't
 know the cop supports autocorrection.
 
+=== Working with local variables
+
+A cop that needs to know about local variables, like which ones are unused or
+what a name refers to, doesn't have to track them itself.
+`processed_source.variable_analysis` has the scopes of the file, and each scope
+has its variables with their assignments and references:
+
+[source,ruby]
+----
+def on_new_investigation
+  processed_source.variable_analysis.scopes.each do |scope|
+    scope.variables.each_value do |variable|
+      add_offense(variable.declaration_node) unless variable.referenced?
+    end
+  end
+end
+----
+
+The analysis is done the first time a cop asks for it and shared by all the cops
+that inspect the file, so it can be used from any callback.
+
 [[running-tests]]
 == Running tests
 

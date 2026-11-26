@@ -81,10 +81,6 @@ module RuboCop
           [Style::ExplicitBlockArgument]
         end
 
-        def self.joining_forces
-          VariableForce
-        end
-
         private
 
         def autocorrect(corrector, node)

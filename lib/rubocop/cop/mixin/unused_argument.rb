@@ -7,8 +7,10 @@ module RuboCop
       module UnusedArgument
         extend NodePattern::Macros
 
-        def after_leaving_scope(scope, _variable_table)
-          scope.variables.each_value { |variable| check_argument(variable) }
+        def on_new_investigation
+          processed_source.variable_analysis.scopes.each do |scope|
+            scope.variables.each_value { |variable| check_argument(variable) }
+          end
         end
 
         private
