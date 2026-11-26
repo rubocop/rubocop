@@ -56,6 +56,8 @@ module RuboCop
         # a lazy-loaded cop's file gets loaded, because reassigning an existing key preserves
         # its position; the cop execution order depends on this order.
         @cops_by_badge = {}
+        # The lazily registered cops that declared an external dependency checksum.
+        @external_dependency_badges = Set.new
 
         @enrollment_queue = cops
         @options = options
@@ -72,8 +74,11 @@ module RuboCop
       #
       # @param badge [Badge, String] the badge, or the qualified cop name
       # @param constant_name [String] the fully qualified constant name
-      def lazy_load(badge, constant_name)
+      # @param external_dependency [Boolean] whether the cop overrides
+      #   `Base#external_dependency_checksum`
+      def lazy_load(badge, constant_name, external_dependency: false)
         badge = Badge.parse(badge) if badge.is_a?(String)
+        @external_dependency_badges << badge if external_dependency
 
         # File any cops enlisted earlier first, so that the registration
         # order follows the call order.
@@ -127,6 +132,7 @@ module RuboCop
         @cops_by_badge.each do |badge, cop_or_name|
           copy.add_entry(badge, cop_or_name) if yield(badge)
         end
+        copy.external_dependency_badges = @external_dependency_badges
         copy
       end
 
@@ -244,6 +250,21 @@ module RuboCop
       def enabled(config)
         @enabled_cache[config] ||= registered_badges.filter_map do |badge|
           next unless enabled_cop_name?(badge.to_s, config)
+
+          cop_or_name = @cops_by_badge[badge]
+          cop_or_name.is_a?(String) ? load_lazy_cop(badge) : cop_or_name
+        end
+      end
+
+      # Returns the enabled cop classes that override `Base#external_dependency_checksum`.
+      # The result cache needs only these to tell whether a cached result is still valid, so
+      # the other lazily registered cops are left unloaded.
+      #
+      # @api private
+      # @return [Array<Class>]
+      def enabled_with_external_dependency(config)
+        registered_badges.filter_map do |badge|
+          next unless external_dependency_badge?(badge) && enabled_cop_name?(badge.to_s, config)
 
           cop_or_name = @cops_by_badge[badge]
           cop_or_name.is_a?(String) ? load_lazy_cop(badge) : cop_or_name
@@ -381,6 +402,8 @@ module RuboCop
 
       protected
 
+      attr_writer :external_dependency_badges
+
       # Adds an already-loaded cop class or a lazy-load constant name under the given badge,
       # used to build filtered copies.
       def add_entry(badge, cop_or_name)
@@ -395,6 +418,7 @@ module RuboCop
         @cops_by_badge = @cops_by_badge.dup
         @enrollment_queue = @enrollment_queue.dup
         @departments = @departments.dup
+        @external_dependency_badges = @external_dependency_badges.dup
         @enabled_cache = {}.compare_by_identity
         @disabled_cache = {}.compare_by_identity
         @disabled_names_cache = {}.compare_by_identity
@@ -444,6 +468,7 @@ module RuboCop
         return constant_name unless constant_name.is_a?(String)
 
         cop = Kernel.const_get(constant_name)
+        check_external_dependency_declaration(badge, cop)
         if equal?(self.class.global)
           # Resolving the constant fires the autoload, which makes
           # `Base.inherited` enlist the class into the global registry.
@@ -458,6 +483,28 @@ module RuboCop
           # `Base.inherited` enlists into the global registry, not this copy.
           @cops_by_badge[badge] = cop
         end
+      end
+
+      def external_dependency?(cop)
+        cop.instance_method(:external_dependency_checksum).owner != Base
+      end
+
+      # A loaded cop shows whether it has an external dependency checksum.
+      # A lazily registered one is taken at its word.
+      def external_dependency_badge?(badge)
+        cop_or_name = @cops_by_badge[badge]
+        return @external_dependency_badges.include?(badge) if cop_or_name.is_a?(String)
+
+        external_dependency?(cop_or_name)
+      end
+
+      # A cached result is looked up without loading the lazily registered cops, so a cop
+      # that has an external dependency checksum has to say so when it is registered.
+      def check_external_dependency_declaration(badge, cop)
+        return if @external_dependency_badges.include?(badge) || !external_dependency?(cop)
+
+        raise "#{badge} overrides `external_dependency_checksum`, so it must be registered " \
+              'with `register_cop ..., external_dependency: true`.'
       end
 
       def resolve_badge(given_badge, real_badge, source_path, warn: true)

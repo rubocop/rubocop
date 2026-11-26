@@ -18,6 +18,34 @@ RSpec.describe RuboCop::Cop::Generator::RegistrationInjector do
     end
   end
 
+  context 'when a directive declares an external dependency' do
+    before do
+      File.write(department_file_path, <<~'RUBY')
+        # frozen_string_literal: true
+
+        module RuboCop
+          module Cop
+            # Cops for the `Test` department.
+            module Test
+              extend LazyLoader
+
+              register_cop :BarCop, "#{__dir__}/test/bar_cop", external_dependency: true
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'injects the new directive after it' do
+      injector.inject
+
+      expect(File.read(department_file_path)).to include(<<-'RUBY')
+      register_cop :BarCop, "#{__dir__}/test/bar_cop", external_dependency: true
+      register_cop :FooCop, "#{__dir__}/test/foo_cop"
+      RUBY
+    end
+  end
+
   context 'when the new directive belongs in the middle of the block' do
     before do
       File.write(department_file_path, <<~'RUBY')

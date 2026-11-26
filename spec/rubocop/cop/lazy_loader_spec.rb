@@ -43,6 +43,27 @@ RSpec.describe RuboCop::Cop::LazyLoader, :restore_registry do
       expect { require cop_path }.not_to change(RuboCop::Cop::Registry.global, :length)
     end
 
+    it 'passes the external dependency declaration on to the registry' do
+      File.write(cop_path, <<~RUBY)
+        module RuboCop
+          module Cop
+            module Test
+              class FooCop < RuboCop::Cop::Base
+                def external_dependency_checksum
+                  'checksum'
+                end
+              end
+            end
+          end
+        end
+      RUBY
+      RuboCop::Cop::Test.register_cop(:FooCop, cop_path, external_dependency: true)
+
+      cops = RuboCop::Cop::Registry.global.enabled_with_external_dependency(RuboCop::Config.new)
+
+      expect(cops).to include(RuboCop::Cop::Test::FooCop)
+    end
+
     it 'raises an error for a relative path' do
       expect do
         RuboCop::Cop::Test.register_cop(:FooCop, 'rubocop/cop/test/foo_cop')

@@ -24,17 +24,24 @@ module RuboCop
       # The path must be absolute so that loading does not depend on `$LOAD_PATH` and cannot resolve
       # to another RuboCop installation.
       #
+      # A cop that overrides `Base#external_dependency_checksum` must be registered with
+      # `external_dependency: true`. The result cache loads only those cops to check whether
+      # a cached result is still valid.
+      #
       # @param constant_name [Symbol] name of the cop class, e.g. `:BarBaz`
       # @param path [String] absolute path to the file defining the cop class,
       #   with or without the `.rb` extension
-      def register_cop(constant_name, path)
+      # @param external_dependency [Boolean] whether the cop overrides
+      #   `Base#external_dependency_checksum`
+      def register_cop(constant_name, path, external_dependency: false)
         raise ArgumentError, "cop path must be absolute: #{path}" unless File.absolute_path?(path)
 
         autoload constant_name, path
 
         qualified_name = "#{name}::#{constant_name}"
 
-        Registry.global.lazy_load(Badge.for(qualified_name), qualified_name)
+        Registry.global.lazy_load(Badge.for(qualified_name), qualified_name,
+                                  external_dependency: external_dependency)
       end
     end
   end

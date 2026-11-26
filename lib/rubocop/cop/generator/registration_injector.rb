@@ -18,7 +18,7 @@ module RuboCop
         ENTRY_PATTERN = %r{
           \A(?<indent>\s*)register_cop\s
           :(?<constant>[A-Za-z0-9]+),\s
-          "\#\{__dir__\}/(?<path>[a-z0-9_/]+)"\n\z
+          "\#\{__dir__\}/(?<path>[a-z0-9_/]+)"(?:,\sexternal_dependency:\strue)?\n\z
         }x.freeze
         DEPARTMENT_REQUIRE_PATTERN = %r{\Arequire_relative 'rubocop/cop/[a-z0-9_/]+'\n\z}.freeze
 

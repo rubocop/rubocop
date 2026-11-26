@@ -64,6 +64,10 @@ The path passed to `register_cop` must be absolute so that loading does not depe
 interpolating `+__dir__+` as in the example above is the intended usage. Plugin authors can adopt
 the same mechanism for their own department modules.
 
+A cop that overrides `external_dependency_checksum` has to be registered with
+`external_dependency: true`. A cached result is looked up without loading the other
+cops, so RuboCop needs to know which ones can invalidate it.
+
 The `new_cop` rake task maintains the `register_cop` directives for you, so usually there is
 no need to edit the department module file by hand.
 

@@ -13,7 +13,7 @@ module RuboCop
       register_cop :AmbiguousOperatorPrecedence, "#{__dir__}/lint/ambiguous_operator_precedence"
       register_cop :AmbiguousRange, "#{__dir__}/lint/ambiguous_range"
       register_cop :AmbiguousRegexpLiteral, "#{__dir__}/lint/ambiguous_regexp_literal"
-      register_cop :ArgumentMismatch, "#{__dir__}/lint/argument_mismatch"
+      register_cop :ArgumentMismatch, "#{__dir__}/lint/argument_mismatch", external_dependency: true
       register_cop :ArrayLiteralInRegexp, "#{__dir__}/lint/array_literal_in_regexp"
       register_cop :AssignmentInCondition, "#{__dir__}/lint/assignment_in_condition"
       register_cop :BigDecimalNew, "#{__dir__}/lint/big_decimal_new"
@@ -22,15 +22,15 @@ module RuboCop
       register_cop :CircularArgumentReference, "#{__dir__}/lint/circular_argument_reference"
       register_cop :ConstantDefinitionInBlock, "#{__dir__}/lint/constant_definition_in_block"
       register_cop :ConstantOverwrittenInRescue, "#{__dir__}/lint/constant_overwritten_in_rescue"
-      register_cop :ConstantReassignment, "#{__dir__}/lint/constant_reassignment"
-      register_cop :ConstantResolution, "#{__dir__}/lint/constant_resolution"
+      register_cop :ConstantReassignment, "#{__dir__}/lint/constant_reassignment", external_dependency: true
+      register_cop :ConstantResolution, "#{__dir__}/lint/constant_resolution", external_dependency: true
       register_cop :CopDirectiveSyntax, "#{__dir__}/lint/cop_directive_syntax"
       register_cop :DataDefineOverride, "#{__dir__}/lint/data_define_override"
       register_cop :Debugger, "#{__dir__}/lint/debugger"
       register_cop :DeprecatedClassMethods, "#{__dir__}/lint/deprecated_class_methods"
       register_cop :DeprecatedConstants, "#{__dir__}/lint/deprecated_constants"
       register_cop :DeprecatedOpenSSLConstant, "#{__dir__}/lint/deprecated_open_ssl_constant"
-      register_cop :DeprecatedReference, "#{__dir__}/lint/deprecated_reference"
+      register_cop :DeprecatedReference, "#{__dir__}/lint/deprecated_reference", external_dependency: true
       register_cop :DisjunctiveAssignmentInConstructor, "#{__dir__}/lint/disjunctive_assignment_in_constructor"
       register_cop :DuplicateBranch, "#{__dir__}/lint/duplicate_branch"
       register_cop :DuplicateCaseCondition, "#{__dir__}/lint/duplicate_case_condition"
@@ -38,7 +38,7 @@ module RuboCop
       register_cop :DuplicateHashKey, "#{__dir__}/lint/duplicate_hash_key"
       register_cop :DuplicateMagicComment, "#{__dir__}/lint/duplicate_magic_comment"
       register_cop :DuplicateMatchPattern, "#{__dir__}/lint/duplicate_match_pattern"
-      register_cop :DuplicateMethods, "#{__dir__}/lint/duplicate_methods"
+      register_cop :DuplicateMethods, "#{__dir__}/lint/duplicate_methods", external_dependency: true
       register_cop :DuplicateRegexpCharacterClassElement, "#{__dir__}/lint/duplicate_regexp_character_class_element"
       register_cop :DuplicateRequire, "#{__dir__}/lint/duplicate_require"
       register_cop :DuplicateRescueException, "#{__dir__}/lint/duplicate_rescue_exception"
@@ -68,7 +68,7 @@ module RuboCop
       register_cop :ImplicitStringConcatenation, "#{__dir__}/lint/implicit_string_concatenation"
       register_cop :IncompatibleIoSelectWithFiberScheduler, "#{__dir__}/lint/incompatible_io_select_with_fiber_scheduler"
       register_cop :IneffectiveAccessModifier, "#{__dir__}/lint/ineffective_access_modifier"
-      register_cop :InheritException, "#{__dir__}/lint/inherit_exception"
+      register_cop :InheritException, "#{__dir__}/lint/inherit_exception", external_dependency: true
       register_cop :InterpolationCheck, "#{__dir__}/lint/interpolation_check"
       register_cop :ItWithoutArgumentsInBlock, "#{__dir__}/lint/it_without_arguments_in_block"
       register_cop :LambdaWithoutLiteralBlock, "#{__dir__}/lint/lambda_without_literal_block"
@@ -78,11 +78,11 @@ module RuboCop
       register_cop :Loop, "#{__dir__}/lint/loop"
       register_cop :MisplacedMagicComment, "#{__dir__}/lint/misplaced_magic_comment"
       register_cop :MissingCopEnableDirective, "#{__dir__}/lint/missing_cop_enable_directive"
-      register_cop :MissingSuper, "#{__dir__}/lint/missing_super"
+      register_cop :MissingSuper, "#{__dir__}/lint/missing_super", external_dependency: true
       register_cop :MixedCaseRange, "#{__dir__}/lint/mixed_case_range"
       register_cop :MixedRegexpCaptureTypes, "#{__dir__}/lint/mixed_regexp_capture_types"
       register_cop :MultipleComparison, "#{__dir__}/lint/multiple_comparison"
-      register_cop :NameTypo, "#{__dir__}/lint/name_typo"
+      register_cop :NameTypo, "#{__dir__}/lint/name_typo", external_dependency: true
       register_cop :NestedMethodDefinition, "#{__dir__}/lint/nested_method_definition"
       register_cop :NestedPercentLiteral, "#{__dir__}/lint/nested_percent_literal"
       register_cop :NextWithoutAccumulator, "#{__dir__}/lint/next_without_accumulator"
@@ -130,7 +130,7 @@ module RuboCop
       register_cop :ShadowedException, "#{__dir__}/lint/shadowed_exception"
       register_cop :ShadowingOuterLocalVariable, "#{__dir__}/lint/shadowing_outer_local_variable"
       register_cop :StructNewOverride, "#{__dir__}/lint/struct_new_override"
-      register_cop :SuperArgumentMismatch, "#{__dir__}/lint/super_argument_mismatch"
+      register_cop :SuperArgumentMismatch, "#{__dir__}/lint/super_argument_mismatch", external_dependency: true
       register_cop :SuppressedException, "#{__dir__}/lint/suppressed_exception"
       register_cop :SuppressedExceptionInNumberConversion, "#{__dir__}/lint/suppressed_exception_in_number_conversion"
       register_cop :SymbolConversion, "#{__dir__}/lint/symbol_conversion"
@@ -150,7 +150,7 @@ module RuboCop
       register_cop :UnreachablePatternBranch, "#{__dir__}/lint/unreachable_pattern_branch"
       register_cop :UnusedBlockArgument, "#{__dir__}/lint/unused_block_argument"
       register_cop :UnusedMethodArgument, "#{__dir__}/lint/unused_method_argument"
-      register_cop :UnusedPrivateMethod, "#{__dir__}/lint/unused_private_method"
+      register_cop :UnusedPrivateMethod, "#{__dir__}/lint/unused_private_method", external_dependency: true
       register_cop :UriEscapeUnescape, "#{__dir__}/lint/uri_escape_unescape"
       register_cop :UriRegexp, "#{__dir__}/lint/uri_regexp"
       register_cop :UselessAccessModifier, "#{__dir__}/lint/useless_access_modifier"
