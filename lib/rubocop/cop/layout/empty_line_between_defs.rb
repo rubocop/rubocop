@@ -196,7 +196,7 @@ module RuboCop
                             end
           return false unless macro_candidate
 
-          macro_candidate.macro? && empty_line_between_macros.include?(macro_candidate.method_name)
+          empty_line_between_macros.include?(macro_candidate.method_name) && macro_candidate.macro?
         end
 
         def method_candidate?(node)
