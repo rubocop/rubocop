@@ -56,13 +56,9 @@ module RuboCop
         private
 
         def aligned_locations(locs)
-          return [] if locs.empty?
-
-          aligned = Set.new
-          locs.each_cons(2) do |loc1, loc2|
+          locs.each_cons(2).with_object(Set.new) do |(loc1, loc2), aligned|
             aligned << loc1.line << loc2.line if loc1.column == loc2.column
           end
-          aligned
         end
 
         def check_tokens(ast, token1, token2)
@@ -176,7 +172,7 @@ module RuboCop
         end
 
         def record_line_spacings(by_column, typed, line)
-          @tokens_by_line[line]&.each_cons(2) do |previous_token, token|
+          tokens_by_line[line]&.each_cons(2) do |previous_token, token|
             spacing = token.begin_pos - previous_token.end_pos
             by_column[token.pos.column] << [line, spacing]
             lines, spacings = typed[[token.pos.column, token.type]]
@@ -206,7 +202,7 @@ module RuboCop
         end
 
         def spacing_before_token_at(line_number, column)
-          tokens = @tokens_by_line[line_number]
+          tokens = tokens_by_line[line_number]
           index = tokens&.index { |token| token.pos.column == column }
           return unless index&.positive?
 
@@ -216,7 +212,11 @@ module RuboCop
         def prepare_alignment_data
           @group_profiles = {}.compare_by_identity
           @alignment_verdicts = {}.compare_by_identity
-          @tokens_by_line = processed_source.tokens.group_by(&:line)
+          @tokens_by_line = nil # grouped on demand, when an extra space is found
+        end
+
+        def tokens_by_line
+          @tokens_by_line ||= processed_source.tokens.group_by(&:line)
         end
 
         def ignored_range?(ast, start_pos)
