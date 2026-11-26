@@ -404,6 +404,64 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
+  it 'does not copy a branch comment when collapsing a ternary' do
+    expect_offense(<<~RUBY)
+      save(ok ? # keep
+           ^^^^^^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+        [1, # keep
+         2] : [])
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # keep
+      save(ok ? [1, # keep
+         2] : [])
+    RUBY
+  end
+
+  it 'does not move a comment before a standalone ternary' do
+    expect_offense(<<~RUBY)
+      ready? ? # frozen_string_literal: true
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        'yes' : 'no'
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not turn a comment between branches into an encoding directive' do
+    expect_offense(<<~RUBY)
+      save((ok && # marker
+           ^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+        ready?) ? # encoding: US-ASCII
+        ["é"] : [])
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not copy a condition comment when converting to an `if`' do
+    expect_offense(<<~RUBY)
+      result = ready?(
+               ^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        first, # keep
+        last
+      ) ?
+        yes : no
+    RUBY
+
+    expect_correction(<<~RUBY)
+      result = if ready?(
+        first, # keep
+        last
+      )
+        yes
+      else
+        no
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when if branch and the else branch are ' \
      'on a separate line from the condition and contains a comment' do
     expect_offense(<<~RUBY)

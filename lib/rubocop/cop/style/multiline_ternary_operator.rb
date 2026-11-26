@@ -93,11 +93,23 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          corrector.replace(node, replacement(node))
-          return unless (parent = node.parent)
-          return unless (comments_in_condition = comments_in_condition(node))
+          comments = comments_to_move(node)
+          unless comments.empty?
+            return unless node.parent
+            return if comments.any? { |comment| MagicComment.parse(comment.text).any? }
 
-          corrector.insert_before(parent, comments_in_condition)
+            text = comments.map { |comment| "#{comment.source}\n" }.join
+            corrector.insert_before(node.parent, text)
+          end
+
+          corrector.replace(node, replacement(node))
+        end
+
+        def comments_to_move(node)
+          preserved_ranges = node.child_nodes.map(&:source_range)
+          comments_in_range(node).reject do |comment|
+            preserved_ranges.any? { |range| range.contains?(comment.source_range) }
+          end
         end
 
         def replacement(node)
@@ -112,12 +124,6 @@ module RuboCop
               end
             RUBY
           end
-        end
-
-        def comments_in_condition(node)
-          comments_in_range(node).map do |comment|
-            "#{comment.source}\n"
-          end.join
         end
 
         def enforce_single_line_ternary_operator?(node)
