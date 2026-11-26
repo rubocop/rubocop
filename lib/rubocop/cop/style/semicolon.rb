@@ -46,11 +46,11 @@ module RuboCop
 
         def on_begin(node)
           return if cop_config['AllowAsExpressionSeparator']
-          return unless node.source.include?(';')
 
           exprs = node.children
 
           return if exprs.size < 2
+          return unless semicolon_within?(node.source_range)
 
           expressions_per_line(exprs).each do |line, expr_on_line|
             # Every line with more than one expression on it is a
@@ -62,6 +62,14 @@ module RuboCop
         end
 
         private
+
+        # Looks the semicolon up in the buffer, which is cheaper than slicing
+        # the source of the node: the outermost `begin` spans the whole file.
+        def semicolon_within?(range)
+          index = range.source_buffer.source.index(';', range.begin_pos)
+
+          !index.nil? && index < range.end_pos
+        end
 
         def check_for_line_terminator_or_opener
           each_semicolon do |line, column, token_before_semicolon|
