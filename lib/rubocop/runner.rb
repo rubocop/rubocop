@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'parallel'
-
 module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
@@ -266,6 +264,9 @@ module RuboCop
     end
 
     def parallel_file_iterator(files, on_start, on_finish, &block)
+      # Loaded here so that a run that doesn't inspect in parallel doesn't pay for it.
+      require 'parallel'
+
       Parallel.each(files, start: on_start, finish: on_finish, &block)
     end
 
