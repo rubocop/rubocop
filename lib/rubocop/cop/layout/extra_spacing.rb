@@ -96,11 +96,10 @@ module RuboCop
         end
 
         def extra_space_range(token1, token2)
-          return if token1.line != token2.line
-
           start_pos = token1.end_pos
           end_pos = token2.begin_pos - 1
           return if end_pos <= start_pos
+          return if token1.line != token2.line
 
           return if allow_for_alignment? && aligned_tok?(token1, token2)
 
