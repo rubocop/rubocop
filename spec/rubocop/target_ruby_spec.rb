@@ -348,6 +348,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         it 'checks the rest of the sources' do
           expect(described_class::RubyVersionFile).to receive(:new).and_call_original
           expect(described_class::ToolVersionsFile).to receive(:new).and_call_original
+          expect(described_class::DotMiseTomlFile).to receive(:new).and_call_original
           expect(described_class::MiseTomlFile).to receive(:new).and_call_original
           expect(described_class::BundlerLockFile).to receive(:new).and_call_original
           expect(described_class::Default).to receive(:new).and_call_original
@@ -515,9 +516,10 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
-      it 'does not read .tool-versions, mise.toml, Gemfile.lock or gems.locked' do
+      it 'does not read .tool-versions, mise.toml, .mise.toml, Gemfile.lock or gems.locked' do
         expect(File).not_to receive(:file?).with('.tool-versions')
         expect(File).not_to receive(:file?).with('mise.toml')
+        expect(File).not_to receive(:file?).with('.mise.toml')
         expect(File).not_to receive(:file?).with('Gemfile')
         expect(File).not_to receive(:file?).with('gems.locked')
         expect(target_ruby.version).to eq default_version
@@ -619,6 +621,28 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           expect(File).not_to receive(:file?).with(/Gemfile/)
           expect(File).not_to receive(:file?).with(/gems\.locked/)
           expect(target_ruby.version).to eq default_version
+        end
+      end
+    end
+
+    context 'when .mise.toml is present' do
+      before do
+        dir = configuration.base_dir_for_path_parameters
+        create_file(File.join(dir, '.mise.toml'), ['[tools]', 'ruby = "3.0.0"'])
+      end
+
+      it 'reads it to determine the target ruby version' do
+        expect(target_ruby.version).to eq 3.0
+      end
+
+      context 'when mise.toml is also present' do
+        before do
+          dir = configuration.base_dir_for_path_parameters
+          create_file(File.join(dir, 'mise.toml'), ['[tools]', 'ruby = "3.1.0"'])
+        end
+
+        it 'prefers .mise.toml' do
+          expect(target_ruby.version).to eq 3.0
         end
       end
     end

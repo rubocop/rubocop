@@ -224,6 +224,17 @@ module RuboCop
       end
     end
 
+    # The target ruby version may be found in a .mise.toml file, the dotfile
+    # variant of mise.toml, which takes precedence over it.
+    # @api private
+    class DotMiseTomlFile < MiseTomlFile
+      private
+
+      def filename
+        '.mise.toml'
+      end
+    end
+
     # The lock file of Bundler may identify the target ruby version.
     # @api private
     class BundlerLockFile < Source
@@ -290,6 +301,7 @@ module RuboCop
       RuboCopConfig,
       GemspecFile,
       RubyVersionFile,
+      DotMiseTomlFile,
       MiseTomlFile,
       ToolVersionsFile,
       BundlerLockFile,
