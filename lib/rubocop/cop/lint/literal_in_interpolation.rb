@@ -83,10 +83,8 @@ module RuboCop
         # rubocop:disable-next Metrics/MethodLength, Metrics/CyclomaticComplexity
         def autocorrected_value(node)
           case node.type
-          when :int
-            node.children.last.to_i.to_s
-          when :float
-            node.children.last.to_f.to_s
+          when :int, :float
+            node.value.to_s
           when :str
             autocorrected_value_for_string(node)
           when :sym
@@ -95,10 +93,12 @@ module RuboCop
             autocorrected_value_for_array(node)
           when :hash
             autocorrected_value_for_hash(node)
+          when :irange, :erange
+            autocorrected_value_for_range(node) { |child| autocorrected_value(child) }
           when :nil
             ''
           else
-            node.source.gsub('"', '\"')
+            node.source
           end
         end
 
@@ -148,10 +148,6 @@ module RuboCop
           escape_string_content(node.value.to_s)
         end
 
-        def autocorrected_value_in_hash_for_symbol(node)
-          escape_string_content(node.value.inspect)
-        end
-
         def autocorrected_value_for_array(node)
           "[#{node.values.map { |value| autocorrected_value_in_hash(value) }.join(', ')}]"
         end
@@ -166,23 +162,26 @@ module RuboCop
           "{#{hash_string}}"
         end
 
-        # rubocop:disable-next Metrics/MethodLength, Metrics/AbcSize
+        # A range prints its ends without the spaces or parentheses of the source.
+        def autocorrected_value_for_range(node)
+          first = yield node.begin if node.begin
+          last = yield node.end if node.end
+
+          "#{first}#{node.loc.operator.source}#{last}"
+        end
+
         def autocorrected_value_in_hash(node)
           case node.type
-          when :int
-            node.children.last.to_i.to_s
-          when :float
-            node.children.last.to_f.to_s
-          when :str
+          when :int, :float, :str, :sym
             escape_string_content(node.value.inspect)
-          when :sym
-            autocorrected_value_in_hash_for_symbol(node)
           when :array
             autocorrected_value_for_array(node)
           when :hash
             autocorrected_value_for_hash(node)
+          when :irange, :erange
+            autocorrected_value_for_range(node) { |child| autocorrected_value_in_hash(child) }
           else
-            node.source.gsub('"', '\"')
+            node.source
           end
         end
 
