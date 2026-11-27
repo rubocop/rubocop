@@ -104,22 +104,20 @@ module RuboCop
 
         def handle_special_regexp_chars(begin_node, value)
           parent_node = begin_node.parent
+          return value unless parent_node.regexp_type? && value.valid_encoding?
 
-          return value unless parent_node.regexp_type? && parent_node.slash_literal? && value['/']
+          # An interpolated value becomes part of the regexp source as it is, so the
+          # escapes added for a string literal are taken back, except for `\#`.
+          value = value.gsub(/\\([\\"#])/) do
+            Regexp.last_match(1) == '#' ? '\#' : Regexp.last_match(1)
+          end
+          return value unless parent_node.slash_literal?
 
-          # When a literal string containing a forward slash preceded by backslashes
-          # is interpolated inside a regexp, the number of resultant backslashes in the
-          # compiled Regexp is `(2(n+1) / 4)+1`, where `n` is the number of backslashes
-          # inside the interpolation.
-          # ie. 0-2 backslashes is compiled to 1, 3-6 is compiled to 3, etc.
-          # This maintains that same behavior in order to ensure the Regexp behavior
-          # does not change upon removing the interpolation.
+          # A slash ends the literal unless an odd number of backslashes precedes it.
           value.gsub(%r{(\\*)/}) do
-            backslashes = Regexp.last_match[1]
-            backslash_count = backslashes.length
-            needed_backslashes = (2 * ((backslash_count + 1) / 4)) + 1
+            backslashes = Regexp.last_match(1)
 
-            "#{'\\' * needed_backslashes}/"
+            "#{backslashes}#{'\\' if backslashes.length.even?}/"
           end
         end
 
