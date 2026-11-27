@@ -47,7 +47,6 @@ module RuboCop
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'
         CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
         SAFE_NAVIGATION_INCOMPATIBLE_METHODS = (CLASS_COMPARISON_METHODS + %i[any? none?]).freeze
-        EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
         CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
 
@@ -113,15 +112,21 @@ module RuboCop
         def correct_inverse_method(corrector, node)
           method_call, _lhs, method, _rhs = inverse_candidate?(node)
           return unless method_call && method
+          return if comment_after_negation?(node)
 
-          remove_negation(corrector, node, method, method_call)
+          remove_negation(corrector, node, method_call)
           corrector.replace(method_call.loc.selector, inverse_methods[method].to_s)
         end
 
-        def remove_negation(corrector, node, method, method_call)
+        def comment_after_negation?(node)
+          operand = node.loc.begin || node.receiver.source_range
+          processed_source.each_comment_in_lines(node.loc.selector.line...operand.line).any?
+        end
+
+        def remove_negation(corrector, node, method_call)
           if !keep_parentheses?(node, method_call)
             corrector.remove(not_to_receiver(node, method_call))
-            remove_end_parenthesis(corrector, node, method, method_call)
+            remove_end_parenthesis(corrector, node, method_call)
           elsif node.parenthesized?
             corrector.remove(node.loc.selector)
           else
@@ -131,10 +136,16 @@ module RuboCop
 
         def keep_parentheses?(node, method_call)
           return false unless node.receiver.begin_type? || node.parenthesized?
-          return false unless method_call.operator_method?
+          return keep_command_parentheses?(node, method_call) unless method_call.operator_method?
           return false unless (parent = node.parent)&.call_type?
 
           binary_operator?(parent) || parent.receiver.equal?(node)
+        end
+
+        def keep_command_parentheses?(node, method_call)
+          return false if node.parent.nil? && node.single_line?
+
+          method_call.arguments? && !method_call.parenthesized?
         end
 
         def binary_operator?(node)
@@ -207,10 +218,12 @@ module RuboCop
           range_between(loc.dot.begin_pos, loc.expression.end_pos)
         end
 
-        def remove_end_parenthesis(corrector, node, method, method_call)
-          return unless EQUALITY_METHODS.include?(method) || method_call.parent.begin_type?
-
-          corrector.remove(end_parentheses(node, method_call))
+        def remove_end_parenthesis(corrector, node, method_call)
+          if node.parenthesized?
+            corrector.remove(node.loc.end)
+          elsif node.receiver.begin_type?
+            corrector.remove(end_parentheses(node, method_call))
+          end
         end
 
         def message(method, inverse)

@@ -93,6 +93,49 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
     RUBY
   end
 
+  it 'keeps a command call separate from the following argument' do
+    expect_offense(<<~RUBY)
+      publish(!(rows.any? pattern), after)
+              ^^^^^^^^^^^^^^^^^^^^ Use `none?` instead of inverting `any?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      publish((rows.none? pattern), after)
+    RUBY
+  end
+
+  it 'keeps the block pass on a command call negated with `not`' do
+    expect_offense(<<~RUBY)
+      publish(not(rows.any? &:ready?), after)
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use `none?` instead of inverting `any?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      publish((rows.none? &:ready?), after)
+    RUBY
+  end
+
+  it 'removes the parentheses from a standalone command call negated with `not`' do
+    expect_offense(<<~RUBY)
+      not(rows.any? pattern)
+      ^^^^^^^^^^^^^^^^^^^^^^ Use `none?` instead of inverting `any?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rows.none? pattern
+    RUBY
+  end
+
+  it 'does not promote an inline encoding comment to a magic comment' do
+    expect_offense(<<~RUBY)
+      ! # encoding: US-ASCII
+      ^^^^^^^^^^^^^^^^^^^^^^ Use `none?` instead of inverting `any?`.
+        (rows.any? 'é')
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'registers an offense and keeps the parentheses for an inverted operator as an operand of an operator' do
     expect_offense(<<~RUBY)
       foo != !(bar == baz)
