@@ -780,6 +780,74 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
       end
     end
 
+    context 'when the literal has a backslash' do
+      it 'keeps a regexp escape of a string as it is' do
+        expect_offense(<<~'RUBY')
+          /a#{'b\d'}c/
+              ^^^^^ Literal interpolation detected.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /ab\dc/
+        RUBY
+      end
+
+      it 'keeps a regexp escape of a double-quoted string as it is' do
+        expect_offense(<<~'RUBY')
+          /a#{"b\\d"}c/
+              ^^^^^^ Literal interpolation detected.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /ab\dc/
+        RUBY
+      end
+
+      it 'keeps a regexp escape of a symbol as it is' do
+        expect_offense(<<~'RUBY')
+          %r{a#{:'b\d'}c}
+                ^^^^^^ Literal interpolation detected.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          %r{ab\dc}
+        RUBY
+      end
+
+      it 'keeps an escaped backslash as it is' do
+        expect_offense(<<~'RUBY')
+          /a#{'\\\\'}b/
+              ^^^^^^ Literal interpolation detected.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /a\\b/
+        RUBY
+      end
+
+      it 'does not escape a double quote' do
+        expect_offense(<<~'RUBY')
+          /a#{'b"c'}d/
+              ^^^^^ Literal interpolation detected.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          /ab"cd/
+        RUBY
+      end
+
+      it 'escapes `#{`' do
+        expect_offense(<<~'RUBY')
+          /a#{'b#{c'}d/
+              ^^^^^^ Literal interpolation detected.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /ab\#{cd/
+        RUBY
+      end
+    end
+
     context 'when inside a %r{} `regexp`' do
       it 'does not escape the autocorrection' do
         expect_offense(<<~'RUBY')
