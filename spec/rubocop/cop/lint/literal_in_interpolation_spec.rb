@@ -177,13 +177,16 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   describe 'type array' do
     it_behaves_like('literal interpolation', '[]', '[]')
     it_behaves_like('literal interpolation', '["a", "b"]', '[\"a\", \"b\"]')
+    it_behaves_like('literal interpolation', "['a', 'b']", '[\"a\", \"b\"]')
+    it_behaves_like('literal interpolation', '[1,2]', '[1, 2]')
+    it_behaves_like('literal interpolation', '[ 0x10, :a ]', '[16, :a]')
     it_behaves_like('literal interpolation', '%w[]', '[]')
     it_behaves_like('literal interpolation', '%w[v1]', '[\"v1\"]')
     it_behaves_like('literal interpolation', '%w[v1 v2]', '[\"v1\", \"v2\"]')
-    it_behaves_like('literal interpolation', '%i[s1 s2]', '[\"s1\", \"s2\"]')
-    it_behaves_like('literal interpolation', '%I[s1 s2]', '[\"s1\", \"s2\"]')
-    it_behaves_like('literal interpolation', '%i[s1     s2]', '[\"s1\", \"s2\"]')
-    it_behaves_like('literal interpolation', '%i[ s1   s2 ]', '[\"s1\", \"s2\"]')
+    it_behaves_like('literal interpolation', '%i[s1 s2]', '[:s1, :s2]')
+    it_behaves_like('literal interpolation', '%I[s1 s2]', '[:s1, :s2]')
+    it_behaves_like('literal interpolation', '%i[s1     s2]', '[:s1, :s2]')
+    it_behaves_like('literal interpolation', '%i[ s1   s2 ]', '[:s1, :s2]')
     it_behaves_like('literal interpolation', '%w["v1"]', '[\"\\\\\"v1\\\\\"\"]')
     it_behaves_like('literal interpolation', '%w[#{v1}]', '[\"\\\\\#{v1}\"]')
     it_behaves_like('literal interpolation', '%w[d\\ e]', '[\"d e\"]')
@@ -265,13 +268,13 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     it_behaves_like('literal interpolation', '{ array: { key: %w[v1 v2] } }',
                     '{:array=>{:key=>[\"v1\", \"v2\"]}}')
     it_behaves_like('literal interpolation', '{ array: { key: %i[s1 s2] } }',
-                    '{:array=>{:key=>[\"s1\", \"s2\"]}}')
+                    '{:array=>{:key=>[:s1, :s2]}}')
     it_behaves_like('literal interpolation', '{ array: { key: %I[s1 s2] } }',
-                    '{:array=>{:key=>[\"s1\", \"s2\"]}}')
+                    '{:array=>{:key=>[:s1, :s2]}}')
     it_behaves_like('literal interpolation', '{ array: { key: %i[s1     s2] } }',
-                    '{:array=>{:key=>[\"s1\", \"s2\"]}}')
+                    '{:array=>{:key=>[:s1, :s2]}}')
     it_behaves_like('literal interpolation', '{ array: { key: %i[ s1   s2 ] } }',
-                    '{:array=>{:key=>[\"s1\", \"s2\"]}}')
+                    '{:array=>{:key=>[:s1, :s2]}}')
 
     # String content of nested hash values must be escaped the same way as
     # top-level interpolated strings, otherwise escaped `#{}`/`#@`/backslashes

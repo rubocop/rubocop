@@ -153,9 +153,7 @@ module RuboCop
         end
 
         def autocorrected_value_for_array(node)
-          return escape_string_content(node.source) unless node.percent_literal?
-
-          escape_string_content(node.values.map { |value| value.value.to_s }.to_s)
+          "[#{node.values.map { |value| autocorrected_value_in_hash(value) }.join(', ')}]"
         end
 
         def autocorrected_value_for_hash(node)
