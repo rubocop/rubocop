@@ -104,6 +104,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   it_behaves_like 'aligned', 'puts 1; while',          'Test',     '        end'
   it_behaves_like 'aligned', 'puts 1; until',          'Test',     '        end'
   it_behaves_like 'aligned', 'puts 1; case',           'a when b', '        end'
+
   context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
     it_behaves_like 'aligned', 'puts 1; case', 'a; in b', '        end'
   end
@@ -127,6 +128,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     it_behaves_like 'aligned', 'puts 1; while',          'test',     'end'
     it_behaves_like 'aligned', 'puts 1; until',          'test',     'end'
     it_behaves_like 'aligned', 'puts 1; case',           'a when b', 'end'
+
     context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
       it_behaves_like 'aligned', 'puts 1; case', 'a; in b', 'end'
     end
@@ -319,6 +321,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     it_behaves_like 'aligned', 'while',          'test',     'end'
     it_behaves_like 'aligned', 'until',          'test',     'end'
     it_behaves_like 'aligned', 'case',           'a when b', 'end'
+
     context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
       it_behaves_like 'aligned', 'case', 'a; in b', 'end'
     end
@@ -906,6 +909,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       it_behaves_like 'aligned', 'var = until',  'test',     'end.ab.join("")'
       it_behaves_like 'aligned', 'var = until',  'test',     'end.ab.tap {}'
       it_behaves_like 'aligned', 'var = until', 'test', 'end.ab.tap { _1 }'
+
       context 'Ruby >= 3.4', :ruby34 do
         it_behaves_like 'aligned', 'var = until', 'test', 'end.ab.tap { it }'
       end
@@ -914,6 +918,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       it_behaves_like 'aligned', 'Foo = class',  'Bar',      'end'
       it_behaves_like 'aligned', 'Foo = module', 'Bar',      'end'
       it_behaves_like 'aligned', "var =\n  if",  'test', '  end'
+
       context 'Ruby >= 2.7', :ruby27 do
         it_behaves_like 'aligned', 'var = case', 'a; in b', 'end'
       end
