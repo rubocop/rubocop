@@ -137,6 +137,45 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense when a default argument heredoc ends outside the parameters' do
+        expect_no_offenses(<<~RUBY)
+          def trim(s = <<~TEXT) = s.then do |value|
+            text
+          TEXT
+            value.strip
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when a heredoc starts before the method on the same line' do
+        expect_no_offenses(<<~RUBY)
+          emit(<<~TEXT); def names = rows.map do |row|
+            text
+          TEXT
+            row.name
+          end
+        RUBY
+      end
+
+      it 'corrects when the default argument heredoc ends inside the parameters' do
+        expect_offense(<<~RUBY)
+          def trim(s = <<~TEXT
+          ^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+            text
+          TEXT
+          ) = s.strip
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def trim(s = <<~TEXT
+            text
+          TEXT
+          )
+            s.strip
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects for a multiline endless method with a parenthesized receiver' do
         expect_offense(<<~RUBY)
           def (foo.bar).baz = x
@@ -1102,6 +1141,31 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         expect_no_offenses(<<~RUBY)
           def my_method(**)
             foo bar, **
+          end
+        RUBY
+      end
+
+      it 'corrects a single-line method entirely before the heredoc body' do
+        expect_offense(<<~RUBY)
+          def trim(s = <<~TEXT); s; end
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use endless method definitions.
+            text
+          TEXT
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def trim(s = <<~TEXT) = s
+            text
+          TEXT
+        RUBY
+      end
+
+      it 'does not convert a regular method when a default argument heredoc ends outside the parameters' do
+        expect_no_offenses(<<~RUBY)
+          def trim(s = <<~TEXT)
+            text
+          TEXT
+            s.strip
           end
         RUBY
       end
