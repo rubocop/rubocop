@@ -125,7 +125,7 @@ module RuboCop
           return false unless condition
 
           if condition.begin_type?
-            return_boolean_value?(condition.children.first)
+            return_boolean_value?(condition.children.last)
           elsif condition.or_type?
             return_boolean_value?(condition.lhs) && return_boolean_value?(condition.rhs)
           elsif condition.and_type?
