@@ -83,7 +83,7 @@ module RuboCop
         # rubocop:disable-next Metrics/MethodLength, Metrics/CyclomaticComplexity
         def autocorrected_value(node)
           case node.type
-          when :int, :float
+          when :int, :float, :rational, :complex
             node.value.to_s
           when :str
             autocorrected_value_for_string(node)
@@ -172,7 +172,7 @@ module RuboCop
 
         def autocorrected_value_in_hash(node)
           case node.type
-          when :int, :float, :str, :sym
+          when :int, :float, :rational, :complex, :str, :sym
             escape_string_content(node.value.inspect)
           when :array
             autocorrected_value_for_array(node)
