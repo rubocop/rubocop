@@ -103,6 +103,17 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     it_behaves_like('literal interpolation', 2.0)
   end
 
+  describe 'type rational' do
+    it_behaves_like('literal interpolation', '1r', '1/1')
+    it_behaves_like('literal interpolation', '1.5r', '3/2')
+    it_behaves_like('literal interpolation', '[1r]', '[(1/1)]')
+  end
+
+  describe 'type complex' do
+    it_behaves_like('literal interpolation', '2i', '0+2i')
+    it_behaves_like('literal interpolation', '[2i]', '[(0+2i)]')
+  end
+
   describe 'type str' do
     it_behaves_like('literal interpolation', '"double_quot_string"', 'double_quot_string')
     it_behaves_like('literal interpolation', "'single_quot_string'", 'single_quot_string')
