@@ -60,57 +60,17 @@ module RuboCop
         def initialize(config = nil, options = nil)
           super
           @allowed_send_nodes = Set.new.compare_by_identity
-          @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }.compare_by_identity
         end
 
         # Assignment of self.x
 
         def on_or_asgn(node)
           allow_self(node.lhs)
-
-          lhs_name = node.lhs.lvasgn_type? ? node.lhs.name : node.lhs
-          add_lhs_to_local_variables_scopes(node.rhs, lhs_name)
         end
         alias on_and_asgn on_or_asgn
 
         def on_op_asgn(node)
           allow_self(node.lhs)
-        end
-
-        # Using self.x to distinguish from local variable x
-
-        def on_def(node)
-          add_scope(node)
-        end
-        alias on_defs on_def
-
-        def on_args(node)
-          node.children.each { |arg| on_argument(arg) }
-        end
-
-        def on_blockarg(node)
-          on_argument(node)
-        end
-
-        def on_masgn(node)
-          add_masgn_lhs_variables(node.rhs, node.lhs)
-        end
-
-        def on_lvasgn(node)
-          add_lhs_to_local_variables_scopes(node.rhs, node.lhs)
-        end
-
-        # Register the exception variable of `rescue => e` so that `self.e` in the
-        # body is not treated as redundant (it disambiguates the local variable).
-        def on_resbody(node)
-          exception_variable = node.exception_variable
-          return unless exception_variable&.lvasgn_type?
-
-          @local_variables_scopes[node] << exception_variable.name
-        end
-
-        def on_in_pattern(node)
-          add_match_var_scopes(node)
         end
 
         def on_send(node)
@@ -125,34 +85,7 @@ module RuboCop
           end
         end
 
-        def on_block(node)
-          add_scope(node, @local_variables_scopes[node])
-        end
-
-        alias on_numblock on_block
-        alias on_itblock on_block
-
-        def on_if(node)
-          # Allow conditional nodes to use `self` in the condition if that variable
-          # name is used in an `lvasgn` or `masgn` within the `if`.
-          node.each_descendant(:lvasgn, :masgn) do |descendant_node|
-            if descendant_node.lvasgn_type?
-              add_lhs_to_local_variables_scopes(node.condition, descendant_node.lhs)
-            else
-              add_masgn_lhs_variables(node.condition, descendant_node.lhs)
-            end
-          end
-        end
-        alias on_while on_if
-        alias on_until on_if
-
         private
-
-        def add_scope(node, local_variables = [])
-          node.each_descendant do |child_node|
-            @local_variables_scopes[child_node] = local_variables
-          end
-        end
 
         def multiple_assignment_target?(node)
           return false unless (parent = node.parent)
@@ -164,11 +97,22 @@ module RuboCop
 
         def allowed_send_node?(node)
           @allowed_send_nodes.include?(node) ||
-            @local_variables_scopes[node].include?(node.method_name) ||
-            node.each_ancestor.any? do |ancestor|
-              @local_variables_scopes[ancestor].include?(node.method_name)
-            end ||
+            processed_source.variable_analysis.variable_visible?(node.method_name, node) ||
+            assigned_in_conditional?(node) ||
             KERNEL_METHODS.include?(node.method_name)
+        end
+
+        # In `a = self.a if self.a` the variable is declared in front of the
+        # condition. The same condition in a regular `if` is accepted as well.
+        def assigned_in_conditional?(node)
+          node.each_ancestor(:if, :while, :until).any? do |conditional|
+            within?(node, conditional.condition) &&
+              conditional.each_descendant(:lvasgn).any? { |asgn| asgn.name == node.method_name }
+          end
+        end
+
+        def within?(node, ancestor)
+          node.equal?(ancestor) || node.each_ancestor.any? { |other| other.equal?(ancestor) }
         end
 
         # Respects `Lint/ItWithoutArgumentsInBlock` cop and the following Ruby 3.3's warning:
@@ -193,38 +137,10 @@ module RuboCop
             node.implicit_call?)
         end
 
-        def on_argument(node)
-          if node.mlhs_type?
-            on_args(node)
-          elsif node.respond_to?(:name)
-            @local_variables_scopes[node] << node.name
-          end
-        end
-
         def allow_self(node)
           return unless node.send_type? && node.self_receiver?
 
           @allowed_send_nodes.add(node)
-        end
-
-        def add_lhs_to_local_variables_scopes(rhs, lhs)
-          if rhs&.send_type? && !rhs.arguments.empty?
-            rhs.arguments.each { |argument| @local_variables_scopes[argument] << lhs }
-          else
-            @local_variables_scopes[rhs] << lhs
-          end
-        end
-
-        def add_masgn_lhs_variables(rhs, lhs)
-          lhs.children.each do |child|
-            add_lhs_to_local_variables_scopes(rhs, child.to_a.first)
-          end
-        end
-
-        def add_match_var_scopes(in_pattern_node)
-          in_pattern_node.each_descendant(:match_var) do |match_var_node|
-            @local_variables_scopes[in_pattern_node] << match_var_node.children.first
-          end
         end
       end
     end

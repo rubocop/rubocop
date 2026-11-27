@@ -32,6 +32,47 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     expect_no_offenses('a, b = self.a')
   end
 
+  it 'accepts a self receiver used to distinguish from a local variable outside of a method' do
+    expect_no_offenses(<<~RUBY)
+      foo = 17
+      self.foo
+    RUBY
+  end
+
+  it 'registers an offense when the local variable is assigned after the call' do
+    expect_offense(<<~RUBY)
+      def bar
+        self.foo
+        ^^^^ Redundant `self` detected.
+        foo = 17
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def bar
+        foo
+        foo = 17
+      end
+    RUBY
+  end
+
+  it 'registers an offense when the local variable belongs to a block that has ended' do
+    expect_offense(<<~RUBY)
+      def bar
+        items.each { |item| foo = item }
+        self.foo
+        ^^^^ Redundant `self` detected.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def bar
+        items.each { |item| foo = item }
+        foo
+      end
+    RUBY
+  end
+
   it 'does not report an offense when lvasgn name is used in `if`' do
     expect_no_offenses('a = self.a if self.a')
   end
@@ -551,32 +592,32 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
         RUBY
       end
 
-      it 'registers an offense when using a self receiver with a pin' do
-        expect_offense(<<~RUBY)
+      it 'accepts a self receiver used to distinguish from a pinned local variable' do
+        expect_no_offenses(<<~RUBY)
           foo = 17
           case pattern
             in ^foo, *bar
               self.foo + self.bar + foo + bar
-              ^^^^ Redundant `self` detected.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          foo = 17
-          case pattern
-            in ^foo, *bar
-              foo + self.bar + foo + bar
           end
         RUBY
       end
 
-      it 'registers an offense when using self with a different match var' do
-        expect_offense(<<~RUBY)
+      it 'accepts a self receiver used to distinguish from a match var of another branch' do
+        expect_no_offenses(<<~RUBY)
           case foo
             in Integer => bar
               self.bar + bar
             in Float => baz
               self.bar + baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense when no match var has the name of the method' do
+        expect_offense(<<~RUBY)
+          case foo
+            in Integer => bar
+              self.qux + bar
               ^^^^ Redundant `self` detected.
           end
         RUBY
@@ -584,9 +625,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
         expect_correction(<<~RUBY)
           case foo
             in Integer => bar
-              self.bar + bar
-            in Float => baz
-              bar + baz
+              qux + bar
           end
         RUBY
       end

@@ -52,6 +52,58 @@ RSpec.describe RuboCop::Cop::VariableForce::Analysis do
     end
   end
 
+  describe '#variable_visible?' do
+    def node_of(name)
+      processed_source.ast.each_node(:send).find { |node| node.method?(name) }
+    end
+
+    let(:source) { <<~RUBY }
+      top = 1
+      at_top
+
+      def foo(arg)
+        in_method
+        [1].each { |item| in_block }
+        after_block
+      end
+    RUBY
+
+    it 'is true for a variable of the scope of the node' do
+      expect(analysis).to be_variable_visible(:arg, node_of(:in_method))
+      expect(analysis).to be_variable_visible(:top, node_of(:at_top))
+    end
+
+    it 'is true inside a block for a variable of the scope around it' do
+      expect(analysis).to be_variable_visible(:item, node_of(:in_block))
+      expect(analysis).to be_variable_visible(:arg, node_of(:in_block))
+    end
+
+    it 'is false outside a block for a variable of the block' do
+      expect(analysis).not_to be_variable_visible(:item, node_of(:after_block))
+    end
+
+    it 'is false inside a method for a variable outside of it' do
+      expect(analysis).not_to be_variable_visible(:top, node_of(:in_method))
+      expect(analysis).not_to be_variable_visible(:top, node_of(:in_block))
+    end
+
+    it 'is false for a name that is not a variable' do
+      expect(analysis).not_to be_variable_visible(:other, node_of(:in_method))
+    end
+
+    context 'when the source is a single method definition' do
+      let(:source) { <<~RUBY }
+        def foo(arg)
+          in_method
+        end
+      RUBY
+
+      it 'is true for an argument of the method' do
+        expect(analysis).to be_variable_visible(:arg, node_of(:in_method))
+      end
+    end
+  end
+
   describe '#shadowings' do
     it 'has nothing when no variable hides an outer one' do
       expect(analysis.shadowings).to be_empty
