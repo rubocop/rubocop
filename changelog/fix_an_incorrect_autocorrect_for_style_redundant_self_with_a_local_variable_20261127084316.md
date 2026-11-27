@@ -1,0 +1,1 @@
+* [#16525](https://github.com/rubocop/rubocop/pull/16525): Fix an incorrect autocorrect for `Style/RedundantSelf` when the method has the name of a local variable outside of a method or of a pattern variable in another branch. ([@bbatsov][])
