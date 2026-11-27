@@ -145,10 +145,7 @@ module RuboCop
         end
 
         def autocorrected_value_for_symbol(node)
-          end_pos =
-            node.loc.end ? node.loc.end.begin_pos : node.source_range.end_pos
-
-          range_between(node.loc.begin.end_pos, end_pos).source.gsub('"', '\"')
+          escape_string_content(node.value.to_s)
         end
 
         def autocorrected_value_in_hash_for_symbol(node)

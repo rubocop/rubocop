@@ -117,6 +117,61 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
                     ':"single quot in symbol: \'"', "single quot in symbol: '")
     it_behaves_like('literal interpolation',
                     ":'double quot in symbol: \"'", 'double quot in symbol: \"')
+
+    it 'registers an offense and keeps an escaped double quote of a symbol' do
+      expect_offense(<<~'RUBY')
+        "#{:"a\"b"}"
+           ^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "a\"b"
+      RUBY
+    end
+
+    it 'registers an offense and escapes the backslash of a single-quoted symbol' do
+      expect_offense(<<~'RUBY')
+        "#{:'a\b'}"
+           ^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "a\\b"
+      RUBY
+    end
+
+    it 'registers an offense and escapes the backslash of a `%s` symbol' do
+      expect_offense(<<~'RUBY')
+        "#{%s(a\b)}"
+           ^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "a\\b"
+      RUBY
+    end
+
+    it 'registers an offense and escapes `#{` in a single-quoted symbol' do
+      expect_offense(<<~'RUBY')
+        "#{:'a#{b'}"
+           ^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "a\#{b"
+      RUBY
+    end
+
+    it 'registers an offense and escapes `#@` in a single-quoted symbol' do
+      expect_offense(<<~'RUBY')
+        "#{:'a#@b'}"
+           ^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "a\#@b"
+      RUBY
+    end
   end
 
   describe 'type array' do
