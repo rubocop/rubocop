@@ -140,6 +140,7 @@ module RuboCop
       register_cop :MethodCallWithoutArgsParentheses, "#{__dir__}/style/method_call_without_args_parentheses"
       register_cop :MethodCallWithArgsParentheses, "#{__dir__}/style/method_call_with_args_parentheses"
       register_cop :MinMaxComparison, "#{__dir__}/style/min_max_comparison"
+      register_cop :MinimizeNegations, "#{__dir__}/style/minimize_negations"
       register_cop :ModuleMemberExistenceCheck, "#{__dir__}/style/module_member_existence_check"
       register_cop :MultilineInPatternThen, "#{__dir__}/style/multiline_in_pattern_then"
       register_cop :NumberedParameters, "#{__dir__}/style/numbered_parameters"
