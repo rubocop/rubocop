@@ -28,6 +28,7 @@ RSpec.describe RuboCop::Cop::Security::IoMethods, :config do
     it_behaves_like 'offense', 'IO.binread(path)', 'File.binread(path)', 'binread'
     it_behaves_like 'offense', 'IO.binwrite(path, "hi")', 'File.binwrite(path, "hi")', 'binwrite'
     it_behaves_like 'offense', 'IO.readlines(path)', 'File.readlines(path)', 'readlines'
+
     it 'registers and corrects an offense when using `foreach`' do
       expect_offense(<<~RUBY)
         IO.foreach(path) { |x| puts x }
@@ -46,6 +47,7 @@ RSpec.describe RuboCop::Cop::Security::IoMethods, :config do
     it_behaves_like 'offense', 'IO.binwrite("command", "hi")', 'File.binwrite("command", "hi")', 'binwrite'
     it_behaves_like 'offense', 'IO.binwrite(path, "hi")', 'File.binwrite(path, "hi")', 'binwrite'
     it_behaves_like 'offense', 'IO.readlines("command")', 'File.readlines("command")', 'readlines'
+
     it 'registers and corrects an offense when using `foreach`' do
       expect_offense(<<~RUBY)
         IO.foreach("command") { |x| puts x }

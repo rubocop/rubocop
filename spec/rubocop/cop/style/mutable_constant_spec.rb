@@ -121,6 +121,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             bar
           HERE
         RUBY
+
         it 'registers an offense when using interpolated heredoc constant' do
           expect_offense(<<~'RUBY')
             # frozen_string_literal: true
@@ -191,6 +192,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             bar
           HERE
         RUBY
+
         it 'does not register an offense when using interpolated heredoc constant' do
           expect_no_offenses(<<~'RUBY')
             # frozen_string_literal: true
