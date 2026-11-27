@@ -69,6 +69,30 @@ RSpec.describe RuboCop::Cop::Lint::RedundantStringCoercion, :config do
     RUBY
   end
 
+  it 'does not autocorrect when another argument follows `to_s` after a heredoc' do
+    expect_offense(<<~RUBY)
+      warn(render(<<~TEXT)
+        hello
+      TEXT
+        .to_s, suffix)
+         ^^^^ Redundant use of `Object#to_s` in `warn`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when a modifier follows `to_s` after a heredoc' do
+    expect_offense(<<~RUBY)
+      warn render(<<~TEXT)
+        hello
+      TEXT
+        .to_s if enabled?
+         ^^^^ Redundant use of `Object#to_s` in `warn`.
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'accepts #to_s with arguments in an interpolation' do
     expect_no_offenses('"this is a #{result.to_s(8)}"')
   end
