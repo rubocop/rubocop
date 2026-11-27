@@ -48,6 +48,39 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
       RUBY
     end
 
+    it 'does not autocorrect when a comment follows the negation operator' do
+      expect_offense(<<~RUBY)
+        run if (! # keep
+        ^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+          ready?)
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not autocorrect when a comment separates the receiver from its negation' do
+      expect_offense(<<~RUBY)
+        run if (ready? # keep
+        ^^^^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+          .!)
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'autocorrects when a comment is inside the operand' do
+      expect_offense(<<~RUBY)
+        run if !(ready? && # keep
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+          available?)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        run unless (ready? && # keep
+          available?)
+      RUBY
+    end
+
     it 'accepts an if/else with negative condition' do
       expect_no_offenses(<<~RUBY)
         if !a_condition
