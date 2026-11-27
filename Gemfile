@@ -28,7 +28,7 @@ gem 'regexp_parser', '!= 2.13.2'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.27.0', require: false
 gem 'rubocop-rake', '~> 0.7.0', require: false
-gem 'rubocop-rspec', '~> 3.10.1', require: false
+gem 'rubocop-rspec', '~> 3.11.0', require: false
 if ENV['PARSER_ENGINE'] == 'prism'
   # The `prism` parser engine needs Prism 2, which Ruby LSP does not support yet.
   gem 'prism', '>= 2.0'

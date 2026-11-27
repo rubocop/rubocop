@@ -266,6 +266,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     context 'when Cop#on_* raises an error' do
       include_context 'mock console output'
+
       before do
         allow_any_instance_of(RuboCop::Cop::Style::NumericLiterals)
           .to receive(:on_int).and_raise(StandardError)
@@ -288,6 +289,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     context "when a cop's joining forces callback raises an error" do
       include_context 'mock console output'
+
       before do
         allow_any_instance_of(RuboCop::Cop::Lint::ShadowedArgument)
           .to receive(:after_leaving_scope).and_raise(exception_message)

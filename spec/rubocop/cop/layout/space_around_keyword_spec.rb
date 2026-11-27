@@ -132,6 +132,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
                   'case a; when b; "" else end'
   it_behaves_like 'missing after', 'else', 'case a; when b; else"" end',
                   'case a; when b; else "" end'
+
   context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
     it_behaves_like 'missing before', 'else', 'case a; in b; ""else end',
                     'case a; in b; "" else end'
