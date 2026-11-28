@@ -11,6 +11,22 @@ RSpec.describe RuboCop::PathUtil do
       expect(described_class.relative_path('/foo/bar', '/foo')).to eq('bar')
     end
 
+    it 'relativizes a path against the base dir itself' do
+      expect(described_class.relative_path('/foo/bar', '/foo/bar')).to eq('.')
+    end
+
+    it 'relativizes a path in a sibling directory that shares the base dir prefix' do
+      expect(described_class.relative_path('/foo/barbaz', '/foo/bar')).to eq('../barbaz')
+    end
+
+    it 'relativizes a path in a sibling directory sharing the base dir prefix' do
+      expect(described_class.relative_path('/foo/barbaz/qux', '/foo/bar')).to eq('../barbaz/qux')
+    end
+
+    it 'relativizes against a base dir with a trailing separator' do
+      expect(described_class.relative_path('/foo/bar', '/foo/')).to eq('bar')
+    end
+
     if RuboCop::Platform.windows?
       it 'works for different drives' do
         expect(described_class.relative_path('D:/foo/bar', 'C:/foo')).to eq('D:/foo/bar')
