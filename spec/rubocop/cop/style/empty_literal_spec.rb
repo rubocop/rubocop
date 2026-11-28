@@ -184,6 +184,80 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
+    it 'preserves a comment between arguments when adding parentheses' do
+      expect_offense(<<~RUBY)
+        publish Hash.new, # defaults
+                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+                settings
+      RUBY
+
+      expect_correction(<<~RUBY)
+        publish({}, # defaults
+                settings)
+      RUBY
+    end
+
+    it 'preserves a heredoc between arguments when adding parentheses' do
+      expect_offense(<<~RUBY)
+        publish Hash.new, <<~NOTE,
+                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+          Welcome
+        NOTE
+          settings
+      RUBY
+
+      expect_correction(<<~RUBY)
+        publish({}, <<~NOTE,
+          Welcome
+        NOTE
+          settings)
+      RUBY
+    end
+
+    it 'wraps the arguments of a safe navigation call' do
+      expect_offense(<<~RUBY)
+        bus&.publish Hash.new, settings
+                     ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bus&.publish({}, settings)
+      RUBY
+    end
+
+    it 'wraps the argument of an explicit operator without a space' do
+      expect_offense(<<~RUBY)
+        foo.+Hash.new
+             ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.+({})
+      RUBY
+    end
+
+    it 'wraps the arguments of yield' do
+      expect_offense(<<~RUBY)
+        yield Hash.new
+              ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        yield({})
+      RUBY
+    end
+
+    it 'does not wrap the value of an attribute assignment' do
+      expect_offense(<<~RUBY)
+        bus.settings = Hash.new
+                       ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bus.settings = {}
+      RUBY
+    end
+
     it 'autocorrects Hash.new to {} and wraps it in parentheses ' \
        'when it is the only argument to super' do
       expect_offense(<<~RUBY)

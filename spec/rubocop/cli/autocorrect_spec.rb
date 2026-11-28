@@ -10,6 +10,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RuboCop::ConfigLoader.default_configuration.for_all_cops['SuggestExtensions'] = false
   end
 
+  it 'keeps the rescue outside the call when correcting an empty hash' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Style/EmptyLiteral:
+        Enabled: true
+      Style/RescueModifier:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      foo Hash.new rescue nil
+    RUBY
+
+    expect(cli.run(['-A', 'example.rb'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      begin
+        foo({})
+      rescue
+        nil
+      end
+    RUBY
+  end
+
   it 'preserves empty lines around a block body ending with an access modifier' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
