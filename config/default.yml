@@ -246,13 +246,15 @@ Bundler/GemFilename:
     - '**/gems.locked'
 
 Bundler/GemVersion:
-  Description: 'Requires or forbids specifying gem versions.'
+  Description: 'Requires, forbids or requires exact gem versions.'
   Enabled: false
   VersionAdded: '1.14'
+  VersionChanged: '<<next>>'
   EnforcedStyle: 'required'
   SupportedStyles:
     - 'required'
     - 'forbidden'
+    - 'exact'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
