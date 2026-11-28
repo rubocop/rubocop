@@ -111,11 +111,32 @@ module RuboCop
       #
       #   memoize :attribute_b
       #
+      #   # bad
+      #   def foo
+      #   end
+      #   do_something
+      #   def bar
+      #   end
+      #
+      #   # good
+      #   def foo
+      #   end
+      #
+      #   do_something
+      #
+      #   def bar
+      #   end
+      #
       class EmptyLineBetweenDefs < Base
         include RangeHelp
         extend AutoCorrector
 
         MSG = 'Expected %<expected>s between %<type>s definitions; found %<actual>d.'
+        SANDWICHED_CALL_MSG =
+          'Expected %<expected>s between the definition and the method call; found %<actual>d.'
+
+        ALIAS_METHOD_NAMES = %i[alias alias_method].freeze
+        VISIBILITY_MODIFIERS = %i[private public protected].freeze
 
         def self.autocorrect_incompatible_with
           [Layout::EmptyLines]
@@ -131,6 +152,17 @@ module RuboCop
             nodes = [prev, n]
             check_defs(nodes) if nodes.all? { |def_candidate| candidate?(def_candidate) }
           end
+
+          check_sandwiched_calls(node)
+        end
+
+        def check_sandwiched_calls(node)
+          node.children.each_cons(3) do |left, middle, right|
+            next unless sandwiched_call?(middle) && candidate?(left) && candidate?(right)
+
+            check_sandwiched_call_boundary(left, middle)
+            check_sandwiched_call_boundary(middle, right)
+          end
         end
 
         def check_defs(nodes)
@@ -145,6 +177,21 @@ module RuboCop
           location = def_location(correction_node)
           add_offense(location, message: message(correction_node, count: count)) do |corrector|
             autocorrect(corrector, *nodes, count)
+          end
+        end
+
+        def check_sandwiched_call_boundary(first_node, second_node)
+          count = blank_lines_count_between(first_node, second_node)
+
+          return if line_count_allowed?(count)
+          return if multiple_blank_lines_groups?(first_node, second_node)
+          return if adjacent_one_line_defs_allowed?(first_node, second_node)
+
+          location = def_location(second_node)
+          message = format(SANDWICHED_CALL_MSG, expected: expected_lines, actual: count)
+
+          add_offense(location, message: message) do |corrector|
+            autocorrect(corrector, first_node, second_node, count)
           end
         end
 
@@ -170,7 +217,7 @@ module RuboCop
         def def_location(correction_node)
           if correction_node.any_block_type?
             correction_node.source_range.join(correction_node.children.first.source_range)
-          elsif correction_node.send_type?
+          elsif correction_node.call_type?
             correction_node.source_range
           else
             correction_node.loc.keyword.join(correction_node.loc.name)
@@ -182,6 +229,21 @@ module RuboCop
 
           method_candidate?(node) || class_candidate?(node) || module_candidate?(node) ||
             macro_candidate?(node)
+        end
+
+        def sandwiched_call?(node)
+          return false if candidate?(node)
+          return false unless node.call_type? || (node.any_block_type? && node.send_node.call_type?)
+
+          node = node.send_node if node.any_block_type?
+          method_name = node.method_name
+          !ALIAS_METHOD_NAMES.include?(method_name) && !VISIBILITY_MODIFIERS.include?(method_name)
+        end
+
+        def adjacent_one_line_defs_allowed?(first_node, second_node)
+          return false unless cop_config['AllowAdjacentOneLineDefs']
+
+          first_node.single_line? && second_node.single_line?
         end
 
         def empty_line_between_macros
@@ -262,7 +324,7 @@ module RuboCop
         def def_start(node)
           node = node.send_node if node.any_block_type?
 
-          if node.send_type?
+          if node.call_type?
             node.source_range.line
           else
             node.loc.keyword.line

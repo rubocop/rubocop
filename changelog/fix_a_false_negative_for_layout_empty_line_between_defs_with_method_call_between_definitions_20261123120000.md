@@ -1,0 +1,1 @@
+* [#10058](https://github.com/rubocop/rubocop/issues/10058): Register an offense for `Layout/EmptyLineBetweenDefs` when a method call is placed between two definitions without an empty line around it. ([@karrasska][])
