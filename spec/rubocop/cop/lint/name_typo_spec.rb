@@ -143,6 +143,30 @@ RSpec.describe RuboCop::Cop::Lint::NameTypo, :config do
         end
       end
 
+      context 'when the namespace is known only from an RBS signature' do
+        before do
+          # Ruby's core and standard library reach the index as the `rbs` gem's
+          # signature files, which are curated and lag the implementation: the
+          # deprecated `HTTPServerException` is declared while its replacement
+          # `HTTPClientException` is not. A name missing from them is therefore
+          # not evidence of a typo.
+          cop.project_index = build_index(
+            'file:///sig/net-http.rbs' => <<~RBS
+              module Net
+                class HTTPServerException
+                end
+              end
+            RBS
+          )
+        end
+
+        it 'does not register an offense for a constant it does not declare' do
+          expect_no_offenses(<<~RUBY)
+            Net::HTTPClientException
+          RUBY
+        end
+      end
+
       it 'registers an offense when the file contains a binary string literal' do
         expect_offense(<<~'RUBY')
           DATA = "\xFF\xFE".b
