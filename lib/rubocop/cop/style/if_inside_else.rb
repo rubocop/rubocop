@@ -75,7 +75,7 @@ module RuboCop
           return if comments_between_else_and_if?(node, else_branch)
 
           add_offense(else_branch.loc.keyword) do |corrector|
-            next if part_of_ignored_node?(node) || shares_lines_with_other_code?(else_branch)
+            next if part_of_ignored_node?(node) || unsafe_to_correct?(else_branch)
 
             autocorrect(corrector, else_branch)
             ignore_node(node)
@@ -83,6 +83,20 @@ module RuboCop
         end
 
         private
+
+        def unsafe_to_correct?(node)
+          return true if shares_lines_with_other_code?(node) || trailing_heredoc?(node.condition)
+          return false unless (branch = node.if_branch)
+
+          range = range_with_comments(branch)
+          range.line > node.condition.last_line + 1 && trailing_heredoc?(branch, range.last_line)
+        end
+
+        def trailing_heredoc?(node, last_line = node.last_line)
+          node.each_node(:any_str).any? do |str|
+            str.heredoc? && str.loc.heredoc_end.line > last_line
+          end
+        end
 
         # The `elsif` correction moves and removes whole lines, so it can't be applied when
         # the nested `if` condition, its `if` branch or its `end` shares a line with other code.
