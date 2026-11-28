@@ -41,21 +41,52 @@ module RuboCop
         MSG = 'Useless method definition detected.'
 
         def on_def(node)
-          return if method_definition_with_modifier?(node) || use_rest_or_optional_args?(node)
+          return if use_rest_or_optional_args?(node)
           return unless delegating?(node.body, node)
 
-          add_offense(node) do |corrector|
-            range = node.parent&.send_type? ? node.parent : node
+          statement = visibility_declaration(node) || node
+          return unless removable_statement?(statement)
 
-            corrector.remove(range)
-          end
+          add_offense(node) { |corrector| corrector.remove(statement) }
         end
         alias on_defs on_def
 
         private
 
-        def method_definition_with_modifier?(node)
-          node.parent&.send_type? && !node.parent&.non_bare_access_modifier?
+        def visibility_declaration(node)
+          parent = node.parent
+          parent if parent&.send_type? && parent.non_bare_access_modifier? && parent.arguments.one?
+        end
+
+        def removable_statement?(node)
+          parent = node.parent
+          return true unless parent
+
+          return true if definition_block_body?(node, parent)
+
+          if parent.type?(:begin, :kwbegin)
+            return true unless parent.children.last.equal?(node)
+          elsif !statement_body?(parent, node)
+            return false
+          end
+
+          removable_statement?(parent)
+        end
+
+        def definition_block_body?(node, parent)
+          return false unless parent.any_block_type? && parent.body.equal?(node)
+
+          return true if parent.class_constructor?
+
+          parent.receiver.nil? && %i[included class_methods].include?(parent.method_name)
+        end
+
+        def statement_body?(parent, node)
+          if parent.if_type?
+            !parent.ternary? && !parent.modifier_form? && !parent.condition.equal?(node)
+          else
+            parent.type?(:class, :module, :sclass) && parent.body.equal?(node)
+          end
         end
 
         def use_rest_or_optional_args?(node)

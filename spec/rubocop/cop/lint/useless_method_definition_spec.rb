@@ -34,6 +34,87 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
     RUBY
   end
 
+  ['Class.new(Base)', 'Struct.new(:id)', 'included', 'class_methods'].each do |declaration|
+    it "corrects a delegating definition inside #{declaration}" do
+      expect_offense(<<~RUBY)
+        #{declaration} do
+          def foo
+          ^^^^^^^ Useless method definition detected.
+            super
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{declaration} do
+         #{trailing_whitespace}
+        end
+      RUBY
+    end
+  end
+
+  it 'does not register an offense when the method name is assigned' do
+    expect_no_offenses(<<~RUBY)
+      name ||= def foo
+        super
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the visibility declaration is assigned' do
+    expect_no_offenses(<<~RUBY)
+      name = private def foo
+        super
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the method name is returned by a block' do
+    expect_no_offenses(<<~RUBY)
+      names = items.map do |item|
+        prepare(item)
+        def self.foo
+          super
+        end
+      end
+    RUBY
+  end
+
+  it 'does not remove other arguments of a visibility declaration' do
+    expect_no_offenses(<<~RUBY)
+      private :bar, def foo
+        super
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when a class body supplies an assignment value' do
+    expect_no_offenses(<<~RUBY)
+      name = class Example
+        def foo
+          super
+        end
+      end
+    RUBY
+  end
+
+  it 'corrects a standalone definition inside a conditional' do
+    expect_offense(<<~RUBY)
+      if enabled?
+        def foo
+        ^^^^^^^ Useless method definition detected.
+          super
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if enabled?
+       #{trailing_whitespace}
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects for method containing only `super` call' do
     expect_offense(<<~RUBY)
       class Foo
