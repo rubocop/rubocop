@@ -210,6 +210,7 @@ module RuboCop
         option(opts, '--no-exclude-limit')
 
         option(opts, '--[no-]offense-counts')
+        option(opts, '--auto-gen-allowed-offenses')
         option(opts, '--[no-]auto-gen-only-exclude')
         option(opts, '--[no-]auto-gen-timestamp')
         option(opts, '--[no-]auto-gen-enforced-style')
@@ -445,16 +446,28 @@ module RuboCop
     end
 
     def validate_auto_gen_config
+      validate_options_requiring_auto_gen_config
+      validate_conflicting_auto_gen_options
+    end
+
+    def validate_options_requiring_auto_gen_config
       return if @options.key?(:auto_gen_config)
 
       message = '--%<flag>s can only be used together with --auto-gen-config.'
 
       %i[exclude_limit offense_counts auto_gen_timestamp
-         auto_gen_only_exclude].each do |option|
+         auto_gen_only_exclude auto_gen_allowed_offenses].each do |option|
         if @options.key?(option)
           raise OptionArgumentError, format(message, flag: option.to_s.tr('_', '-'))
         end
       end
+    end
+
+    def validate_conflicting_auto_gen_options
+      return unless @options[:auto_gen_only_exclude] && @options[:auto_gen_allowed_offenses]
+
+      raise OptionArgumentError,
+            '--auto-gen-only-exclude cannot be used with --auto-gen-allowed-offenses.'
     end
 
     def validate_display_only_failed
@@ -637,6 +650,12 @@ module RuboCop
                                          'when running --auto-gen-config, except if the',
                                          'number of files with offenses is bigger than',
                                          'exclude-limit. Default is false.'],
+      auto_gen_allowed_offenses:
+                                        ['Generate per-file AllowedOffenses when no threshold',
+                                         'setting can be generated. Existing settings such as',
+                                         'Max are preserved. The --exclude-limit applies to',
+                                         'per-file maps; use --no-exclude-limit for maps',
+                                         'with any number of files. Default is false.'],
       max_offenses_per_cop:             ['Report at most COUNT offenses per cop across the',
                                          'whole run, so a single noisy cop cannot bury the',
                                          'rest. Offenses beyond the limit are not reported',
