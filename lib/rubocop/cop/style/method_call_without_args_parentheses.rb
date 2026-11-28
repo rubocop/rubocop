@@ -71,7 +71,9 @@ module RuboCop
 
         def register_offense(node)
           range = offense_range(node)
-          return if processed_source.contains_comment?(range)
+          return if processed_source.each_comment_in_lines(range.line...range.last_line).any?
+          return if processed_source.line_with_comment?(range.last_line) &&
+                    verification_too_large?(reparse_scope(range))
 
           @pending_ranges << range
         end

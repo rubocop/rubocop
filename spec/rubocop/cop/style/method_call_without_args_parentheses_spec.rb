@@ -38,6 +38,48 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense when a comment follows the closing parenthesis' do
+    expect_offense(<<~RUBY)
+      client.flush() # Before returning the connection.
+                  ^^ Do not use parentheses for method calls with no arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      client.flush # Before returning the connection.
+    RUBY
+  end
+
+  it 'registers an offense when a comment follows the closing parenthesis of a multiline call' do
+    expect_offense(<<~RUBY)
+      client.flush(
+                  ^ Do not use parentheses for method calls with no arguments.
+      ) # Before returning the connection.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      client.flush # Before returning the connection.
+    RUBY
+  end
+
+  context 'when the enclosing scope exceeds the reparse size limit' do
+    before { stub_const('RuboCop::Cop::ReparsedEquivalence::MAX_VERIFICATION_FRAGMENT_SIZE', 0) }
+
+    it 'leaves calls with trailing comments unchanged' do
+      expect_offense(<<~RUBY)
+        result() -1 # Subtract one.
+        client.flush() # Before returning the connection.
+        queue.wake()
+                  ^^ Do not use parentheses for method calls with no arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result() -1 # Subtract one.
+        client.flush() # Before returning the connection.
+        queue.wake
+      RUBY
+    end
+  end
+
   it 'accepts parens containing a comment' do
     expect_no_offenses(<<~RUBY)
       obj.do_something(
