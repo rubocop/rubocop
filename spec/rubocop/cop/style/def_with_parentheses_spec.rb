@@ -14,6 +14,31 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses, :config do
     RUBY
   end
 
+  it 'accepts empty parens containing a comment' do
+    expect_no_offenses(<<~RUBY)
+      def refresh(
+        # Uses the active account.
+      )
+        load_cache
+      end
+    RUBY
+  end
+
+  it 'reports an offense when a comment follows the closing parenthesis' do
+    expect_offense(<<~RUBY)
+      def refresh() # Uses the active account.
+                 ^^ Omit the parentheses in defs when the method doesn't accept any arguments.
+        load_cache
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def refresh # Uses the active account.
+        load_cache
+      end
+    RUBY
+  end
+
   it 'reports an offense for class def with empty parens' do
     expect_offense(<<~RUBY)
       def Test.func()

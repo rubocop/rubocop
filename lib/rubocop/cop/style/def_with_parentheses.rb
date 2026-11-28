@@ -49,6 +49,9 @@ module RuboCop
           return unless !node.arguments? && (arguments_range = node.arguments.source_range)
           return if parentheses_required?(node, arguments_range)
 
+          lines = arguments_range.line...arguments_range.last_line
+          return if processed_source.each_comment_in_lines(lines).any?
+
           add_offense(arguments_range) do |corrector|
             corrector.remove(arguments_range)
           end
