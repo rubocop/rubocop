@@ -139,6 +139,7 @@ module RuboCop
 
         minimum_target_ruby_version 3.0
 
+        STRING_BEGIN_TYPES = %i[tSTRING_BEG tXSTRING_BEG].freeze
         CORRECTION_STYLES = %w[multiline single_line].freeze
         MSG = 'Avoid endless method definitions.'
         MSG_MULTI_LINE = 'Avoid endless method definitions with multiple lines.'
@@ -258,9 +259,23 @@ module RuboCop
 
         def use_heredoc?(node)
           return false unless (body = node.body)
-          return true if body.any_str_type? && body.heredoc?
+          return true if body.each_node(:any_str).any?(&:heredoc?)
+          return false if !node.endless? && node.single_line?
 
-          body.each_descendant(:any_str).any?(&:heredoc?)
+          heredoc_before_signature_end?(signature_end(node))
+        end
+
+        def signature_end(node)
+          node.arguments.any? ? node.arguments.source_range.end : node.loc.name.end
+        end
+
+        def heredoc_before_signature_end?(signature_end)
+          return false unless signature_end.source_line.include?('<<')
+
+          range = signature_end.adjust(begin_pos: -signature_end.column)
+          processed_source.tokens_within(range).any? do |token|
+            STRING_BEGIN_TYPES.include?(token.type) && token.text.start_with?('<<')
+          end
         end
 
         def correct_to_endless(corrector, node)
@@ -283,9 +298,7 @@ module RuboCop
         end
 
         def signature_to_body_range(node)
-          signature_end = node.arguments.any? ? node.arguments.source_range.end : node.loc.name.end
-
-          signature_end.join(node.body.source_range.begin)
+          signature_end(node).join(node.body.source_range.begin)
         end
 
         def body_to_end_range(node)
