@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'parallel'
-
 module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
@@ -266,6 +264,9 @@ module RuboCop
     end
 
     def parallel_file_iterator(files, on_start, on_finish, &block)
+      # Loaded here so that a run that doesn't inspect in parallel doesn't pay for it.
+      require 'parallel'
+
       Parallel.each(files, start: on_start, finish: on_finish, &block)
     end
 
@@ -774,14 +775,19 @@ module RuboCop
     # A Cop::Team instance is stateful and may change when inspecting.
     # The "standby" team for a given config is an initialized but
     # otherwise dormant team that can be used for config- and option-
-    # level caching in ResultCache.
+    # level caching in ResultCache. It has only the cops with an external
+    # dependency checksum, so that a cached result is found without loading
+    # the other cops.
     def standby_team(config)
       @standby_team_by_config ||= {}.compare_by_identity
-      @standby_team_by_config[config] ||= assemble_team(config)
+      @standby_team_by_config[config] ||= begin
+        cops = mobilized_cop_classes(config).enabled_with_external_dependency(config)
+        assemble_team(config, cops)
+      end
     end
 
-    def assemble_team(config)
-      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
+    def assemble_team(config, cop_classes = mobilized_cop_classes(config))
+      team = Cop::Team.mobilize(cop_classes, config, @options)
 
       if @project_index
         team.cops.each do |cop|

@@ -143,6 +143,18 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
     end
 
+    context 'when the result of a file is cached' do
+      let(:source) { "# frozen_string_literal: true\n\nputs 'hello'\n" }
+
+      before { described_class.new(options, RuboCop::ConfigStore.new).run([]) }
+
+      it 'does not load the enabled cops' do
+        expect_any_instance_of(RuboCop::Cop::Registry).not_to receive(:enabled) # rubocop:disable RSpec/AnyInstance
+
+        expect(runner.run([])).to be true
+      end
+    end
+
     context 'with a cop supporting multiple sources', :restore_registry do
       let(:source) { '' }
       let!(:persisting_cop_class) do

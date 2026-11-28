@@ -30,7 +30,7 @@ module RuboCop
       register_cop :CaseEquality, "#{__dir__}/style/case_equality"
       register_cop :CaseLikeIf, "#{__dir__}/style/case_like_if"
       register_cop :CharacterLiteral, "#{__dir__}/style/character_literal"
-      register_cop :ClassAndModuleChildren, "#{__dir__}/style/class_and_module_children"
+      register_cop :ClassAndModuleChildren, "#{__dir__}/style/class_and_module_children", external_dependency: true
       register_cop :ClassCheck, "#{__dir__}/style/class_check"
       register_cop :ClassEqualityComparison, "#{__dir__}/style/class_equality_comparison"
       register_cop :ClassMethods, "#{__dir__}/style/class_methods"
@@ -61,7 +61,7 @@ module RuboCop
       register_cop :DirectiveScope, "#{__dir__}/style/directive_scope"
       register_cop :DisableCopsWithinSourceCodeDirective, "#{__dir__}/style/disable_cops_within_source_code_directive"
       register_cop :DocumentationMethod, "#{__dir__}/style/documentation_method"
-      register_cop :Documentation, "#{__dir__}/style/documentation"
+      register_cop :Documentation, "#{__dir__}/style/documentation", external_dependency: true
       register_cop :DocumentDynamicEvalDefinition, "#{__dir__}/style/document_dynamic_eval_definition"
       register_cop :DoubleNegation, "#{__dir__}/style/double_negation"
       register_cop :EachForSimpleLoop, "#{__dir__}/style/each_for_simple_loop"
@@ -150,7 +150,7 @@ module RuboCop
       register_cop :RedundantArrayConstructor, "#{__dir__}/style/redundant_array_constructor"
       register_cop :RedundantArrayFlatten, "#{__dir__}/style/redundant_array_flatten"
       register_cop :RedundantAssignment, "#{__dir__}/style/redundant_assignment"
-      register_cop :RedundantConstantBase, "#{__dir__}/style/redundant_constant_base"
+      register_cop :RedundantConstantBase, "#{__dir__}/style/redundant_constant_base", external_dependency: true
       register_cop :RedundantCurrentDirectoryInPath, "#{__dir__}/style/redundant_current_directory_in_path"
       register_cop :RedundantDoubleSplatHashBraces, "#{__dir__}/style/redundant_double_splat_hash_braces"
       register_cop :RedundantEach, "#{__dir__}/style/redundant_each"
@@ -173,13 +173,13 @@ module RuboCop
       register_cop :SafeNavigationChainLength, "#{__dir__}/style/safe_navigation_chain_length"
       register_cop :SingleLineDoEndBlock, "#{__dir__}/style/single_line_do_end_block"
       register_cop :SoleNestedConditional, "#{__dir__}/style/sole_nested_conditional"
-      register_cop :StaticClass, "#{__dir__}/style/static_class"
+      register_cop :StaticClass, "#{__dir__}/style/static_class", external_dependency: true
       register_cop :MapCompactWithConditionalBlock, "#{__dir__}/style/map_compact_with_conditional_block"
       register_cop :MethodCalledOnDoEndBlock, "#{__dir__}/style/method_called_on_do_end_block"
       register_cop :MethodDefParentheses, "#{__dir__}/style/method_def_parentheses"
       register_cop :MinMax, "#{__dir__}/style/min_max"
       register_cop :MissingElse, "#{__dir__}/style/missing_else"
-      register_cop :MissingRespondToMissing, "#{__dir__}/style/missing_respond_to_missing"
+      register_cop :MissingRespondToMissing, "#{__dir__}/style/missing_respond_to_missing", external_dependency: true
       register_cop :MixinGrouping, "#{__dir__}/style/mixin_grouping"
       register_cop :MixinUsage, "#{__dir__}/style/mixin_usage"
       register_cop :ModuleFunction, "#{__dir__}/style/module_function"

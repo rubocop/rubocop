@@ -738,6 +738,56 @@ RSpec.describe RuboCop::Cop::Registry do
     end
   end
 
+  describe '#enabled_with_external_dependency' do
+    let(:config) do
+      RuboCop::Config.new('LazyLoad/Disabled' => { 'Enabled' => false })
+    end
+    let(:cop_with_checksum) do
+      Class.new(RuboCop::Cop::Base) do
+        def external_dependency_checksum
+          'checksum'
+        end
+      end
+    end
+
+    before do
+      stub_const('RuboCop::Cop::LazyLoad::Declared', cop_with_checksum)
+      registry.lazy_load('LazyLoad/Declared', 'RuboCop::Cop::LazyLoad::Declared',
+                         external_dependency: true)
+      registry.lazy_load('LazyLoad/Disabled', 'RuboCop::Cop::LazyLoad::Disabled',
+                         external_dependency: true)
+      registry.lazy_load('LazyLoad/Unresolvable', 'RuboCop::Cop::LazyLoad::Unresolvable')
+    end
+
+    it 'returns the enabled cops with a checksum without loading the other lazy-loaded cops' do
+      expect(registry.enabled_with_external_dependency(config)).to eq(
+        [RuboCop::Cop::Lint::DuplicateMethods, RuboCop::Cop::LazyLoad::Declared]
+      )
+    end
+
+    it 'keeps the declarations in a filtered copy' do
+      copy = registry.with_department(:LazyLoad)
+
+      expect(copy.enabled_with_external_dependency(config))
+        .to eq([RuboCop::Cop::LazyLoad::Declared])
+    end
+
+    context 'when a lazy-loaded cop has a checksum that was not declared' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Undeclared', cop_with_checksum)
+        registry.lazy_load('LazyLoad/Undeclared', 'RuboCop::Cop::LazyLoad::Undeclared')
+      end
+
+      it 'raises an error when the cop is loaded' do
+        expect { registry.find_by_cop_name('LazyLoad/Undeclared') }.to raise_error(
+          RuntimeError,
+          'LazyLoad/Undeclared overrides `external_dependency_checksum`, so it must be ' \
+          'registered with `register_cop ..., external_dependency: true`.'
+        )
+      end
+    end
+  end
+
   describe '#names' do
     it 'exposes a list of cop names' do
       expect(registry.names).to eql(

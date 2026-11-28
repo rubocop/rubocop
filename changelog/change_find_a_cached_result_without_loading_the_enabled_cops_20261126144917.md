@@ -1,0 +1,1 @@
+* [#16518](https://github.com/rubocop/rubocop/pull/16518): Make runs that find their results in the cache faster by not loading the cops; a cached one-file run takes about half the time. ([@bbatsov][])
