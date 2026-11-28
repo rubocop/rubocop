@@ -23,6 +23,70 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'corrects an explicit bracket call without parentheses' do
+    expect_offense(<<~RUBY)
+      Hash.[] :a, 1
+      ^^^^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      { :a => 1}
+    RUBY
+  end
+
+  it 'does not drop a comment after the dot' do
+    expect_offense(<<~RUBY)
+      Hash. # keep
+      ^^^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+        [](:a, 1)
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'keeps a comment between a key and its value' do
+    expect_offense(<<~RUBY)
+      Hash[:mode, # keep the default
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+           mode]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {:mode => # keep the default
+           mode}
+    RUBY
+  end
+
+  it 'keeps a heredoc body between pairs' do
+    expect_offense(<<~RUBY)
+      Hash[:note, <<~TEXT,
+      ^^^^^^^^^^^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+        Welcome
+      TEXT
+        :mode, mode]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {:note => <<~TEXT,
+        Welcome
+      TEXT
+        :mode => mode}
+    RUBY
+  end
+
+  it 'preserves comments when the bracket method is called explicitly' do
+    expect_offense(<<~RUBY)
+      Hash.[](:mode, # keep the default
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+              mode)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {:mode => # keep the default
+              mode}
+    RUBY
+  end
+
   it 'does not register an offense for a splat argument' do
     # A splat can expand to any number of elements, so no literal hash can be built.
     expect_no_offenses(<<~RUBY)
