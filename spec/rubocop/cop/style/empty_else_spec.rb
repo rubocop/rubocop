@@ -401,6 +401,52 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
                           'Style/MissingElse' => missing_else_config)
     end
 
+    it 'removes the entire empty else clause on a shared line' do
+      expect_offense(<<~RUBY)
+        if a; b; else; end
+                 ^^^^ Redundant `else`-clause.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if a; b; end
+      RUBY
+    end
+
+    it 'preserves a heredoc from the preceding branch' do
+      expect_offense(<<~RUBY)
+        if ready then publish(<<~TEXT); else
+                                        ^^^^ Redundant `else`-clause.
+          Welcome
+        TEXT
+        end; notify
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if ready then publish(<<~TEXT);
+          Welcome
+        TEXT
+        end; notify
+      RUBY
+    end
+
+    it 'preserves a heredoc before a nil else branch' do
+      expect_offense(<<~RUBY)
+        case status; when :ok then publish(<<~TEXT); else
+                                                     ^^^^ Redundant `else`-clause.
+          Welcome
+        TEXT
+          nil
+        end; notify
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case status; when :ok then publish(<<~TEXT);
+          Welcome
+        TEXT
+        end; notify
+      RUBY
+    end
+
     context 'given an if-statement' do
       context 'with a completely empty else-clause' do
         let(:source) { <<~RUBY }
