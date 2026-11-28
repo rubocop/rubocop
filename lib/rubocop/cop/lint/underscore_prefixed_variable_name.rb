@@ -43,12 +43,10 @@ module RuboCop
       class UnderscorePrefixedVariableName < Base
         MSG = 'Do not use prefix `_` for a variable that is used.'
 
-        def self.joining_forces
-          VariableForce
-        end
-
-        def after_leaving_scope(scope, _variable_table)
-          scope.variables.each_value { |variable| check_variable(variable) }
+        def on_new_investigation
+          processed_source.variable_analysis.scopes.each do |scope|
+            scope.variables.each_value { |variable| check_variable(variable) }
+          end
         end
 
         def check_variable(variable)

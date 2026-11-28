@@ -28,15 +28,6 @@ module RuboCop
 
         MSG = 'Use `Kernel#loop` for infinite loops.'
 
-        def self.joining_forces
-          VariableForce
-        end
-
-        def after_leaving_scope(scope, _variable_table)
-          @variables ||= []
-          @variables.concat(scope.variables.values)
-        end
-
         def on_while(node)
           while_or_until(node) if node.condition.truthy_literal?
         end
@@ -58,7 +49,7 @@ module RuboCop
           # outside of that loop too, but a variable that's assigned for the
           # first time inside a block cannot be accessed after the block. In
           # those more complicated cases we don't report an offense.
-          return if @variables.any? do |var|
+          return if processed_source.variable_analysis.variables.any? do |var|
             assigned_inside_loop?(var, range) &&
             !assigned_before_loop?(var, range) &&
             referenced_after_loop?(var, range)

@@ -51,24 +51,23 @@ module RuboCop
           (block (send (const {nil? cbase} :Ractor) :new ...) ...)
         PATTERN
 
-        def self.joining_forces
-          VariableForce
+        def on_new_investigation
+          processed_source.variable_analysis.shadowings.each do |variable, outer_local_variable|
+            check_shadowing(variable, outer_local_variable)
+          end
         end
 
-        def before_declaring_variable(variable, variable_table)
+        private
+
+        def check_shadowing(variable, outer_local_variable)
           return if variable.should_be_unused?
           return if ractor_block?(variable.scope.node)
-
-          outer_local_variable = variable_table.find_variable(variable.name)
-          return unless outer_local_variable
           return if variable_used_in_declaration_of_outer?(variable, outer_local_variable)
           return if same_conditions_node_different_branch?(variable, outer_local_variable)
 
           message = format(MSG, variable: variable.name)
           add_offense(variable.declaration_node, message: message)
         end
-
-        private
 
         def variable_used_in_declaration_of_outer?(variable, outer_local_variable)
           variable.scope.node.each_ancestor.any?(outer_local_variable.declaration_node)

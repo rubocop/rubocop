@@ -10,6 +10,13 @@ module RuboCop
         @comment_config ||= CommentConfig.new(self)
       end
 
+      # The scopes and local variables of the source, analyzed on first use.
+      #
+      # @return [Cop::VariableForce::Analysis]
+      def variable_analysis
+        @variable_analysis ||= Cop::VariableForce::Analysis.new(self)
+      end
+
       def disabled_line_ranges
         comment_config.cop_disabled_line_ranges
       end

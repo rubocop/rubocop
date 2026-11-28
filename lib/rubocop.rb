@@ -75,6 +75,7 @@ require_relative 'rubocop/cop/variable_force/assignment'
 require_relative 'rubocop/cop/variable_force/reference'
 require_relative 'rubocop/cop/variable_force/scope'
 require_relative 'rubocop/cop/variable_force/variable_table'
+require_relative 'rubocop/cop/variable_force/analysis'
 
 require_relative 'rubocop/cop/mixin'
 

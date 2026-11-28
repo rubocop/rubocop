@@ -56,10 +56,6 @@ module RuboCop
         include UnusedArgument
         extend AutoCorrector
 
-        def self.joining_forces
-          VariableForce
-        end
-
         private
 
         def autocorrect(corrector, node)
