@@ -45,20 +45,48 @@ module RuboCop
 
           block_parameter = block_node.first_argument.source
 
-          assignment = block_node.descendants.detect do |node|
-            use_deprecated_attributes?(node, block_parameter)
-          end
-          return unless assignment
+          block_node.each_descendant do |assignment|
+            next unless use_deprecated_attributes?(assignment, block_parameter)
 
-          message = format_message_from
-          add_offense(assignment, message: message) do |corrector|
-            range = range_by_whole_lines(assignment.source_range, include_final_newline: true)
-
-            corrector.remove(range)
+            register_assignment(assignment, block_node.body)
           end
         end
 
         private
+
+        def register_assignment(assignment, body)
+          add_offense(assignment, message: format_message_from) do |corrector|
+            range = removal_range(assignment, body)
+            corrector.remove(range) if range
+          end
+        end
+
+        def removal_range(assignment, body)
+          assignment = containing_statement(assignment)
+          return if trailing_heredoc?(assignment)
+
+          source = assignment.source_range
+          range = range_for_statement_removal(source)
+          return range if assignment.equal?(body)
+          return range if body&.begin_type? && assignment.parent.equal?(body)
+          return range if range == range_by_whole_lines(source, include_final_newline: true)
+
+          nil
+        end
+
+        def containing_statement(assignment)
+          parent = assignment.parent
+          return assignment unless parent.if_type? && parent.modifier_form?
+
+          parent.body.equal?(assignment) ? parent : assignment
+        end
+
+        def trailing_heredoc?(assignment)
+          end_pos = assignment.source_range.end_pos
+          assignment.each_descendant.any? do |child|
+            child.loc?(:heredoc_end) && child.loc.heredoc_end.end_pos > end_pos
+          end
+        end
 
         def node_and_method_name(node, attribute)
           if node.op_asgn_type?
