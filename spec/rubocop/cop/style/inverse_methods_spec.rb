@@ -154,6 +154,13 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
     RUBY
   end
 
+  it 'does not register an offense when `!` is called as a method' do
+    expect_no_offenses(<<~RUBY)
+      2.even?.!
+      2.even?::!
+    RUBY
+  end
+
   it 'allows a method call without a not' do
     expect_no_offenses('foo.none?')
   end
