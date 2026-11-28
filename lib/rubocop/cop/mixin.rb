@@ -27,6 +27,7 @@ module RuboCop
     autoload :DigHelp, "#{__dir__}/mixin/dig_help"
     autoload :DocumentationComment, "#{__dir__}/mixin/documentation_comment"
     autoload :Duplication, "#{__dir__}/mixin/duplication"
+    autoload :ChainedCallRemoval, "#{__dir__}/mixin/chained_call_removal"
     autoload :RangeHelp, "#{__dir__}/mixin/range_help"
     autoload :ProjectIndexHelp, "#{__dir__}/mixin/project_index_help"
     autoload :AnnotationComment, "#{__dir__}/mixin/annotation_comment"

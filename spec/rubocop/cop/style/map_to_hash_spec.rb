@@ -2,6 +2,44 @@
 
 RSpec.describe RuboCop::Cop::Style::MapToHash, :config do
   context '>= Ruby 2.6', :ruby26 do
+    it 'does not correct when a comment separates `to_h` from `map` and a comma follows' do
+      expect_no_offenses(<<~RUBY)
+        publish(
+          rows.map { |row| [row.id, row.price] } # keep
+            .to_h, flags
+        )
+      RUBY
+    end
+
+    it 'keeps a chained call on its own line after a comment' do
+      expect_offense(<<~RUBY)
+        rows.map(&:pair) # keep
+             ^^^ Pass a block to `to_h` instead of calling `map.to_h`.
+          .to_h().freeze
+      RUBY
+
+      expect_correction(<<~RUBY)
+        rows.to_h(&:pair) # keep
+          .freeze
+      RUBY
+    end
+
+    it 'does not remove a comment between the dot and `to_h`' do
+      expect_no_offenses(<<~RUBY)
+        rows.map(&:pair). # keep
+          to_h; audit
+      RUBY
+    end
+
+    it 'does not remove an earlier heredoc argument from the conversion parentheses' do
+      expect_no_offenses(<<~RUBY)
+        publish(<<~TEXT, rows.map(&:pair).to_h(
+          label
+        TEXT
+        ))
+      RUBY
+    end
+
     %i[map collect].each do |method|
       context "for `#{method}.to_h` with block arity 1" do
         it 'registers an offense and corrects' do
