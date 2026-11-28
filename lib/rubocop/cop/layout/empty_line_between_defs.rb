@@ -112,6 +112,7 @@ module RuboCop
       #   memoize :attribute_b
       #
       class EmptyLineBetweenDefs < Base
+        include HeredocLines
         include RangeHelp
         extend AutoCorrector
 
@@ -149,15 +150,11 @@ module RuboCop
         end
 
         def autocorrect(corrector, prev_def, node, count)
-          # finds position of first newline
-          end_pos = end_loc(prev_def).end_pos
-          source_buffer = end_loc(prev_def).source_buffer
-          newline_pos = source_buffer.source.index("\n", end_pos)
-
-          # Handle the case when multiple one-liners are on the same line.
           begin_pos = node.source_range.begin_pos
-          newline_pos = begin_pos - 1 if newline_pos > begin_pos
+          last_line = last_line_with_heredocs(prev_def, before: begin_pos)
+          return if last_line > node.first_line
 
+          newline_pos = [processed_source.buffer.line_range(last_line).end_pos, begin_pos - 1].min
           if count > maximum_empty_lines
             autocorrect_remove_lines(corrector, newline_pos, count)
           else
@@ -251,9 +248,9 @@ module RuboCop
           Array(cop_config['NumberOfEmptyLines']).last
         end
 
-        def lines_between_defs(first_def_node, second_def_node)
-          begin_line_num = def_end(first_def_node)
-          end_line_num = def_start(second_def_node) - 2
+        def lines_between_defs(first, second)
+          begin_line_num = last_line_with_heredocs(first, before: second.source_range.begin_pos)
+          end_line_num = def_start(second) - 2
           return [] if end_line_num.negative?
 
           processed_source.lines[begin_line_num..end_line_num]
@@ -267,27 +264,6 @@ module RuboCop
           else
             node.loc.keyword.line
           end
-        end
-
-        def def_end(node)
-          end_loc(node).line
-        end
-
-        def end_loc(node)
-          end_location = node.source_range.end
-          trailing_heredoc_end(node, end_location) || end_location
-        end
-
-        # For an endless method whose body is a heredoc (e.g. `def a = <<~TEXT`), the
-        # node's source range ends at the heredoc opening line, before the heredoc body.
-        # Use the heredoc's closing delimiter so the def's real end is located after the
-        # heredoc and blank-line insertion does not land inside the heredoc body.
-        def trailing_heredoc_end(node, end_location)
-          heredocs = node.each_descendant(:any_str).select(&:heredoc?)
-          return if heredocs.empty?
-
-          heredoc_end = heredocs.map { |heredoc| heredoc.loc.heredoc_end }.max_by(&:end_pos)
-          heredoc_end if heredoc_end.end_pos > end_location.end_pos
         end
 
         def autocorrect_remove_lines(corrector, newline_pos, count)
