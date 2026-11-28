@@ -20,6 +20,9 @@ module RuboCop
       # are not detected. This ensures safe detection regardless of the applied style.
       # This avoids overlapping responsibilities with the `Lint/EmptyClass` cop.
       #
+      # A class definition returns the value of its body, whereas `Class.new` returns the
+      # class itself. Neither style is enforced when the value of the definition is used.
+      #
       # Use `AllowedParentClasses` to permit both styles for specific parent classes.
       # For example, adding `StandardError` allows both `Error = Class.new(StandardError)`
       # and `class Error < StandardError; end` regardless of the enforced style.
@@ -73,8 +76,8 @@ module RuboCop
         def on_casgn(node)
           return unless %i[class_keyword class_definition].include?(style)
           return unless (class_new_node = class_new_assignment(node))
-          return if (arg = class_new_node.first_argument) && !arg.const_type?
-          return if allowed_parent_class?(class_new_node.first_argument.source)
+          return unless class_new_node.first_argument.const_type?
+          return unless check_definition?(node, class_new_node.first_argument)
 
           add_offense(node, message: MSG_CLASS_KEYWORD) do |corrector|
             autocorrect_class_new(corrector, node, class_new_node)
@@ -85,7 +88,7 @@ module RuboCop
           return unless style == :class_new
           return unless node.parent_class
           return if (body = node.body) && !body.children.empty?
-          return if allowed_parent_class?(node.parent_class.source)
+          return unless check_definition?(node, node.parent_class)
           return if do_end_block_with_command_call?(node.parent_class)
 
           add_offense(node, message: MSG_CLASS_NEW) do |corrector|
@@ -95,8 +98,30 @@ module RuboCop
 
         private
 
-        def allowed_parent_class?(parent_class_name)
-          allowed_parent_classes.include?(parent_class_name)
+        def check_definition?(node, parent_class)
+          !allowed_parent_classes.include?(parent_class.source) && discarded_value?(node)
+        end
+
+        def discarded_value?(node)
+          parent = node.parent
+          return true unless parent
+          return true if parent.type?(:begin, :kwbegin) && !parent.children.last.equal?(node)
+          if parent.type?(:while, :until, :while_post, :until_post)
+            return parent.children.last.equal?(node)
+          end
+          return parent.class_constructor? if parent.any_block_type?
+
+          forwards_value?(parent, node) && discarded_value?(parent)
+        end
+
+        def forwards_value?(parent, node)
+          case parent.type
+          when :begin, :kwbegin, :rescue, :ensure then true
+          when :class, :module, :sclass, :when, :in_pattern, :resbody then parent.body.equal?(node)
+          when :if, :case, :case_match then !parent.condition.equal?(node)
+          when :and, :or then parent.rhs.equal?(node)
+          else false
+          end
         end
 
         def allowed_parent_classes

@@ -16,6 +16,29 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       RUBY
     end
 
+    it 'accepts a constant assignment whose value is used' do
+      expect_no_offenses(<<~RUBY)
+        result = Child = Class.new(Parent)
+      RUBY
+    end
+
+    it 'accepts the constant assignment yielded back to an enumerator' do
+      expect_no_offenses(<<~RUBY)
+        for item in items
+          Child = Class.new(Parent)
+        end
+      RUBY
+    end
+
+    it 'accepts the constant assignment returned by a module body' do
+      expect_no_offenses(<<~RUBY)
+        result = module Errors
+          prepare
+          Child = Class.new(Parent)
+        end
+      RUBY
+    end
+
     it 'registers an offense for Class.new assignment to a namespaced constant' do
       expect_offense(<<~RUBY)
         Foo::BarError = Class.new(StandardError)
@@ -398,6 +421,41 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
 
       expect_correction(<<~RUBY)
         FooError = Class.new(StandardError)
+      RUBY
+    end
+
+    it 'accepts a class definition used as an argument' do
+      expect_no_offenses(<<~RUBY)
+        register(class Child < Parent; end)
+      RUBY
+    end
+
+    it 'accepts the class definition returned by a block' do
+      expect_no_offenses(<<~RUBY)
+        register { class Child < Parent; end }
+      RUBY
+    end
+
+    it 'corrects a class in a rescue branch when the value is discarded' do
+      expect_offense(<<~RUBY)
+        begin
+          load_errors
+        rescue LoadError
+          class Child < Parent; end
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
+        ensure
+          cleanup
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          load_errors
+        rescue LoadError
+          Child = Class.new(Parent)
+        ensure
+          cleanup
+        end
       RUBY
     end
 
