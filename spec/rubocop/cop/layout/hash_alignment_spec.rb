@@ -1057,6 +1057,87 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_no_offenses('h = {}')
     end
 
+    it 'registers an offense and corrects an implicit last argument hash with a continued line' do
+      expect_offense(<<~RUBY)
+        def foo
+          puts('test', a: 1, b: 2,
+        c: 3)
+        ^^^^ Align the keys of a hash literal if they span more than one line.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          puts('test', a: 1, b: 2,
+                       c: 3)
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when a continued line has multiple pairs' do
+      expect_offense(<<~RUBY)
+        foo(a: 1, bb: 2,
+        c: 3, dddd: 4)
+        ^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(a: 1, bb: 2,
+            c: 3, dddd: 4)
+      RUBY
+    end
+
+    it 'registers offenses and corrects multiple continued lines' do
+      expect_offense(<<~RUBY)
+        foo(a: 1, bb: 2,
+        c: 3,
+        ^^^^ Align the keys of a hash literal if they span more than one line.
+        dddd: 4)
+        ^^^^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(a: 1, bb: 2,
+            c: 3,
+            dddd: 4)
+      RUBY
+    end
+
+    it 'registers an offense and corrects hash rocket syntax with continued line under table style' do
+      expect_offense(<<~RUBY)
+        puts('test', :a => 1, :b => 2,
+        :c => 3)
+        ^^^^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts('test', :a => 1, :b => 2,
+                     :c => 3)
+      RUBY
+    end
+
+    it 'registers an offense for unparenthesized method call with multi-pair first line' do
+      expect_offense(<<~RUBY)
+        some_method a: 1, b: 2,
+        c: 3
+        ^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        some_method a: 1, b: 2,
+                    c: 3
+      RUBY
+    end
+
+    it 'accepts an implicit last argument hash with a continued line aligned with the first key' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          puts('test', a: 1, b: 2,
+                       c: 3)
+        end
+      RUBY
+    end
+
     context 'when using hash value omission', :ruby31 do
       it 'accepts aligned hash keys and values' do
         expect_no_offenses(<<~RUBY)
