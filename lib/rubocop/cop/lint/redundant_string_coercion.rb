@@ -58,7 +58,8 @@ module RuboCop
 
           add_offense(node.loc.selector, message: message) do |corrector|
             if receiver
-              corrector.remove(removal_range(node, receiver))
+              range = removal_range(node, receiver)
+              corrector.remove(range) if safe_to_remove?(range, receiver)
             else
               corrector.replace(node, 'self')
             end
@@ -75,6 +76,13 @@ module RuboCop
           receiver.each_node(:any_str).any? do |str_node|
             str_node.heredoc? && str_node.loc.heredoc_end.end_pos > receiver.source_range.end_pos
           end
+        end
+
+        def safe_to_remove?(range, receiver)
+          return true if range.line == receiver.last_line
+
+          rest = processed_source.lines[range.last_line - 1][range.last_column..].lstrip
+          rest.empty? || rest.start_with?('#', ')', ']', '}', ';')
         end
       end
     end
