@@ -86,7 +86,7 @@ module RuboCop
         # but `alias` is a keyword statement that cannot appear in such positions.
         # Detect these positions so the conversion does not produce a syntax error.
         def alias_method_value_used?(node)
-          node.argument? || node.parent&.assignment?
+          node.parent&.call_type? || node.parent&.assignment?
         end
 
         def alias_method_possible?(node)

@@ -157,6 +157,14 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
+    it 'does not register an offense when alias_method is the receiver of a call' do
+      expect_no_offenses('alias_method(:new_name, :old_name).to_s')
+    end
+
+    it 'does not register an offense when alias_method is the receiver of a safe navigation call' do
+      expect_no_offenses('alias_method(:new_name, :old_name)&.to_s')
+    end
+
     it 'does not register an offense for alias_method whose return value is assigned' do
       expect_no_offenses(<<~RUBY)
         class C
