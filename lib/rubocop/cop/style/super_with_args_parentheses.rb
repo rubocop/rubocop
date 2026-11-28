@@ -16,12 +16,13 @@ module RuboCop
       #   super(name, age)
       #
       class SuperWithArgsParentheses < Base
+        include Parentheses
         extend AutoCorrector
 
         MSG = 'Use parentheses for `super` with arguments.'
 
         def on_super(node)
-          return if node.parenthesized?
+          return if node.parenthesized? || do_end_block_in_command_arguments?(node)
 
           add_offense(node) do |corrector|
             range = node.loc.keyword.end.join(node.first_argument.source_range.begin)

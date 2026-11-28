@@ -12,6 +12,32 @@ RSpec.describe RuboCop::Cop::Style::SuperWithArgsParentheses, :config do
     RUBY
   end
 
+  it 'accepts a super call with a do-end block inside the arguments of a command call' do
+    expect_no_offenses(<<~RUBY)
+      emit flag, if ready?
+        super arg do
+        end
+      end
+    RUBY
+  end
+
+  it 'corrects a super call with a do-end block when the outer call has parentheses' do
+    expect_offense(<<~RUBY)
+      emit(flag, if ready?
+        super arg do
+        ^^^^^^^^^ Use parentheses for `super` with arguments.
+        end
+      end)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      emit(flag, if ready?
+        super(arg) do
+        end
+      end)
+    RUBY
+  end
+
   it 'does not register an offense when using `super` with parenthesized arguments' do
     expect_no_offenses(<<~RUBY)
       super(name, age)
