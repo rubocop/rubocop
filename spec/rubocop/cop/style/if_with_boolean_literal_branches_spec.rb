@@ -298,6 +298,23 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
     end
   end
 
+  context 'when the condition contains multiple expressions' do
+    it 'does not register an offense when only the first expression is a predicate' do
+      expect_no_offenses('(1.zero?; :ready) ? true : false')
+    end
+
+    it 'registers and corrects an offense when the last expression is a predicate' do
+      expect_offense(<<~RUBY)
+        (prepare; ready?) ? true : false
+                         ^^^^^^^^^^^^^^^ Remove redundant ternary operator with boolean literal branches.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (prepare; ready?)
+      RUBY
+    end
+  end
+
   context 'when condition is a logical operator and operands do not known whether to return boolean value' do
     it 'does not register an offense when using `if foo && bar` with boolean literal branches' do
       expect_no_offenses(<<~RUBY)
