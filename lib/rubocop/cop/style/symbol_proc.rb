@@ -234,11 +234,20 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
+          return if heredoc_in_block_range?(node)
+
           if node.send_node.arguments?
             autocorrect_with_args(corrector, node, node.send_node.arguments, node.body.method_name)
           else
             autocorrect_without_args(corrector, node)
           end
+        end
+
+        def heredoc_in_block_range?(node)
+          range = node.send_node.lambda_literal? ? node.source_range : block_range_with_space(node)
+          return false if range.single_line?
+
+          processed_source.tokens_within(range).any? { |token| token.type == :tSTRING_END }
         end
 
         def autocorrect_without_args(corrector, node)
