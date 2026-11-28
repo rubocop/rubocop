@@ -46,6 +46,7 @@ module RuboCop
       #   fail 'message'
       class RaiseArgs < Base
         include ConfigurableEnforcedStyle
+        include RangeHelp
         extend AutoCorrector
 
         EXPLODED_MSG = 'Provide an exception class and message as arguments to `%<method>s`.'
@@ -57,7 +58,8 @@ module RuboCop
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def self.autocorrect_incompatible_with
-          [Style::TrailingCommaInArguments]
+          [Style::NestedParenthesizedCalls, Style::MethodCallWithArgsParentheses,
+           Style::TrailingCommaInArguments]
         end
 
         def on_send(node)
@@ -168,16 +170,36 @@ module RuboCop
 
         def heredoc_new_argument?(node)
           new_call = node.first_argument
-          return false unless new_call.arguments.one? && heredoc?(new_call.first_argument)
-
-          node.parenthesized? || !parenthesize?(node)
+          new_call.arguments.one? && heredoc?(new_call.first_argument)
         end
 
         def correct_heredoc_compact_to_exploded(corrector, node)
           new_call = node.first_argument
+          if !node.parenthesized? && parenthesize?(node)
+            return add_raise_parentheses(corrector, node, new_call)
+          end
+
           remove_trailing_comma(corrector, new_call)
           corrector.replace(range_between(new_call.receiver, new_call.first_argument), ', ')
           corrector.remove(new_call.loc.end) if new_call.loc.end
+        end
+
+        def add_raise_parentheses(corrector, node, new_call)
+          space = range_with_surrounding_space(node.loc.selector.end, side: :right, newlines: false)
+          corrector.replace(space, '(')
+          corrector.insert_after(new_call, ')') unless new_call.parenthesized?
+          replace_constructor_with_comma(corrector, new_call)
+        end
+
+        def replace_constructor_with_comma(corrector, new_call)
+          loc = new_call.loc
+          corrector.insert_after(new_call.receiver, ',')
+          corrector.remove(loc.dot)
+          corrector.remove(loc.selector)
+          return unless loc.begin
+
+          adjacent = loc.begin.end_pos == new_call.first_argument.source_range.begin_pos
+          corrector.replace(loc.begin, adjacent ? ' ' : '')
         end
 
         def remove_trailing_comma(corrector, new_call)
