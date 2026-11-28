@@ -75,7 +75,7 @@ module RuboCop
           return unless def_nodes(node).all? { |def_node| on_own_lines?(def_node.source_range) }
 
           add_offense(node, message: MSG_SCLASS) do |corrector|
-            next if inside_corrected_sclass?(node)
+            next unless correctable_sclass?(node)
 
             autocorrect_sclass(node, corrector)
             ignore_node(node)
@@ -131,8 +131,37 @@ module RuboCop
           trailing.empty? || trailing.start_with?('#')
         end
 
+        def correctable_sclass?(node)
+          return false if inside_corrected_sclass?(node)
+          return true if node.body.def_type?
+
+          statement_position?(node, value_preserved: node.body.children.last.def_type?)
+        end
+
         def inside_corrected_sclass?(node)
           node.each_ancestor(:sclass).any? { |ancestor| ignored_node?(ancestor) }
+        end
+
+        def statement_position?(node, value_preserved:)
+          parent = node.parent
+          return true unless parent
+
+          if parent.type?(:begin, :kwbegin)
+            return true unless parent.children.last.equal?(node)
+          else
+            return false unless body_position?(node, parent)
+            return value_preserved if parent.type?(:any_def, :any_block)
+          end
+
+          value_preserved || statement_position?(parent, value_preserved: false)
+        end
+
+        def body_position?(node, parent)
+          if parent.if_type?
+            !parent.ternary? && !parent.modifier_form? && !parent.condition.equal?(node)
+          elsif parent.type?(:class, :module, :sclass, :any_block, :any_def)
+            parent.body.equal?(node) && !(parent.any_def_type? && parent.endless?)
+          end
         end
 
         def autocorrect_sclass(node, corrector)
