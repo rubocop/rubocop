@@ -586,6 +586,29 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
+      it 'adds a comma after a bracket call' do
+        expect_offense(<<~RUBY)
+          foo(
+            items[0]
+            ^^^^^^^^ Put a comma after the last parameter of a multiline method call.
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(
+            items[0],
+          )
+        RUBY
+      end
+
+      it 'does not add a comma after a nested command call' do
+        expect_no_offenses(<<~RUBY)
+          foo(
+            bar baz
+          )
+        RUBY
+      end
+
       [%w[( )], %w[[ ]]].each do |start_bracket, end_bracket|
         context "with `#{start_bracket}#{end_bracket}` brackets" do
           context 'when closing bracket is on same line as last value' do

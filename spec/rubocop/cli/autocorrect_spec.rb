@@ -10,6 +10,42 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RuboCop::ConfigLoader.default_configuration.for_all_cops['SuggestExtensions'] = false
   end
 
+  it 'keeps a multiline safe navigation argument valid when adding parentheses' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        DisabledByDefault: true
+      Lint/ParenthesesAsGroupedExpression:
+        Enabled: true
+      Lint/SafeNavigationChain:
+        Enabled: true
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+        IgnoreMacros: false
+      Style/TrailingCommaInArguments:
+        Enabled: true
+        EnforcedStyleForMultiline: consistent_comma
+      Layout/FirstMethodArgumentLineBreak:
+        Enabled: true
+      Layout/MultilineMethodCallBraceLayout:
+        Enabled: true
+    YAML
+    create_file('example.rb', <<~RUBY)
+      x = foo a&.bar + baz {
+      }.qux
+    RUBY
+
+    expect(cli.run(['-A', 'example.rb'])).to eq(0)
+    corrected = File.read('example.rb')
+    expect(corrected).to eq(<<~RUBY)
+      x = foo(
+      a&.bar&. + baz {
+      }.qux
+      )
+    RUBY
+    expect(cli.run(['-A', 'example.rb'])).to eq(0)
+    expect(File.read('example.rb')).to eq(corrected)
+  end
+
   it 'preserves empty lines around a block body ending with an access modifier' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
