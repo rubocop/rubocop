@@ -60,6 +60,10 @@ module RuboCop
           [Style::StringLiterals]
         end
 
+        def on_new_investigation
+          @raw_lines = nil
+        end
+
         def on_dstr(node)
           # Quick check if we possibly have line continuations.
           return unless node.source.include?('\\')
@@ -79,7 +83,8 @@ module RuboCop
         private
 
         def raw_lines(node)
-          processed_source.raw_source.lines[node.first_line - 1, line_range(node).size]
+          @raw_lines ||= processed_source.raw_source.lines
+          @raw_lines[node.first_line - 1, line_range(node).size]
         end
 
         def investigate(first_line, second_line, end_of_first_line)

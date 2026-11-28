@@ -1,0 +1,1 @@
+* [#16519](https://github.com/rubocop/rubocop/pull/16519): Make inspection about 5% faster by asking each cop once per run, not once per file, whether it applies, and by removing repeated work from several Layout and Style cops. ([@bbatsov][])

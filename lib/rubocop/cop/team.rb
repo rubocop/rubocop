@@ -95,6 +95,10 @@ module RuboCop
         reset
         @ready = true
         @registry = Registry.new(cops, options.dup)
+        # What a cop class answers for every file is asked once, not once per file.
+        @file_independent_relevance = {}.compare_by_identity
+        @enabled_and_supported = {}.compare_by_identity
+        @correcting = {}.compare_by_identity
 
         validate_config
       end
@@ -256,17 +260,38 @@ module RuboCop
       # cops - correctors of the later `other_cops` round are never applied.
       def partition_by_correcting(cops)
         cops.partition do |cop|
-          cop.autocorrect? || cop.skipped_unsafe_correction_with_disable_uncorrectable?
+          @correcting.fetch(cop.class) do |cop_class|
+            @correcting[cop_class] =
+              cop.autocorrect? || cop.skipped_unsafe_correction_with_disable_uncorrectable?
+          end
         end
       end
 
       def roundup_relevant_cops(processed_source)
-        (cops + opted_in_standby_cops(processed_source)).select do |cop|
-          next false if cop.excluded_file?(processed_source.file_path)
-          next true if processed_source.comment_config.cop_opted_in?(cop)
-          next false unless @registry.enabled?(cop, @config)
+        file = processed_source.file_path
+        opted_in = processed_source.comment_config.opt_in_cops
 
-          support_target_ruby_version?(cop) && support_target_rails_version?(cop)
+        (cops + opted_in_standby_cops(processed_source)).select do |cop|
+          next false if excluded_file?(cop, file)
+          next true if opted_in.include?(cop.cop_name)
+
+          enabled_and_supported?(cop)
+        end
+      end
+
+      def excluded_file?(cop, file)
+        relevance = @file_independent_relevance.fetch(cop.class) do |cop_class|
+          @file_independent_relevance[cop_class] = cop.file_independent_relevance
+        end
+
+        relevance.nil? ? cop.excluded_file?(file) : !relevance
+      end
+
+      def enabled_and_supported?(cop)
+        @enabled_and_supported.fetch(cop.class) do |cop_class|
+          @enabled_and_supported[cop_class] =
+            @registry.enabled?(cop, @config) &&
+            support_target_ruby_version?(cop) && support_target_rails_version?(cop)
         end
       end
 

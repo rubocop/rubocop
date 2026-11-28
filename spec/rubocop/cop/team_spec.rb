@@ -206,6 +206,31 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
+    context 'when a cop is limited to some files by its configuration' do
+      let(:config) do
+        RuboCop::ConfigLoader.merge_with_default(
+          RuboCop::Config.new('Layout/LineLength' => { 'Exclude' => ['excluded.rb'] }), ''
+        )
+      end
+
+      def cop_names_for(path)
+        create_file(path, ['#' * 130, 'puts test'])
+        source = RuboCop::ProcessedSource.from_file(
+          path, ruby_version, parser_engine: parser_engine
+        )
+        source.config = config
+        source.registry = RuboCop::Cop::Registry.new(cop_classes.cops)
+
+        team.investigate(source).offenses.map(&:cop_name)
+      end
+
+      it 'decides for each file whether the cop is on duty' do
+        expect(cop_names_for('included.rb')).to include('Layout/LineLength')
+        expect(cop_names_for('excluded.rb')).not_to include('Layout/LineLength')
+        expect(cop_names_for('included_too.rb')).to include('Layout/LineLength')
+      end
+    end
+
     context 'when a cop disabled in the config is opted back in by a comment directive' do
       let(:config) do
         RuboCop::ConfigLoader.merge_with_default(

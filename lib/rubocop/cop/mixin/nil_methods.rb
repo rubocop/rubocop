@@ -12,7 +12,7 @@ module RuboCop
       private
 
       def nil_methods
-        nil.methods + other_stdlib_methods + allowed_methods.map(&:to_sym)
+        @nil_methods ||= nil.methods + other_stdlib_methods + allowed_methods.map(&:to_sym)
       end
 
       def other_stdlib_methods

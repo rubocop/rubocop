@@ -73,7 +73,7 @@ module RuboCop
     end
 
     def comment_only_line?(line_number)
-      non_comment_token_line_numbers.none?(line_number)
+      !non_comment_token_line_numbers.include?(line_number)
     end
 
     # The names of the cops that are opted in by an `enable` comment directive
@@ -234,10 +234,10 @@ module RuboCop
     end
 
     def non_comment_token_line_numbers
-      @non_comment_token_line_numbers ||= begin
-        non_comment_tokens = processed_source.tokens.reject(&:comment?)
-        non_comment_tokens.map(&:line).uniq
-      end
+      @non_comment_token_line_numbers ||=
+        processed_source.tokens.each_with_object(Set.new) do |token, lines|
+          lines << token.line unless token.comment?
+        end
     end
 
     def handle_enable_all(directive, names, extras)

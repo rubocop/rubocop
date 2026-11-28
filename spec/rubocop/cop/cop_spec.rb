@@ -477,6 +477,50 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
   end
 
+  describe '#file_independent_relevance' do
+    subject { cop.file_independent_relevance }
+
+    context 'when the cop has neither `Include` nor `Exclude`' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the cop has an `Include` configuration' do
+      let(:cop_config) { { 'Include' => ['foo.rb'] } }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the cop has an `Exclude` configuration' do
+      let(:cop_config) { { 'Exclude' => ['foo.rb'] } }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the target does not satisfy the gem requirements of the cop', :restore_registry do
+      let(:cop_class) do
+        stub_cop_class('CopSpec::CopWithGemReqs') do
+          requires_gem 'gem1', '>= 1.2.3'
+        end
+      end
+
+      before { allow(config).to receive(:gem_versions_in_target).and_return({}) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the cop decides on its own which files are relevant', :restore_registry do
+      let(:cop_class) do
+        stub_cop_class('CopSpec::CopWithRelevantFiles') do
+          def relevant_file?(file)
+            file.end_with?('_spec.rb')
+          end
+        end
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#relevant_file?' do
     subject { cop.relevant_file?(file) }
 
