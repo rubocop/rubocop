@@ -165,6 +165,472 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
+    it 'does not register an offense for alias_method used as a receiver' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          alias_method(:ala, :bala).foo
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for parenthesized alias_method used as a receiver' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          (alias_method :ala, :bala).foo
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for parenthesized alias_method whose return value is assigned' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          NAME = (alias_method :ala, :bala)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for parenthesized alias_method whose return value is not used' do
+      expect_offense(<<~RUBY)
+        class C
+          (alias_method :ala, :bala)
+           ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          (alias ala bala)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method that is not the last expression in parentheses' do
+      expect_offense(<<~RUBY)
+        class C
+          (alias_method :ala, :bala; foo).bar
+           ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          (alias ala bala; foo).bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used as an array element' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = [alias_method(:ala, :bala)]
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used as a hash value' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = { key: alias_method(:ala, :bala) }
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used as an operand of `&&`' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          alias_method(:ala, :bala) && foo
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used as an operand of `||`' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo || alias_method(:ala, :bala)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used as a condition' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          if alias_method(:ala, :bala) then foo end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used as a ternary branch' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo ? alias_method(:ala, :bala) : bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method whose value is used through a `rescue` modifier' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = alias_method(:ala, :bala) rescue nil
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used in an interpolation' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = "\#{alias_method(:ala, :bala)}"
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method whose value is used through `begin`' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = begin
+            alias_method :ala, :bala
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method whose value is used through a modifier `if`' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = (alias_method :ala, :bala if bar)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method with a modifier `if`' do
+      expect_offense(<<~RUBY)
+        class C
+          alias_method :ala, :bala if foo
+          ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          alias ala bala if foo
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method with a `rescue` modifier' do
+      expect_offense(<<~RUBY)
+        class C
+          alias_method :ala, :bala rescue nil
+          ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          alias ala bala rescue nil
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method as the value of a `rescue` modifier' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo rescue alias_method :ala, :bala
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in a `begin` statement' do
+      expect_offense(<<~RUBY)
+        class C
+          begin
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          begin
+            alias ala bala
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in an `if` branch' do
+      expect_offense(<<~RUBY)
+        class C
+          if foo
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          if foo
+            alias ala bala
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in a `while` body' do
+      expect_offense(<<~RUBY)
+        class C
+          while foo
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          while foo
+            alias ala bala
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in a `for` body' do
+      expect_offense(<<~RUBY)
+        class C
+          for foo in bar
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          for foo in bar
+            alias ala bala
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in `when` and `else` branches of a `case` statement' do
+      expect_offense(<<~RUBY)
+        class C
+          case foo
+          when bar
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          else
+            alias_method :baz, :qux
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          case foo
+          when bar
+            alias ala bala
+          else
+            alias baz qux
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in `in` and `else` branches of a `case` statement' do
+      expect_offense(<<~RUBY)
+        class C
+          case foo
+          in bar
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          else
+            alias_method :baz, :qux
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          case foo
+          in bar
+            alias ala bala
+          else
+            alias baz qux
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method whose value is used through a `case` branch' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = case bar
+                when baz then alias_method :ala, :bala
+                else alias_method :qux, :quux
+                end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method used as a `case` subject or a `when` condition' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          case alias_method(:ala, :bala)
+          when alias_method(:baz, :qux) then foo
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in `rescue` and `else` clauses of a `begin` statement' do
+      expect_offense(<<~RUBY)
+        class C
+          begin
+            foo
+          rescue
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          else
+            alias_method :baz, :qux
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          begin
+            foo
+          rescue
+            alias ala bala
+          else
+            alias baz qux
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method whose value is used through a `rescue` clause' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          foo = begin
+            bar
+          rescue
+            alias_method :ala, :bala
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in the body and the `ensure` clause of a `begin` statement' do
+      expect_offense(<<~RUBY)
+        class C
+          begin
+            alias_method :ala, :bala
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          ensure
+            alias_method :baz, :qux
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          begin
+            alias ala bala
+          ensure
+            alias baz qux
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense only for alias_method in the `ensure` clause when the value of the `begin` is used' do
+      expect_offense(<<~RUBY)
+        class C
+          foo = begin
+            alias_method :ala, :bala
+          ensure
+            alias_method :baz, :qux
+            ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          foo = begin
+            alias_method :ala, :bala
+          ensure
+            alias baz qux
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in an `END` block' do
+      expect_offense(<<~RUBY)
+        class C
+          END { alias_method :ala, :bala }
+                ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class C
+          END { alias ala bala }
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in a `BEGIN` block' do
+      expect_offense(<<~RUBY)
+        BEGIN { alias_method :ala, :bala }
+                ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        BEGIN { alias ala bala }
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in a singleton class body' do
+      expect_offense(<<~RUBY)
+        class << self
+          alias_method :ala, :bala
+          ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class << self
+          alias ala bala
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias_method in an instance_eval block' do
+      expect_offense(<<~RUBY)
+        obj.instance_eval do
+          alias_method :ala, :bala
+          ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj.instance_eval do
+          alias :ala :bala
+        end
+      RUBY
+    end
+
     it 'does not register an offense for alias in a def' do
       expect_no_offenses(<<~RUBY)
         def foo

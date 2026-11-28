@@ -33,6 +33,7 @@ module RuboCop
       #
       class Alias < Base
         include ConfigurableEnforcedStyle
+        include RescueNode
         extend AutoCorrector
 
         MSG_ALIAS = 'Use `alias_method` instead of `alias`.'
@@ -40,12 +41,15 @@ module RuboCop
         MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of `alias %<current>s`.'
 
         RESTRICT_ON_SEND = %i[alias_method].freeze
+        SCOPE_AND_LOOP_TYPES = %i[
+          class module sclass block numblock itblock while until while_post until_post for
+        ].freeze
 
         def on_send(node)
           return unless node.command?(:alias_method)
           return unless style == :prefer_alias && alias_keyword_possible?(node)
           return unless node.arguments.count == 2
-          return if alias_method_value_used?(node)
+          return unless statement?(node)
 
           msg = format(MSG_ALIAS_METHOD, current: lexical_scope_type(node))
           add_offense(node.loc.selector, message: msg) do |corrector|
@@ -81,12 +85,42 @@ module RuboCop
           scope_type(node) != :dynamic && node.arguments.all?(&:sym_type?)
         end
 
-        # `alias_method` is a method call whose return value can be used
-        # (e.g., as an argument to `public`/`module_function`, or as an assignment),
-        # but `alias` is a keyword statement that cannot appear in such positions.
-        # Detect these positions so the conversion does not produce a syntax error.
-        def alias_method_value_used?(node)
-          node.argument? || node.parent&.assignment?
+        def statement?(node)
+          parent = node.parent
+          return true unless parent
+          return true if value_discarded?(parent, node)
+
+          value_passed_through?(parent, node) && statement?(parent)
+        end
+
+        def value_discarded?(parent, node)
+          case parent.type
+          when :begin, :kwbegin
+            !parent.children.last.equal?(node)
+          when *SCOPE_AND_LOOP_TYPES
+            parent.body.equal?(node)
+          when :ensure
+            parent.branch.equal?(node)
+          else
+            parent.type?(:preexe, :postexe)
+          end
+        end
+
+        def value_passed_through?(parent, node)
+          case parent.type
+          when :begin, :kwbegin, :ensure
+            true
+          when :rescue
+            !rescue_modifier?(node)
+          when :if
+            !parent.ternary? && !parent.condition.equal?(node)
+          when :case, :case_match
+            !parent.condition.equal?(node)
+          when :when, :in_pattern, :resbody
+            parent.body.equal?(node)
+          else
+            false
+          end
         end
 
         def alias_method_possible?(node)
