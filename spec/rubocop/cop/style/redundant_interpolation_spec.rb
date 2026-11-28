@@ -223,6 +223,33 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
     RUBY
   end
 
+  it 'preserves a comment before the interpolated expression' do
+    expect_offense(<<~'RUBY')
+      label = "#{
+              ^^^ Prefer `to_s` over string interpolation.
+        # Use the public name.
+        account.name}"
+    RUBY
+
+    expect_correction(<<~RUBY)
+      label = (
+        # Use the public name.
+        account.name).to_s
+    RUBY
+  end
+
+  it 'omits parentheses when only whitespace precedes the interpolated expression' do
+    expect_offense(<<~'RUBY')
+      label = "#{
+              ^^^ Prefer `to_s` over string interpolation.
+        account.name}"
+    RUBY
+
+    expect_correction(<<~RUBY)
+      label = account.name.to_s
+    RUBY
+  end
+
   it 'preserves a heredoc body between the method call and the closing brace' do
     expect_offense(<<~'RUBY')
       "#{lookup(<<~TEXT)

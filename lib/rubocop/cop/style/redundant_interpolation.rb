@@ -103,6 +103,9 @@ module RuboCop
           first_child = node.children.first
           return false unless first_child.last_line == node.last_line
 
+          leading_lines = node.first_line...first_child.first_line
+          return false if processed_source.each_comment_in_lines(leading_lines).any?
+
           variable_interpolation?(first_child) ||
             (first_child.send_type? && !first_child.operator_method?)
         end
