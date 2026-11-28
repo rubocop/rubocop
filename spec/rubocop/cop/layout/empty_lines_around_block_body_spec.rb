@@ -140,6 +140,32 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
     end
   end
 
+  context 'when `EnforcedStyle` is `empty_lines` and a block parameter has a heredoc default' do
+    let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
+
+    it 'inserts the missing empty line after the heredoc' do
+      expect_offense(<<~RUBY)
+        rows.map do |row = <<~TEXT|
+          hello
+        TEXT
+          keep(row)
+        ^ Empty line missing at block body beginning.
+
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        rows.map do |row = <<~TEXT|
+          hello
+        TEXT
+
+          keep(row)
+
+        end
+      RUBY
+    end
+  end
+
   context 'when `EnforcedStyle` is `empty_lines` and the body is a chained method call' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
 
@@ -216,6 +242,18 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
 
   context 'when `EnforcedStyle` is `no_empty_lines` and the body starts on the opening line' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
+
+    it 'accepts a heredoc in the first statement followed by a blank line between statements' do
+      expect_no_offenses(<<~RUBY)
+        rows.map do |row| emit(<<~TEXT)
+
+          hello
+        TEXT
+
+          keep(row)
+        end
+      RUBY
+    end
 
     it 'registers an offense and removes the blank line after the opening line' do
       expect_offense(<<~RUBY)
