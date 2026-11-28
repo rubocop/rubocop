@@ -33,7 +33,7 @@ module RuboCop
 
       define_options.parse!(args)
 
-      return_path_given_to_changed(args)
+      add_paths_given_to_options(args)
       imply_autocorrect_for_diff
 
       @validator.validate_compatibility
@@ -55,9 +55,21 @@ module RuboCop
     private
 
     # `--changed lib` hands the path to `--changed` as its optional argument,
-    # so it goes back among the paths to inspect.
-    def return_path_given_to_changed(args)
+    # so it goes back among the paths to inspect. `--files-from` names a file
+    # whose paths join the ones given on the command line.
+    def add_paths_given_to_options(args)
       args.unshift(@path_given_to_changed) if @path_given_to_changed
+      args.concat(read_files_from(@options[:files_from])) if @options[:files_from]
+    end
+
+    # One path per line, or NUL-delimited when the list contains a NUL byte, as
+    # `git ls-files -z` and `find -print0` write it.
+    def read_files_from(list)
+      content = File.read(list)
+      paths = content.include?("\0") ? content.split("\0") : content.split(/\r?\n/)
+      paths.reject(&:empty?)
+    rescue SystemCallError => e
+      raise OptionArgumentError, "--files-from could not read #{list}: #{e.message}"
     end
 
     # `--diff` is a dry run of autocorrection, so it turns autocorrection on
@@ -124,6 +136,7 @@ module RuboCop
           end
           @options[:changed] = revision || ChangedFiles::DEFAULT_REVISION
         end
+        option(opts, '--files-from FILE')
         option(opts, '-s', '--stdin FILE')
         option(opts, '--editor-mode')
         option(opts, '-P', '--[no-]parallel')
@@ -436,6 +449,7 @@ module RuboCop
       validate_lsp_and_editor_mode
       validate_diff
       validate_changed_and_stdin
+      validate_files_from_and_stdin
       validate_enable_all_cops_and_disable_all_cops
       disable_parallel_when_invalid_option_combo
 
@@ -495,6 +509,12 @@ module RuboCop
       return unless @options.key?(:changed) && @options.key?(:stdin)
 
       raise OptionArgumentError, '--changed cannot be used with --stdin.'
+    end
+
+    def validate_files_from_and_stdin
+      return unless @options.key?(:files_from) && @options.key?(:stdin)
+
+      raise OptionArgumentError, '--files-from cannot be used with --stdin.'
     end
 
     def validate_lsp_and_editor_mode
@@ -761,6 +781,9 @@ module RuboCop
                                          'parallel. Default is true.',
                                          'You can specify the number of parallel processes using',
                                          'the $PARALLEL_PROCESSOR_COUNT environment variable.'],
+      files_from:                       ['Inspect the paths listed in FILE, one per line',
+                                         'or NUL-delimited, as if given on the command',
+                                         'line. An empty list inspects nothing.'],
       stdin:                            ['Pipe source from STDIN, using FILE in offense',
                                          'reports. This is useful for editor integration.'],
       editor_mode:                      ['Optimize real-time feedback in editors,',
